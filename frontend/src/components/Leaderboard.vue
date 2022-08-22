@@ -53,11 +53,7 @@ const people = [
               <tr>
                 <th scope="col" class="py-3.5 pl-4 pr-3 text-left text-sm font-semibold text-gray-900 sm:pl-6">Rank</th>
                 <th scope="col" class="py-3.5 pl-4 pr-3 text-left text-sm font-semibold text-gray-900 sm:pl-6">Name</th>
-                <th scope="col" class="px-3 py-3.5 text-left text-sm font-semibold text-gray-900">Title</th>
-                <th scope="col" class="px-3 py-3.5 text-left text-sm font-semibold text-gray-900">Count</th>
-                <th scope="col" class="relative py-3.5 pl-3 pr-4 sm:pr-6">
-                  <span class="sr-only">Edit</span>
-                </th>
+                <th scope="col" class="relative py-3.5 pl-3 pr-4 sm:pr-6 text-right text-sm font-semibold text-gray-900">Count</th>
               </tr>
             </thead>
             <tbody class="divide-y divide-gray-200 bg-white">
@@ -72,15 +68,10 @@ const people = [
                     </div>
                     <div class="ml-4">
                       <div class="font-medium text-gray-900">{{ person.name }}</div>
-                      <div class="text-gray-500">{{ person.description }}</div>
                     </div>
                   </div>
                 </td>
-                <td class="whitespace-nowrap px-3 py-4 text-sm text-gray-500">
-                  <div class="text-gray-900">{{ person.title }}</div>
-                  <div class="text-gray-500">{{ person.department }}</div>
-                </td>
-                <td class="whitespace-nowrap px-3 py-4 text-sm text-gray-500">
+                <td class="relative py-3.5 pl-3 pr-4 sm:pr-6 text-right">
                   <span class="inline-flex px-2 text-lg font-semibold leading-5 text-gray-800">{{ person.count }}</span>
                 </td>
               </tr>
