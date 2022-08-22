@@ -1,5 +1,8 @@
 <!-- This example requires Tailwind CSS v2.0+ -->
 <template>
+  <div class="sm:flex-auto mb-4">
+    <h1 class="text-xl font-semibold text-gray-900">Interactions</h1>
+  </div>
   <ul role="list" class="divide-y divide-gray-200">
     <li v-for="person in people" :key="person.count" class="py-4 flex first:pt-0 last:pb-0">
       <img class="h-10 w-10 rounded-full" :src="person.image" alt="" />
