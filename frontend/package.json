@@ -13,6 +13,8 @@
     "@fortawesome/fontawesome-svg-core": "^6.1.2",
     "@fortawesome/free-brands-svg-icons": "^6.1.2",
     "@fortawesome/vue-fontawesome": "^3.0.1",
+    "@headlessui/vue": "^1.6.7",
+    "@heroicons/vue": "^1.0.6",
     "pinia": "^2.0.17",
     "vue": "^3.2.37",
     "vue-router": "^4.1.3"
