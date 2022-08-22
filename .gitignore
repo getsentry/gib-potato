@@ -34,7 +34,7 @@ nbproject/*
 # Sass preprocessor
 .sass-cache/
 # node
-/node_modules/*
+node_modules
 
 # Gib Potato specific files #
 ###############################
