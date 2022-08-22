@@ -14,6 +14,9 @@ import {
 import { BellIcon, MenuIcon, XIcon } from '@heroicons/vue/outline'
 import { SearchIcon } from '@heroicons/vue/solid'
 import Leaderboard from '../components/Leaderboard.vue'
+import Interactions from '../components/Interactions.vue'
+import Logo from '../components/Logo.vue'
+import Footer from '../components/Footer.vue'
 
 const user = {
   name: 'Tom Cook',
@@ -30,15 +33,16 @@ const userNavigation = [
 </script>
 
 <template>
-  <div class="min-h-full">
-    <Popover as="header" class="pb-24 bg-indigo-600" v-slot="{ open }">
+  <div class="min-h-full flex flex-col justify-between">
+    <div>
+    <Popover as="header" class="pb-24 bg-orange-400" v-slot="{ open }">
       <div class="max-w-3xl mx-auto px-4 sm:px-6 lg:max-w-7xl lg:px-8">
         <div class="relative py-5 flex items-center justify-center lg:justify-between">
           <!-- Logo -->
           <div class="absolute left-0 flex-shrink-0 lg:static">
             <a href="#">
-              <span class="sr-only">Workflow</span>
-              <img class="h-8 w-auto" src="https://tailwindui.com/img/logos/workflow-mark.svg?color=indigo&shade=300" alt="Workflow" />
+              <span class="sr-only">Potato</span>
+              <Logo class="h-20 w-auto bg-white rounded-full"/>
             </a>
           </div>
 
@@ -193,6 +197,7 @@ const userNavigation = [
               <div class="rounded-lg bg-white overflow-hidden shadow">
                 <div class="p-6">
                   <!-- Your content -->
+                  <Interactions />
                 </div>
               </div>
             </section>
@@ -200,10 +205,7 @@ const userNavigation = [
         </div>
       </div>
     </main>
-    <footer>
-      <div class="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 lg:max-w-7xl">
-        <div class="border-t border-gray-200 py-8 text-sm text-gray-500 text-center sm:text-left"><span class="block sm:inline">&copy; 2021 Tailwind Labs Inc.</span> <span class="block sm:inline">All rights reserved.</span></div>
-      </div>
-    </footer>
+  </div>
+    <Footer />
   </div>
 </template>
