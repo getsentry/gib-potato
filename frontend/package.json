@@ -1,0 +1,19 @@
+{
+  "name": "vue-project",
+  "version": "0.0.0",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview --port 4173"
+  },
+  "dependencies": {
+    "@sentry/tracing": "^7.11.1",
+    "@sentry/vue": "^7.11.1",
+    "axios": "^0.27.2",
+    "vue": "^3.2.37"
+  },
+  "devDependencies": {
+    "@vitejs/plugin-vue": "^3.0.1",
+    "vite": "^3.0.4"
+  }
+}
