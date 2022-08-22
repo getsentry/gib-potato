@@ -45,6 +45,8 @@ return static function (RouteBuilder $routes) {
     $routes->setRouteClass(DashedRoute::class);
 
     $routes->scope('/', function (RouteBuilder $builder) {
+        $builder->connect('/', ['prefix' => 'Api', 'controller' => 'Index', 'action' => 'index']);
+
         /*
          * Connect catchall routes for all controllers.
          *
