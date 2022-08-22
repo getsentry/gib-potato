@@ -6,8 +6,22 @@ const app = new App({
 });
 
 // Listens to incoming messages that contain "hello"
-app.message('hello', async ({ message, say }) => {
-    console.log('test we are here')
+app.message(':potato:', async ({ message, say }) => {
+  const text = message.text
+  const senderId = message.user
+  let senderName = ''
+
+  try {
+    // Call the users.info method using the WebClient
+    const result = await app.client.users.info({
+      user: senderId
+    });
+    senderName = result["real_name"]
+  }
+  catch (error) {
+    console.error(error);
+  }
+
   // say() sends a message to the channel where the event was triggered
   await say(`Hey there <@${message.user}>!`);
 });
