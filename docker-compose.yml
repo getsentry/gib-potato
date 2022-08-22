@@ -1,0 +1,43 @@
+services:
+  web:
+    build: docker/web
+    ports:
+      - 8080:80
+      - 8081:8081
+    volumes:
+      - ./backend:/var/www/gib-potato:consistent
+    networks:
+      gib-potato:
+        aliases:
+          - gib-potato.test
+
+  service:
+    build: docker/service
+    ports:
+      - 3000:3000
+    volumes:
+      - ./slack-service:/usr/gib-potato:consistent
+    networks:
+      gib-potato:
+        aliases:
+          - service.gib-potato.test
+
+  db:
+    build: docker/mysql
+    ports:
+      - 8306:3306
+    environment:
+      MYSQL_DATABASE: gib-potato
+      MYSQL_ROOT_PASSWORD: password
+    volumes:
+      - db:/var/lib/mysql
+    networks:
+      gib-potato:
+        aliases:
+          - db.gib-potato.test
+
+volumes:
+  db:
+
+networks:
+  gib-potato:
