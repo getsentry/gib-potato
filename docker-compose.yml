@@ -28,7 +28,7 @@ services:
     ports:
       - 8306:3306
     environment:
-      MYSQL_DATABASE: gib-potato
+      MYSQL_DATABASE: gib_potato
       MYSQL_ROOT_PASSWORD: password
     volumes:
       - db:/var/lib/mysql
