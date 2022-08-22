@@ -12,7 +12,7 @@ async function getUserNameById(userId) {
   try {
     // Call the users.info method using the WebClient
     const result = await app.client.users.info({
-      user: senderId
+      user: userId
     });
     return result["real_name"]
   }
@@ -27,16 +27,34 @@ app.message(':potato:', async ({ message, say }) => {
   const text = message.text
   // Find the user in the BD with the Slack UID
   let senderName = await getUserNameById(message.user) // <- How do we find this person in the DB ????
-  // TODO: So need to use the UID from slack for our ID, ask @michi
 
-  // TODO: Grab the users mentioned in the text
-  // TODO: Check if it is a valid amount
+  const regex = /<.*?>/g; // Regex to find all the mentions
+  let usersFound  = text.match(regex);
+  usersFound = usersFound.filter((t) => t !== `<@${message.user}>` ) // Remove the sender if he is in the message
+
+  let userCount = usersFound.length
+  let potatoCount = (text.match(/:potato:/g) || []).length
+
+  // Check the total amount doesn't surpass the 5 limit
+  if(userCount*potatoCount > 5){
+    await say("You don't have that much potato's");
+    return
+  }
+  // TODO: Check that the number of potato's given is smaller or equal to the amount the user has
+
+  // This is just to check that we can find all the people
+  let responds =  "The following people got a potato:"
+  usersFound.forEach(user => {
+    responds += user
+  });
+
+
   // TODO: Check the number of tacos the sender has given
   // TODO: Push the changes to the DB
 
   // We probably don't want to send a message later on
   // say() sends a message to the channel where the event was triggered
-  await say(`Hey there <@${message.user}>!`);
+  await say(responds);
 });
 
 (async () => {
