@@ -1,0 +1,14 @@
+{
+  "name": "gib_potato",
+  "version": "1.0.0",
+  "description": "Hey Taco replacement",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "MIT",
+  "dependencies": {
+    "@slack/bolt": "^3.12.1"
+  }
+}
