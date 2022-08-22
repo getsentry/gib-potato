@@ -39,7 +39,7 @@ RUN \
 
 COPY supervisord/conf.d/ /etc/supervisor/conf.d/
 
-WORKDIR /var/www/super-potato
+WORKDIR /var/www/gib-potato
 
 COPY run.sh /run.sh
 RUN chmod +x /run.sh
