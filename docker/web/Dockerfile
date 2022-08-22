@@ -7,9 +7,6 @@ RUN \
     apt-get install -y --no-install-recommends \
     ca-certificates \
     software-properties-common \
-    curl \
-    zip \
-    unzip \
     supervisor \
     apache2 \
     php8.1 \
@@ -20,8 +17,7 @@ RUN \
     php8.1-mysql \
     php8.1-sqlite3 \
     php8.1-xml \
-    php8.1-zip \
-    php8.1-zmq && \
+    php8.1-zip && \
     rm -rf /var/lib/apt/lists/*
 
 RUN rm /etc/apache2/sites-available/*.conf
@@ -37,8 +33,6 @@ RUN \
     sed -i 's/Options Indexes FollowSymLinks/Options FollowSymLinks/g' /etc/apache2/apache2.conf && \
     sed -i "s/AllowOverride None/AllowOverride All/g" /etc/apache2/apache2.conf
 
-COPY supervisord/conf.d/ /etc/supervisor/conf.d/
-
 WORKDIR /var/www/gib-potato
 
 COPY run.sh /run.sh
@@ -46,4 +40,4 @@ RUN chmod +x /run.sh
 
 EXPOSE 80
 
-ENTRYPOINT /run.sh
+CMD [ "/bin/bash", "/run.sh" ]
