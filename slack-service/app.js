@@ -1,3 +1,4 @@
+require('dotenv').config()
 const { App } = require('@slack/bolt');
 
 // TODO: Make a connection with the DB via an ORM??
