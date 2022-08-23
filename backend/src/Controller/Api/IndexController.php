@@ -21,6 +21,7 @@ class IndexController extends AppController
     {
         return $this->response
             ->withStatus(200)
+            ->withType('json')
             ->withStringBody(json_encode([
                 'message' => 'Gib Potato! 🥔'
             ]));
