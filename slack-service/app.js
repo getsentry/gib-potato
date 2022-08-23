@@ -50,25 +50,24 @@ async function addMessage(senderDBId, user, potatoCount) {
 }
 
 // TODO: Finish
-async function getPotatoCount(senderId) {
+async function getPotatoesGiven(senderId) {
   // Need to check if it not the same
   const entry = await prisma.messages.findMany({
     where: {
       sender_user_id: senderId
     }
   })
-  let cur = new Date()
-  return entry.filter(t => t.created.getUTCDate() === cur.getUTCDate() && t.created.getUTCFullYear() === cur.getUTCFullYear() && t.created.getUTCMonth() === cur.getUTCMonth()).map(t => t.amount)
-}
 
-/// Grabs the database ID from the DB for the user with the matching slack ID
-async function getDBIdBySlackId(slackId) {
-  const user = await prisma.users.findFirst({
-    where: {
-      slack_uid: slackId
-    }
-  })
-  return user["id"]
+  const datesAreOnSameDay = (first, second) =>
+    first.getUTCFullYear() === second.getUTCFullYear() &&
+    first.getUTCMonth() === second.getUTCMonth() &&
+    first.getUTCDate() === second.getUTCDate();
+
+  let cur = new Date()
+  return entry
+    .filter(t => datesAreOnSameDay(t.created, cur))
+    .map(t => t.amount)
+    .reduce((a, b) => a + b, 0)
 }
 
 /// Get the full name using the userId from the Slack API
@@ -103,68 +102,133 @@ async function getUserDbId(slackId) {
 
 // Listens to incoming messages that contain "hello"
 app.message(':potato:', async ({ message, say }) => {
-  let senderSlackId = message.user;
+  const senderSlackId = message.user;
   const text = message.text
-  let senderDBId = await getUserDbId(senderSlackId)
+  const senderDBId = await getUserDbId(senderSlackId) 
 
   const regex = /<.*?>/g; // Regex to find all the mentions
-  let usersFound = text.match(regex);
+  const userSlackIdsFound = text.match(regex);
 
-  if (!usersFound || usersFound.length == 0) { // Check needed for the filter
+  if (!userSlackIdsFound || userSlackIdsFound.length == 0) { // Check needed for the filter
     await say("Seems like no one was tagged in that message");
     return
   }
 
   // Extract the ids from the mention
-  usersFound = usersFound
+  const receiverSlackIds = userSlackIdsFound
+    .filter((item, index) => userSlackIdsFound.indexOf(item) === index) // Remove duplicate ids
     .map((t) => t.substring(2, t.length - 1)) // Remove the <@ >
     .filter((t) => t !== senderSlackId) // Remove the sender if he is in the message
 
-  // These will be our DB ids for the people that where mentioned
-  let userIds = []
-
-  for (let key in usersFound) {
-    let userSlackId = usersFound[key]
-    userIds.push(await getUserDbId(userSlackId))
-  }
-
-  if (!usersFound || usersFound.length == 0) { // Check needed for the length
+  if (!receiverSlackIds || receiverSlackIds.length == 0) { // Check needed for the length
     await say("Seems like no one was tagged in that message"); // <- Think about if we maybe want to handle this differently
     return
   }
 
-  let userCount = usersFound.length
-  let potatoCount = (text.match(/:potato:/g) || []).length
+  const receiversCount = receiverSlackIds.length
+  const potatoCount = (text.match(/:potato:/g) || []).length
 
   // TODO: Check that there are potatos left to give for the sender (sender ids)
   // one more check
-  let potatoesGiven = (await getPotatoCount(senderDBId)).reduce((a, b) => a + b, 0)
-  console.log(potatoesGiven)
+  const potatoesGivenSoFar = await getPotatoesGiven(senderDBId)
+  console.log(potatoesGivenSoFar)
 
-  if (potatoesGiven > 5) {
+  if (potatoesGivenSoFar > 5) {
     await say("You have already given 5 potatoes today");
     return
   }
 
-  if (userCount * potatoCount > (5 - potatoesGiven)) {
+  if (receiversCount * potatoCount > (5 - potatoesGivenSoFar)) {
     await say("You don't have that much potato's");
     return
   }
 
+  // These will be our DB ids for the people that where mentioned
+  let userDBIds = []
+
+  for (const userSlackId of receiverSlackIds) {
+    userDBIds.push(await getUserDbId(userSlackId))
+  }
+  
   // Add the message's to the DB
-  userIds.forEach(async (user) => {
+  userDBIds.forEach(async (user) => {
     await addMessage(senderDBId, user, potatoCount);
   })
 
   // This is just to check that we can find all the people ->  Seems to work
   let responds = "The following people got a potato:"
-  usersFound.forEach(user => {
-    responds += user
+  receiverSlackIds.forEach(userSlackId => {
+   /* try {
+      await app.client.chat.postMessage({
+        channel: userSlackId,
+        text: `You got ${potatoCount} by <@${senderSlackId}> \n>${text}`
+      });
+    }
+    catch (error) {
+      // TODO: handle this
+      console.error(error);
+    }
+    */
+    responds += `<@${userSlackId}>`
   });
 
   // We probably don't want to send a message later on
   // say() sends a message to the channel where the event was triggered
   await say(responds);
+});
+
+// Listen to app home opened event
+app.event('app_home_opened', async ({ event, client, context }) => {
+  try {
+    /* view.publish is the method that your app uses to push a view to the Home tab */
+    await client.views.publish({
+
+      /* the user that opened your app's app home */
+      user_id: event.user,
+
+      /* the view object that appears in the app home*/
+      view: {
+        type: 'home',
+        callback_id: 'home_view',
+
+        /* body of the view */
+        blocks: [
+          {
+            "type": "section",
+            "text": {
+              "type": "mrkdwn",
+              "text": "*Welcome to your _App's Home_* :tada:"
+            }
+          },
+          {
+            "type": "divider"
+          },
+          {
+            "type": "section",
+            "text": {
+              "type": "mrkdwn",
+              "text": "This button won't do much for now but you can set up a listener for it using the `actions()` method and passing its unique `action_id`. See an example in the `examples` folder within your Bolt app."
+            }
+          },
+          {
+            "type": "actions",
+            "elements": [
+              {
+                "type": "button",
+                "text": {
+                  "type": "plain_text",
+                  "text": "Click me!"
+                }
+              }
+            ]
+          }
+        ]
+      }
+    });
+  }
+  catch (error) {
+    console.error(error);
+  }
 });
 
 (async () => {
