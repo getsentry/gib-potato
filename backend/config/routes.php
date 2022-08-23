@@ -45,6 +45,10 @@ return static function (RouteBuilder $routes) {
     $routes->setRouteClass(DashedRoute::class);
 
     $routes->scope('/', function (RouteBuilder $builder) {
+        $builder->connect('/api/{controller}/{action}/*', ['prefix' => 'Api']);
+        $builder->connect('/api/{controller}/{action}', ['prefix' => 'Api']);
+        $builder->connect('/api/{controller}', ['prefix' => 'Api']);
+
         $builder->connect('/', ['prefix' => 'Api', 'controller' => 'Index', 'action' => 'index']);
 
         /*

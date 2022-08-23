@@ -6,8 +6,6 @@ namespace App\Controller\Api;
 use App\Controller\AppController;
 
 /**
- * Api/Index Controller
- *
  * @method \App\Model\Entity\Api/Index[]|\Cake\Datasource\ResultSetInterface paginate($object = null, array $settings = [])
  */
 class IndexController extends AppController
