@@ -35,23 +35,19 @@ const userNavigation = [
 <template>
   <div class="min-h-full flex flex-col justify-between">
     <div>
-    <Popover as="header" class="pb-24 bg-orange-400" v-slot="{ open }">
+    <Popover as="header" class="pb-24 bg-zinc-700" v-slot="{ open }">
       <div class="max-w-3xl mx-auto px-4 sm:px-6 lg:max-w-7xl lg:px-8">
         <div class="relative py-5 flex items-center justify-center lg:justify-between">
           <!-- Logo -->
           <div class="absolute left-0 flex-shrink-0 lg:static">
             <a href="#">
               <span class="sr-only">Potato</span>
-              <Logo class="h-20 w-auto bg-white rounded-full"/>
+              <Logo class="h-8 w-auto"/>
             </a>
           </div>
 
           <!-- Right section on desktop -->
           <div class="hidden lg:ml-4 lg:flex lg:items-center lg:pr-0.5">
-            <button type="button" class="flex-shrink-0 p-1 text-indigo-200 rounded-full hover:text-white hover:bg-white hover:bg-opacity-10 focus:outline-none focus:ring-2 focus:ring-white">
-              <span class="sr-only">View notifications</span>
-              <BellIcon class="h-6 w-6" aria-hidden="true" />
-            </button>
 
             <!-- Profile dropdown -->
             <Menu as="div" class="ml-4 relative flex-shrink-0">
