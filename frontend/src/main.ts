@@ -18,7 +18,7 @@ import { faSlack } from '@fortawesome/free-brands-svg-icons'
 /* add each imported icon to the library */
 library.add(faSlack)
 
-const app = createApp(App)
+const app = createApp(App).use(createPinia())
 
 app.use(createPinia())
 app.use(router)

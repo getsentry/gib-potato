@@ -1,35 +1,8 @@
 <script setup lang="ts">
-import Filter from "./Filter.vue";
-const people = [
-  {
-    name: 'Lindsay Walton',
-    title: 'Front-end Developer',
-    department: 'Optimization',
-    description: 'Dogs and cats lover',
-    image:
-      'https://images.unsplash.com/photo-1517841905240-472988babdf9?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80',
-    count: 130,
-  },
-  {
-    name: 'Lindsay Walton',
-    title: 'Front-end Developer',
-    department: 'Optimization',
-    description: 'Dogs and cats lover',
-    image:
-      'https://images.unsplash.com/photo-1517841905240-472988babdf9?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80',
-    count: 100,
-  },
-  {
-    name: 'Lindsay Walton',
-    title: 'Front-end Developer',
-    department: 'Optimization',
-    description: 'Dogs and cats lover',
-    image:
-      'https://images.unsplash.com/photo-1517841905240-472988babdf9?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80',
-    count: 67,
-  },
-  // More people...
-]
+// import Filter from "./Filter.vue";
+import { useUsersStore } from '@/stores/users'
+
+const { isLoading, isReady, state: users } = useUsersStore();
 </script>
 
 <template>
@@ -38,9 +11,9 @@ const people = [
       <h1 class="text-xl font-semibold text-gray-900">Leaderboard</h1>
       <p class="mt-2 text-sm text-gray-700">A list of all the users who received potatoes</p>
     </div>
-    <div class="mt-4 sm:mt-0 sm:ml-16 sm:flex-none self-end">
+    <!-- <div class="mt-4 sm:mt-0 sm:ml-16 sm:flex-none self-end">
       <Filter />
-    </div>
+    </div> -->
   </div>
   <div class="mt-2 flex flex-col">
     <div class="-my-2 -mx-4 overflow-x-auto sm:-mx-6 lg:-mx-8">
@@ -55,17 +28,28 @@ const people = [
               </tr>
             </thead>
             <tbody class="divide-y divide-gray-200 bg-white">
-              <tr v-for="(person, index) in people" :key="person.description">
+              <tr v-if="isLoading" v-for="index in [1, 2, 3, 4]" :key="index">
+                <td class="max-w-sm animate-pulse whitespace-nowrap py-3 pl-4 pr-3 text-sm sm:pl-6">
+                  <span class="inline-flex px-4 py-2 text-lg font-semibold leading-5 text-gray-800 bg-gray-200 rounded-full"></span>
+                </td>
+                <td class="max-w-sm animate-pulse whitespace-nowrap py-3 pl-4 pr-3 text-sm sm:pl-6">
+                  <span class="inline-flex px-16 py-2 text-lg font-semibold leading-5 text-gray-800 bg-gray-200 rounded-full"></span>
+                </td>
+                <td class="max-w-sm animate-pulse relative py-3 pl-3 pr-4 sm:pr-6 text-right">
+                  <span class="inline-flex m-1 px-4 py-2 text-lg font-semibold leading-5 text-gray-800 bg-gray-200 rounded-full"></span>
+                </td>
+              </tr>
+              <tr v-if="isReady" v-for="(person, index) in users" :key="person.id">
                 <td class="whitespace-nowrap px-3 py-4 text-sm text-gray-500">
                   <span class="inline-flex px-2 text-lg font-semibold leading-5 text-gray-800">{{ index + 1 }}</span>
                 </td>
                 <td class="whitespace-nowrap py-4 pl-4 pr-3 text-sm sm:pl-6">
                   <div class="flex items-center">
                     <div class="h-10 w-10 flex-shrink-0">
-                      <img class="h-10 w-10 rounded-full" :src="person.image" alt="" />
+                      <img class="h-10 w-10 rounded-full" :src="person.avatar_url" alt="" />
                     </div>
                     <div class="ml-4">
-                      <div class="font-medium text-gray-900">{{ person.name }}</div>
+                      <div class="font-medium text-gray-900">{{ person.full_name }}</div>
                     </div>
                   </div>
                 </td>
