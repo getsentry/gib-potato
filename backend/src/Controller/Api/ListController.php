@@ -17,7 +17,7 @@ class ListController extends AppController
      */
     public function index()
     {
-        sleep(0.5); // simulate slow api
+        usleep(500); // simulate slow api
         return $this->response
             ->withStatus(200)
             ->withType('json')
