@@ -1,11 +1,39 @@
-// This is your Prisma schema file,
-// learn more about it in the docs: https://pris.ly/d/prisma-schema
-
 generator client {
   provider = "prisma-client-js"
 }
 
 datasource db {
   provider = "mysql"
-  url      = "mysql://root:password@db.gib-potato.test/gib_potato?encoding=utf8mb4&timezone=UTC&cacheMetadata=true&quoteIdentifiers=false&persistent=false"
+  url      = "mysql://root:password@0.0.0.0:8306/gib_potato"
+}
+
+model messages {
+  id                                     String    @id @db.Char(36)
+  sender_user_id                         String    @db.Char(36)
+  receiver_user_id                       String    @db.Char(36)
+  amount                                 Int
+  created                                DateTime? @db.DateTime(0)
+  users_messages_sender_user_idTousers   users     @relation("messages_sender_user_idTousers", fields: [sender_user_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "messages_ibfk_1")
+  users_messages_receiver_user_idTousers users     @relation("messages_receiver_user_idTousers", fields: [receiver_user_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "messages_ibfk_2")
+
+  @@index([receiver_user_id], map: "receiver_user_id")
+  @@index([sender_user_id], map: "sender_user_id")
+}
+
+model phinxlog {
+  version        BigInt    @id
+  migration_name String?   @db.VarChar(100)
+  start_time     DateTime? @db.Timestamp(0)
+  end_time       DateTime? @db.Timestamp(0)
+  breakpoint     Boolean   @default(false)
+}
+
+model users {
+  id                                        String     @id @db.Char(36)
+  slack_full_name                           String     @db.VarChar(255)
+  slack_uid                                 String     @db.VarChar(255)
+  created                                   DateTime?  @db.DateTime(0)
+  modified                                  DateTime?  @db.DateTime(0)
+  messages_messages_sender_user_idTousers   messages[] @relation("messages_sender_user_idTousers")
+  messages_messages_receiver_user_idTousers messages[] @relation("messages_receiver_user_idTousers")
 }
