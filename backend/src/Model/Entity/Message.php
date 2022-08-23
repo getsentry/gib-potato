@@ -10,7 +10,7 @@ use Cake\ORM\Entity;
  *
  * @property string $id
  * @property string $sender_user_id
- * @property string $reciever_user_id
+ * @property string $receiver_user_id
  * @property int $amount
  * @property \Cake\I18n\FrozenTime|null $created
  *
@@ -29,7 +29,7 @@ class Message extends Entity
      */
     protected $_accessible = [
         'sender_user_id' => true,
-        'reciever_user_id' => true,
+        'receiver_user_id' => true,
         'amount' => true,
         'created' => true,
         'user' => true,

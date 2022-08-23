@@ -58,12 +58,17 @@ class Initial extends AbstractMigration
                 'limit' => null,
                 'null' => false,
             ])
-            ->addColumn('slack_full_name', 'string', [
+            ->addColumn('slack_user_id', 'string', [
                 'default' => null,
                 'limit' => 255,
                 'null' => false,
             ])
-            ->addColumn('slack_uid', 'string', [
+            ->addColumn('slack_name', 'string', [
+                'default' => null,
+                'limit' => 255,
+                'null' => false,
+            ])
+            ->addColumn('slack_picture', 'string', [
                 'default' => null,
                 'limit' => 255,
                 'null' => false,
@@ -78,6 +83,12 @@ class Initial extends AbstractMigration
                 'limit' => null,
                 'null' => true,
             ])
+            ->addIndex(
+                [
+                    'slack_user_id',
+                ],
+                ['unique' => true]
+            )
             ->create();
 
         $this->table('messages')

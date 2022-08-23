@@ -9,7 +9,9 @@ use Cake\ORM\Entity;
  * User Entity
  *
  * @property string $id
- * @property string $username
+ * @property string $slack_user_id
+ * @property string $slack_name
+ * @property string $slack_picture
  * @property \Cake\I18n\FrozenTime|null $created
  * @property \Cake\I18n\FrozenTime|null $modified
  */
@@ -25,7 +27,9 @@ class User extends Entity
      * @var array<string, bool>
      */
     protected $_accessible = [
-        'username' => true,
+        'slack_user_id' => true,
+        'slack_name' => true,
+        'slack_picture' => true,
         'created' => true,
         'modified' => true,
     ];

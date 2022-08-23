@@ -53,7 +53,7 @@ class MessagesTable extends Table
             'joinType' => 'INNER',
         ]);
         $this->belongsTo('Users', [
-            'foreignKey' => 'reciever_user_id',
+            'foreignKey' => 'receiver_user_id',
             'joinType' => 'INNER',
         ]);
     }
@@ -72,9 +72,9 @@ class MessagesTable extends Table
             ->notEmptyString('sender_user_id');
 
         $validator
-            ->uuid('reciever_user_id')
-            ->requirePresence('reciever_user_id', 'create')
-            ->notEmptyString('reciever_user_id');
+            ->uuid('receiver_user_id')
+            ->requirePresence('receiver_user_id', 'create')
+            ->notEmptyString('receiver_user_id');
 
         $validator
             ->integer('amount')
@@ -94,7 +94,7 @@ class MessagesTable extends Table
     public function buildRules(RulesChecker $rules): RulesChecker
     {
         $rules->add($rules->existsIn('sender_user_id', 'Users'), ['errorField' => 'sender_user_id']);
-        $rules->add($rules->existsIn('reciever_user_id', 'Users'), ['errorField' => 'reciever_user_id']);
+        $rules->add($rules->existsIn('receiver_user_id', 'Users'), ['errorField' => 'receiver_user_id']);
 
         return $rules;
     }

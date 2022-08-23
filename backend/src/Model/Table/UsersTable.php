@@ -55,10 +55,23 @@ class UsersTable extends Table
     public function validationDefault(Validator $validator): Validator
     {
         $validator
-            ->scalar('username')
-            ->maxLength('username', 255)
-            ->requirePresence('username', 'create')
-            ->notEmptyString('username');
+            ->scalar('slack_user_id')
+            ->maxLength('slack_user_id', 255)
+            ->requirePresence('slack_user_id', 'create')
+            ->notEmptyString('slack_user_id')
+            ->add('slack_user_id', 'unique', ['rule' => 'validateUnique', 'provider' => 'table']);
+
+        $validator
+            ->scalar('slack_name')
+            ->maxLength('slack_name', 255)
+            ->requirePresence('slack_name', 'create')
+            ->notEmptyString('slack_name');
+
+        $validator
+            ->scalar('slack_picture')
+            ->maxLength('slack_picture', 255)
+            ->requirePresence('slack_picture', 'create')
+            ->notEmptyString('slack_picture');
 
         return $validator;
     }
@@ -72,7 +85,7 @@ class UsersTable extends Table
      */
     public function buildRules(RulesChecker $rules): RulesChecker
     {
-        $rules->add($rules->isUnique(['username']), ['errorField' => 'username']);
+        $rules->add($rules->isUnique(['slack_user_id']), ['errorField' => 'slack_user_id']);
 
         return $rules;
     }
