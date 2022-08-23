@@ -1,3 +1,5 @@
+//UUID
+const { uuid } = require('uuidv4');
 // ORM
 const { PrismaClient } = require('@prisma/client');
 const prisma = new PrismaClient()
@@ -25,16 +27,11 @@ async function getUserBySlackId(slackId){
   return user
 }
 
-// Returns the UTC time in the MySql DateTime format
-function getDateTime(){
-  return new Date().toISOString().slice(0, 19).replace('T', ' ')
-}
-
 /// Adds a user to the Database
 async function addUser(fullName, slackId){
   await prisma.users.create({
     data : {
-      id : "1", // TODO: Check if we can fill in this using the ORM, also ask if a serial might not be nicer here
+      id : uuid(),
       slack_full_name : fullName,
       slack_uid : slackId,
       created :  new Date(),
@@ -129,8 +126,7 @@ app.message(':potato:', async ({ message, say }) => {
       await prisma.$disconnect()
       process.exit(1)
     })
-  */
-
+  */ 
+  addUser("User 1", "<@1>");
   console.log('⚡️ Bolt app is running!');
-  console.log(getDateTime())
 })();
