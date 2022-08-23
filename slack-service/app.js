@@ -1,4 +1,4 @@
-//UUID
+// UUID
 const { uuid } = require("uuidv4");
 // ORM
 const { PrismaClient } = require("@prisma/client");
