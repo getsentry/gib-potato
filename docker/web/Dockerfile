@@ -33,6 +33,8 @@ RUN \
     sed -i 's/Options Indexes FollowSymLinks/Options FollowSymLinks/g' /etc/apache2/apache2.conf && \
     sed -i "s/AllowOverride None/AllowOverride All/g" /etc/apache2/apache2.conf
 
+COPY --from=composer:latest /usr/bin/composer /usr/local/bin/composer
+
 WORKDIR /var/www/gib-potato
 
 COPY run.sh /run.sh
