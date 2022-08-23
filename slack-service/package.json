@@ -14,5 +14,8 @@
     "dotenv": "^16.0.1",
     "prisma": "^4.2.1",
     "uuidv4": "^6.2.13"
+  },
+  "devDependencies": {
+    "prettier": "2.7.1"
   }
 }
