@@ -14,8 +14,10 @@ export interface User {
 
 export const useUsersStore = defineStore({
   id: 'users',
-  state: () => useAsyncState<User[]>(
-    users.get('list'),
-    [],
-  ),
+  state: () => ({
+    users: useAsyncState<User[]>(
+      users.get('list'),
+      [],
+    ),
+  }),
 })

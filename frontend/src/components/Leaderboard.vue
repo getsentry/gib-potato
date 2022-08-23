@@ -1,8 +1,10 @@
 <script setup lang="ts">
 // import Filter from "./Filter.vue";
 import { useUsersStore } from '@/stores/users'
+import { storeToRefs } from 'pinia'
 
-const { isLoading, isReady, state: users } = useUsersStore();
+const usersStore = useUsersStore();
+const { users } = storeToRefs(usersStore);
 </script>
 
 <template>
@@ -28,7 +30,7 @@ const { isLoading, isReady, state: users } = useUsersStore();
               </tr>
             </thead>
             <tbody class="divide-y divide-gray-200 bg-white">
-              <tr v-if="isLoading" v-for="index in [1, 2, 3, 4]" :key="index">
+              <tr v-if="users.isLoading" v-for="index in [1, 2, 3, 4]" :key="index">
                 <td class="max-w-sm animate-pulse whitespace-nowrap py-3 pl-4 pr-3 text-sm sm:pl-6">
                   <span class="inline-flex px-4 py-2 text-lg font-semibold leading-5 text-gray-800 bg-gray-200 rounded-full"></span>
                 </td>
@@ -39,7 +41,7 @@ const { isLoading, isReady, state: users } = useUsersStore();
                   <span class="inline-flex m-1 px-4 py-2 text-lg font-semibold leading-5 text-gray-800 bg-gray-200 rounded-full"></span>
                 </td>
               </tr>
-              <tr v-if="isReady" v-for="(person, index) in users" :key="person.id">
+              <tr v-if="users.isReady" v-for="(person, index) in users.state" :key="person.id">
                 <td class="whitespace-nowrap px-3 py-4 text-sm text-gray-500">
                   <span class="inline-flex px-2 text-lg font-semibold leading-5 text-gray-800">{{ index + 1 }}</span>
                 </td>
