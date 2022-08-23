@@ -100,18 +100,14 @@ async function getUserDbId(slackId) {
 
 // Listens to incoming messages that contain "hello"
 app.message(":potato:", async ({ message, say }) => {
+  console.log(message);
+
   const senderSlackId = message.user;
   const text = message.text;
   const senderDBId = await getUserDbId(senderSlackId);
 
   const regex = /<.*?>/g; // Regex to find all the mentions
   const userSlackIdsFound = text.match(regex);
-
-  if (!userSlackIdsFound || userSlackIdsFound.length == 0) {
-    // Check needed for the filter
-    await say("Seems like no one was tagged in that message");
-    return;
-  }
 
   // Extract the ids from the mention
   const receiverSlackIds = userSlackIdsFound
@@ -121,7 +117,11 @@ app.message(":potato:", async ({ message, say }) => {
 
   if (!receiverSlackIds || receiverSlackIds.length == 0) {
     // Check needed for the length
-    await say("Seems like no one was tagged in that message"); // <- Think about if we maybe want to handle this differently
+    await app.client.chat.postEphemeral({
+      channel: message.channel,
+      user: senderSlackId,
+      text: "Seems like no one was tagged in that message",
+    });
     return;
   }
 
@@ -134,12 +134,20 @@ app.message(":potato:", async ({ message, say }) => {
   console.log(potatoesGivenSoFar);
 
   if (potatoesGivenSoFar > 5) {
-    await say("You have already given 5 potatoes today");
+    await app.client.chat.postEphemeral({
+      channel: message.channel,
+      user: senderSlackId,
+      text: "You have already given 5 potatoes today",
+    });
     return;
   }
 
   if (receiversCount * potatoCount > 5 - potatoesGivenSoFar) {
-    await say("You don't have that much potato's");
+    await app.client.chat.postEphemeral({
+      channel: message.channel,
+      user: senderSlackId,
+      text: "You don't have enough potatoes",
+    });
     return;
   }
 
@@ -158,23 +166,21 @@ app.message(":potato:", async ({ message, say }) => {
   // This is just to check that we can find all the people ->  Seems to work
   let responds = "The following people got a potato:";
   receiverSlackIds.forEach((userSlackId) => {
-    /* try {
-      await app.client.chat.postMessage({
+    try {
+      app.client.chat.postMessage({
         channel: userSlackId,
-        text: `You got ${potatoCount} by <@${senderSlackId}> \n>${text}`
+        text: `You got *${potatoCount} potato* by <@${senderSlackId}> \n>${text}`,
       });
-    }
-    catch (error) {
+    } catch (error) {
       // TODO: handle this
       console.error(error);
     }
-    */
     responds += `<@${userSlackId}>`;
   });
+});
 
-  // We probably don't want to send a message later on
-  // say() sends a message to the channel where the event was triggered
-  await say(responds);
+app.event("message", async ({ event, client, context }) => {
+  //console.log("event message: " + event)
 });
 
 // Listen to app home opened event
