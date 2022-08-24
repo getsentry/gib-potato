@@ -47,18 +47,20 @@ async function addUser(fullName, slackId, uuid, imageURL) {
   });
 }
 
-async function addMessage(senderDBId, user, potatoCount) {
+/// Adds a message to the database
+async function addMessage(senderDbId, receiverDbId, potatoCount) {
   return prisma.messages.create({
     data: {
       id: uuid(),
-      sender_user_id: senderDBId,
-      receiver_user_id: user,
+      sender_user_id: senderDbId,
+      receiver_user_id: receiverDbId,
       amount: potatoCount,
       created: newUTCDate(),
     },
   });
 }
 
+/// Gets the total potatoes given by the sender
 async function getTotalPotatoesGiven(senderId) {
     // Need to check if it not the same
     const entry = await prisma.messages.findMany({
@@ -72,6 +74,7 @@ async function getTotalPotatoesGiven(senderId) {
       .reduce((a, b) => a + b, 0);
 }
 
+/// Gets the total potatoes received by the sender
 async function getTotalPotatoesReceived(senderId) {
   // Need to check if it not the same
   const entry = await prisma.messages.findMany({
@@ -85,7 +88,7 @@ async function getTotalPotatoesReceived(senderId) {
     .reduce((a, b) => a + b, 0);
 }
 
-// TODO: Finish
+/// Gets the potatoes given today by the sender
 async function getPotatoesGivenToday(senderId) {
   // Need to check if it not the same
   const entry = await prisma.messages.findMany({
@@ -172,14 +175,14 @@ app.message(":potato:", async ({ message, say }) => {
 
   // TODO: Check that there are potatos left to give for the sender (sender ids)
   // one more check
-  const potatoesGivenSoFar = await getPotatoesGivenToday(senderDBId);
+  const potatoesGivenToday = await getPotatoesGivenToday(senderDBId);
 
-  if (potatoesGivenSoFar > maxPotato) {
+  if (potatoesGivenToday > maxPotato) {
     await postEphemeral("You have already given 5 potatoes today");
     return;
   }
 
-  if (receiversCount * potatoCount > maxPotato - potatoesGivenSoFar) {
+  if (receiversCount * potatoCount > maxPotato - potatoesGivenToday) {
     await postEphemeral("You don't have enough potatoes");
     return;
   }
