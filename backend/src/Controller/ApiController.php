@@ -41,26 +41,26 @@ class ApiController extends AppController
             ->withStringBody(json_encode([
                 [
                     'id' => '1',
-                    'full_name' => 'Krys',
-                    'avatar_url' => 'https://',
+                    'name' => 'Krys',
+                    'picture' => 'https://',
                     'count' => 12,
                 ],
                 [
                     'id' => '2',
-                    'full_name' => 'Michi',
-                    'avatar_url' => 'https://',
+                    'name' => 'Michi',
+                    'picture' => 'https://',
                     'count' => 3,
                 ],
                 [
                     'id' => '3',
-                    'full_name' => 'Gino',
-                    'avatar_url' => 'https://',
+                    'name' => 'Gino',
+                    'picture' => 'https://',
                     'count' => 5,
                 ],
                 [
                     'id' => '4',
-                    'full_name' => 'Tobias',
-                    'avatar_url' => 'https://',
+                    'name' => 'Tobias',
+                    'picture' => 'https://',
                     'count' => 9,
                 ],
             ]));
