@@ -16,6 +16,14 @@ const app = new App({
   signingSecret: process.env.SLACK_SIGNING_SECRET,
 });
 
+const newUTCDate = () => {
+  const date = new Date();
+  const nowUtc = Date.UTC(date.getUTCFullYear(), date.getUTCMonth(),
+                  date.getUTCDate(), date.getUTCHours(),
+                  date.getUTCMinutes(), date.getUTCSeconds());
+  return new Date(nowUtc)
+}
+
 /// Find the user in the DB that has a matching slack ID, if there is none return null
 async function getUserBySlackId(slackId) {
   return await prisma.users.findFirst({
@@ -33,8 +41,8 @@ async function addUser(fullName, slackId, uuid, imageURL) {
       slack_name: fullName,
       slack_user_id: slackId,
       slack_picture: imageURL,
-      created: new Date(),
-      modified: new Date(),
+      created: newUTCDate(),
+      modified: newUTCDate(),
     },
   });
 }
@@ -46,7 +54,7 @@ async function addMessage(senderDBId, user, potatoCount) {
       sender_user_id: senderDBId,
       receiver_user_id: user,
       amount: potatoCount,
-      created: new Date(),
+      created: newUTCDate(),
     },
   });
 }
@@ -91,7 +99,7 @@ async function getPotatoesGivenToday(senderId) {
     first.getUTCMonth() === second.getUTCMonth() &&
     first.getUTCDate() === second.getUTCDate();
 
-  const cur = new Date();
+  const cur = newUTCDate();
   return entry
     .filter((t) => datesAreOnSameDay(t.created, cur))
     .map((t) => t.amount)
@@ -208,7 +216,7 @@ app.message(":potato:", async ({ message, say }) => {
 app.event("message", async ({ event, client, context }) => {
   if (event["channel_type"] === "im") {
     if (event["text"] === "potatoes") {
-      const cur = new Date();
+      const cur = newUTCDate();
       const userID = await getUserDbId(event["user"]);
       const potatoesGivenSoFar = await getPotatoesGivenToday(userID);
       client.chat.postMessage({
@@ -216,8 +224,8 @@ app.event("message", async ({ event, client, context }) => {
         text: `You have *${
           maxPotato - potatoesGivenSoFar
         }* potatoes left to give today. Your potatoes will reset in ${
-          23 - cur.getHours()
-        } hours and ${60 - cur.getMinutes()} minutes.`,
+          23 - cur.getUTCHours()
+        } hours and ${60 - cur.getUTCMinutes()} minutes.`,
       });
     }
   }
