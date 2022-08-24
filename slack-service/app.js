@@ -24,17 +24,13 @@ async function getUserBySlackId(slackId) {
 }
 
 /// Adds a user to the Database
-async function addUser(fullName, slackId, uuid) {
-
-  // TODO: See here https://api.slack.com/methods/users.profile.get
-  let user = await app.client.users.profile.get // Something like this might work ? 
-
-  await prisma.users.create({
+async function addUser(fullName, slackId, uuid, imageURL) {
+  return prisma.users.create({
     data: {
       id: uuid,
       slack_name: fullName,
       slack_user_id: slackId,
-      slack_picture: "", // TODO: Need find a way to grab the profile picture
+      slack_picture: imageURL,
       created: new Date(),
       modified: new Date(),
     },
@@ -91,12 +87,13 @@ async function getUserNameBySlackId(userId) {
 /// Gets the DB Id if the user is in the Db else adds the user to the DB
 async function getUserDbId(slackId) {
   let user = await getUserBySlackId(slackId);
+  let imageURL = (await app.client.users.profile.get({user: slackId}))["profile"]["image_72"]
 
   // If the user is not found in the Database add it to the Database
   if (!user) {
     let fullName = await getUserNameBySlackId(slackId);
     let uid = uuid();
-    addUser(fullName, slackId, uid);
+    await addUser(fullName, slackId, uid, imageURL);
     return uid;
   } else {
     return user["id"];
@@ -105,8 +102,6 @@ async function getUserDbId(slackId) {
 
 // Listens to incoming messages that contain "hello"
 app.message(":potato:", async ({ message, say }) => {
-  console.log(message);
-
   const senderSlackId = message.user;
   const text = message.text;
   const senderDBId = await getUserDbId(senderSlackId);
@@ -136,7 +131,6 @@ app.message(":potato:", async ({ message, say }) => {
   // TODO: Check that there are potatos left to give for the sender (sender ids)
   // one more check
   const potatoesGivenSoFar = await getPotatoesGiven(senderDBId);
-  console.log(potatoesGivenSoFar);
 
   if (potatoesGivenSoFar > 5) {
     await app.client.chat.postEphemeral({
@@ -160,7 +154,7 @@ app.message(":potato:", async ({ message, say }) => {
   let userDBIds = [];
 
   for (const userSlackId of receiverSlackIds) {
-    userDBIds.push(await getUserDbId(userSlackId));
+    userDBIds.push(await getUserDbId(userSlackId)); // Add the user
   }
 
   // Add the message's to the DB
