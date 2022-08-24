@@ -1,6 +1,5 @@
 // Sentry
-import * as Sentry from "@sentry/node";
-
+const Sentry = require("@sentry/node");
 
 // UUID
 const { uuid } = require("uuidv4");
@@ -16,8 +15,6 @@ require("dotenv").config();
 const { App } = require("@slack/bolt");
 
 Sentry.init({ dsn: process.env.SENTRY_DSN });
-
-app.use(Sentry.Handlers.requestHandler());
 
 const maxPotato = process.env.MAX_POTATO
 
@@ -332,9 +329,6 @@ app.event("app_home_opened", async ({ event, client, context }) => {
     Sentry.captureException(error);
   }
 });
-
-// The error handler must be before any other error middleware and after all controllers
-app.use(Sentry.Handlers.errorHandler());
 
 (async () => {
   // Start your app
