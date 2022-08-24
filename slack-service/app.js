@@ -18,18 +18,23 @@ const app = new App({
 async function getUserBySlackId(slackId) {
   return await prisma.users.findFirst({
     where: {
-      slack_uid: slackId,
+      slack_user_id: slackId,
     },
   });
 }
 
 /// Adds a user to the Database
 async function addUser(fullName, slackId, uuid) {
+
+  // TODO: See here https://api.slack.com/methods/users.profile.get
+  let user = await app.client.users.profile.get // Something like this might work ? 
+
   await prisma.users.create({
     data: {
       id: uuid,
-      slack_full_name: fullName,
-      slack_uid: slackId,
+      slack_name: fullName,
+      slack_user_id: slackId,
+      slack_picture: "", // TODO: Need find a way to grab the profile picture
       created: new Date(),
       modified: new Date(),
     },

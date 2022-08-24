@@ -30,8 +30,9 @@ model phinxlog {
 
 model users {
   id                                        String     @id @db.Char(36)
-  slack_full_name                           String     @db.VarChar(255)
-  slack_uid                                 String     @db.VarChar(255)
+  slack_user_id                             String     @unique(map: "slack_user_id") @db.VarChar(255)
+  slack_name                                String     @db.VarChar(255)
+  slack_picture                             String     @db.VarChar(255)
   created                                   DateTime?  @db.DateTime(0)
   modified                                  DateTime?  @db.DateTime(0)
   messages_messages_sender_user_idTousers   messages[] @relation("messages_sender_user_idTousers")
