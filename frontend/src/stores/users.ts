@@ -3,7 +3,7 @@ import { defineStore } from 'pinia'
 import { mande } from 'mande'
 import params from '../../config/parameters'
 
-const users = mande(`${params.api.host}/`)
+const users = mande(`${params.api.host}/users`)
 
 export interface User {
   id: string;
@@ -16,7 +16,7 @@ export const useUsersStore = defineStore({
   id: 'users',
   state: () => ({
     users: useAsyncState<User[]>(
-      users.get('list'),
+      users.get(''),
       [],
     ),
   }),
