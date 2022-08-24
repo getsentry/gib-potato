@@ -3,6 +3,7 @@ import { createPinia } from 'pinia'
 
 import App from './App.vue'
 import router from './router'
+import params from '../config/parameters'
 
 import './assets/main.css'
 
@@ -15,6 +16,9 @@ import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
 /* add some free styles */
 import { faSlack } from '@fortawesome/free-brands-svg-icons'
 
+import * as Sentry from "@sentry/vue";
+import { BrowserTracing } from "@sentry/tracing";
+
 /* add each imported icon to the library */
 library.add(faSlack)
 
@@ -22,6 +26,21 @@ const app = createApp(App).use(createPinia())
 
 app.use(createPinia())
 app.use(router)
+
+Sentry.init({
+  app,
+  dsn: params.sentry.dsn,
+  integrations: [
+    new BrowserTracing({
+      routingInstrumentation: Sentry.vueRouterInstrumentation(router),
+      tracingOrigins: ["localhost", params.app.host, /^\//],
+    }),
+  ],
+  // Set tracesSampleRate to 1.0 to capture 100%
+  // of transactions for performance monitoring.
+  // We recommend adjusting this value in production
+  tracesSampleRate: 1.0,
+});
 
 app
     .component('font-awesome-icon', FontAwesomeIcon)
