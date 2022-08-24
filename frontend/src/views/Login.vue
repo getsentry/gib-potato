@@ -5,7 +5,6 @@ import { buildSlackAuthUrl } from '../utils/slack';
 import params from '../../config/parameters'
 
 const slackAuthUrl = buildSlackAuthUrl(params.slack);
-console.log('slackAuthUrl',slackAuthUrl);
 </script>
 
 <template>
