@@ -2,7 +2,7 @@
 const Sentry = require("@sentry/node");
 
 // UUID
-const { uuid } = require("uuidv4");
+const { v4: uuid } = require("uuid");
 
 // ORM
 const { PrismaClient } = require("@prisma/client");
@@ -318,7 +318,7 @@ app.event("app_home_opened", async ({ event, client, context }) => {
                   "text": "View Full Leaderboard",
                   "emoji": true
                 },
-                "url": "https://test.com" // TODO: change this to actual url
+                "url": "https://gibpotato.app" // TODO: change this to actual url
               }
             ]
           }
