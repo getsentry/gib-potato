@@ -8,6 +8,8 @@ require("dotenv").config();
 // Slack API
 const { App } = require("@slack/bolt");
 
+const maxPotato = process.env.MAX_POTATO
+
 // Initialize the slack App
 const app = new App({
   token: process.env.SLACK_BOT_TOKEN,
@@ -49,8 +51,34 @@ async function addMessage(senderDBId, user, potatoCount) {
   });
 }
 
+async function getTotalPotatoesGiven(senderId) {
+    // Need to check if it not the same
+    const entry = await prisma.messages.findMany({
+      where: {
+        sender_user_id: senderId,
+      },
+    });
+    
+    return entry
+      .map((t) => t.amount)
+      .reduce((a, b) => a + b, 0);
+}
+
+async function getTotalPotatoesReceived(senderId) {
+  // Need to check if it not the same
+  const entry = await prisma.messages.findMany({
+    where: {
+      receiver_user_id: senderId,
+    },
+  });
+
+  return entry
+    .map((t) => t.amount)
+    .reduce((a, b) => a + b, 0);
+}
+
 // TODO: Finish
-async function getPotatoesGiven(senderId) {
+async function getPotatoesGivenToday(senderId) {
   // Need to check if it not the same
   const entry = await prisma.messages.findMany({
     where: {
@@ -136,14 +164,14 @@ app.message(":potato:", async ({ message, say }) => {
 
   // TODO: Check that there are potatos left to give for the sender (sender ids)
   // one more check
-  const potatoesGivenSoFar = await getPotatoesGiven(senderDBId);
+  const potatoesGivenSoFar = await getPotatoesGivenToday(senderDBId);
 
-  if (potatoesGivenSoFar > 5) {
+  if (potatoesGivenSoFar > maxPotato) {
     await postEphemeral("You have already given 5 potatoes today");
     return;
   }
 
-  if (receiversCount * potatoCount > 5 - potatoesGivenSoFar) {
+  if (receiversCount * potatoCount > maxPotato - potatoesGivenSoFar) {
     await postEphemeral("You don't have enough potatoes");
     return;
   }
@@ -182,11 +210,11 @@ app.event("message", async ({ event, client, context }) => {
     if (event["text"] === "potatoes") {
       const cur = new Date();
       const userID = await getUserDbId(event["user"]);
-      const potatoesGivenSoFar = await getPotatoesGiven(userID);
+      const potatoesGivenSoFar = await getPotatoesGivenToday(userID);
       client.chat.postMessage({
         channel: event["channel"],
         text: `You have *${
-          5 - potatoesGivenSoFar
+          maxPotato - potatoesGivenSoFar
         }* potatoes left to give today. Your potatoes will reset in ${
           23 - cur.getHours()
         } hours and ${60 - cur.getMinutes()} minutes.`,
@@ -197,6 +225,12 @@ app.event("message", async ({ event, client, context }) => {
 
 // Listen to app home opened event
 app.event("app_home_opened", async ({ event, client, context }) => {
+  const userSlackId = event["user"]
+  const userDbId = await getUserDbId(userSlackId)
+  const potatoesGivenToday = await getPotatoesGivenToday(userDbId)
+  const totalPotatoesGiven = await getTotalPotatoesGiven(userDbId)
+  const totalPotatoesReceived = await getTotalPotatoesReceived(userDbId)
+
   try {
     /* view.publish is the method that your app uses to push a view to the Home tab */
     await client.views.publish({
@@ -209,44 +243,70 @@ app.event("app_home_opened", async ({ event, client, context }) => {
         callback_id: "home_view",
 
         /* body of the view */
-        blocks: [
+        "blocks": [
           {
-            type: "section",
-            text: {
-              type: "mrkdwn",
-              text: "*Welcome to Gib Potato!* :tada:",
-            },
-          },
-          {
-            type: "section",
-            text: {
-              type: "mrkdwn",
-              text: "This is a mrkdwn section block :ghost: *this is bold*, and ~this is crossed out~, and <https://google.com|this is a link>"
+            "type": "section",
+            "text": {
+              "type": "mrkdwn",
+              "text": "*Welcome to GibPotato!* :potato:"
             }
           },
           {
-            type: "divider",
+            "type": "section",
+            "text": {
+              "type": "mrkdwn",
+              "text": "You can give people :potato:'s to show your appreciation and recognize them for all the great things they do."
+            }
           },
           {
-            type: "section",
-            text: {
-              type: "mrkdwn",
-              text: "This button won't do much for now but you can set up a listener for it using the `actions()` method and passing its unique `action_id`. See an example in the `examples` folder within your Bolt app.",
-            },
+            "type": "divider"
           },
           {
-            type: "actions",
-            elements: [
+            "type": "section",
+            "text": {
+              "type": "mrkdwn",
+              "text": "*My Potatoes*"
+            }
+          },
+          {
+            "type": "section",
+            "text": {
+              "type": "mrkdwn",
+              "text": `Received: ${totalPotatoesReceived} :potato:   |   Given: ${totalPotatoesGiven} :potato:`
+            }
+          },
+          {
+            "type": "section",
+            "text": {
+              "type": "mrkdwn",
+              "text": `Potatoes left to give today: *${maxPotato - potatoesGivenToday}*`
+            }
+          },
+          {
+            "type": "divider"
+          },
+          {
+            "type": "section",
+            "text": {
+              "type": "mrkdwn",
+              "text": "*Potatoes Received Leaderboard*"
+            }
+          },
+          {
+            "type": "actions",
+            "elements": [
               {
-                type: "button",
-                text: {
-                  type: "plain_text",
-                  text: "Click me!",
+                "type": "button",
+                "text": {
+                  "type": "plain_text",
+                  "text": "View Full Leaderboard",
+                  "emoji": true
                 },
-              },
-            ],
-          },
-        ],
+                "url": "https://test.com" // TODO: change this to actual url
+              }
+            ]
+          }
+        ]
       },
     });
   } catch (error) {
