@@ -2,9 +2,30 @@
 // import Filter from "./Filter.vue";
 import { useUsersStore } from '@/stores/users'
 import { storeToRefs } from 'pinia'
+import * as confetti from 'canvas-confetti'
 
 const usersStore = useUsersStore();
 const { users } = storeToRefs(usersStore);
+
+const count = 200;
+const defaults = {
+  origin: { y: 0.7 }
+};
+
+const fire = (particleRatio: number, opts: any = {}) => {
+  confetti.default(Object.assign({}, defaults, opts, {
+    particleCount: Math.floor(count * particleRatio)
+  }));
+}
+
+const onCountClick = (e: MouseEvent) => {
+  fire(0.35, {
+    spread: 100,
+    decay: 0.91,
+    scalar: 0.8,
+    origin: { y: e.clientY / window.innerHeight, x: e.clientX / window.innerWidth }
+  });
+}
 </script>
 
 <template>
@@ -56,7 +77,9 @@ const { users } = storeToRefs(usersStore);
                   </div>
                 </td>
                 <td class="relative py-3.5 pl-3 pr-4 sm:pr-6 text-right">
-                  <span class="inline-flex px-2 text-lg font-semibold leading-5 text-gray-800">{{ person.count }}</span>
+                  <span @click="onCountClick" class="select-none inline-flex px-2 text-lg font-semibold leading-5 text-gray-800">{{
+                      person.count
+                  }}</span>
                 </td>
               </tr>
             </tbody>
