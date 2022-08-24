@@ -1,6 +1,8 @@
 import { createRouter, createWebHistory } from 'vue-router'
 import HomeView from '../views/Home.vue'
 import LoginView from '../views/Login.vue'
+import Error from '../views/errors/UnexpectedError.vue'
+import NotFound from '../views/errors/NotFound.vue'
 import { useAccountStore } from '../stores/account'
 
 const router = createRouter({
@@ -15,6 +17,21 @@ const router = createRouter({
       path: '/login',
       name: 'login',
       component: LoginView
+    },
+    {
+      path: '/error',
+      name: 'error',
+      component: Error
+    },
+    {
+      path: '/not_found',
+      name: 'notFound',
+      component: NotFound
+    },
+    {
+      path: '/:pathMatch(.*)*',
+      name: 'notFound',
+      component: NotFound
     },
   ]
 })
