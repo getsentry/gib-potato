@@ -1,5 +1,6 @@
 <?php
 
+use App\Error\SentryErrorLogger;
 use Cake\Cache\Engine\FileEngine;
 use Cake\Database\Connection;
 use Cake\Database\Driver\Mysql;
@@ -185,6 +186,7 @@ return [
      */
     'Error' => [
         'errorLevel' => E_ALL,
+        'logger' => SentryErrorLogger::class,
         'skipLog' => [],
         'log' => true,
         'trace' => true,

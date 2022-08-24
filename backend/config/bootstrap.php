@@ -91,6 +91,16 @@ if (file_exists(CONFIG . 'app_local.php')) {
     Configure::load('app_local', 'default');
 }
 
+Sentry\init([
+    'dsn' => env('SENTRY_DSN'),
+    // 'traces_sample_rate' => 1.0,
+    'environment' => env('ENVIRONMENT'),
+    // 'release' => env('VERSION'),
+    'in_app_exclude' => [
+        ROOT . DS . 'vendor',
+    ],
+]);
+
 /*
  * When debug = true the metadata cache should only last
  * for a short time.
