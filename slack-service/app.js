@@ -87,7 +87,9 @@ async function getUserNameBySlackId(userId) {
 /// Gets the DB Id if the user is in the Db else adds the user to the DB
 async function getUserDbId(slackId) {
   let user = await getUserBySlackId(slackId);
-  let imageURL = (await app.client.users.profile.get({user: slackId}))["profile"]["image_72"]
+  let imageURL = (await app.client.users.profile.get({ user: slackId }))[
+    "profile"
+  ]["image_72"];
 
   // If the user is not found in the Database add it to the Database
   if (!user) {
@@ -154,7 +156,7 @@ app.message(":potato:", async ({ message, say }) => {
   let userDBIds = [];
 
   for (const userSlackId of receiverSlackIds) {
-    userDBIds.push(await getUserDbId(userSlackId)); // Add the user
+    userDBIds.push(await getUserDbId(userSlackId)); // Adds the users to the Db if they are not in there yet
   }
 
   // Add the message's to the DB
@@ -178,8 +180,23 @@ app.message(":potato:", async ({ message, say }) => {
   });
 });
 
+/// Handle the messages 
 app.event("message", async ({ event, client, context }) => {
-  //console.log("event message: " + event)
+  if (event["channel_type"] === "im") {
+    if (event["text"] === "potatoes") {
+      const cur = new Date();
+      const userID = await getUserDbId(event["user"]);
+      const potatoesGivenSoFar = await getPotatoesGiven(userID);
+      client.chat.postMessage({
+        channel: event["channel"],
+        text: `You have *${
+          5 - potatoesGivenSoFar
+        }* potatoes left to give today. Your potatoes will reset in ${
+          23 - cur.getHours()
+        } hours and ${60 - cur.getMinutes()} minutes.`,
+      });
+    }
+  }
 });
 
 // Listen to app home opened event
