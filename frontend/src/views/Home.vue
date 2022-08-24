@@ -17,19 +17,30 @@ import Leaderboard from '../components/Leaderboard.vue'
 import Interactions from '../components/Interactions.vue'
 import Logo from '../components/Logo.vue'
 import Footer from '../components/Footer.vue'
+import router from '../router'
+import { useAccountStore } from '../stores/account'
+import { storeToRefs } from 'pinia'
+
+const accountStore = useAccountStore()
+const { account } = storeToRefs(accountStore)
 
 const user = {
-  name: 'Tom Cook',
-  email: 'tom@example.com',
-  imageUrl:
+  full_name: 'Tom Cook',
+  picture:
     'https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80',
 }
 const navigation = [
-  { name: 'Home', href: '#', current: true },
+  { name: 'Home', href: '/', current: true },
 ]
 const userNavigation = [
-  { name: 'Sign out', href: '#' },
+  {
+    name: 'Logout',
+    onclick: () => {
+      router.push('/login')
+    },
+  },
 ]
+
 </script>
 
 <template>
@@ -54,13 +65,13 @@ const userNavigation = [
               <div>
                 <MenuButton class="bg-white rounded-full flex text-sm ring-2 ring-white ring-opacity-20 focus:outline-none focus:ring-opacity-100">
                   <span class="sr-only">Open user menu</span>
-                  <img class="h-8 w-8 rounded-full" :src="user.imageUrl" alt="" />
+                  <img class="h-8 w-8 rounded-full" :src="account.state.picture" alt="" />
                 </MenuButton>
               </div>
               <transition leave-active-class="transition ease-in duration-75" leave-from-class="transform opacity-100 scale-100" leave-to-class="transform opacity-0 scale-95">
                 <MenuItems class="origin-top-right z-40 absolute -right-2 mt-2 w-48 rounded-md shadow-lg py-1 bg-white ring-1 ring-black ring-opacity-5 focus:outline-none">
                   <MenuItem v-for="item in userNavigation" :key="item.name" v-slot="{ active }">
-                    <a :href="item.href" :class="[active ? 'bg-gray-100' : '', 'block px-4 py-2 text-sm text-gray-700']">{{ item.name }}</a>
+                    <a @click="item.onclick" :class="[active ? 'bg-gray-100' : '', 'block px-4 py-2 text-sm text-gray-700']">{{ item.name }}</a>
                   </MenuItem>
                 </MenuItems>
               </transition>
@@ -142,14 +153,14 @@ const userNavigation = [
                 <div class="pt-4 pb-2">
                   <div class="flex items-center px-5">
                     <div class="flex-shrink-0">
-                      <img class="h-10 w-10 rounded-full" :src="user.imageUrl" alt="" />
+                      <img class="h-10 w-10 rounded-full" :src="account.state.picture" alt="" />
                     </div>
                     <div class="ml-3 min-w-0 flex-1">
-                      <div class="text-base font-medium text-gray-800 truncate">{{ user.name }}</div>
+                      <div class="text-base font-medium text-gray-800 truncate">{{ user.full_name }}</div>
                     </div>
                   </div>
                   <div class="mt-3 px-2 space-y-1">
-                    <a v-for="item in userNavigation" :key="item.name" :href="item.href" class="block rounded-md px-3 py-2 text-base text-gray-900 font-medium hover:bg-gray-100 hover:text-gray-800">{{ item.name }}</a>
+                    <a v-for="item in userNavigation" :key="item.name" @click="item.onclick" class="block rounded-md px-3 py-2 text-base text-gray-900 font-medium hover:bg-gray-100 hover:text-gray-800">{{ item.name }}</a>
                   </div>
                 </div>
               </div>

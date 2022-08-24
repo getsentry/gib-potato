@@ -1,6 +1,7 @@
 import { createRouter, createWebHistory } from 'vue-router'
 import HomeView from '../views/Home.vue'
 import LoginView from '../views/Login.vue'
+import { useAccountStore } from '../stores/account'
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -15,15 +16,29 @@ const router = createRouter({
       name: 'login',
       component: LoginView
     },
-    // {
-    //   path: '/about',
-    //   name: 'about',
-    //   // route level code-splitting
-    //   // this generates a separate chunk (About.[hash].js) for this route
-    //   // which is lazy-loaded when the route is visited.
-    //   component: () => import('../views/AboutView.vue')
-    // }
   ]
+})
+
+router.beforeEach(async (to, from) => {
+  const store = useAccountStore()
+  const account = await store.account.execute()
+  if (
+    // make sure the user is authenticated
+    !account &&
+    // // ❗️ Avoid an infinite redirect
+    to.name !== 'login'
+  ) {
+    // redirect the user to the login page
+    return { name: 'login' }
+  }
+
+  if (
+    account &&
+    to.name === 'login'
+  ) {
+    // redirect the user to the home page
+    return { name: 'home' }
+  }
 })
 
 export default router
