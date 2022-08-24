@@ -225,7 +225,7 @@ app.message(":potato:", async ({ message, say }) => {
   try {
     app.client.chat.postMessage({
       channel: senderSlackId,
-      text: `You send *${potatoCount} potato* to ${receivers} \n>${text}`,
+      text: `You send *${potatoCount} potato* to ${receivers}\nYou have *${maxPotato - potatoesGivenToday} potato* left.\n>${text}`,
     });
   } catch (error) {
     console.error(error);
