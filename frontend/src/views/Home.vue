@@ -65,7 +65,7 @@ const userNavigation = [
               <div>
                 <MenuButton class="bg-white rounded-full flex text-sm ring-2 ring-white ring-opacity-20 focus:outline-none focus:ring-opacity-100">
                   <span class="sr-only">Open user menu</span>
-                  <img class="h-8 w-8 rounded-full" :src="account.state.picture" alt="" />
+                  <img class="h-8 w-8 rounded-full" :src="account.state?.picture" alt="" />
                 </MenuButton>
               </div>
               <transition leave-active-class="transition ease-in duration-75" leave-from-class="transform opacity-100 scale-100" leave-to-class="transform opacity-0 scale-95">
@@ -153,7 +153,7 @@ const userNavigation = [
                 <div class="pt-4 pb-2">
                   <div class="flex items-center px-5">
                     <div class="flex-shrink-0">
-                      <img class="h-10 w-10 rounded-full" :src="account.state.picture" alt="" />
+                      <img class="h-10 w-10 rounded-full" :src="account.state?.picture" alt="" />
                     </div>
                     <div class="ml-3 min-w-0 flex-1">
                       <div class="text-base font-medium text-gray-800 truncate">{{ user.full_name }}</div>

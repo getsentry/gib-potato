@@ -18,7 +18,7 @@ export interface Interaction {
 export const useInteractionsStore = defineStore({
   id: 'interactions',
   state: () => ({
-    interactions: useAsyncState<Interaction[]>(
+    interactions: useAsyncState<Interaction[] | null>(
       interactions.get(''),
       null,
     ),

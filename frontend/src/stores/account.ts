@@ -14,7 +14,7 @@ export interface Account {
 export const useAccountStore = defineStore({
   id: 'account',
   state: () => ({
-    account: useAsyncState<Account>(
+    account: useAsyncState<Account | null>(
       account.get(''),
       null,
     ),
