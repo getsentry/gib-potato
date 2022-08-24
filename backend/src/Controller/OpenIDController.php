@@ -3,6 +3,8 @@ declare(strict_types=1);
 
 namespace App\Controller;
 
+use App\Model\Entity\User;
+use Cake\Event\EventInterface;
 use Cake\Http\Client;
 use Lcobucci\JWT\Encoding\JoseEncoder;
 use Lcobucci\JWT\Token\Parser;
@@ -10,6 +12,13 @@ use Throwable;
 
 class OpenIDController extends AppController
 {
+    public function beforeFilter(EventInterface $event)
+    {
+        parent::beforeFilter($event);
+
+        $this->Authentication->allowUnauthenticated(['index']);
+    }
+
     /**
      * Index method
      *
@@ -22,8 +31,9 @@ class OpenIDController extends AppController
             'client_id' => env('SLACK_CLIENT_ID'),
             'client_secret' => env('SLACK_CLIENT_SECRET'),
             'code' => $this->request->getQuery('code'),
-            'redirect_uri' => 'https://f91b-213-164-1-114.eu.ngrok.io/open-id'
+            'redirect_uri' => env('SLACK_REDIRECT_URI'),
         ]);
+
         if ($response->isSuccess()) {
             $json = $response->getJson();
 
@@ -36,18 +46,13 @@ class OpenIDController extends AppController
                 }
 
                 $this->loadModel('Users');
-                $user = $this->Users->newEntity([
-                    'slack_user_id' => $jwt->claims()->get('https://slack.com/user_id'),
-                    'slack_name' => $jwt->claims()->get('name'),
-                    'slack_picture' => $jwt->claims()->get('picture'),
-                ]);
+                $user = $this->Users->findBySlackUserId($jwt->claims()->get('https://slack.com/user_id'))
+                    ->first();
 
-                try {
-                    $this->Users->saveOrFail($user);
+                if ($user instanceof User && env('SLACK_TEAM_ID') === $jwt->claims()->get('https://slack.com/team_id')) {
+                    $this->Authentication->setIdentity($user);
 
                     return $this->redirect(env('APP_FRONTEND_URL'));
-                } catch (Throwable $e) {
-                    // Panic!
                 }
             }
         }

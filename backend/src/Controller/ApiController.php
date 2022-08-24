@@ -3,10 +3,17 @@ declare(strict_types=1);
 
 namespace App\Controller;
 
+use Cake\Event\EventInterface;
 use Cake\Http\Response;
 
 class ApiController extends AppController
 {
+    public function beforeFilter(EventInterface $event)
+    {
+        parent::beforeFilter($event);
+
+        $this->Authentication->allowUnauthenticated(['index']);
+    }
 
     public function index(): Response
     {
@@ -20,50 +27,49 @@ class ApiController extends AppController
 
     public function user(): Response
     {
+        $this->loadModel('Users');
+
+        $query = $this->Users->find();
+        $users = $query->select([
+                'Users.id',
+                'Users.slack_name',
+                'Users.slack_picture',
+                'count' => $query->func()->sum('MessagesReceived.amount'),
+            ])
+            ->where(['Users.id' => $this->Authentication->getIdentityData('id')])
+            ->leftJoinWith('MessagesReceived')
+            ->enableHydration(false)
+            ->first()
+            ->toArray();
+
         return $this->response
             ->withStatus(200)
             ->withType('json')
-            ->withStringBody(json_encode([
-                'id' => 1,
-                'name' => 'Krys',
-                'picture' => 'https://',
-                'count' => 12,
-            ]));
+            ->withStringBody(json_encode($user));
     }
 
     public function users(): Response
     {
         usleep(500); // simulate slow api
 
+        $this->loadModel('Users');
+
+        $query = $this->Users->find();
+        $users = $query->select([
+                'Users.id',
+                'Users.slack_name',
+                'Users.slack_picture',
+                'count' => $query->func()->sum('MessagesReceived.amount'),
+            ])
+            ->distinct(['Users.id'])
+            ->leftJoinWith('MessagesReceived')
+            ->enableHydration(false)
+            ->toArray();
+
         return $this->response
             ->withStatus(200)
             ->withType('json')
-            ->withStringBody(json_encode([
-                [
-                    'id' => '1',
-                    'name' => 'Krys',
-                    'picture' => 'https://',
-                    'count' => 12,
-                ],
-                [
-                    'id' => '2',
-                    'name' => 'Michi',
-                    'picture' => 'https://',
-                    'count' => 3,
-                ],
-                [
-                    'id' => '3',
-                    'name' => 'Gino',
-                    'picture' => 'https://',
-                    'count' => 5,
-                ],
-                [
-                    'id' => '4',
-                    'name' => 'Tobias',
-                    'picture' => 'https://',
-                    'count' => 9,
-                ],
-            ]));
+            ->withStringBody(json_encode($users));
     }
 
     public function messages(): Response

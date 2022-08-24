@@ -44,6 +44,15 @@ class UsersTable extends Table
         $this->setPrimaryKey('id');
 
         $this->addBehavior('Timestamp');
+
+        $this->hasMany('MessagesSend', [
+                'className' => 'Messages',
+            ])
+            ->setForeignKey('sender_user_id');
+        $this->hasMany('MessagesReceived', [
+                'className' => 'Messages',
+            ])
+            ->setForeignKey('receiver_user_id');
     }
 
     /**
