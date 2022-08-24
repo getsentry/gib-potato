@@ -1,6 +1,6 @@
 
 export default {
   api: {
-    host: 'http://localhost:8080/api',
+    host: import.meta.env.VITE_APP_API_HOST,
   },
 }
