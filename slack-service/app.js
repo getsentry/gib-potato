@@ -207,7 +207,8 @@ app.message(":potato:", async ({ message, say }) => {
     await addMessage(senderDBId, user, potatoCount);
   });
 
-  // Send a DM to all receivers that they received a potato
+  // This is just to check that we can find all the people ->  Seems to work
+  let receivers = "";
   receiverSlackIds.forEach((userSlackId) => {
     try {
       app.client.chat.postMessage({
@@ -215,9 +216,20 @@ app.message(":potato:", async ({ message, say }) => {
         text: `You got *${potatoCount} potato* by <@${senderSlackId}> \n>${text}`,
       });
     } catch (error) {
-      Sentry.captureException(error)
+      console.error(error);
     }
+    receivers += `<@${userSlackId}>`;
   });
+
+  // Send the a Message to the sender of the Potatoes
+  try {
+    app.client.chat.postMessage({
+      channel: senderSlackId,
+      text: `You send *${potatoCount} potato* to ${receivers} \n>${text}`,
+    });
+  } catch (error) {
+    console.error(error);
+  }
 });
 
 /// Handle the messages
