@@ -38,7 +38,7 @@ async function addUser(fullName, slackId, uuid, imageURL) {
 }
 
 async function addMessage(senderDBId, user, potatoCount) {
-  await prisma.messages.create({
+  return prisma.messages.create({
     data: {
       id: uuid(),
       sender_user_id: senderDBId,
@@ -63,7 +63,7 @@ async function getPotatoesGiven(senderId) {
     first.getUTCMonth() === second.getUTCMonth() &&
     first.getUTCDate() === second.getUTCDate();
 
-  let cur = new Date();
+  const cur = new Date();
   return entry
     .filter((t) => datesAreOnSameDay(t.created, cur))
     .map((t) => t.amount)
@@ -86,15 +86,15 @@ async function getUserNameBySlackId(userId) {
 
 /// Gets the DB Id if the user is in the Db else adds the user to the DB
 async function getUserDbId(slackId) {
-  let user = await getUserBySlackId(slackId);
-  let imageURL = (await app.client.users.profile.get({ user: slackId }))[
+  const user = await getUserBySlackId(slackId);
+  const imageURL = (await app.client.users.profile.get({ user: slackId }))[
     "profile"
   ]["image_72"];
 
   // If the user is not found in the Database add it to the Database
   if (!user) {
-    let fullName = await getUserNameBySlackId(slackId);
-    let uid = uuid();
+    const fullName = await getUserNameBySlackId(slackId);
+    const uid = uuid();
     await addUser(fullName, slackId, uid, imageURL);
     return uid;
   } else {
@@ -117,13 +117,17 @@ app.message(":potato:", async ({ message, say }) => {
     .map((t) => t.substring(2, t.length - 1)) // Remove the <@ >
     .filter((t) => t !== senderSlackId); // Remove the sender if he is in the message
 
-  if (!receiverSlackIds || receiverSlackIds.length == 0) {
-    // Check needed for the length
-    await app.client.chat.postEphemeral({
+  const postEphemeral = async (text) => {
+    return app.client.chat.postEphemeral({
       channel: message.channel,
       user: senderSlackId,
-      text: "Seems like no one was tagged in that message",
+      text,
     });
+  };
+
+  if (!receiverSlackIds || receiverSlackIds.length == 0) {
+    // Check needed for the length
+    await postEphemeral("Seems like no one was tagged in that message");
     return;
   }
 
@@ -135,20 +139,12 @@ app.message(":potato:", async ({ message, say }) => {
   const potatoesGivenSoFar = await getPotatoesGiven(senderDBId);
 
   if (potatoesGivenSoFar > 5) {
-    await app.client.chat.postEphemeral({
-      channel: message.channel,
-      user: senderSlackId,
-      text: "You have already given 5 potatoes today",
-    });
+    await postEphemeral("You have already given 5 potatoes today");
     return;
   }
 
   if (receiversCount * potatoCount > 5 - potatoesGivenSoFar) {
-    await app.client.chat.postEphemeral({
-      channel: message.channel,
-      user: senderSlackId,
-      text: "You don't have enough potatoes",
-    });
+    await postEphemeral("You don't have enough potatoes");
     return;
   }
 
@@ -180,7 +176,7 @@ app.message(":potato:", async ({ message, say }) => {
   });
 });
 
-/// Handle the messages 
+/// Handle the messages
 app.event("message", async ({ event, client, context }) => {
   if (event["channel_type"] === "im") {
     if (event["text"] === "potatoes") {
@@ -218,8 +214,15 @@ app.event("app_home_opened", async ({ event, client, context }) => {
             type: "section",
             text: {
               type: "mrkdwn",
-              text: "*Welcome to your _App's Home_* :tada:",
+              text: "*Welcome to Gib Potato!* :tada:",
             },
+          },
+          {
+            type: "section",
+            text: {
+              type: "mrkdwn",
+              text: "This is a mrkdwn section block :ghost: *this is bold*, and ~this is crossed out~, and <https://google.com|this is a link>"
+            }
           },
           {
             type: "divider",

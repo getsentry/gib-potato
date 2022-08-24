@@ -4,7 +4,7 @@ generator client {
 
 datasource db {
   provider = "mysql"
-  url      = "mysql://root:password@0.0.0.0:8306/gib_potato"
+  url      = env("MYSQL_URL")
 }
 
 model messages {
