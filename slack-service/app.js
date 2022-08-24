@@ -1,12 +1,23 @@
+// Sentry
+import * as Sentry from "@sentry/node";
+
+
 // UUID
 const { uuid } = require("uuidv4");
+
 // ORM
 const { PrismaClient } = require("@prisma/client");
 const prisma = new PrismaClient();
+
 // Secrets for Slack API
 require("dotenv").config();
+
 // Slack API
 const { App } = require("@slack/bolt");
+
+Sentry.init({ dsn: process.env.SENTRY_DSN });
+
+app.use(Sentry.Handlers.requestHandler());
 
 const maxPotato = process.env.MAX_POTATO
 
@@ -199,8 +210,7 @@ app.message(":potato:", async ({ message, say }) => {
     await addMessage(senderDBId, user, potatoCount);
   });
 
-  // This is just to check that we can find all the people ->  Seems to work
-  let responds = "The following people got a potato:";
+  // Send a DM to all receivers that they received a potato
   receiverSlackIds.forEach((userSlackId) => {
     try {
       app.client.chat.postMessage({
@@ -208,10 +218,8 @@ app.message(":potato:", async ({ message, say }) => {
         text: `You got *${potatoCount} potato* by <@${senderSlackId}> \n>${text}`,
       });
     } catch (error) {
-      // TODO: handle this
-      console.error(error);
+      Sentry.captureException(error)
     }
-    responds += `<@${userSlackId}>`;
   });
 });
 
@@ -321,9 +329,12 @@ app.event("app_home_opened", async ({ event, client, context }) => {
       },
     });
   } catch (error) {
-    console.error(error);
+    Sentry.captureException(error);
   }
 });
+
+// The error handler must be before any other error middleware and after all controllers
+app.use(Sentry.Handlers.errorHandler());
 
 (async () => {
   // Start your app
