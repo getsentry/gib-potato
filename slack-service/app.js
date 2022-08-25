@@ -174,7 +174,7 @@ app.message(":potato:", async ({ message, say }) => {
 
   if (!receiverSlackIds || receiverSlackIds.length == 0) {
     // Check needed for the length
-    await postEphemeral("Seems like no one was tagged in that message");
+    await postEphemeral("To gib people potato, you habe to @ someone");
     return;
   }
 
@@ -186,12 +186,12 @@ app.message(":potato:", async ({ message, say }) => {
   const potatoesGivenToday = await getPotatoesGivenToday(senderDBId);
 
   if (potatoesGivenToday > maxPotato) {
-    await postEphemeral("You have already given 5 potatoes today");
+    await postEphemeral("You already have gib 5 potato today");
     return;
   }
 
   if (receiversCount * potatoCount > maxPotato - potatoesGivenToday) {
-    await postEphemeral("You don't have enough potatoes");
+    await postEphemeral("You don't have genug potato");
     return;
   }
 
@@ -241,9 +241,9 @@ app.event("message", async ({ event, client, context }) => {
       const potatoesGivenSoFar = await getPotatoesGivenToday(userID);
       client.chat.postMessage({
         channel: event["channel"],
-        text: `You have *${
+        text: `You habe *${
           maxPotato - potatoesGivenSoFar
-        }* potatoes left to give today. Your potatoes will reset in ${
+        }* potato left to gib today. Your potato will reset in ${
           23 - cur.getUTCHours()
         } hours and ${60 - cur.getUTCMinutes()} minutes.`,
       });
@@ -276,14 +276,14 @@ app.event("app_home_opened", async ({ event, client, context }) => {
             "type": "section",
             "text": {
               "type": "mrkdwn",
-              "text": "*Welcome to GibPotato!* :potato:"
+              "text": "*Hallo to GibPotato!*"
             }
           },
           {
             "type": "section",
             "text": {
               "type": "mrkdwn",
-              "text": "You can give people :potato:'s to show your appreciation and recognize them for all the great things they do."
+              "text": "You can gib people potato to show your much like them and recognize them for all the toll things they do."
             }
           },
           {
@@ -293,7 +293,7 @@ app.event("app_home_opened", async ({ event, client, context }) => {
             "type": "section",
             "text": {
               "type": "mrkdwn",
-              "text": "*My Potatoes*"
+              "text": "*My Potato*"
             }
           },
           {
@@ -307,7 +307,7 @@ app.event("app_home_opened", async ({ event, client, context }) => {
             "type": "section",
             "text": {
               "type": "mrkdwn",
-              "text": `Potatoes left to give today: *${maxPotato - potatoesGivenToday}*`
+              "text": `Potatoes left to gib today: *${maxPotato - potatoesGivenToday}*`
             }
           },
           {
@@ -317,7 +317,7 @@ app.event("app_home_opened", async ({ event, client, context }) => {
             "type": "section",
             "text": {
               "type": "mrkdwn",
-              "text": "*Potatoes Received Leaderboard*"
+              "text": "*Potato Received Leaderboard*"
             }
           },
           {
@@ -330,7 +330,7 @@ app.event("app_home_opened", async ({ event, client, context }) => {
                   "text": "View Full Leaderboard",
                   "emoji": true
                 },
-                "url": "https://gibpotato.app" // TODO: change this to actual url
+                "url": "https://gibpotato.app"
               }
             ]
           }
