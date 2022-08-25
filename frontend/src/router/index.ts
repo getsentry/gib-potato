@@ -36,19 +36,27 @@ const router = createRouter({
   ]
 })
 
-router.beforeEach(async (to, from) => {
+const unprotectedRoutes = {
+  login: true,
+  error: true,
+  notFound: true,
+} as const
+
+router.beforeEach(async (to) => {
   const store = useAccountStore()
   const account = await store.account.execute()
+  const toName = to.name ?? ''
   if (
     // make sure the user is authenticated
     !account &&
-    // // ❗️ Avoid an infinite redirect
-    to.name !== 'login'
+    // ❗️ Avoid an infinite redirect
+    !(toName in unprotectedRoutes)
   ) {
     // redirect the user to the login page
     return { name: 'login' }
   }
 
+  // redirect logged in users to the home page
   if (
     account &&
     to.name === 'login'
