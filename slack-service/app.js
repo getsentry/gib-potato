@@ -218,14 +218,14 @@ app.message(":potato:", async ({ message, say }) => {
     } catch (error) {
       console.error(error);
     }
-    receivers += `<@${userSlackId}>`;
+    receivers += `<@${userSlackId}> `;
   });
 
   // Send the a Message to the sender of the Potatoes
   try {
     app.client.chat.postMessage({
       channel: senderSlackId,
-      text: `You send *${potatoCount*receiversCount} potato* to ${receivers.join(', ')}\nYou have *${(maxPotato - potatoesGivenToday) - (potatoCount*receiversCount)} potato* left.\n>${text}`,
+      text: `You send *${potatoCount*receiversCount} potato* to ${receivers}\nYou have *${(maxPotato - potatoesGivenToday) - (potatoCount*receiversCount)} potato* left.\n>${text}`,
     });
   } catch (error) {
     console.error(error);
