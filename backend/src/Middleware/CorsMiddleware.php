@@ -31,6 +31,11 @@ class CorsMiddleware implements MiddlewareInterface
             ])
             ->allowHeaders([
                 'content-type',
+                'origin',
+            ])
+            ->allowMethods([
+                'get',
+                'options',
             ])
             ->build();
     }
