@@ -4,7 +4,12 @@ import { mande } from 'mande'
 import params from '../../config/parameters'
 import { defaultOptions } from '../utils/api'
 
-const users = mande(`${params.api.host}/users`, defaultOptions)
+const users = {
+  get: async () => {
+    const res = await fetch(`${params.api.host}/users`, defaultOptions);
+    return res.json();
+  }
+}
 
 export interface User {
   id: string;
@@ -17,7 +22,7 @@ export const useUsersStore = defineStore({
   id: 'users',
   state: () => ({
     users: useAsyncState<User[]>(
-      users.get(''),
+      users.get(),
       [],
     ),
   }),

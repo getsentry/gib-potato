@@ -4,7 +4,12 @@ import { mande } from 'mande'
 import params from '../../config/parameters'
 import { defaultOptions } from '../utils/api'
 
-const interactions = mande(`${params.api.host}/messages`, defaultOptions)
+const interactions = {
+  get: async () => {
+    const res = await fetch(`${params.api.host}/messages`, defaultOptions);
+    return res.json();
+  }
+}
 
 export interface Interaction {
   id: string;
@@ -20,7 +25,7 @@ export const useInteractionsStore = defineStore({
   id: 'interactions',
   state: () => ({
     interactions: useAsyncState<Interaction[] | null>(
-      interactions.get(''),
+      interactions.get(),
       null,
     ),
   }),
