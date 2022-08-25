@@ -21,7 +21,7 @@ class ApiController extends AppController
             ->withStatus(200)
             ->withType('json')
             ->withStringBody(json_encode([
-                'message' => 'Gib Potato! 🥔'
+                'message' => 'GibPotato! 🥔'
             ]));
     }
 
