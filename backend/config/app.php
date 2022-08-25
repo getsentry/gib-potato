@@ -421,6 +421,12 @@ return [
      * To use database sessions, load the SQL file located at config/schema/sessions.sql
      */
     'Session' => [
+        'cookie' => 'potato',
         'defaults' => 'database',
+        'timeout' => 60 * 24 * 14, // 2 weeks
+        'ini' => [
+            'session.gc_maxlifetime' => 60 * 60 * 24 * 14, // 2 weeks
+            'session.cookie_lifetime' => 60 * 60 * 24 * 14,
+        ],
     ],
 ];
