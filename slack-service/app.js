@@ -207,13 +207,18 @@ app.message(":potato:", async ({ message, say }) => {
     await addMessage(senderDBId, user, potatoCount);
   });
 
+  const permalinkToMessage = await app.client.chat.getPermalink({
+    channel: message.channel,
+    message_ts: message.ts
+  })
+
   // This is just to check that we can find all the people ->  Seems to work
   let receivers = "";
   receiverSlackIds.forEach((userSlackId) => {
     try {
       app.client.chat.postMessage({
         channel: userSlackId,
-        text: `You got *${potatoCount} potato* by <@${senderSlackId}> \n>${text}`,
+        text: `You got *${potatoCount} potato* by <@${senderSlackId}> \n>${permalinkToMessage.permalink}`,
       });
     } catch (error) {
       console.error(error);
@@ -225,7 +230,7 @@ app.message(":potato:", async ({ message, say }) => {
   try {
     app.client.chat.postMessage({
       channel: senderSlackId,
-      text: `You send *${potatoCount*receiversCount} potato* to ${receivers}\nYou have *${(maxPotato - potatoesGivenToday) - (potatoCount*receiversCount)} potato* left.\n>${text}`,
+      text: `You send *${potatoCount*receiversCount} potato* to ${receivers}\nYou have *${(maxPotato - potatoesGivenToday) - (potatoCount*receiversCount)} potato* left.\n>${permalinkToMessage.permalink}`,
     });
   } catch (error) {
     console.error(error);
