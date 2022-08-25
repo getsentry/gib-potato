@@ -2,8 +2,9 @@ import { useAsyncState } from '@vueuse/core'
 import { defineStore } from 'pinia'
 import { mande } from 'mande'
 import params from '../../config/parameters'
+import { defaultOptions } from '../utils/api'
 
-const interactions = mande(`${params.api.host}/messages`)
+const interactions = mande(`${params.api.host}/messages`, defaultOptions)
 
 export interface Interaction {
   id: string;
