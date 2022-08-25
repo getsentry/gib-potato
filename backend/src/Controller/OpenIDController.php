@@ -10,7 +10,7 @@ use Lcobucci\JWT\Encoding\JoseEncoder;
 use Lcobucci\JWT\Token\Parser;
 use Throwable;
 
-class OpenIDController extends AppController
+class OpenIdController extends AppController
 {
     public function beforeFilter(EventInterface $event)
     {
