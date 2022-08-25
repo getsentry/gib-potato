@@ -30,7 +30,7 @@ class ApiController extends AppController
         $this->loadModel('Users');
 
         $query = $this->Users->find();
-        $users = $query->select([
+        $user = $query->select([
                 'Users.id',
                 'Users.slack_name',
                 'Users.slack_picture',
@@ -39,8 +39,7 @@ class ApiController extends AppController
             ->where(['Users.id' => $this->Authentication->getIdentityData('id')])
             ->leftJoinWith('MessagesReceived')
             ->enableHydration(false)
-            ->first()
-            ->toArray();
+            ->first();
 
         return $this->response
             ->withStatus(200)
