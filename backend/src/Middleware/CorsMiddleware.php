@@ -27,7 +27,7 @@ class CorsMiddleware implements MiddlewareInterface
 
         return $response->cors($request)
             ->allowOrigin([
-                '*',
+                'https://gibpotato.app',
             ])
             ->allowHeaders([
                 'content-type',
