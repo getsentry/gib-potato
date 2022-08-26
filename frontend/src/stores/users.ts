@@ -1,7 +1,7 @@
-import { useAsyncState } from '@vueuse/core'
-import { defineStore } from 'pinia'
-import params from '../../config/parameters'
-import { defaultOptions } from '../utils/api'
+import { useAsyncState } from '@vueuse/core';
+import { defineStore } from 'pinia';
+import params from '../../config/parameters';
+import { defaultOptions } from '../utils/api';
 
 export interface User {
   id: string;
@@ -17,15 +17,12 @@ const users = {
       .filter((user: User) => user.count)
       .sort((a: User, b: User) => b.count - a.count);
     return users;
-  }
-}
+  },
+};
 
 export const useUsersStore = defineStore({
   id: 'users',
   state: () => ({
-    users: useAsyncState<User[]>(
-      users.get(),
-      [],
-    ),
+    users: useAsyncState<User[]>(users.get(), []),
   }),
-})
+});

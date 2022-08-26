@@ -1,4 +1,3 @@
-
 export const buildSlackAuthUrl = (options: {
   baseUrl: string;
   clientId: string;

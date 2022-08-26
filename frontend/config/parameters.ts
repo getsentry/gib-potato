@@ -1,4 +1,3 @@
-
 const params = {
   app: {
     host: import.meta.env.VITE_APP_HOST,
@@ -14,7 +13,7 @@ const params = {
   },
   sentry: {
     dsn: import.meta.env.VITE_APP_SENTRY_DSN,
-  }
+  },
 } as const;
 
 export default params;
