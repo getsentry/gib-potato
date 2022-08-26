@@ -1,21 +1,23 @@
 import { useAsyncState } from '@vueuse/core'
 import { defineStore } from 'pinia'
-import { mande } from 'mande'
 import params from '../../config/parameters'
 import { defaultOptions } from '../utils/api'
+
+export interface User {
+  id: string;
+  count: number;
+  slack_name: string;
+  slack_picture: string;
+}
 
 const users = {
   get: async () => {
     const res = await fetch(`${params.api.host}/users`, defaultOptions);
-    return res.json();
+    const users = (await res.json())
+      .filter((user: User) => user.count)
+      .sort((a: User, b: User) => a.count - b.count);
+    return users;
   }
-}
-
-export interface User {
-  id: string;
-  full_name: string;
-  avatar_url: string;
-  count: number;
 }
 
 export const useUsersStore = defineStore({

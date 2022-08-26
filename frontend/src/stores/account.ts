@@ -1,6 +1,5 @@
 import { useAsyncState } from '@vueuse/core'
 import { defineStore } from 'pinia'
-import { mande } from 'mande'
 import params from '../../config/parameters'
 import { defaultOptions } from '../utils/api'
 
@@ -13,8 +12,9 @@ const account = {
 
 export interface Account {
   id: string;
-  name: string;
-  picture: string;
+  count: number;
+  slack_name: string;
+  slack_picture: string;
 }
 
 export const useAccountStore = defineStore({

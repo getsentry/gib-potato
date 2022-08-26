@@ -65,7 +65,7 @@ const userNavigation = [
               <div>
                 <MenuButton class="bg-white rounded-full flex text-sm ring-2 ring-white ring-opacity-20 focus:outline-none focus:ring-opacity-100">
                   <span class="sr-only">Open user menu</span>
-                  <img class="h-8 w-8 rounded-full" :src="account.state?.picture" alt="" />
+                  <img class="h-8 w-8 rounded-full" :src="account.state?.slack_picture" alt="" />
                 </MenuButton>
               </div>
               <transition leave-active-class="transition ease-in duration-75" leave-from-class="transform opacity-100 scale-100" leave-to-class="transform opacity-0 scale-95">
@@ -111,15 +111,6 @@ const userNavigation = [
               </nav>
             </div>
             <div>
-              <div class="max-w-md w-full mx-auto">
-                <label for="mobile-search" class="sr-only">Search</label>
-                <div class="relative text-white focus-within:text-gray-600">
-                  <div class="pointer-events-none absolute inset-y-0 left-0 pl-3 flex items-center">
-                    <SearchIcon class="h-5 w-5" aria-hidden="true" />
-                  </div>
-                  <input id="mobile-search" class="block w-full bg-white bg-opacity-20 py-2 pl-10 pr-3 border border-transparent rounded-md leading-5 text-gray-900 placeholder-white focus:outline-none focus:bg-opacity-100 focus:border-transparent focus:placeholder-gray-500 focus:ring-0 sm:text-sm" placeholder="Search" type="search" name="search" />
-                </div>
-              </div>
             </div>
           </div>
         </div>
@@ -183,19 +174,6 @@ const userNavigation = [
                 <div class="p-6">
                   <!-- Your content -->
                   <Leaderboard />
-                </div>
-              </div>
-            </section>
-          </div>
-
-          <!-- Right column -->
-          <div class="grid grid-cols-1 gap-4">
-            <section aria-labelledby="section-2-title">
-              <h2 class="sr-only" id="section-2-title">Section title</h2>
-              <div class="rounded-lg bg-white overflow-hidden shadow">
-                <div class="p-6">
-                  <!-- Your content -->
-                  <Interactions />
                 </div>
               </div>
             </section>

@@ -17,7 +17,6 @@ import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
 import { faSlack } from '@fortawesome/free-brands-svg-icons'
 
 import * as Sentry from "@sentry/vue";
-import { BrowserTracing } from "@sentry/tracing";
 
 /* add each imported icon to the library */
 library.add(faSlack)
@@ -30,16 +29,6 @@ app.use(router)
 Sentry.init({
   app,
   dsn: params.sentry.dsn,
-  integrations: [
-    new BrowserTracing({
-      routingInstrumentation: Sentry.vueRouterInstrumentation(router),
-      tracingOrigins: ["localhost", params.app.host, params.api.host, /^\//],
-    }),
-  ],
-  // Set tracesSampleRate to 1.0 to capture 100%
-  // of transactions for performance monitoring.
-  // We recommend adjusting this value in production
-  tracesSampleRate: 1.0,
 });
 
 app
