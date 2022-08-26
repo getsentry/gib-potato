@@ -30,7 +30,7 @@ const userNavigation = [
   {
     name: 'Logout',
     onclick: async () => {
-      await fetch(`${params.api.host}/Logout`, defaultOptions);
+      await fetch(`${params.api.host}/logout`, defaultOptions);
       router.push('/login');
     },
   },
