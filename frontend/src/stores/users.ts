@@ -15,7 +15,7 @@ const users = {
     const res = await fetch(`${params.api.host}/users`, defaultOptions);
     const users = (await res.json())
       .filter((user: User) => user.count)
-      .sort((a: User, b: User) => a.count - b.count);
+      .sort((a: User, b: User) => b.count - a.count);
     return users;
   }
 }
