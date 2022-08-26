@@ -27,16 +27,16 @@ const app = createApp(App);
 Sentry.init({
   app,
   dsn: params.sentry.dsn,
-  integrations: [
-    new BrowserTracing({
-      routingInstrumentation: Sentry.vueRouterInstrumentation(router),
-      tracingOrigins: ["localhost", params.app.host, params.api.host, /^\//],
-    }),
-  ],
-  // Set tracesSampleRate to 1.0 to capture 100%
-  // of transactions for performance monitoring.
-  // We recommend adjusting this value in production
-  tracesSampleRate: 1.0,
+  // integrations: [
+  //   new BrowserTracing({
+  //     routingInstrumentation: Sentry.vueRouterInstrumentation(router),
+  //     tracingOrigins: ["localhost", params.app.host, params.api.host, /^\//],
+  //   }),
+  // ],
+  // // Set tracesSampleRate to 1.0 to capture 100%
+  // // of transactions for performance monitoring.
+  // // We recommend adjusting this value in production
+  // tracesSampleRate: 1.0,
 });
 
 app.use(createPinia())
