@@ -1,4 +1,4 @@
-import { createApp } from 'vue';
+import { createApp, markRaw } from 'vue';
 import { createPinia } from 'pinia';
 
 import App from './App.vue';
@@ -28,7 +28,12 @@ Sentry.init({
   dsn: params.sentry.dsn,
 });
 
-app.use(createPinia());
+const pinia = createPinia();
+app.use(pinia);
 app.use(router);
+
+pinia.use(({ store }) => {
+  store.router = markRaw(router);
+});
 
 app.component('FontAwesomeIcon', FontAwesomeIcon).mount('#app');

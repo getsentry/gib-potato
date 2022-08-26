@@ -16,11 +16,8 @@ import { SearchIcon } from '@heroicons/vue/solid';
 import UsersLeaderboard from '../components/UsersLeaderboard.vue';
 import SvgLogo from '../components/SvgLogo.vue';
 import DefaultFooter from '../components/DefaultFooter.vue';
-import router from '../router';
 import { useAccountStore } from '../stores/account';
 import { storeToRefs } from 'pinia';
-import params from '../../config/parameters';
-import { defaultOptions } from '../utils/api';
 
 const accountStore = useAccountStore();
 const { account } = storeToRefs(accountStore);
@@ -29,10 +26,7 @@ const navigation = [{ name: 'Home', href: '/', current: true }];
 const userNavigation = [
   {
     name: 'Logout',
-    onclick: async () => {
-      router.push('/login');
-      await fetch(`${params.api.host}/logout`, defaultOptions);
-    },
+    onclick: () => accountStore.logout(),
   },
 ];
 </script>
@@ -71,7 +65,7 @@ const userNavigation = [
                     <span class="sr-only">Open user menu</span>
                     <img
                       class="h-8 w-8 rounded-full"
-                      :src="account.state?.slack_picture"
+                      :src="account?.state?.slack_picture"
                       alt=""
                     />
                   </MenuButton>
@@ -241,7 +235,7 @@ const userNavigation = [
                       <div class="flex-shrink-0">
                         <img
                           class="h-10 w-10 rounded-full"
-                          :src="account.state?.slack_picture"
+                          :src="account?.state?.slack_picture"
                           alt=""
                         />
                       </div>
@@ -249,7 +243,7 @@ const userNavigation = [
                         <div
                           class="text-base font-medium text-gray-800 truncate"
                         >
-                          {{ account.state?.slack_name }}
+                          {{ account?.state?.slack_name }}
                         </div>
                       </div>
                     </div>

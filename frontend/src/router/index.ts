@@ -44,7 +44,7 @@ const unprotectedRoutes = {
 
 router.beforeEach(async (to) => {
   const store = useAccountStore();
-  const account = await store.account.execute();
+  const account = await store.account?.execute();
   const toName = to.name ?? '';
   if (
     // make sure the user is authenticated

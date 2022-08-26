@@ -1,5 +1,6 @@
-import { useAsyncState } from '@vueuse/core';
+import { useAsyncState, type UseAsyncStateReturn } from '@vueuse/core';
 import { defineStore } from 'pinia';
+import type { Router } from 'vue-router';
 import params from '../../config/parameters';
 import { defaultOptions } from '../utils/api';
 
@@ -17,9 +18,20 @@ export interface Account {
   slack_picture: string;
 }
 
+interface State {
+  account: UseAsyncStateReturn<Account | null, true> | null;
+}
+
 export const useAccountStore = defineStore({
   id: 'account',
-  state: () => ({
+  state: (): State => ({
     account: useAsyncState<Account | null>(account.get(), null),
   }),
+  actions: {
+    async logout() {
+      this.account = null;
+      (this as unknown as { router: Router }).router.push('/login');
+      await fetch(`${params.api.host}/logout`, defaultOptions);
+    },
+  },
 });
