@@ -31,6 +31,8 @@ class CorsMiddleware implements MiddlewareInterface
             ])
             ->allowHeaders([
                 'content-type',
+                'baggage',
+                'sentry-trace',
             ])
             ->allowCredentials()
             ->build();
