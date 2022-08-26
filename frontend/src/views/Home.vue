@@ -144,7 +144,7 @@ const userNavigation = [
                 <div class="pt-4 pb-2">
                   <div class="flex items-center px-5">
                     <div class="flex-shrink-0">
-                      <img class="h-10 w-10 rounded-full" :src="account.state?.picture" alt="" />
+                      <img class="h-10 w-10 rounded-full" :src="account.state?.slack_picture" alt="" />
                     </div>
                     <div class="ml-3 min-w-0 flex-1">
                       <div class="text-base font-medium text-gray-800 truncate">{{ user.full_name }}</div>
