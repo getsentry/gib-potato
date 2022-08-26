@@ -10,11 +10,6 @@
     "type-check": "vue-tsc --noEmit"
   },
   "dependencies": {
-    "@fortawesome/fontawesome-svg-core": "^6.1.2",
-    "@fortawesome/free-brands-svg-icons": "^6.1.2",
-    "@fortawesome/vue-fontawesome": "^3.0.1",
-    "@headlessui/vue": "^1.6.7",
-    "@heroicons/vue": "^1.0.6",
     "@sentry/tracing": "^7.11.1",
     "@sentry/vue": "^7.11.1",
     "@types/canvas-confetti": "^1.4.3",
@@ -27,7 +22,6 @@
   },
   "devDependencies": {
     "@rushstack/eslint-patch": "^1.1.4",
-    "@tailwindcss/forms": "^0.5.2",
     "@types/node": "^16.11.47",
     "@typescript-eslint/eslint-plugin": "^5.35.1",
     "@typescript-eslint/parser": "^5.35.1",
