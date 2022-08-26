@@ -22,10 +22,7 @@ import { BrowserTracing } from "@sentry/tracing";
 /* add each imported icon to the library */
 library.add(faSlack)
 
-const app = createApp(App).use(createPinia())
-
-app.use(createPinia())
-app.use(router)
+const app = createApp(App);
 
 Sentry.init({
   app,
@@ -41,6 +38,9 @@ Sentry.init({
   // We recommend adjusting this value in production
   tracesSampleRate: 1.0,
 });
+
+app.use(createPinia())
+app.use(router)
 
 app
     .component('font-awesome-icon', FontAwesomeIcon)
