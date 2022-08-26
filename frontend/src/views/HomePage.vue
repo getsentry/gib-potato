@@ -8,16 +8,21 @@ const accountStore = useAccountStore();
 const { account } = storeToRefs(accountStore);
 
 const navigation = [{ name: 'Home', href: '/', current: true }];
-const userNavigation = [
-  {
-    name: 'Logout',
-    onclick: () => accountStore.logout(),
-  },
-];
+const logout = () => accountStore.logout();
 </script>
 
 <template>
   <div>
     <UsersLeaderboard />
+    <footer class="p-2 flex justify-center">
+      <span class="text-sm"> &copy; {{ new Date().getFullYear() }} Sentry </span>
+      <span class="mx-2"> &middot; </span>
+      <a
+        class="text-sm cursor-pointer"
+        @click="logout"
+      >
+        Logout
+      </a>
+    </footer>
   </div>
 </template>
