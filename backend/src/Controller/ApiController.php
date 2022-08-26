@@ -3,8 +3,10 @@ declare(strict_types=1);
 
 namespace App\Controller;
 
+use Cake\Database\Expression\QueryExpression;
 use Cake\Event\EventInterface;
 use Cake\Http\Response;
+use Cake\ORM\Query;
 
 class ApiController extends AppController
 {
@@ -21,7 +23,7 @@ class ApiController extends AppController
             ->withStatus(200)
             ->withType('json')
             ->withStringBody(json_encode([
-                'message' => 'GibPotato! 🥔'
+                'message' => 'GibPotato is very gut, ja!'
             ]));
     }
 
@@ -49,8 +51,6 @@ class ApiController extends AppController
 
     public function users(): Response
     {
-        usleep(500); // simulate slow api
-
         $this->loadModel('Users');
 
         $query = $this->Users->find();
@@ -62,6 +62,10 @@ class ApiController extends AppController
             ])
             ->distinct(['Users.id'])
             ->leftJoinWith('MessagesReceived')
+            // ->where(function (QueryExpression $exp, Query $query) {
+            //     return $exp->isNotNull($query->func()->sum('MessagesReceived.amount'));
+            // })
+            ->order(['count' => 'DESC'])
             ->enableHydration(false)
             ->toArray();
 
@@ -71,32 +75,12 @@ class ApiController extends AppController
             ->withStringBody(json_encode($users));
     }
 
-    public function messages(): Response
+    public function logout()
     {
+        $this->Authentication->logout();
+
         return $this->response
             ->withStatus(200)
-            ->withType('json')
-            ->withStringBody(json_encode([
-                [
-                    'id' => '1',
-                    'sender_id' => '1',
-                    'sender_name' => 'Krys',
-                    'sender_picture' => 'https://',
-                    'receiver_id' => '2',
-                    'receiver_name' => 'Michi',
-                    'receiver_picture' => 'https://',
-                    'amount' => 5,
-                ],
-                [
-                    'id' => '2',
-                    'sender_id' => '3',
-                    'sender_name' => 'Gino',
-                    'sender_picture' => 'https://',
-                    'receiver_id' => '4',
-                    'receiver_name' => 'Tobias',
-                    'receiver_picture' => 'https://',
-                    'amount' => 2,
-                ],
-            ]));
+            ->withType('json');
     }
 }
