@@ -149,10 +149,9 @@ async function getUserDbId(slackId) {
   }
 }
 
-// Listens to incoming messages that contain "hello"
-app.message(":potato:", async ({ message, say }) => {
-  const senderSlackId = message.user;
-  const text = message.text;
+async function givePotato({user, text, channel, ts}) {
+  const senderSlackId = user;
+  const text = text;
   const senderDBId = await getUserDbId(senderSlackId);
 
   const regex = /<.*?>/g; // Regex to find all the mentions
@@ -166,7 +165,7 @@ app.message(":potato:", async ({ message, say }) => {
 
   const postEphemeral = async (text) => {
     return app.client.chat.postEphemeral({
-      channel: message.channel,
+      channel: channel,
       user: senderSlackId,
       text,
     });
@@ -208,8 +207,8 @@ app.message(":potato:", async ({ message, say }) => {
   });
 
   const permalinkToMessage = await app.client.chat.getPermalink({
-    channel: message.channel,
-    message_ts: message.ts
+    channel: channel,
+    message_ts: ts
   })
 
   // This is just to check that we can find all the people ->  Seems to work
@@ -226,8 +225,8 @@ app.message(":potato:", async ({ message, say }) => {
     receivers += `<@${userSlackId}> `;
   });
 
-  // Send the a Message to the sender of the Potatoes
-  try {
+   // Send the a Message to the sender of the Potatoes
+   try {
     app.client.chat.postMessage({
       channel: senderSlackId,
       text: `You send *${potatoCount*receiversCount} potato* to ${receivers}\nYou have *${(maxPotato - potatoesGivenToday) - (potatoCount*receiversCount)} potato* left.\n>${permalinkToMessage.permalink}`,
@@ -235,7 +234,16 @@ app.message(":potato:", async ({ message, say }) => {
   } catch (error) {
     console.error(error);
   }
-});
+}
+
+// Listens to incoming messages that contain "hello"
+app.message(":potato:", async ({message}) => await givePotato({
+    user: message.user,
+    channel: message.channel,
+    text: message.text,
+    ts: message.ts
+  })
+);
 
 /// Handle the messages
 app.event("message", async ({ event, client, context }) => {
@@ -253,6 +261,18 @@ app.event("message", async ({ event, client, context }) => {
         } hours and ${60 - cur.getUTCMinutes()} minutes.`,
       });
     }
+  }
+});
+
+// Listens to incoming :potato: reactions
+app.event("reaction_added", async ({ event }) => {
+  if(event.reaction === "potato") {
+    await givePotato({
+      user: event.user,
+      channel: event.item.channel,
+      text: `:${event.reaction}:`,
+      ts: event.event_ts
+    });
   }
 });
 
