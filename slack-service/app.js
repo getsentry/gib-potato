@@ -151,7 +151,8 @@ async function getUserDbId(slackId) {
 
 async function givePotato({user, text, channel, ts}) {
   const senderSlackId = user;
-  const text = text;
+async function givePotato({user, text, channel, ts}) {
+  const senderSlackId = user;
   const senderDBId = await getUserDbId(senderSlackId);
 
   const regex = /<.*?>/g; // Regex to find all the mentions
