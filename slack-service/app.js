@@ -288,7 +288,7 @@ app.message(":taco:", async ({message}) => {
     await postEphemeral({
       channel: message.channel,
       user: message.user,
-      text: "Pssst! We build our own HeyTaco thingi. It's called GibPotato. Just swith :taco: with :potato:!"
+      text: "Pssst! We build our own HeyTaco thingi. It's called GibPotato. Just add :potato: to your messages instead"
     });
   }
 });
