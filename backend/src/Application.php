@@ -67,7 +67,14 @@ class Application extends BaseApplication implements AuthenticationServiceProvid
          * Debug Kit should not be installed on a production system
          */
         if (Configure::read('debug')) {
-            $this->addPlugin('DebugKit');
+            /**
+             * We have to use forceEnable to be able to work with
+             * ngrok hosts, like gipotato.eu.ngrok.io
+             */
+            Configure::write('DebugKit.forceEnable', true);
+            $this->addPlugin('DebugKit', [
+                'forceEnable' => true,
+            ]);
         }
 
         $this->addPlugin('Authentication');
@@ -90,7 +97,6 @@ class Application extends BaseApplication implements AuthenticationServiceProvid
             ->add(new AssetMiddleware([
                 'cacheTime' => Configure::read('Asset.cacheTime'),
             ]))
-            ->add(new CorsMiddleware())
 
             // Add routing middleware.
             // If you have a large number of routes connected, turning on routes
@@ -105,13 +111,18 @@ class Application extends BaseApplication implements AuthenticationServiceProvid
             // https://book.cakephp.org/4/en/controllers/middleware.html#body-parser-middleware
             ->add(new BodyParserMiddleware())
 
-            ->add(new AuthenticationMiddleware($this))
+            ->add(new CorsMiddleware())
+            ->add(new AuthenticationMiddleware($this));
 
             // Cross Site Request Forgery (CSRF) Protection Middleware
             // https://book.cakephp.org/4/en/security/csrf.html#cross-site-request-forgery-csrf-middleware
-            ->add(new CsrfProtectionMiddleware([
-                'httponly' => true,
-            ]));
+            //
+            // @see https://github.com/markstory/docket-app/blob/master/src/Middleware/ApiCsrfProtectionMiddleware.php
+            // ->add(new CsrfProtectionMiddleware([
+            //     'httponly' => true,
+            // ]));
+
+            // @FIXME add ParagonIE\CSPBuilder\CSPBuilder
 
         return $middlewareQueue;
     }
