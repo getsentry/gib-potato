@@ -155,15 +155,6 @@ async function getUserDbId(slackId) {
   }
 }
 
-/// Post an ephermal message
-async function postEphemeral({ channel, user, text }) {
-  return app.client.chat.postEphemeral({
-    channel: channel,
-    user: user,
-    text: text,
-  });
-}
-
 /// Figure out who gets potato
 async function givePotato({user, text, channel, ts}) {
   const senderSlackId = user;
@@ -180,14 +171,18 @@ async function givePotato({user, text, channel, ts}) {
     // Remove the <@ >
     .map((t) => t.substring(2, t.length - 1));
 
+  const postEphemeral = async (text) => {
+    return app.client.chat.postEphemeral({
+      channel: channel,
+      user: senderSlackId,
+      text,
+    });
+  };
+
   // Check if the only person recieving a potato is the creator of the message
   // and blame them...
   if (_.isEqual(receiverSlackIds, [`${senderSlackId}`])) {
-    await postEphemeral({
-      channel: channel,
-      user: senderSlackId,
-      text: "You cannot gib potato to yourself :face_with_raised_eyebrow:",
-    });
+    await postEphemeral("You cannot gib potato to yourself :face_with_raised_eyebrow:");
     return;
   }
 
@@ -195,11 +190,7 @@ async function givePotato({user, text, channel, ts}) {
   receiverSlackIds = receiverSlackIds.filter((t) => t !== senderSlackId);
 
   if (!receiverSlackIds || receiverSlackIds.length == 0) {
-    await postEphemeral({
-      channel: channel,
-      user: senderSlackId,
-      text: "To gib people potato, you have to @ someone"
-    });
+    await postEphemeral("To gib people potato, you have to @ someone");
     return;
   }
 
@@ -209,21 +200,13 @@ async function givePotato({user, text, channel, ts}) {
   // Check that there are potatos left to give for the sender (sender ids)
   const potatoesGivenToday = await getPotatoesGivenToday(senderDBId);
 
-  if (potatoesGivenToday >= maxPotato) {
-    await postEphemeral({
-      channel: channel,
-      user: senderSlackId,
-      text: "You already have gib out 5 potato today",
-    });
+  if (potatoesGivenToday > maxPotato) {
+    await postEphemeral("You already have gib out 5 potato today");
     return;
   }
 
   if (receiversCount * potatoCount > maxPotato - potatoesGivenToday) {
-    await postEphemeral({
-      channel: channel,
-      user: senderSlackId,
-      text: "You don't have genug potato",
-    });
+    await postEphemeral("You don't have genug potato");
     return;
   }
 
@@ -281,17 +264,6 @@ app.message(":potato:", async ({message}) => await givePotato({
   })
 );
 
-/// Listens to incoming messages that contain :taco:
-app.message(":taco:", async ({message}) => {
-  // Only tell people about GibPotato if they did not include a :potato: in their message
-  if ((message.text.match(/:potato:/g) || []).length === 0) {
-    await postEphemeral({
-      channel: message.channel,
-      user: message.user,
-      text: "Pssst! We build our own HeyTaco thingi. It's called GibPotato. Just add :potato: to your messages instead"
-    });
-  }
-});
 
 /// Listens to incoming :potato: reactions
 app.event("reaction_added", async ({ event }) => {
