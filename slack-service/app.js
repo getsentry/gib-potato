@@ -20,6 +20,8 @@ const { App } = require("@slack/bolt");
 Sentry.init({ dsn: process.env.SENTRY_DSN });
 
 const maxPotato = process.env.MAX_POTATO
+const TYPE_MESSAGE = 'message'
+const TYPE_REACTION = 'reaction'
 
 // Initialize the slack App
 const app = new App({
@@ -155,23 +157,14 @@ async function getUserDbId(slackId) {
   }
 }
 
-/// Post an ephermal message
-async function postEphemeral({ channel, user, text }) {
-  return app.client.chat.postEphemeral({
-    channel: channel,
-    user: user,
-    text: text,
-  });
-}
-
 /// Figure out who gets potato
-async function givePotato({user, text, channel, ts}) {
+async function givePotato({user, text, channel, ts, type}) {
   const senderSlackId = user;
   const senderDBId = await getUserDbId(senderSlackId);
 
   // Regex to find all the mentions
   const regex = /<.*?>/g;
-  const userSlackIdsFound = text.match(regex);
+  const userSlackIdsFound = text.match(regex) || [];
 
   // Extract the ids from the mention
   let receiverSlackIds = userSlackIdsFound
@@ -180,14 +173,34 @@ async function givePotato({user, text, channel, ts}) {
     // Remove the <@ >
     .map((t) => t.substring(2, t.length - 1));
 
+  const postEphemeral = async (text) => {
+    return app.client.chat.postEphemeral({
+      channel: channel,
+      user: senderSlackId,
+      text,
+    });
+  };
+
+  // Handle the case, where a user reacts to a message which
+  // does not mention any other users
+  if (type === TYPE_REACTION  && receiverSlackIds.length == 0) {
+    const result = await app.client.conversations.history({
+      channel: channel,
+      latest: ts,
+      inclusive: true,
+      limit: 1
+    });
+
+    if (result.messages[0]?.user !== null) {
+      // Hardcode the reciever of potato to the author of the message
+      receiverSlackIds = [result.messages[0].user];
+    }
+  }
+
   // Check if the only person recieving a potato is the creator of the message
   // and blame them...
   if (_.isEqual(receiverSlackIds, [`${senderSlackId}`])) {
-    await postEphemeral({
-      channel: channel,
-      user: senderSlackId,
-      text: "You cannot gib potato to yourself :face_with_raised_eyebrow:",
-    });
+    await postEphemeral("You cannot gib potato to yourself :face_with_raised_eyebrow:");
     return;
   }
 
@@ -195,35 +208,28 @@ async function givePotato({user, text, channel, ts}) {
   receiverSlackIds = receiverSlackIds.filter((t) => t !== senderSlackId);
 
   if (!receiverSlackIds || receiverSlackIds.length == 0) {
-    await postEphemeral({
-      channel: channel,
-      user: senderSlackId,
-      text: "To gib people potato, you have to @ someone"
-    });
+    await postEphemeral("To gib people potato, you have to @ someone");
     return;
   }
 
   const receiversCount = receiverSlackIds.length;
-  const potatoCount = (text.match(/:potato:/g) || []).length;
+  let potatoCount = (text.match(/:potato:/g) || []).length;
+
+  // Only give out one potato, if someone reacts
+  if (type === TYPE_REACTION) {
+    potatoCount = 1;
+  }
 
   // Check that there are potatos left to give for the sender (sender ids)
   const potatoesGivenToday = await getPotatoesGivenToday(senderDBId);
 
-  if (potatoesGivenToday >= maxPotato) {
-    await postEphemeral({
-      channel: channel,
-      user: senderSlackId,
-      text: "You already have gib out 5 potato today",
-    });
+  if (potatoesGivenToday > maxPotato) {
+    await postEphemeral("You already have gib out 5 potato today");
     return;
   }
 
   if (receiversCount * potatoCount > maxPotato - potatoesGivenToday) {
-    await postEphemeral({
-      channel: channel,
-      user: senderSlackId,
-      text: "You don't have genug potato",
-    });
+    await postEphemeral("You don't have genug potato");
     return;
   }
 
@@ -278,33 +284,28 @@ app.message(":potato:", async ({message}) => await givePotato({
     text: message.text,
     channel: message.channel,
     ts: message.ts,
+    type: TYPE_MESSAGE,
   })
 );
 
-/// Listens to incoming messages that contain :taco:
-app.message(":taco:", async ({message}) => {
-  // Only tell people about GibPotato if they did not include a :potato: in their message
-  if ((message.text.match(/:potato:/g) || []).length === 0) {
-    await postEphemeral({
-      channel: message.channel,
-      user: message.user,
-      text: "Pssst! We build our own HeyTaco thingi. It's called GibPotato. Just add :potato: to your messages instead"
-    });
-  }
-});
 
 /// Listens to incoming :potato: reactions
 app.event("reaction_added", async ({ event }) => {
   if (event.reaction === "potato") {
+    // Fetch the message the potato reaction was added to
+    const result = await app.client.conversations.history({
+      channel: event.item.channel,
+      latest: event.item.ts,
+      inclusive: true,
+      limit: 1
+    });
+
     await givePotato({
       user: event.user,
-      // Set the text of the message to the slack user_id of the creator
-      // of the message the reaction was added to.
-      // We do this messy stuff to be able to work with the same interface
-      // givePotato() provides.
-      text: `<@${event.item_user}> :${event.reaction}:`,
+      text: result.messages[0].text,
       channel: event.item.channel,
       ts: event.item.ts,
+      type: TYPE_REACTION,
     });
   }
 });
@@ -360,7 +361,7 @@ app.event("app_home_opened", async ({ event, client, context }) => {
             "type": "section",
             "text": {
               "type": "mrkdwn",
-              "text": "You can gib people potato to show your much like them and recognize them for all the toll things they do."
+              "text": "You can gib people potato to show you much like them and recognize them for all the toll things they do."
             }
           },
           {
