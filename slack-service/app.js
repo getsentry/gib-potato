@@ -1,6 +1,9 @@
 // Sentry
 const Sentry = require("@sentry/node");
 
+// lodash
+const _ = require("lodash");
+
 // UUID
 const { v4: uuid } = require("uuid");
 
@@ -126,7 +129,10 @@ async function getUserNameBySlackId(userId) {
     });
     return result["user"]["real_name"];
   } catch (error) {
-    console.error(error); // Maybe do some proper error handling here
+    // Maybe do some proper error handling here
+    console.error(error);
+    Sentry.captureException(error);
+
     return "";
   }
 }
@@ -149,44 +155,53 @@ async function getUserDbId(slackId) {
   }
 }
 
-// Listens to incoming messages that contain "hello"
-app.message(":potato:", async ({ message, say }) => {
-  const senderSlackId = message.user;
-  const text = message.text;
+/// Figure out who gets potato
+async function givePotato({user, text, channel, ts}) {
+  const senderSlackId = user;
   const senderDBId = await getUserDbId(senderSlackId);
 
-  const regex = /<.*?>/g; // Regex to find all the mentions
+  // Regex to find all the mentions
+  const regex = /<.*?>/g;
   const userSlackIdsFound = text.match(regex);
 
   // Extract the ids from the mention
-  const receiverSlackIds = userSlackIdsFound
-    .filter((item, index) => userSlackIdsFound.indexOf(item) === index) // Remove duplicate ids
-    .map((t) => t.substring(2, t.length - 1)) // Remove the <@ >
-    .filter((t) => t !== senderSlackId); // Remove the sender if he is in the message
+  let receiverSlackIds = userSlackIdsFound
+    // Remove duplicate ids 
+    .filter((item, index) => userSlackIdsFound.indexOf(item) === index)
+    // Remove the <@ >
+    .map((t) => t.substring(2, t.length - 1));
 
   const postEphemeral = async (text) => {
     return app.client.chat.postEphemeral({
-      channel: message.channel,
+      channel: channel,
       user: senderSlackId,
       text,
     });
   };
 
+  // Check if the only person recieving a potato is the creator of the message
+  // and blame them...
+  if (_.isEqual(receiverSlackIds, [`${senderSlackId}`])) {
+    await postEphemeral("You cannot gib potato to yourself :face_with_raised_eyebrow:");
+    return;
+  }
+
+  // Remove the sender if they are in the message
+  receiverSlackIds = receiverSlackIds.filter((t) => t !== senderSlackId);
+
   if (!receiverSlackIds || receiverSlackIds.length == 0) {
-    // Check needed for the length
-    await postEphemeral("To gib people potato, you habe to @ someone");
+    await postEphemeral("To gib people potato, you have to @ someone");
     return;
   }
 
   const receiversCount = receiverSlackIds.length;
   const potatoCount = (text.match(/:potato:/g) || []).length;
 
-  // TODO: Check that there are potatos left to give for the sender (sender ids)
-  // one more check
+  // Check that there are potatos left to give for the sender (sender ids)
   const potatoesGivenToday = await getPotatoesGivenToday(senderDBId);
 
   if (potatoesGivenToday > maxPotato) {
-    await postEphemeral("You already have gib 5 potato today");
+    await postEphemeral("You already have gib out 5 potato today");
     return;
   }
 
@@ -199,7 +214,8 @@ app.message(":potato:", async ({ message, say }) => {
   let userDBIds = [];
 
   for (const userSlackId of receiverSlackIds) {
-    userDBIds.push(await getUserDbId(userSlackId)); // Adds the users to the Db if they are not in there yet
+    // Adds the users to the Db if they are not in there yet
+    userDBIds.push(await getUserDbId(userSlackId));
   }
 
   // Add the message's to the DB
@@ -208,8 +224,8 @@ app.message(":potato:", async ({ message, say }) => {
   });
 
   const permalinkToMessage = await app.client.chat.getPermalink({
-    channel: message.channel,
-    message_ts: message.ts
+    channel: channel,
+    message_ts: ts
   })
 
   // This is just to check that we can find all the people ->  Seems to work
@@ -222,31 +238,59 @@ app.message(":potato:", async ({ message, say }) => {
       });
     } catch (error) {
       console.error(error);
+      Sentry.captureException(error);
     }
     receivers += `<@${userSlackId}> `;
   });
 
-  // Send the a Message to the sender of the Potatoes
-  try {
+   // Send the a Message to the sender of the Potatoes
+   try {
     app.client.chat.postMessage({
       channel: senderSlackId,
       text: `You send *${potatoCount*receiversCount} potato* to ${receivers}\nYou have *${(maxPotato - potatoesGivenToday) - (potatoCount*receiversCount)} potato* left.\n>${permalinkToMessage.permalink}`,
     });
   } catch (error) {
     console.error(error);
+    Sentry.captureException(error);
+  }
+}
+
+/// Listens to incoming messages that contain :potato:
+app.message(":potato:", async ({message}) => await givePotato({
+    user: message.user,
+    text: message.text,
+    channel: message.channel,
+    ts: message.ts,
+  })
+);
+
+
+/// Listens to incoming :potato: reactions
+app.event("reaction_added", async ({ event }) => {
+  if (event.reaction === "potato") {
+    await givePotato({
+      user: event.user,
+      // Set the text of the message to the slack user_id of the creator
+      // of the message the reaction was added to.
+      // We do this messy stuff to be able to work with the same interface
+      // givePotato() provides.
+      text: `<@${event.item_user}> :${event.reaction}:`,
+      channel: event.item.channel,
+      ts: event.item.ts,
+    });
   }
 });
 
-/// Handle the messages
+/// Handle direct messages send to the bot
 app.event("message", async ({ event, client, context }) => {
   if (event["channel_type"] === "im") {
-    if (event["text"] === "potatoes") {
+    if (event["text"] === "potato") {
       const cur = newUTCDate();
       const userID = await getUserDbId(event["user"]);
       const potatoesGivenSoFar = await getPotatoesGivenToday(userID);
       client.chat.postMessage({
         channel: event["channel"],
-        text: `You habe *${
+        text: `You have *${
           maxPotato - potatoesGivenSoFar
         }* potato left to gib today. Your potato will reset in ${
           23 - cur.getUTCHours()
@@ -256,7 +300,7 @@ app.event("message", async ({ event, client, context }) => {
   }
 });
 
-// Listen to app home opened event
+/// Listen to app home opened event
 app.event("app_home_opened", async ({ event, client, context }) => {
   const userSlackId = event["user"]
   const userDbId = await getUserDbId(userSlackId)
@@ -343,13 +387,13 @@ app.event("app_home_opened", async ({ event, client, context }) => {
       },
     });
   } catch (error) {
+    console.log(error);
     Sentry.captureException(error);
   }
 });
 
 (async () => {
-  // Start your app
   await app.start(process.env.PORT || 3000);
 
-  console.log("⚡️ Bolt app is running!");
+  console.log("🥔 GibPotato app is running!");
 })();
