@@ -3,19 +3,17 @@ declare(strict_types=1);
 
 namespace App\Controller;
 
+use Cake\Controller\Controller;
 use Cake\Event\EventInterface;
 use Cake\I18n\FrozenTime;
 use Cake\Log\Log;
 use Cake\Utility\Security;
 
-class SlackController extends AppController
+class SlackController extends Controller
 {
-
     public function beforeFilter(EventInterface $event)
     {
         parent::beforeFilter($event);
-
-        $this->Authentication->allowUnauthenticated(['events']);
 
         /**
          * Validate the Slack request
@@ -50,9 +48,26 @@ class SlackController extends AppController
         }
     }
 
-    public function events()
+    public function index()
+    {
+        $type = $this->request->getData('type');
+
+        switch ($type) {
+            case 'url_verification':
+                return $this->urlVerification();
+            default:
+                return $this->response
+                    ->withType('json')
+                    ->withStatus(200);
+        }
+    }
+
+    public function urlVerification()
     {
         return $this->response
+            ->withStringBody(json_encode([
+                'challenge' => $this->request->getData('challenge'),
+            ]))
             ->withType('json')
             ->withStatus(200);
     }

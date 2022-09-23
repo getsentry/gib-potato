@@ -3,13 +3,21 @@ declare(strict_types=1);
 
 namespace App\Controller;
 
+use Cake\Controller\Controller;
 use Cake\Database\Expression\QueryExpression;
 use Cake\Event\EventInterface;
 use Cake\Http\Response;
 use Cake\ORM\Query;
 
-class ApiController extends AppController
+class ApiController extends Controller
 {
+    public function initialize(): void
+    {
+        parent::initialize();
+
+        $this->loadComponent('Authentication.Authentication');
+    }
+
     public function beforeFilter(EventInterface $event)
     {
         parent::beforeFilter($event);
