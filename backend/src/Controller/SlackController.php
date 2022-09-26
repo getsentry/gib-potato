@@ -3,6 +3,7 @@ declare(strict_types=1);
 
 namespace App\Controller;
 
+use App\Service\EventFactory;
 use Cake\Controller\Controller;
 use Cake\Event\EventInterface;
 use Cake\I18n\FrozenTime;
@@ -55,12 +56,25 @@ class SlackController extends Controller
         switch ($type) {
             case 'url_verification':
                 return $this->urlVerification();
+            case 'event_callback':
+                return $this->eventCallback();
             default:
                 return $this->response
                     ->withType('json')
                     ->withStatus(200);
         }
     }
+
+    public function eventCallback()
+    {
+        $event = EventFactory::createEvent($this->request->getData('event'));
+        $event->process();
+
+        return $this->response
+            ->withType('json')
+            ->withStatus(200);
+    }
+
 
     public function urlVerification()
     {
