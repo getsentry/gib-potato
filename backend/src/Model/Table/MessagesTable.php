@@ -81,6 +81,12 @@ class MessagesTable extends Table
             ->requirePresence('amount', 'create')
             ->notEmptyString('amount');
 
+        $validator
+            ->scalar('type')
+            ->maxLength('type', 255)
+            ->requirePresence('type', 'create')
+            ->notEmptyString('type');
+
         return $validator;
     }
 

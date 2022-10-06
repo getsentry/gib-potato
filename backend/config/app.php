@@ -187,7 +187,13 @@ return [
     'Error' => [
         'errorLevel' => E_ALL,
         'logger' => SentryErrorLogger::class,
-        'skipLog' => [],
+        'skipLog' => [
+            // 'Authentication\Authenticator\UnauthenticatedException',
+            // 'Authorization\Exception\ForbiddenException',
+            // 'Cake\Http\Exception\ForbiddenException',
+            // 'Cake\Http\Exception\InvalidCsrfTokenException',
+            // 'Cake\Http\Exception\NotFoundException',
+        ],
         'log' => true,
         'trace' => true,
         'ignoredDeprecationPaths' => [],

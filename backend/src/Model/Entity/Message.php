@@ -12,6 +12,7 @@ use Cake\ORM\Entity;
  * @property string $sender_user_id
  * @property string $receiver_user_id
  * @property int $amount
+ * @property string $type
  * @property \Cake\I18n\FrozenTime|null $created
  *
  * @property \App\Model\Entity\User $user
@@ -31,6 +32,7 @@ class Message extends Entity
         'sender_user_id' => true,
         'receiver_user_id' => true,
         'amount' => true,
+        'type' => true,
         'created' => true,
         'user' => true,
     ];

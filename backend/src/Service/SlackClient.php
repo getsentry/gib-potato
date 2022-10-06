@@ -67,4 +67,21 @@ class SlackClient
 
         return [];
     }
+
+    /**
+     * @see https://api.slack.com/methods/users.info
+     */
+    public function getUser(string $userId): ?array
+    {
+        $response = $this->client->get('users.info', [
+            'user' => $userId,
+        ]);
+
+        if ($response->isSuccess()) {
+            $json = $response->getJson();
+            return $json['user'];
+        }
+
+        return [];
+    }
 }

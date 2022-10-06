@@ -8,10 +8,14 @@ class MessageUtility
 
     protected const VALID_REACTIONS = [
         'potato',
+        'fries',
+        'hotdog',
     ];
 
     protected const VALID_MESSAGE_EMOJIS = [
         ':potato:',
+        ':fries:',
+        ':hotdog:',
     ];
 
     public static function validateReaction(string $reaction): bool
