@@ -13,7 +13,7 @@ abstract class AbstractEvent
 
     public function __construct()
     {
-        $this->slackClient = new SlackClient;
+        $this->slackClient = new SlackClient();
     }
 
     abstract public function process();

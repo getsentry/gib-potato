@@ -3,8 +3,6 @@ declare(strict_types=1);
 
 namespace App\Service;
 
-use Cake\Utility\Hash;
-
 class ReactionAddedEvent extends AbstractEvent
 {
     protected array $eventData;
@@ -79,7 +77,7 @@ class ReactionAddedEvent extends AbstractEvent
             }
 
             // Award the reaction to the author of the message
-            $result = (new AwardService)->gib(
+            $result = (new AwardService())->gib(
                 fromSlackUserId: $reactionFromUser,
                 toSlackUserId: $reactionMessageFromUser,
                 amount: 1, // A reaction is always amount 1
@@ -101,7 +99,7 @@ class ReactionAddedEvent extends AbstractEvent
 
         // Award the reaction to the users mentioned in the message
         foreach ($reactionMessageTextUsers as $reactionMessageTextUser) {
-            $result = (new AwardService)->gib(
+            $result = (new AwardService())->gib(
                 fromSlackUserId: $reactionFromUser,
                 toSlackUserId: $reactionMessageTextUser,
                 amount: 1, // A reaction is always amount 1

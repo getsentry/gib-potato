@@ -26,7 +26,7 @@ class OpenIdController extends AppController
      */
     public function index()
     {
-        $client = new Client;
+        $client = new Client();
         $response = $client->post('https://slack.com/api/openid.connect.token', [
             'client_id' => env('SLACK_CLIENT_ID'),
             'client_secret' => env('SLACK_CLIENT_SECRET'),

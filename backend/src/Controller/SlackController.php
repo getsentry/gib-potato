@@ -7,7 +7,6 @@ use App\Service\EventFactory;
 use Cake\Controller\Controller;
 use Cake\Event\EventInterface;
 use Cake\I18n\FrozenTime;
-use Cake\Log\Log;
 use Cake\Utility\Security;
 
 class SlackController extends Controller
@@ -18,8 +17,8 @@ class SlackController extends Controller
 
         /**
          * Validate the Slack request
-         * @FIXME move into middleware
          *
+         * @FIXME move into middleware
          * @see https://api.slack.com/authentication/verifying-requests-from-slack#verifying-requests-from-slack-using-signing-secrets__a-recipe-for-security__step-by-step-walk-through-for-validating-a-request
          */
         $messageTimeStamp = $this->request->getHeaderLine('X-Slack-Request-Timestamp');
@@ -74,7 +73,6 @@ class SlackController extends Controller
             ->withType('json')
             ->withStatus(200);
     }
-
 
     public function urlVerification()
     {

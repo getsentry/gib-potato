@@ -5,7 +5,6 @@ namespace App\Service;
 
 class MessageUtility
 {
-
     protected const VALID_REACTIONS = [
         'potato',
         'fries',

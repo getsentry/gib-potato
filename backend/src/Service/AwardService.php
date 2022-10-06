@@ -15,7 +15,7 @@ class AwardService
 
     public function __construct()
     {
-        $this->slackClient = new SlackClient;
+        $this->slackClient = new SlackClient();
 
         $this->loadModel('Users');
         $this->loadModel('Messages');
@@ -27,7 +27,6 @@ class AwardService
         $toUser = $this->createOrUpdateUser($toSlackUserId);
 
         if ($fromUser instanceof User && $toUser instanceof User) {
-
             // @FIXME do this counting stuff earlier and don't even try
             $query = $this->Messages->find()
                 ->where([

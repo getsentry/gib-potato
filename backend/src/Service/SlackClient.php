@@ -54,7 +54,7 @@ class SlackClient
             'channel' => $channel,
             'latest' => $timestamp,
             'inclusive' => true,
-            'limit' => 1
+            'limit' => 1,
         ]);
 
         if ($response->isSuccess()) {
@@ -79,6 +79,7 @@ class SlackClient
 
         if ($response->isSuccess()) {
             $json = $response->getJson();
+
             return $json['user'];
         }
 
