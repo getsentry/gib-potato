@@ -21,13 +21,21 @@
  * @license       https://opensource.org/licenses/mit-license.php MIT License
  */
 
+use Cake\Http\Middleware\CsrfProtectionMiddleware;
 use Cake\Routing\Route\DashedRoute;
 use Cake\Routing\RouteBuilder;
 
 return static function (RouteBuilder $routes) {
     $routes->setRouteClass(DashedRoute::class);
 
+    // Cross Site Request Forgery (CSRF) Protection Middleware
+    // https://book.cakephp.org/4/en/security/csrf.html#cross-site-request-forgery-csrf-middleware
+    $routes->registerMiddleware('csrf', new CsrfProtectionMiddleware([
+        'httponly' => true,
+    ]));
+
     $routes->scope('/', function (RouteBuilder $builder) {
+        $builder->applyMiddleware('csrf');
 
         $builder->connect('/login', ['controller' => 'Login', 'action' => 'login']);
         $builder->connect('/logout', ['controller' => 'Login', 'action' => 'logout']);
@@ -37,5 +45,10 @@ return static function (RouteBuilder $routes) {
         $builder->connect('/', ['controller' => 'Home', 'action' => 'index']);
 
         $builder->fallbacks();
+    });
+
+    // Routes in this scope don't have CSRF protection.
+    $routes->scope('/', function (RouteBuilder $builder) {
+        $builder->connect('/slack', ['controller' => 'Slack', 'action' => 'index']);
     });
 };

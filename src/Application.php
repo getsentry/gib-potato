@@ -28,7 +28,6 @@ use Cake\Error\Middleware\ErrorHandlerMiddleware;
 use Cake\Http\BaseApplication;
 use Cake\Http\Middleware\BodyParserMiddleware;
 use Cake\Http\Middleware\CspMiddleware;
-use Cake\Http\Middleware\CsrfProtectionMiddleware;
 use Cake\Http\MiddlewareQueue;
 use Cake\ORM\Locator\TableLocator;
 use Cake\Routing\Middleware\AssetMiddleware;
@@ -74,6 +73,7 @@ class Application extends BaseApplication implements AuthenticationServiceProvid
              * We have to use forceEnable to be able to work with
              * ngrok hosts, like gipotato.eu.ngrok.io
              */
+            Configure::write('DebugKit.forceEnable', true);
             $this->addPlugin('DebugKit', [
                 'forceEnable' => true,
             ]);
@@ -113,14 +113,6 @@ class Application extends BaseApplication implements AuthenticationServiceProvid
             // available as array through $request->getData()
             // https://book.cakephp.org/4/en/controllers/middleware.html#body-parser-middleware
             ->add(new BodyParserMiddleware())
-
-            // Cross Site Request Forgery (CSRF) Protection Middleware
-            // https://book.cakephp.org/4/en/security/csrf.html#cross-site-request-forgery-csrf-middleware
-            //
-            // @see https://github.com/markstory/docket-app/blob/master/src/Middleware/ApiCsrfProtectionMiddleware.php
-            ->add(new CsrfProtectionMiddleware([
-                'httponly' => true,
-            ]))
 
             ->add(new CspMiddleware($this->getCspPolicy()))
 
@@ -189,7 +181,7 @@ class Application extends BaseApplication implements AuthenticationServiceProvid
         $csp = new CSPBuilder([
             'font-src' => ['self' => true],
             'form-action' => ['self' => true],
-            'img-src' => ['self' => true, 'allow' => ['*.gravatar.com', '*.wp.com']],
+            'img-src' => ['self' => true, 'allow' => ['*.gravatar.com', '*.wp.com', '*.slack-edge.com']],
             'script-src' => ['self' => true, 'unsafe-inline' => true, 'allow' => $allow],
             'style-src' => ['self' => true, 'unsafe-inline' => true, 'allow' => $allow],
             'object-src' => [],
