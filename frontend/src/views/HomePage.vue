@@ -1,9 +1,5 @@
 <script setup lang="ts">
 import UsersLeaderboard from '../components/UsersLeaderboard.vue';
-import { useAccountStore } from '../stores/account';
-
-const accountStore = useAccountStore();
-const logout = () => accountStore.logout();
 </script>
 
 <template>
@@ -15,8 +11,8 @@ const logout = () => accountStore.logout();
       </span>
       <span class="mx-2"> &middot; </span>
       <a
+        href="/logout"
         class="text-sm cursor-pointer"
-        @click="logout"
       >
         Logout
       </a>

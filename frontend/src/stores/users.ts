@@ -13,9 +13,8 @@ export interface User {
 const users = {
   get: async () => {
     const res = await fetch(`${params.api.host}/users`, defaultOptions);
-    const users = (await res.json())
-      .filter((user: User) => user.count)
-      .sort((a: User, b: User) => b.count - a.count);
+    const users = (await res.json());
+
     return users;
   },
 };

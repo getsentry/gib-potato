@@ -51,9 +51,15 @@ const onCountClick = (e: MouseEvent) => {
           </th>
           <th
             scope="col"
+            class="py-3.5 px-3 text-right text-sm font-semibold"
+          >
+            Send
+          </th>
+          <th
+            scope="col"
             class="relative py-3.5 pl-3 pr-4 text-right text-sm font-semibold"
           >
-            Potato
+            Received
           </th>
         </tr>
       </thead>
@@ -78,9 +84,14 @@ const onCountClick = (e: MouseEvent) => {
             </div>
           </td>
           <td
+            class="whitespace-nowrap py-4 px-3 text-right text-sm"
+          >
+            {{ person.send_count ?? 0 }}
+          </td>
+          <td
             class="relative whitespace-nowrap py-4 pl-3 pr-4 text-right text-sm"
           >
-            {{ person.count }}
+            {{ person.received_count ?? 0 }}
           </td>
         </tr>
       </tbody>
