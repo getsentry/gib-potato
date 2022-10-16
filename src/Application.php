@@ -126,8 +126,6 @@ class Application extends BaseApplication implements AuthenticationServiceProvid
 
             ->add(new AuthenticationMiddleware($this));
 
-            // @FIXME add ParagonIE\CSPBuilder\CSPBuilder
-
         return $middlewareQueue;
     }
 
