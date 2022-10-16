@@ -433,7 +433,7 @@ return [
         'timeout' => 60 * 24 * 14, // 2 weeks
         'ini' => [
             // @FIXME Make this depending on env
-            'session.cookie_domain' => '.gipotato.eu.ngrok.io',
+            'session.cookie_domain' => 'gipotato.eu.ngrok.io',
             'session.gc_maxlifetime' => 60 * 60 * 24 * 14, // 2 weeks
             'session.cookie_lifetime' => 60 * 60 * 24 * 14,
         ],
