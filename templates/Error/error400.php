@@ -7,6 +7,7 @@
  */
 use Cake\Core\Configure;
 use Cake\Error\Debugger;
+use Sentry\SentrySdk;
 
 $this->layout = 'error';
 
@@ -35,7 +36,14 @@ $this->end();
 endif;
 ?>
 <div class="h-full flex items-center justify-center">
-    <h1 class="text-2xl font-semibold text-gray-600">
-        404 | Not Found
-    </h1>
+    <div class="text-center">
+        <h1 class="text-2xl font-semibold">
+            404 | Not Found
+        </h1>
+        <?php if (SentrySdk::getCurrentHub()->getLastEventId() !== null): ?>
+            <p class="mt-4 text-sm text-gray-600">
+                <?= SentrySdk::getCurrentHub()->getLastEventId(); ?>
+            </p>
+        <?php endif; ?>
+    </div>
 </div>
