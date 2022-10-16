@@ -190,7 +190,7 @@ return [
         'skipLog' => [
             'Authentication\Authenticator\UnauthenticatedException',
             'Authorization\Exception\ForbiddenException',
-            // 'Cake\Http\Exception\MissingControllerException',
+            'Cake\Http\Exception\MissingControllerException',
             'Cake\Http\Exception\ForbiddenException',
             'Cake\Http\Exception\InvalidCsrfTokenException',
             'Cake\Http\Exception\NotFoundException',
