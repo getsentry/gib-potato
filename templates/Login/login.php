@@ -4,14 +4,14 @@
  */
 ?>
 <div class="h-full flex items-center justify-center">
-    <div>
+    <div class="max-w-sm text-center">
+        <?= $this->Flash->render(); ?>
+
         <?= $this->Html->image('logo.png', ['class' => 'w-32 mb-4 mx-auto rounded-full']); ?>
 
         <h1 class="text-center text-3xl font-bold mb-16">
             Gib Potato
         </h1>
-
-        <?= $this->Flash->render(); ?>
 
         <?= $this->Html->link('Sign in with Slack', [
                 'controller' => 'Login',

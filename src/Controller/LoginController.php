@@ -80,6 +80,10 @@ class LoginController extends AppController
                     return $this->redirect(['controller' => 'Home', 'action' => 'index']);
                 }
             }
+
+            $this->Flash->error('You need to gib or recieve something to be able to sign in...');
+
+            return $this->redirect(['action' => 'login']);
         }
 
         $this->Flash->error('Slack sign in failed');
