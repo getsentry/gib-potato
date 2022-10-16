@@ -1,7 +1,8 @@
-# CakePHP specific files #
+# Project specific files #
 ##########################
 /config/app_local.php
 /config/.env
+/frontend/config/.env
 /logs/*
 /tmp/*
 /vendor/*

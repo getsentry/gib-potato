@@ -37,6 +37,7 @@ class AppView extends View
      */
     public function initialize(): void
     {
+        $this->loadHelper('Sentry');
         $this->loadHelper('Vite');
     }
 }
