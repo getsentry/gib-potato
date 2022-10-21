@@ -3,6 +3,8 @@ declare(strict_types=1);
 
 namespace App\Middleware;
 
+use App\Database\Log\SentryQueryLogger;
+use Cake\Datasource\ConnectionManager;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Server\MiddlewareInterface;
@@ -35,7 +37,7 @@ class SentryMiddleware implements MiddlewareInterface
         $requestStartTime = $request->getServerParams()['REQUEST_TIME_FLOAT'] ?? \microtime(true);
 
         $transactionContext->setOp('http.server');
-        $transactionContext->setName($request->getUri()->getHost() . $request->getUri()->getPath());
+        $transactionContext->setName($request->getUri()->getPath());
         $transactionContext->setSource(TransactionSource::url());
         $transactionContext->setStartTimestamp($requestStartTime);
 
@@ -50,6 +52,8 @@ class SentryMiddleware implements MiddlewareInterface
 
         SentrySdk::getCurrentHub()->setSpan($span);
 
+        $this->setupQueryLogging();
+
         $response = $handler->handle($request);
 
         $span->finish();
@@ -59,5 +63,14 @@ class SentryMiddleware implements MiddlewareInterface
         $transaction->finish();
 
         return $response;
+    }
+
+    public function setupQueryLogging()
+    {
+        $logger = new SentryQueryLogger();
+
+        $connection = ConnectionManager::get('default');
+        $connection->enableQueryLogging();
+        $connection->setLogger($logger);
     }
 }
