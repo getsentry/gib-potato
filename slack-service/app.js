@@ -264,18 +264,26 @@ async function givePotato({user, text, channel, ts}) {
 }
 
 /// Listens to incoming messages that contain :potato:
-app.message(":potato:", async ({message}) => await givePotato({
+app.message(":potato:", async ({message}) => {
+  const transaction = Sentry.startTransaction({
+    name: ":potato:"
+  })
+  await givePotato({
     user: message.user,
     text: message.text,
     channel: message.channel,
     ts: message.ts,
   })
-);
+  transaction.finish();
+});
 
 
 /// Listens to incoming :potato: reactions
 app.event("reaction_added", async ({ event }) => {
   if (event.reaction === "potato") {
+    const transaction = Sentry.startTransaction({
+      name: "reaction_added: potato"
+    })
     await givePotato({
       user: event.user,
       // Set the text of the message to the slack user_id of the creator
@@ -286,6 +294,7 @@ app.event("reaction_added", async ({ event }) => {
       channel: event.item.channel,
       ts: event.item.ts,
     });
+    transaction.finish()
   }
 });
 
@@ -293,6 +302,10 @@ app.event("reaction_added", async ({ event }) => {
 app.event("message", async ({ event, client, context }) => {
   if (event["channel_type"] === "im") {
     if (event["text"] === "potato") {
+      const transaction = Sentry.startTransaction({
+        name: "message: potato"
+      })
+
       const cur = newUTCDate();
       const userID = await getUserDbId(event["user"]);
       const potatoesGivenSoFar = await getPotatoesGivenToday(userID);
@@ -304,12 +317,17 @@ app.event("message", async ({ event, client, context }) => {
           23 - cur.getUTCHours()
         } hours and ${60 - cur.getUTCMinutes()} minutes.`,
       });
+      
+      transaction.finish();
     }
   }
 });
 
 /// Listen to app home opened event
 app.event("app_home_opened", async ({ event, client, context }) => {
+  const transaction = Sentry.startTransaction({
+    name: "app_home_opened"
+  })
   const userSlackId = event["user"]
   const userDbId = await getUserDbId(userSlackId)
   const potatoesGivenToday = await getPotatoesGivenToday(userDbId)
@@ -398,6 +416,7 @@ app.event("app_home_opened", async ({ event, client, context }) => {
     console.log(error);
     Sentry.captureException(error);
   }
+  transaction.finish()
 });
 
 (async () => {
