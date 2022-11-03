@@ -1,5 +1,7 @@
 // Sentry
 const Sentry = require("@sentry/node");
+require("@sentry/tracing")
+const {ProfilingIntegration} = require("@sentry/profiling-node")
 
 // lodash
 const _ = require("lodash");
@@ -17,7 +19,12 @@ require("dotenv").config();
 // Slack API
 const { App } = require("@slack/bolt");
 
-Sentry.init({ dsn: process.env.SENTRY_DSN });
+Sentry.init({ 
+  dsn: process.env.SENTRY_DSN,
+  tracesSampleRate: 1,
+  profilesSampleRate: 1, // Set profiling sampling rate.
+  integrations: [new ProfilingIntegration()] 
+});
 
 const maxPotato = process.env.MAX_POTATO
 
