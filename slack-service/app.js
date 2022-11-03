@@ -1,5 +1,6 @@
 // Sentry
 const Sentry = require("@sentry/node");
+// Import order here matters, @sentry/tracing must be imported before @sentry/node
 require("@sentry/tracing")
 const {ProfilingIntegration} = require("@sentry/profiling-node")
 
