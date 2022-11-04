@@ -11,7 +11,7 @@
   "dependencies": {
     "@prisma/client": "^4.2.1",
     "@sentry/node": "^7.11.1",
-    "@sentry/profiling-node": "^0.0.7",
+    "@sentry/profiling-node": "^0.0.9",
     "@sentry/tracing": "^7.17.4",
     "@slack/bolt": "^3.12.1",
     "dotenv": "^16.0.1",
