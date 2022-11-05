@@ -23,7 +23,7 @@ const { App } = require("@slack/bolt");
 Sentry.init({ 
   dsn: process.env.SENTRY_DSN,
   tracesSampleRate: 1,
-  profilesSampleRate: 1, // Set profiling sampling rate.
+  profilesSampleRate: 1,
   integrations: [new ProfilingIntegration()] 
 });
 
@@ -129,56 +129,47 @@ async function getPotatoesGivenToday(senderId) {
 }
 
 /// Get the full name using the userId from the Slack API
-async function getUserNameBySlackId(userId) {
-  try {
-    // Call the users.info method using the WebClient
-    const result = await app.client.users.info({
-      user: userId,
-    });
-    return result["user"]["real_name"];
-  } catch (error) {
-    // Maybe do some proper error handling here
-    console.error(error);
-    Sentry.captureException(error);
-
-    return "";
-  }
+function getUserNameBySlackId(userId) {
+  // Call the users.info method using the WebClient
+  return app.client.users.info({
+    user: userId,
+  }).then(result => result["user"]["real_name"]);
 }
 
 /// Gets the DB Id if the user is in the Db else adds the user to the DB
-async function getUserDbId(slackId) {
+async function getUserDbIdOrCreateUser(slackId) {
   const user = await getUserBySlackId(slackId);
-  const imageURL = (await app.client.users.profile.get({ user: slackId }))[
-    "profile"
-  ]["image_72"];
+
+  if(user){
+    return user.id;
+  }
 
   // If the user is not found in the Database add it to the Database
-  if (!user) {
-    const fullName = await getUserNameBySlackId(slackId);
-    const uid = uuid();
-    await addUser(fullName, slackId, uid, imageURL);
-    return uid;
-  } else {
-    return user["id"];
-  }
+  return getUserNameBySlackId(slackId).then(async (fullName) => {
+    const userId = uuid()
+    const imageURL = (await app.client.users.profile.get({ user: slackId }))[
+      "profile"
+    ]["image_72"];
+    await addUser(fullName, slackId, uuid(), imageURL);
+    return userId
+  })
 }
+
+// Regex to find all the mentions
+const mentionsRegex = /<.*?>/g;
 
 /// Figure out who gets potato
 async function givePotato({user, text, channel, ts}) {
   const senderSlackId = user;
-  const senderDBId = await getUserDbId(senderSlackId);
-
-  // Regex to find all the mentions
-  const regex = /<.*?>/g;
-  const userSlackIdsFound = text.match(regex);
-
+  const userSlackIdsFound = text.match(mentionsRegex);
+  
   // Extract the ids from the mention
   let receiverSlackIds = userSlackIdsFound
-    // Remove duplicate ids 
-    .filter((item, index) => userSlackIdsFound.indexOf(item) === index)
-    // Remove the <@ >
-    .map((t) => t.substring(2, t.length - 1));
-
+  // Remove duplicate ids 
+  .filter((item, index) => userSlackIdsFound.indexOf(item) === index)
+  // Remove the <@ >
+  .map((t) => t.substring(2, t.length - 1));
+  
   const postEphemeral = async (text) => {
     return app.client.chat.postEphemeral({
       channel: channel,
@@ -189,23 +180,24 @@ async function givePotato({user, text, channel, ts}) {
 
   // Check if the only person recieving a potato is the creator of the message
   // and blame them...
-  if (_.isEqual(receiverSlackIds, [`${senderSlackId}`])) {
+  if (receiverSlackIds[0] === `${senderSlackId}`) {
     await postEphemeral("You cannot gib potato to yourself :face_with_raised_eyebrow:");
     return;
   }
-
+  
   // Remove the sender if they are in the message
   receiverSlackIds = receiverSlackIds.filter((t) => t !== senderSlackId);
-
+  
   if (!receiverSlackIds || receiverSlackIds.length == 0) {
     await postEphemeral("To gib people potato, you have to @ someone");
     return;
   }
-
+  
   const receiversCount = receiverSlackIds.length;
   const potatoCount = (text.match(/:potato:/g) || []).length;
-
+  
   // Check that there are potatos left to give for the sender (sender ids)
+  const senderDBId = await getUserDbIdOrCreateUser(senderSlackId);
   const potatoesGivenToday = await getPotatoesGivenToday(senderDBId);
 
   if (potatoesGivenToday > maxPotato) {
@@ -219,17 +211,12 @@ async function givePotato({user, text, channel, ts}) {
   }
 
   // These will be our DB ids for the people that where mentioned
-  let userDBIds = [];
-
-  for (const userSlackId of receiverSlackIds) {
-    // Adds the users to the Db if they are not in there yet
-    userDBIds.push(await getUserDbId(userSlackId));
-  }
+  let userDBIds = receiverSlackIds.map(userSlackId => getUserDbId(userSlackId))
+  await Promise.all(userDBIds)
 
   // Add the message's to the DB
-  userDBIds.forEach(async (user) => {
-    await addMessage(senderDBId, user, potatoCount);
-  });
+  const addMessagePromises = userDBIds.map(userDbId => addMessage(senderDBId, userDbId, potatoCount))
+  await Promise.all(addMessagePromises)
 
   const permalinkToMessage = await app.client.chat.getPermalink({
     channel: channel,
@@ -239,28 +226,18 @@ async function givePotato({user, text, channel, ts}) {
   // This is just to check that we can find all the people ->  Seems to work
   let receivers = "";
   receiverSlackIds.forEach((userSlackId) => {
-    try {
-      app.client.chat.postMessage({
-        channel: userSlackId,
-        text: `You got *${potatoCount} potato* by <@${senderSlackId}> \n>${permalinkToMessage.permalink}`,
-      });
-    } catch (error) {
-      console.error(error);
-      Sentry.captureException(error);
-    }
+    app.client.chat.postMessage({
+      channel: userSlackId,
+      text: `You got *${potatoCount} potato* by <@${senderSlackId}> \n>${permalinkToMessage.permalink}`,
+    })
     receivers += `<@${userSlackId}> `;
   });
 
-   // Send the a Message to the sender of the Potatoes
-   try {
-    app.client.chat.postMessage({
-      channel: senderSlackId,
-      text: `You send *${potatoCount*receiversCount} potato* to ${receivers}\nYou have *${(maxPotato - potatoesGivenToday) - (potatoCount*receiversCount)} potato* left.\n>${permalinkToMessage.permalink}`,
-    });
-  } catch (error) {
-    console.error(error);
-    Sentry.captureException(error);
-  }
+  // Send the a Message to the sender of the Potatoes
+  app.client.chat.postMessage({
+    channel: senderSlackId,
+    text: `You send *${potatoCount*receiversCount} potato* to ${receivers}\nYou have *${(maxPotato - potatoesGivenToday) - (potatoCount*receiversCount)} potato* left.\n>${permalinkToMessage.permalink}`,
+  });
 }
 
 /// Listens to incoming messages that contain :potato:
@@ -309,6 +286,7 @@ app.event("message", async ({ event, client, context }) => {
       const cur = newUTCDate();
       const userID = await getUserDbId(event["user"]);
       const potatoesGivenSoFar = await getPotatoesGivenToday(userID);
+
       client.chat.postMessage({
         channel: event["channel"],
         text: `You have *${
@@ -328,99 +306,97 @@ app.event("app_home_opened", async ({ event, client, context }) => {
   const transaction = Sentry.startTransaction({
     name: "app_home_opened"
   })
-  const userSlackId = event["user"]
-  const userDbId = await getUserDbId(userSlackId)
-  const potatoesGivenToday = await getPotatoesGivenToday(userDbId)
-  const totalPotatoesGiven = await getTotalPotatoesGiven(userDbId)
-  const totalPotatoesReceived = await getTotalPotatoesReceived(userDbId)
 
-  try {
-    /* view.publish is the method that your app uses to push a view to the Home tab */
-    await client.views.publish({
-      /* the user that opened your app's app home */
-      user_id: event.user,
+  const userDbId = await getUserDbId(event["user"])
+  const homePromises = [
+    getPotatoesGivenToday(userDbId), 
+    getTotalPotatoesGiven(userDbId),
+    getTotalPotatoesReceived(userDbId)
+  ]
 
-      /* the view object that appears in the app home*/
-      view: {
-        type: "home",
-        callback_id: "home_view",
+  await Promise.all(homePromises).then(async ([potatoesGivenToday, totalPotatoesGiven, totalPotatoesReceived]) => {
+      /* view.publish is the method that your app uses to push a view to the Home tab */
+      await client.views.publish({
+        /* the user that opened your app's app home */
+        user_id: event.user,
 
-        /* body of the view */
-        "blocks": [
-          {
-            "type": "section",
-            "text": {
-              "type": "mrkdwn",
-              "text": "*Hallo to GibPotato!*"
-            }
-          },
-          {
-            "type": "section",
-            "text": {
-              "type": "mrkdwn",
-              "text": "You can gib people potato to show your much like them and recognize them for all the toll things they do."
-            }
-          },
-          {
-            "type": "divider"
-          },
-          {
-            "type": "section",
-            "text": {
-              "type": "mrkdwn",
-              "text": "*My Potato*"
-            }
-          },
-          {
-            "type": "section",
-            "text": {
-              "type": "mrkdwn",
-              "text": `Received: ${totalPotatoesReceived} :potato:   |   Given: ${totalPotatoesGiven} :potato:`
-            }
-          },
-          {
-            "type": "section",
-            "text": {
-              "type": "mrkdwn",
-              "text": `Potatoes left to gib today: *${maxPotato - potatoesGivenToday}*`
-            }
-          },
-          {
-            "type": "divider"
-          },
-          {
-            "type": "section",
-            "text": {
-              "type": "mrkdwn",
-              "text": "*Potato Received Leaderboard*"
-            }
-          },
-          {
-            "type": "actions",
-            "elements": [
-              {
-                "type": "button",
-                "text": {
-                  "type": "plain_text",
-                  "text": "View Full Leaderboard",
-                  "emoji": true
-                },
-                "url": "https://gibpotato.app"
+        /* the view object that appears in the app home*/
+        view: {
+          type: "home",
+          callback_id: "home_view",
+
+          /* body of the view */
+          "blocks": [
+            {
+              "type": "section",
+              "text": {
+                "type": "mrkdwn",
+                "text": "*Hallo to GibPotato!*"
               }
-            ]
-          }
-        ]
-      },
-    });
-  } catch (error) {
-    console.log(error);
-    Sentry.captureException(error);
-  }
+            },
+            {
+              "type": "section",
+              "text": {
+                "type": "mrkdwn",
+                "text": "You can gib people potato to show your much like them and recognize them for all the toll things they do."
+              }
+            },
+            {
+              "type": "divider"
+            },
+            {
+              "type": "section",
+              "text": {
+                "type": "mrkdwn",
+                "text": "*My Potato*"
+              }
+            },
+            {
+              "type": "section",
+              "text": {
+                "type": "mrkdwn",
+                "text": `Received: ${totalPotatoesReceived} :potato:   |   Given: ${totalPotatoesGiven} :potato:`
+              }
+            },
+            {
+              "type": "section",
+              "text": {
+                "type": "mrkdwn",
+                "text": `Potatoes left to gib today: *${maxPotato - potatoesGivenToday}*`
+              }
+            },
+            {
+              "type": "divider"
+            },
+            {
+              "type": "section",
+              "text": {
+                "type": "mrkdwn",
+                "text": "*Potato Received Leaderboard*"
+              }
+            },
+            {
+              "type": "actions",
+              "elements": [
+                {
+                  "type": "button",
+                  "text": {
+                    "type": "plain_text",
+                    "text": "View Full Leaderboard",
+                    "emoji": true
+                  },
+                  "url": "https://gibpotato.app"
+                }
+              ]
+            }
+          ]
+        },
+      });
+  })
   transaction.finish()
 });
 
 (async () => {
   await app.start(process.env.PORT || 3000);
-
   console.log("🥔 GibPotato app is running!");
 })();
