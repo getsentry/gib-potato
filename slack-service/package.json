@@ -10,9 +10,9 @@
   "license": "MIT",
   "dependencies": {
     "@prisma/client": "^4.2.1",
-    "@sentry/node": "^7.11.1",
-    "@sentry/profiling-node": "^0.0.9",
-    "@sentry/tracing": "^7.17.4",
+    "@sentry/node": "^7.18.0",
+    "@sentry/profiling-node": "^0.0.12",
+    "@sentry/tracing": "^7.18.0",
     "@slack/bolt": "^3.12.1",
     "dotenv": "^16.0.1",
     "lodash": "^4.17.21",
