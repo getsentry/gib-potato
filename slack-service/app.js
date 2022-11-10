@@ -212,10 +212,10 @@ async function givePotato({user, text, channel, ts}) {
 
   // These will be our DB ids for the people that where mentioned
   let userDBIds = receiverSlackIds.map(userSlackId => getUserDbIdOrCreateUser(userSlackId))
-  await Promise.all(userDBIds)
+  const resolvedUsers = await Promise.all(userDBIds)
 
   // Add the message's to the DB
-  const addMessagePromises = userDBIds.map(userDbId => addMessage(senderDBId, userDbId, potatoCount))
+  const addMessagePromises = resolvedUsers.map(userDbId => addMessage(senderDBId, userDbId, potatoCount))
   await Promise.all(addMessagePromises)
 
   const permalinkToMessage = await app.client.chat.getPermalink({
