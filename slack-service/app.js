@@ -211,7 +211,7 @@ async function givePotato({user, text, channel, ts}) {
   }
 
   // These will be our DB ids for the people that where mentioned
-  let userDBIds = receiverSlackIds.map(userSlackId => getUserDbId(userSlackId))
+  let userDBIds = receiverSlackIds.map(userSlackId => getUserDbIdOrCreateUser(userSlackId))
   await Promise.all(userDBIds)
 
   // Add the message's to the DB
@@ -284,7 +284,7 @@ app.event("message", async ({ event, client, context }) => {
       })
 
       const cur = newUTCDate();
-      const userID = await getUserDbId(event["user"]);
+      const userID = await getUserDbIdOrCreateUser(event["user"]);
       const potatoesGivenSoFar = await getPotatoesGivenToday(userID);
 
       client.chat.postMessage({
@@ -307,7 +307,7 @@ app.event("app_home_opened", async ({ event, client, context }) => {
     name: "app_home_opened"
   })
 
-  const userDbId = await getUserDbId(event["user"])
+  const userDbId = await getUserDbIdOrCreateUser(event["user"])
   const homePromises = [
     getPotatoesGivenToday(userDbId), 
     getTotalPotatoesGiven(userDbId),
