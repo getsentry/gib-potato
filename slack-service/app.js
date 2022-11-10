@@ -43,6 +43,8 @@ const newUTCDate = () => {
   return new Date(nowUtc)
 }
 
+const currentUTCDateDay = () => {
+
 /// Find the user in the DB that has a matching slack ID, if there is none return null
 async function getUserBySlackId(slackId) {
   return await prisma.users.findFirst({
@@ -82,27 +84,31 @@ async function addMessage(senderDbId, receiverDbId, potatoCount) {
 /// Gets the total potatoes given by the sender
 async function getTotalPotatoesGiven(senderId) {
     // Need to check if it not the same
-    const entry = await prisma.messages.findMany({
+    const entries = await prisma.messages.findMany({
       where: {
         sender_user_id: senderId,
       },
     });
-    
-    return entry
+
+    return entries
       .map((t) => t.amount)
       .reduce((a, b) => a + b, 0);
 }
 
 /// Gets the total potatoes received by the sender
-async function getTotalPotatoesReceived(senderId) {
+async function getTotalPotatoesEverReceived(senderId) {
   // Need to check if it not the same
-  const entry = await prisma.messages.findMany({
+  const entries = await prisma.messages.findMany({
     where: {
       receiver_user_id: senderId,
     },
   });
 
-  return entry
+  if(!entries.length){
+    return 0
+  }
+
+  return entries
     .map((t) => t.amount)
     .reduce((a, b) => a + b, 0);
 }
@@ -110,22 +116,29 @@ async function getTotalPotatoesReceived(senderId) {
 /// Gets the potatoes given today by the sender
 async function getPotatoesGivenToday(senderId) {
   // Need to check if it not the same
-  const entry = await prisma.messages.findMany({
+  const entries = await prisma.messages.findMany({
+    select: {
+      amount: true,
+    },
+    // You can only ever send 5 potato per day, so it takes at most 5 messages
+    // before you run out of potatoes. We can just take last 5 messages from today and discard the rest
+    take: maxPotato,
+    orderBy: [{
+      created: 'desc'
+    }],
     where: {
       sender_user_id: senderId,
+      created: {
+        gte: newUTCDate().setHours(0, 0, 0, 0),
+      }
     },
   });
 
-  const datesAreOnSameDay = (first, second) =>
-    first.getUTCFullYear() === second.getUTCFullYear() &&
-    first.getUTCMonth() === second.getUTCMonth() &&
-    first.getUTCDate() === second.getUTCDate();
+  if(!entries.length) {
+    return 0;
+  }
 
-  const cur = newUTCDate();
-  return entry
-    .filter((t) => datesAreOnSameDay(t.created, cur))
-    .map((t) => t.amount)
-    .reduce((a, b) => a + b, 0);
+  return entries.map((t) => t.amount).reduce((a, b) => a + b, 0);
 }
 
 /// Get the full name using the userId from the Slack API
@@ -311,7 +324,7 @@ app.event("app_home_opened", async ({ event, client, context }) => {
   const homePromises = [
     getPotatoesGivenToday(userDbId), 
     getTotalPotatoesGiven(userDbId),
-    getTotalPotatoesReceived(userDbId)
+    getTotalPotatoesEverReceived(userDbId)
   ]
 
   await Promise.all(homePromises).then(async ([potatoesGivenToday, totalPotatoesGiven, totalPotatoesReceived]) => {
