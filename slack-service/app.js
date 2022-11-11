@@ -43,8 +43,6 @@ const newUTCDate = () => {
   return new Date(nowUtc)
 }
 
-const currentUTCDateDay = () => {
-
 /// Find the user in the DB that has a matching slack ID, if there is none return null
 async function getUserBySlackId(slackId) {
   return await prisma.users.findFirst({
