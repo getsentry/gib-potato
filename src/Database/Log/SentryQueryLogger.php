@@ -33,6 +33,5 @@ class SentryQueryLogger extends AbstractLogger
         $context->setEndTimestamp($context->getStartTimestamp() + $loggedQuery->took / 1000);
 
         $span = $parentSpan->startChild($context);
-        $span->finish();
     }
 }
