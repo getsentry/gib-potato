@@ -64,7 +64,7 @@ class SlackController extends Controller
         }
     }
 
-    public function eventCallback()
+    protected function eventCallback()
     {
         $event = EventFactory::createEvent($this->request->getData('event'));
         $event->process();
@@ -74,7 +74,7 @@ class SlackController extends Controller
             ->withStatus(200);
     }
 
-    public function urlVerification()
+    protected function urlVerification()
     {
         return $this->response
             ->withStringBody(json_encode([
