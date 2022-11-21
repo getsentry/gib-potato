@@ -10,6 +10,7 @@
   },
   "dependencies": {
     "@sentry/tracing": "^7.11.1",
+    "@sentry/vite-plugin": "^0.2.0",
     "@sentry/vue": "^7.11.1",
     "@types/canvas-confetti": "^1.4.3",
     "@vueuse/core": "^9.1.0",
