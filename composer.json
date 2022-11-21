@@ -20,7 +20,7 @@
         "lcobucci/jwt": "^4.2",
         "paragonie/csp-builder": "^2.7",
         "php-http/curl-client": "^2.2",
-        "sentry/sentry": "^3.7"
+        "sentry/sentry": "^3.11"
     },
     "require-dev": {
         "cakephp/bake": "^2.6",
