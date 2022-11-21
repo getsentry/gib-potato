@@ -4,6 +4,12 @@ import { defineConfig } from 'vite';
 import vue from '@vitejs/plugin-vue';
 import sentryVitePlugin from '@sentry/vite-plugin';
 
+if (!process.env.SENTRY_AUTH_TOKEN) {
+  console.log(
+    'SENTRY_AUTH_TOKEN not set. Will not upload GibPotato release artifacts to Sentry.'
+  );
+}
+
 // https://vitejs.dev/config/
 export default defineConfig({
   plugins: [
@@ -14,6 +20,7 @@ export default defineConfig({
       project: 'gibpotato-frontend',
       authToken: process.env.SENTRY_AUTH_TOKEN,
       dryRun: !process.env.SENTRY_AUTH_TOKEN,
+      cleanArtifacts: true,
     }),
   ],
   resolve: {
