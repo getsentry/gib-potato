@@ -21,6 +21,8 @@ export default defineConfig({
       authToken: process.env.SENTRY_AUTH_TOKEN,
       dryRun: !process.env.SENTRY_AUTH_TOKEN,
       cleanArtifacts: true,
+      stripCommonPrefix: true,
+      rewrite: true,
       setCommits: {
         auto: true,
         ignoreEmpty: true,
