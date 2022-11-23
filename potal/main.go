@@ -54,7 +54,7 @@ func main() {
 	err := sentry.Init(sentry.ClientOptions{
 		Dsn:              "https://1db008b3208041da9da692b4b8206bea@o1.ingest.sentry.io/4504044642107392",
 		Debug:            true,
-		Environment:      "prod",
+		Environment:      "production",
 		TracesSampleRate: 1.0,
 		AttachStacktrace: true,
 	})
