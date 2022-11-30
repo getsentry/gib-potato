@@ -247,7 +247,7 @@ async function givePotato({user, text, channel, ts}) {
   // Send the a Message to the sender of the Potatoes
   app.client.chat.postMessage({
     channel: senderSlackId,
-    text: `You send *${potatoCount*receiversCount} potato* to ${receivers}\nYou have *${(maxPotato - potatoesGivenToday) - (potatoCount*receiversCount)} potato* left.\n>${permalinkToMessage.permalink}`,
+    text: `You sent *${potatoCount*receiversCount} potato* to ${receivers}\nYou have *${(maxPotato - potatoesGivenToday) - (potatoCount*receiversCount)} potato* left.\n>${permalinkToMessage.permalink}`,
   });
 }
 
@@ -349,7 +349,7 @@ app.event("app_home_opened", async ({ event, client, context }) => {
               "type": "section",
               "text": {
                 "type": "mrkdwn",
-                "text": "You can gib people potato to show your much like them and recognize them for all the toll things they do."
+                "text": "You can gib people potato to show you much like them and recognize them for all the great things they do."
               }
             },
             {
