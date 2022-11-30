@@ -75,8 +75,8 @@ class AwardService
             // @FIXME Allow users to opt-out
             $this->slackClient->postMessage(
                 $fromSlackUserId,
-                sprintf('You did gib *%s* :%s: to <@%s>.%s', $amount, $type, $toSlackUserId, PHP_EOL) .
-                sprintf('You have *%s* :%s: left.', 5 - $amount - $givenOutAmount, $type),
+                sprintf('You did gib *%s* %s to <@%s>.%s', $amount, $type, $toSlackUserId, PHP_EOL) .
+                sprintf('You have *%s* %s left.', 5 - $amount - $givenOutAmount, $type),
             );
 
             // @FIXME Allow users to opt-out
