@@ -6,8 +6,11 @@ namespace App\Error;
 use Cake\Error\ErrorLogger;
 use Cake\Error\PhpError;
 use Psr\Http\Message\ServerRequestInterface;
+use Sentry\Event;
+use Sentry\EventHint;
+use Sentry\ExceptionMechanism;
 use Throwable;
-use function Sentry\captureException;
+use function Sentry\captureEvent;
 use function Sentry\captureMessage;
 
 /**
@@ -30,7 +33,12 @@ class SentryErrorLogger extends ErrorLogger
      */
     public function logException(Throwable $exception, ?ServerRequestInterface $request = null, bool $includeTrace = false): void
     {
-        captureException($exception);
+        $hint = EventHint::fromArray([
+            'exception' => $exception,
+            'mechanism' => new ExceptionMechanism(ExceptionMechanism::TYPE_GENERIC, false),
+        ]);
+
+        captureEvent(Event::createEvent(), $hint);
 
         parent::logException($exception, $request, $includeTrace);
     }
