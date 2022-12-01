@@ -37,7 +37,7 @@ const app = new App({
 
 // Report bolt errors to Sentry
 app.error(async (error) => {
-  Sentry.captureException(error.original);
+  Sentry.captureException(error);
 });
 
 const newUTCDate = () => {
