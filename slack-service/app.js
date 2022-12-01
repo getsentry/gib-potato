@@ -1,8 +1,8 @@
 // Sentry
 const Sentry = require("@sentry/node");
-// Import order here matters, @sentry/tracing must be imported before @sentry/node
-require("@sentry/tracing")
-const {ProfilingIntegration} = require("@sentry/profiling-node")
+// Note: You MUST import @sentry/tracing package before @sentry/profiling-node
+require("@sentry/tracing");
+const {ProfilingIntegration} = require("@sentry/profiling-node");
 
 // lodash
 const _ = require("lodash");
@@ -33,6 +33,11 @@ const maxPotato = process.env.MAX_POTATO
 const app = new App({
   token: process.env.SLACK_BOT_TOKEN,
   signingSecret: process.env.SLACK_SIGNING_SECRET,
+});
+
+// Report bolt errors to Sentry
+app.error(async (error) => {
+  Sentry.captureException(error.original);
 });
 
 const newUTCDate = () => {
