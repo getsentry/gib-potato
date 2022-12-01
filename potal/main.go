@@ -10,7 +10,6 @@ import (
 	"github.com/getsentry/sentry-go"
 	"github.com/gofiber/fiber/v2"
 	"github.com/gofiber/fiber/v2/utils"
-	"github.com/joho/godotenv"
 	"github.com/valyala/fasthttp/fasthttpadaptor"
 )
 
@@ -53,11 +52,6 @@ func SentryHandler() fiber.Handler {
 }
 
 func main() {
-	enverr := godotenv.Load()
-	if enverr != nil {
-		log.Fatal("Error loading .env file")
-	}
-
 	sentryerr := sentry.Init(sentry.ClientOptions{
 		Dsn:              os.Getenv("SENTRY_DSN"),
 		Debug:            true,
