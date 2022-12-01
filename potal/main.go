@@ -4,11 +4,13 @@ import (
 	"context"
 	"log"
 	"net/http"
+	"os"
 	"time"
 
 	"github.com/getsentry/sentry-go"
 	"github.com/gofiber/fiber/v2"
 	"github.com/gofiber/fiber/v2/utils"
+	"github.com/joho/godotenv"
 	"github.com/valyala/fasthttp/fasthttpadaptor"
 )
 
@@ -51,15 +53,20 @@ func SentryHandler() fiber.Handler {
 }
 
 func main() {
-	err := sentry.Init(sentry.ClientOptions{
-		Dsn:              "https://1db008b3208041da9da692b4b8206bea@o1.ingest.sentry.io/4504044642107392",
+	enverr := godotenv.Load()
+	if enverr != nil {
+		log.Fatal("Error loading .env file")
+	}
+
+	sentryerr := sentry.Init(sentry.ClientOptions{
+		Dsn:              os.Getenv("SENTRY_DSN"),
 		Debug:            true,
 		Environment:      "production",
 		TracesSampleRate: 1.0,
 		AttachStacktrace: true,
 	})
-	if err != nil {
-		log.Fatalf("sentry.Init: %s", err)
+	if sentryerr != nil {
+		log.Fatalf("sentry.Init: %s", sentryerr)
 	}
 
 	app := fiber.New()
