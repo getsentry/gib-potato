@@ -161,7 +161,7 @@ async function getUserDbIdOrCreateUser(slackId) {
 }
 
 // Regex to find all the mentions
-const mentionsRegex = /<.*?>/g;
+const mentionsRegex = /<@.*?>/g;
 
 /// Figure out who gets potato
 async function givePotato({user, text, channel, ts}) {
