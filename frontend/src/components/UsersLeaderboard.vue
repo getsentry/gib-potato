@@ -28,7 +28,7 @@ const { users } = storeToRefs(usersStore);
             scope="col"
             class="py-3.5 px-3 text-right text-sm font-semibold"
           >
-            Send
+            Sent
           </th>
           <th
             scope="col"
@@ -60,7 +60,7 @@ const { users } = storeToRefs(usersStore);
           <td
             class="whitespace-nowrap py-4 px-3 text-right text-sm"
           >
-            {{ person.send_count ?? 0 }}
+            {{ person.sent_count ?? 0 }}
           </td>
           <td
             class="relative whitespace-nowrap py-4 pl-3 pr-4 text-right text-sm"

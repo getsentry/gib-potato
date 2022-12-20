@@ -24,13 +24,13 @@ class ApiController extends Controller
                 'Users.id',
                 'Users.slack_name',
                 'Users.slack_picture',
-                'send_count' => $query->func()->sum('MessagesSend.amount'),
+                'sent_count' => $query->func()->sum('MessagesSend.amount'),
                 'received_count' => $query->func()->sum('MessagesReceived.amount'),
             ])
             ->distinct(['Users.id'])
             ->leftJoinWith('MessagesSend')
             ->leftJoinWith('MessagesReceived')
-            ->order(['send_count' => 'DESC'])
+            ->order(['sent_count' => 'DESC'])
             ->enableHydration(false)
             ->toArray();
 
