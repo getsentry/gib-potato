@@ -9,6 +9,7 @@ use Cake\ORM\Entity;
  * User Entity
  *
  * @property string $id
+ * @property string $status
  * @property string $slack_user_id
  * @property string $slack_name
  * @property string $slack_picture
@@ -27,6 +28,7 @@ class User extends Entity
      * @var array<string, bool>
      */
     protected $_accessible = [
+        'status' => true,
         'slack_user_id' => true,
         'slack_name' => true,
         'slack_picture' => true,
