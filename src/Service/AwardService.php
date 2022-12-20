@@ -106,6 +106,7 @@ class AwardService
         if ($user === null) {
             // Create a new user
             $user = $this->Users->newEntity([
+                'status' => 'active',
                 'slack_user_id' => $slackUser['id'],
                 'slack_name' => $slackUser['real_name'],
                 'slack_picture' => $slackUser['profile']['image_72'],
@@ -113,6 +114,7 @@ class AwardService
         } else {
             // Update the user
             $user = $this->Users->patchEntity($user, [
+                'status' => 'active',
                 'slack_name' => $slackUser['real_name'],
                 'slack_picture' => $slackUser['profile']['image_72'],
             ]);
