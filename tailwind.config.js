@@ -4,7 +4,6 @@ module.exports = {
     './frontend/**/*.{ts,vue}',
     './config/**/*.php',
     './templates/**/*.php',
-    './plugins/**/*.php',
   ],
   theme: {
     extend: {},
