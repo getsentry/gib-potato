@@ -17,7 +17,11 @@ Sentry.init({
   dsn: params.sentry.dsn,
   integrations: [
     new BrowserTracing({
-      tracingOrigins: ["localhost", "gipotato.eu.ngrok.io", /^\//],
+      tracePropagationTargets: [
+        "localhost",
+        "gipotato.eu.ngrok.io",
+        "gipotato.app",
+      ],
     }),
   ],
   tracesSampleRate: 1.0,
