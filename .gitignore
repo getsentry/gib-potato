@@ -1,12 +1,12 @@
 # Project specific files #
 ##########################
+/config/Migrations/*.lock
 /config/app_local.php
-.env
-/frontend/config/.env
 /logs/*
 /tmp/*
 /vendor/*
 /potal/tmp/*
+.env
 
 # Assets #
 ##########
