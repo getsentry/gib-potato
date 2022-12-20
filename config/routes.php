@@ -49,6 +49,6 @@ return static function (RouteBuilder $routes) {
 
     // Routes in this scope don't have CSRF protection.
     $routes->scope('/', function (RouteBuilder $builder) {
-        $builder->connect('/slack', ['controller' => 'Slack', 'action' => 'index']);
+        $builder->connect('/events', ['controller' => 'Slack', 'action' => 'index']);
     });
 };
