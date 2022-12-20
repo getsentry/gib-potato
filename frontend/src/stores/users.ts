@@ -5,7 +5,8 @@ import { defaultOptions } from '../utils/api';
 
 export interface User {
   id: string;
-  count: number;
+  received_count: number;
+  send_count: number;
   slack_name: string;
   slack_picture: string;
 }
