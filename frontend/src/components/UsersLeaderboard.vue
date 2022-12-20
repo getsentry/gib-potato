@@ -1,35 +1,10 @@
 <script setup lang="ts">
 import { useUsersStore } from '@/stores/users';
 import { storeToRefs } from 'pinia';
-import * as confetti from 'canvas-confetti';
 
 const usersStore = useUsersStore();
 const { users } = storeToRefs(usersStore);
 
-const count = 200;
-const defaults = {
-  origin: { y: 0.7 },
-};
-
-const fire = (particleRatio: number, opts: unknown = {}) => {
-  confetti.default(
-    Object.assign({}, defaults, opts, {
-      particleCount: Math.floor(count * particleRatio),
-    })
-  );
-};
-
-const onCountClick = (e: MouseEvent) => {
-  fire(0.35, {
-    spread: 100,
-    decay: 0.91,
-    scalar: 0.8,
-    origin: {
-      y: e.clientY / window.innerHeight,
-      x: e.clientX / window.innerWidth,
-    },
-  });
-};
 </script>
 
 <template>
@@ -67,7 +42,6 @@ const onCountClick = (e: MouseEvent) => {
         <tr
           v-for="(person, index) in users.state"
           :key="person.id"
-          @click="onCountClick"
         >
           <td class="whitespace-nowrap py-4 pl-4 pr-3 text-sm">
             {{ index + 1 }}
