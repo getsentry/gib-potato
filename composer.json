@@ -19,13 +19,13 @@
         "josegonzalez/dotenv": "^3.2",
         "lcobucci/jwt": "^4.2",
         "paragonie/csp-builder": "^2.7",
-        "php-http/curl-client": "^2.2",
-        "sentry/sentry": "^3.11"
+        "sentry/sdk": "^3.3"
     },
     "require-dev": {
         "cakephp/bake": "^2.6",
         "cakephp/cakephp-codesniffer": "^4.5",
         "cakephp/debug_kit": "^4.5",
+        "phpstan/phpstan": "^1.9",
         "phpunit/phpunit": "^9.3"
     },
     "autoload": {
