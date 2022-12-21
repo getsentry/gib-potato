@@ -4,13 +4,11 @@ declare(strict_types=1);
 namespace App\Database\Log;
 
 use Psr\Log\AbstractLogger;
-use Psr\Log\LoggerInterface;
 use Sentry\SentrySdk;
 use Sentry\Tracing\SpanContext;
 
 class SentryQueryLogger extends AbstractLogger
 {
-
     private $parentSpan = null;
 
     /**
