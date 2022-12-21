@@ -5,25 +5,19 @@ namespace App\Service;
 
 class EventFactory
 {
-    public const TYPE_MESSAGE = 'message';
-
-    public const TYPE_REACTION_ADDED = 'reaction_added';
-
-    public static function createEvent(array $requestData)
+    public static function createEvent(array $data): AbstractEvent
     {
-        if (empty($requestData)) {
-            return new NoOpEvent();
-        }
-
-        $eventType = $requestData['type'] ?? null;
-
-        switch ($eventType) {
-            case self::TYPE_MESSAGE:
-                return new MessageEvent($requestData);
-            case self::TYPE_REACTION_ADDED:
-                return new ReactionAddedEvent($requestData);
+        switch ($data['type']) {
+            case AbstractEvent::TYPE_MESSAGE:
+                return new MessageEvent($data);
+            case AbstractEvent::TYPE_REACTION_ADDED:
+                return new ReactionAddedEvent($data);
+            case AbstractEvent::TYPE_APP_MENTION:
+                return new AppMentionEvent($data);
+            case AbstractEvent::TYPE_APP_HOME_OPENED:
+                return new AppHomeOpenedEvent($data);
             default:
-                return new NoOpEvent();
+                throw new \Exception('Unknown event type');
         }
     }
 }

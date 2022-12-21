@@ -26,16 +26,6 @@ use Cake\Event\EventInterface;
 class ErrorController extends AppController
 {
     /**
-     * beforeFilter callback.
-     *
-     * @param \Cake\Event\EventInterface $event Event.
-     * @return \Cake\Http\Response|null|void
-     */
-    public function beforeFilter(EventInterface $event)
-    {
-    }
-
-    /**
      * beforeRender callback.
      *
      * @param \Cake\Event\EventInterface $event Event.
@@ -46,15 +36,5 @@ class ErrorController extends AppController
         parent::beforeRender($event);
 
         $this->viewBuilder()->setTemplatePath('Error');
-    }
-
-    /**
-     * afterFilter callback.
-     *
-     * @param \Cake\Event\EventInterface $event Event.
-     * @return \Cake\Http\Response|null|void
-     */
-    public function afterFilter(EventInterface $event)
-    {
     }
 }

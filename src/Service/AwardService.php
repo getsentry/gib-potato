@@ -28,35 +28,13 @@ class AwardService
 
         if ($fromUser instanceof User && $toUser instanceof User) {
             // @FIXME do this counting stuff earlier and don't even try
-            $query = $this->Messages->find()
+            $givenOutAmount = $this->Messages->find()
                 ->where([
                     'sender_user_id' => $fromUser->id,
-                ]);
-
-            switch ($type) {
-                case 'potato':
-                    $query->andWhere([
-                        'type' => 'potato',
-                        'created >=' => new FrozenTime('24 hours ago'),
-                    ]);
-                    break;
-                case 'fries':
-                    $query->andWhere([
-                        'type' => 'fries',
-                        'created >=' => new FrozenTime('7 days ago'),
-                    ]);
-                    break;
-                case 'hotdog':
-                    $query->andWhere([
-                        'type' => 'hotdog',
-                        'created >=' => new FrozenTime('30 days ago'),
-                    ]);
-                    break;
-                default:
-                    return;
-            }
-
-            $givenOutAmount = $query->count();
+                    'type' => 'potato',
+                    'created >=' => new FrozenTime('24 hours ago'),
+                ])
+                ->count();
 
             // @FIXME make this 5 a const or move to DB
             if ($givenOutAmount >= 5) {
