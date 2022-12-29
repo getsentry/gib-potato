@@ -80,6 +80,25 @@ class SlackClient
     }
 
     /**
+     * @see https://api.slack.com/methods/chat.getPermalink
+     */
+    public function getSlackMessagePermalink(string $channel, string $timestamp): ?string
+    {
+        $response = $this->client->get('chat.getPermalink', [
+            'channel' => $channel,
+            'message_ts' => $timestamp,
+        ]);
+
+        if ($response->isSuccess()) {
+            $json = $response->getJson();
+
+            return $json['permalink'];
+        }
+
+        return null;
+    }
+
+    /**
      * @see https://api.slack.com/methods/users.info
      */
     public function getUser(string $user): ?array
