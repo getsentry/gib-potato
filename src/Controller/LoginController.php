@@ -64,7 +64,7 @@ class LoginController extends AppController
                     return $this->redirect(['action' => 'login']);
                 }
 
-                $this->loadModel('Users');
+                $this->fetchTable('Users');
                 $user = $this->Users
                     ->findBySlackUserId(
                         $jwt->claims()->get('https://slack.com/user_id')

@@ -3,11 +3,8 @@ declare(strict_types=1);
 
 namespace App\Service;
 
-use Cake\Datasource\ModelAwareTrait;
-
 abstract class AbstractEvent
 {
-    use ModelAwareTrait;
 
     public const TYPE_MESSAGE = 'message';
     public const TYPE_REACTION_ADDED = 'reaction_added';

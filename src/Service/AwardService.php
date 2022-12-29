@@ -4,12 +4,12 @@ declare(strict_types=1);
 namespace App\Service;
 
 use App\Model\Entity\User;
-use Cake\Datasource\ModelAwareTrait;
+use Cake\ORM\Locator\LocatorAwareTrait;
 use Cake\I18n\FrozenTime;
 
 class AwardService
 {
-    use ModelAwareTrait;
+    use LocatorAwareTrait;
 
     protected SlackClient $slackClient;
 
@@ -17,8 +17,8 @@ class AwardService
     {
         $this->slackClient = new SlackClient();
 
-        $this->loadModel('Users');
-        $this->loadModel('Messages');
+        $this->fetchTable('Users');
+        $this->fetchTable('Messages');
     }
 
     public function gib(string $fromSlackUserId, string $toSlackUserId, int $amount, string $type)

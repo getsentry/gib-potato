@@ -17,7 +17,7 @@ class ApiController extends Controller
 
     public function users(): Response
     {
-        $this->loadModel('Users');
+        $this->fetchTable('Users');
 
         $query = $this->Users->find();
         $users = $query->select([
