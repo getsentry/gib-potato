@@ -1,7 +1,9 @@
 <?php
 declare(strict_types=1);
 
-namespace App\Service;
+namespace App\Service\Event;
+
+use App\Service\SlackClient;
 
 abstract class AbstractEvent
 {
@@ -14,6 +16,7 @@ abstract class AbstractEvent
     protected SlackClient $slackClient;
 
     protected string $type;
+    protected string $eventTimestamp;
 
     public function __construct()
     {

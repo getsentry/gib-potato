@@ -57,48 +57,6 @@ class SlackClient
     }
 
     /**
-     * @see https://api.slack.com/methods/conversations.history
-     */
-    public function getSlackMessage(string $channel, string $timestamp): ?array
-    {
-        $response = $this->client->get('conversations.history', [
-            'channel' => $channel,
-            'latest' => $timestamp,
-            'inclusive' => true,
-            'limit' => 1,
-        ]);
-
-        if ($response->isSuccess()) {
-            $json = $response->getJson();
-            // We expect one single message in the response
-            if (!empty($json) && count($json['messages']) === 1) {
-                return $json['messages'][0];
-            }
-        }
-
-        return [];
-    }
-
-    /**
-     * @see https://api.slack.com/methods/chat.getPermalink
-     */
-    public function getSlackMessagePermalink(string $channel, string $timestamp): ?string
-    {
-        $response = $this->client->get('chat.getPermalink', [
-            'channel' => $channel,
-            'message_ts' => $timestamp,
-        ]);
-
-        if ($response->isSuccess()) {
-            $json = $response->getJson();
-
-            return $json['permalink'];
-        }
-
-        return null;
-    }
-
-    /**
      * @see https://api.slack.com/methods/users.info
      */
     public function getUser(string $user): ?array

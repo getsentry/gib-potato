@@ -1,17 +1,19 @@
 <?php
 declare(strict_types=1);
 
-namespace App\Service;
+namespace App\Service\Event;
 
-use Cake\Event\Event;
+use App\Service\Validation\Exception\PotatoException;
+use App\Service\Validation\Validation;
 
 class MessageEvent extends AbstractEvent
 {
     protected int $amount;
     protected string $sender;
-    protected array $receiver;
+    protected array $receivers;
     protected string $channel;
     protected string $text;
+    protected string $permalink;
     protected string $timestamp;
 
     public function __construct(array $event)
@@ -21,24 +23,28 @@ class MessageEvent extends AbstractEvent
         $this->type = self::TYPE_MESSAGE;
         $this->amount = $event['amount'];
         $this->sender = $event['sender'];
-        $this->receiver = $event['receiver'];
+        $this->receivers = $event['receivers'];
         $this->channel = $event['channel'];
         $this->text = $event['text'];
+        $this->permalink = $event['permalink'];
         $this->timestamp = $event['timestamp'];
+        $this->eventTimestamp = $event['event_timestamp'];
     }
 
     public function process()
     {
-        // Check potato amount
-        if (
-            $this->amount < 1 || $this->amount > 5) {
+        try {
+            Validation::amount($this->amount, count($this->receivers));
+        } catch (PotatoException $e) {
             $this->slackClient->postEphemeral(
                 channel: $this->channel,
                 user: $this->sender,
-                text: 'Not enough :potato: to gib... 😥',
+                text: $e->getMessage(),
             );
 
             return;
         }
+
+        
     }
 }

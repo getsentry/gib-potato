@@ -1,14 +1,13 @@
 <?php
 declare(strict_types=1);
 
-namespace App\Service;
+namespace App\Service\Event;
 
 class AppMentionEvent extends AbstractEvent
 {
     protected string $sender;
     protected string $channel;
     protected string $text;
-    protected string $timestamp;
 
     public function __construct(array $event)
     {
@@ -18,7 +17,6 @@ class AppMentionEvent extends AbstractEvent
         $this->sender = $event['sender'];
         $this->channel = $event['channel'];
         $this->text = $event['text'];
-        $this->timestamp = $event['timestamp'];
     }
 
     public function process()
