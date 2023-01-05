@@ -63,23 +63,17 @@ func EventsHandler(w http.ResponseWriter, r *http.Request, _ httprouter.Params) 
 	fmt.Printf("Event received: %+v\n", eventsAPIEvent.InnerEvent.Type)
 
 	if eventsAPIEvent.Type == slackevents.CallbackEvent {
-		var event Event
 		innerEvent := eventsAPIEvent.InnerEvent
 
 		switch ev := innerEvent.Data.(type) {
 		case *slackevents.ReactionAddedEvent:
-			event = parseReactionEvent(ev)
+			go processReactionEvent(ev)
 		case *slackevents.MessageEvent:
-			event = parseMessageEvent(ev)
+			go processMessageEvent(ev)
 		case *slackevents.AppMentionEvent:
-			event = parseAppMentionEvent(ev)
+			go processAppMentionEvent(ev)
 		case *slackevents.AppHomeOpenedEvent:
-			event = parseAppHomeOpenedEvent(ev)
-		}
-
-		if event != nil && event.IsValid() {
-			fmt.Printf("Event is valid: %+v\n", event)
-			go sendRequest(event)
+			go processAppHomeOpenedEvent(ev)
 		}
 	}
 
