@@ -76,14 +76,15 @@ func (e AppHomeOpenedEvent) isValid() bool {
 
 func processMessageEvent(event *slackevents.MessageEvent) {
 	messageEvent := MessageEvent{
-		Type:      "message",
-		Amount:    utils.MessageAmount(event.Text),
-		Sender:    event.User,
-		Receivers: utils.MessageReceivers(event.Text),
-		Channel:   event.Channel,
-		Text:      event.Text,
-		Timestamp: event.TimeStamp,
-		BotID:     event.BotID,
+		Type:           "message",
+		Amount:         utils.MessageAmount(event.Text),
+		Sender:         event.User,
+		Receivers:      utils.MessageReceivers(event.Text),
+		Channel:        event.Channel,
+		Text:           event.Text,
+		Timestamp:      event.TimeStamp,
+		EventTimestamp: event.EventTimeStamp,
+		BotID:          event.BotID,
 	}
 
 	if !messageEvent.isValid() {
