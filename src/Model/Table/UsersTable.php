@@ -63,6 +63,12 @@ class UsersTable extends Table
     public function validationDefault(Validator $validator): Validator
     {
         $validator
+            ->scalar('status')
+            ->maxLength('status', 255)
+            ->requirePresence('status', 'create')
+            ->notEmptyString('status');
+
+        $validator
             ->scalar('slack_user_id')
             ->maxLength('slack_user_id', 255)
             ->requirePresence('slack_user_id', 'create')
