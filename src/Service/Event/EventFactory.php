@@ -3,6 +3,8 @@ declare(strict_types=1);
 
 namespace App\Service\Event;
 
+use Exception;
+
 class EventFactory
 {
     public static function createEvent(array $data): AbstractEvent
@@ -17,7 +19,7 @@ class EventFactory
             case AbstractEvent::TYPE_APP_HOME_OPENED:
                 return new AppHomeOpenedEvent($data);
             default:
-                throw new \Exception('Unknown event type');
+                throw new Exception('Unknown event type');
         }
     }
 }
