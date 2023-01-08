@@ -1,5 +1,6 @@
 import { defineConfig } from 'vite';
 import vue from '@vitejs/plugin-vue';
+import basicSsl from '@vitejs/plugin-basic-ssl'
 import sentryVitePlugin from '@sentry/vite-plugin';
 import path from 'path';
 
@@ -12,20 +13,24 @@ if (!process.env.SENTRY_AUTH_TOKEN) {
 // https://vitejs.dev/config/
 export default defineConfig({
   plugins: [
-  vue(),
-  sentryVitePlugin({
-    include: 'dist',
-    org: 'sentry',
-    project: 'gibpotato-frontend',
-    authToken: process.env.SENTRY_AUTH_TOKEN,
-    dryRun: !process.env.SENTRY_AUTH_TOKEN,
-    cleanArtifacts: true,
-    setCommits: {
-      auto: true,
-      ignoreEmpty: true,
-    },
-  }),
+    basicSsl(),
+    vue(),
+    sentryVitePlugin({
+      include: 'dist',
+      org: 'sentry',
+      project: 'gibpotato-frontend',
+      authToken: process.env.SENTRY_AUTH_TOKEN,
+      dryRun: !process.env.SENTRY_AUTH_TOKEN,
+      cleanArtifacts: true,
+      setCommits: {
+        auto: true,
+        ignoreEmpty: true,
+      },
+    }),
   ],
+  server: {
+    https: true,
+  },
   build: {
     sourcemap: true,
     emptyOutDir: false,

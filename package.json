@@ -12,6 +12,7 @@
     "@sentry/tracing": "^7.11.1",
     "@sentry/vite-plugin": "^0.2.0",
     "@sentry/vue": "^7.11.1",
+    "@vitejs/plugin-basic-ssl": "^1.0.1",
     "@vueuse/core": "^9.1.0",
     "pinia": "^2.0.20",
     "vue": "^3.2.37",
