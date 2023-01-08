@@ -7,6 +7,7 @@ const params = {
   },
   sentry: {
     dsn: import.meta.env.VITE_APP_SENTRY_DSN,
+    environment: 'local',
   },
 } as const;
 

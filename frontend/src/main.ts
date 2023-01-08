@@ -15,6 +15,7 @@ const app = createApp(App);
 Sentry.init({
   app,
   dsn: params.sentry.dsn,
+  environment: params.sentry.environment,
   integrations: [
     new BrowserTracing({
       tracePropagationTargets: [
