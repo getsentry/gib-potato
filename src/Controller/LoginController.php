@@ -65,7 +65,7 @@ class LoginController extends AppController
                 }
 
                 $this->fetchTable('Users');
-                $user = $this->Users
+                $user = $this->fetchTable('Users')
                     ->findBySlackUserId(
                         $jwt->claims()->get('https://slack.com/user_id')
                     )

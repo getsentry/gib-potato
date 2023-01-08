@@ -17,17 +17,19 @@ class ApiController extends Controller
 
     public function users(): Response
     {
-        $this->fetchTable('Users');
+        $usersTable = $this->fetchTable('Users');
 
-        $query = $this->Users->find();
+        $query = $usersTable->find();
         $users = $query->select([
                 'Users.id',
                 'Users.slack_name',
                 'Users.slack_picture',
+                'Users.slack_is_bot',
                 'sent_count' => $query->func()->sum('MessagesSend.amount'),
                 'received_count' => $query->func()->sum('MessagesReceived.amount'),
             ])
             ->distinct(['Users.id'])
+            ->where(['Users.slack_is_bot' => false])
             ->leftJoinWith('MessagesSend')
             ->leftJoinWith('MessagesReceived')
             ->order(['sent_count' => 'DESC'])
