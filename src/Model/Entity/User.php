@@ -35,4 +35,7 @@ class User extends Entity
         'created' => true,
         'modified' => true,
     ];
+
+    public const STATUS_ACTIVE = 'active';
+    public const STATUS_DELETED = 'deleted';
 }
