@@ -2,14 +2,80 @@
 
 namespace App\Service\Validation;
 
-use App\Service\Validation\Exception\NotEnoughPotatoException;
+use App\Model\Entity\User;
+use App\Service\Event\AbstractEvent;
+use App\Service\Validation\Exception\PotatoException;
+use Cake\I18n\FrozenTime;
+use Cake\ORM\Locator\LocatorAwareTrait;
 
 class Validation
 {
-    public static function amount(int $amount, int $recieversCount)
+    use LocatorAwareTrait;
+
+    protected const MAX_AMOUNT = 5;
+
+    protected AbstractEvent $event;
+    protected User $sender;
+
+    public function __construct(AbstractEvent $event, User $sender) {
+        $this->event = $event;
+        $this->sender = $sender;
+    }
+
+    public function amount(): self
     {
-        if ($amount * $recieversCount > 5) {
-            throw new NotEnoughPotatoException('You don\'t have enough potato 😢');
+        if ($this->event->amount > self::MAX_AMOUNT) {
+            throw new PotatoException('You can only gib out *5* potato a day 😢');
         }
+
+        $recieversCount = count($this->event->receivers);
+        if ($this->event->amount * $recieversCount > self::MAX_AMOUNT) {
+            throw new PotatoException('You can only gib out *5* potato a day 😢');
+        }
+
+        return $this;
+    }
+
+    public function receivers(): self
+    {
+        $recieversCount = count($this->event->receivers);
+
+        if ($recieversCount === 0) {
+            throw new PotatoException('You need to @ mention someone to gib potato 🧐');
+        }
+
+        if ($recieversCount > 5) {
+            throw new PotatoException('You can only gib :potato: to *5* people at once 😢');
+        }
+
+        if (in_array($this->event->sender, $this->event->receivers)) {
+            throw new PotatoException('You can\'t gib potato to yourself 🤔');
+        }
+
+        return $this;
+    }
+
+    public function sender(): self
+    {
+        $messagesTable = $this->fetchTable('Messages');
+
+        $givenOutAmount = $messagesTable->find()
+            ->where([
+                'sender_user_id' => $this->sender->id,
+                'type' => 'potato',
+                'created >=' => new FrozenTime('24 hours ago'),
+            ])
+            ->count();
+
+        if ($givenOutAmount >= self::MAX_AMOUNT) {
+            throw new PotatoException('You already gib out all your :potato: today 😢');
+        }
+
+        $amountLeftToday = self::MAX_AMOUNT - $givenOutAmount;
+        if ($this->event->amount > $amountLeftToday) {
+            throw new PotatoException(sprintf('You only have *%s* :potato: left to gib today 😢', $amountLeftToday));
+        }
+
+        return $this;
     }
 }

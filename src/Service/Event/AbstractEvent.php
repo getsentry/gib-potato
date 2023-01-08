@@ -15,8 +15,8 @@ abstract class AbstractEvent
 
     protected SlackClient $slackClient;
 
-    protected string $type;
-    protected string $eventTimestamp;
+    public string $type;
+    public string $eventTimestamp;
 
     public function __construct()
     {

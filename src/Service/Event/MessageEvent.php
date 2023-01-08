@@ -3,18 +3,22 @@ declare(strict_types=1);
 
 namespace App\Service\Event;
 
+use App\Model\Entity\Message;
+use App\Service\AwardService;
+use App\Service\UserService;
 use App\Service\Validation\Exception\PotatoException;
 use App\Service\Validation\Validation;
 
 class MessageEvent extends AbstractEvent
 {
-    protected int $amount;
-    protected string $sender;
-    protected array $receivers;
-    protected string $channel;
-    protected string $text;
-    protected string $permalink;
-    protected string $timestamp;
+    public int $amount;
+    public string $sender;
+    public array $receivers;
+    public string $channel;
+    public string $text;
+    public string $permalink;
+    public string $timestamp;
+    public ?string $threadTimestamp;
 
     public function __construct(array $event)
     {
@@ -29,22 +33,44 @@ class MessageEvent extends AbstractEvent
         $this->permalink = $event['permalink'];
         $this->timestamp = $event['timestamp'];
         $this->eventTimestamp = $event['event_timestamp'];
+        $this->threadTimestamp = $event['thread_timestamp'] ?? null;
     }
 
     public function process()
     {
+        $userService = new UserService();
+        $awardService = new AwardService();
+
+        $fromUser = $userService->createOrUpdateUser($this->sender);
+        $validator = new Validation(
+            event: $this,
+            sender: $fromUser,
+        );
+
         try {
-            Validation::amount($this->amount, count($this->receivers));
+            $validator
+                ->amount()
+                ->receivers()
+                ->sender();
         } catch (PotatoException $e) {
             $this->slackClient->postEphemeral(
                 channel: $this->channel,
                 user: $this->sender,
                 text: $e->getMessage(),
+                threadTimestamp: $this->threadTimestamp,
             );
 
             return;
         }
 
-        
+        foreach ($this->receivers as $receiver) {
+            $toUser = $userService->createOrUpdateUser($receiver);
+            $awardService->gib(
+                fromUser: $fromUser,
+                toUser: $toUser, 
+                amount: $this->amount,
+                type: Message::TYPE_POTATO,
+            );
+        }
     }
 }

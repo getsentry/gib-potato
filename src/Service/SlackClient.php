@@ -36,12 +36,13 @@ class SlackClient
     /**
      * @see https://api.slack.com/methods/chat.postEphemeral
      */
-    public function postEphemeral(string $channel, string $user, string $text): void
+    public function postEphemeral(string $channel, string $user, string $text, ?string $threadTimestamp = null): void
     {
         $this->client->post('chat.postEphemeral', [
             'channel' => $channel,
             'user' => $user,
             'text' => $text,
+            'thread_ts' => $threadTimestamp,
         ]);
     }
 

@@ -21,9 +21,9 @@ class AppMentionEvent extends AbstractEvent
 
     public function process()
     {
-        $this->slackClient->postMessage(
-            channel: $this->channel,
-            text: 'Potato, potato :potato:',
-        );
+        // $this->slackClient->postMessage(
+        //     channel: $this->channel,
+        //     text: 'Potato, potato :potato:',
+        // );
     }
 }

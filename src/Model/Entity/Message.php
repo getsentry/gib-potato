@@ -36,4 +36,6 @@ class Message extends Entity
         'created' => true,
         'user' => true,
     ];
+
+    public const TYPE_POTATO = 'potato';
 }
