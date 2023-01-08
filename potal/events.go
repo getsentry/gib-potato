@@ -22,7 +22,10 @@ type MessageEvent struct {
 	Timestamp      string   `json:"timestamp"`
 	EventTimestamp string   `json:"event_timestamp"`
 	Permalink      string   `json:"permalink"`
-	BotID          string   `json:"-"`
+
+	ThreadTimestamp string `json:"thread_timestamp,omitempty"`
+
+	BotID string `json:"-"`
 }
 
 type ReactionAddedEvent struct {
@@ -36,6 +39,8 @@ type ReactionAddedEvent struct {
 	Timestamp      string   `json:"timestamp"`
 	EventTimestamp string   `json:"event_timestamp"`
 	Permalink      string   `json:"permalink"`
+
+	ThreadTimestamp string `json:"thread_timestamp,omitempty"`
 }
 
 type AppMentionEvent struct {
@@ -55,8 +60,8 @@ type AppHomeOpenedEvent struct {
 }
 
 func (e MessageEvent) isValid() bool {
-	// Only process messages with potato, not from a bot, and with at least one receiver
-	return e.Amount > 0 && e.BotID == "" && len(e.Receivers) > 0
+	// Only process messages with potato and not from a bot
+	return e.Amount > 0 && e.BotID == ""
 }
 
 func (e ReactionAddedEvent) isValid() bool {
@@ -76,15 +81,16 @@ func (e AppHomeOpenedEvent) isValid() bool {
 
 func processMessageEvent(event *slackevents.MessageEvent) {
 	messageEvent := MessageEvent{
-		Type:           "message",
-		Amount:         utils.MessageAmount(event.Text),
-		Sender:         event.User,
-		Receivers:      utils.MessageReceivers(event.Text),
-		Channel:        event.Channel,
-		Text:           event.Text,
-		Timestamp:      event.TimeStamp,
-		EventTimestamp: event.EventTimeStamp,
-		BotID:          event.BotID,
+		Type:            "message",
+		Amount:          utils.MessageAmount(event.Text),
+		Sender:          event.User,
+		Receivers:       utils.MessageReceivers(event.Text),
+		Channel:         event.Channel,
+		Text:            event.Text,
+		Timestamp:       event.TimeStamp,
+		EventTimestamp:  event.EventTimeStamp,
+		ThreadTimestamp: event.ThreadTimeStamp,
+		BotID:           event.BotID,
 	}
 
 	if !messageEvent.isValid() {
@@ -128,18 +134,20 @@ func processReactionEvent(event *slackevents.ReactionAddedEvent) {
 	}
 	text := conversationHistory.Messages[0].Text
 	permalink := conversationHistory.Messages[0].Permalink
+	threadTimestamp := conversationHistory.Messages[0].ThreadTimestamp
 
 	reactionEvent = ReactionAddedEvent{
-		Type:           "reaction_added",
-		Amount:         1, // Amount is always 1 for reactions
-		Sender:         event.User,
-		Receivers:      utils.ReactionReceivers(text, event.ItemUser),
-		Channel:        event.Item.Channel,
-		Text:           text,
-		Reaction:       event.Reaction,
-		Permalink:      permalink,
-		Timestamp:      event.Item.Timestamp,
-		EventTimestamp: event.EventTimestamp,
+		Type:            "reaction_added",
+		Amount:          1, // Amount is always 1 for reactions
+		Sender:          event.User,
+		Receivers:       utils.ReactionReceivers(text, event.ItemUser),
+		Channel:         event.Item.Channel,
+		Text:            text,
+		Reaction:        event.Reaction,
+		Permalink:       permalink,
+		Timestamp:       event.Item.Timestamp,
+		EventTimestamp:  event.EventTimestamp,
+		ThreadTimestamp: threadTimestamp,
 	}
 
 	sendRequest(reactionEvent)
