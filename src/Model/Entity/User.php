@@ -13,6 +13,7 @@ use Cake\ORM\Entity;
  * @property string $slack_user_id
  * @property string $slack_name
  * @property string $slack_picture
+ * @property boolean $slack_is_bot
  * @property \Cake\I18n\FrozenTime|null $created
  * @property \Cake\I18n\FrozenTime|null $modified
  */
@@ -32,6 +33,7 @@ class User extends Entity
         'slack_user_id' => true,
         'slack_name' => true,
         'slack_picture' => true,
+        'slack_is_bot' => true,
         'created' => true,
         'modified' => true,
     ];

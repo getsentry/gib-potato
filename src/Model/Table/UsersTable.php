@@ -86,6 +86,10 @@ class UsersTable extends Table
             ->maxLength('slack_picture', 255)
             ->requirePresence('slack_picture', 'create')
             ->notEmptyString('slack_picture');
+        
+        $validator
+            ->boolean('slack_is_bot')
+            ->allowEmptyString('slack_is_bot');
 
         return $validator;
     }
