@@ -2,6 +2,7 @@
 declare(strict_types=1);
 
 use Migrations\AbstractMigration;
+use Phinx\Db\Adapter\MysqlAdapter;
 
 class AddSessionsAndMessageType extends AbstractMigration
 {
@@ -32,7 +33,7 @@ class AddSessionsAndMessageType extends AbstractMigration
             ])
             ->addColumn('data', 'binary', [
                 'default' => null,
-                'limit' => null,
+                'limit' => MysqlAdapter::BLOB_REGULAR,
                 'null' => true,
             ])
             ->addColumn('expires', 'integer', [
@@ -62,7 +63,6 @@ class AddSessionsAndMessageType extends AbstractMigration
      */
     public function down()
     {
-
         $this->table('messages')
             ->removeColumn('type')
             ->update();
