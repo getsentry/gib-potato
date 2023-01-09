@@ -1,9 +1,11 @@
 package main
 
 import (
+	"context"
 	"log"
 
 	"github.com/getsentry/gib-potato/internal/utils"
+	"github.com/getsentry/sentry-go"
 	"github.com/slack-go/slack"
 	"github.com/slack-go/slack/slackevents"
 )
@@ -79,7 +81,22 @@ func (e AppHomeOpenedEvent) isValid() bool {
 	return e.Tab == "home"
 }
 
-func processMessageEvent(event *slackevents.MessageEvent) {
+func processMessageEvent(event *slackevents.MessageEvent, ctxx context.Context) {
+	// Recive the transaction attached to the context
+	httpTxn := sentry.TransactionFromContext(ctxx)
+	ctx := context.Background()
+
+	// Clone the current hub
+	hub := sentry.CurrentHub().Clone()
+	options := []sentry.SpanOption{
+		sentry.OpName("event.process"),
+		sentry.TransctionSource(sentry.SourceTask),
+		// Continue the trace
+		sentry.ContinueFromHeaders(httpTxn.ToSentryTrace(), httpTxn.ToBaggage()),
+	}
+	transaction := sentry.StartTransaction(ctx, "EVENT message", options...)
+	defer transaction.Finish()
+
 	messageEvent := MessageEvent{
 		Type:            "message",
 		Amount:          utils.MessageAmount(event.Text),
@@ -97,19 +114,46 @@ func processMessageEvent(event *slackevents.MessageEvent) {
 		return
 	}
 
+	span := transaction.StartChild("http.client")
+	span.Description = "GET https://slack.com/api/chat.getPermalink "
+
 	// Get the permalink for the message
 	permalink, err := slackClient.GetPermalink(&slack.PermalinkParameters{
 		Channel: event.Channel,
 		Ts:      event.TimeStamp,
 	})
-	if err == nil {
-		messageEvent.Permalink = permalink
+	if err != nil {
+		span.Status = sentry.SpanStatusInternalError
+		hub.CaptureException(err)
+		log.Fatalf("An Error Occured %v", err)
+	} else {
+		span.Status = sentry.SpanStatusOK
 	}
+	messageEvent.Permalink = permalink
+	span.Finish()
 
-	sendRequest(messageEvent)
+	hub.Scope().SetExtra("event", messageEvent)
+	hub.Scope().SetTag("event_type", "message")
+
+	sendRequest(messageEvent, hub, transaction)
 }
 
-func processReactionEvent(event *slackevents.ReactionAddedEvent) {
+func processReactionEvent(event *slackevents.ReactionAddedEvent, ctxx context.Context) {
+	// Recive the transaction attached to the context
+	httpTxn := sentry.TransactionFromContext(ctxx)
+	ctx := context.Background()
+
+	// Clone the current hub
+	hub := sentry.CurrentHub().Clone()
+	options := []sentry.SpanOption{
+		sentry.OpName("event.process"),
+		sentry.TransctionSource(sentry.SourceTask),
+		// Continue the trace
+		sentry.ContinueFromHeaders(httpTxn.ToSentryTrace(), httpTxn.ToBaggage()),
+	}
+	transaction := sentry.StartTransaction(ctx, "EVENT reaction_added", options...)
+	defer transaction.Finish()
+
 	reactionEvent := ReactionAddedEvent{
 		Reaction: event.Reaction,
 	}
@@ -125,6 +169,7 @@ func processReactionEvent(event *slackevents.ReactionAddedEvent) {
 		Limit:     1,
 	})
 	if err != nil {
+		hub.CaptureException(err)
 		log.Fatalf("An Error Occured %v", err)
 		return
 	}
@@ -150,10 +195,28 @@ func processReactionEvent(event *slackevents.ReactionAddedEvent) {
 		ThreadTimestamp: threadTimestamp,
 	}
 
-	sendRequest(reactionEvent)
+	hub.Scope().SetExtra("event", reactionEvent)
+	hub.Scope().SetTag("event_type", "reaction_added")
+
+	sendRequest(reactionEvent, hub, transaction)
 }
 
-func processAppMentionEvent(event *slackevents.AppMentionEvent) {
+func processAppMentionEvent(event *slackevents.AppMentionEvent, ctxx context.Context) {
+	// Recive the transaction attached to the context
+	httpTxn := sentry.TransactionFromContext(ctxx)
+	ctx := context.Background()
+
+	// Clone the current hub
+	hub := sentry.CurrentHub().Clone()
+	options := []sentry.SpanOption{
+		sentry.OpName("event.process"),
+		sentry.TransctionSource(sentry.SourceTask),
+		// Continue the trace
+		sentry.ContinueFromHeaders(httpTxn.ToSentryTrace(), httpTxn.ToBaggage()),
+	}
+	transaction := sentry.StartTransaction(ctx, "EVENT app_mention", options...)
+	defer transaction.Finish()
+
 	appMentionEvent := AppMentionEvent{
 		Type:           "app_mention",
 		Sender:         event.User,
@@ -167,10 +230,28 @@ func processAppMentionEvent(event *slackevents.AppMentionEvent) {
 		return
 	}
 
-	sendRequest(appMentionEvent)
+	hub.Scope().SetExtra("event", appMentionEvent)
+	hub.Scope().SetTag("event_type", "app_mention")
+
+	sendRequest(appMentionEvent, hub, transaction)
 }
 
-func processAppHomeOpenedEvent(event *slackevents.AppHomeOpenedEvent) {
+func processAppHomeOpenedEvent(event *slackevents.AppHomeOpenedEvent, ctxx context.Context) {
+	// Recive the transaction attached to the context
+	httpTxn := sentry.TransactionFromContext(ctxx)
+	ctx := context.Background()
+
+	// Clone the current hub
+	hub := sentry.CurrentHub().Clone()
+	options := []sentry.SpanOption{
+		sentry.OpName("event.process"),
+		sentry.TransctionSource(sentry.SourceTask),
+		// Continue the trace
+		sentry.ContinueFromHeaders(httpTxn.ToSentryTrace(), httpTxn.ToBaggage()),
+	}
+	transaction := sentry.StartTransaction(ctx, "EVENT app_home_opened", options...)
+	defer transaction.Finish()
+
 	appHomeOpenedEvent := AppHomeOpenedEvent{
 		Type:           "app_home_opened",
 		User:           event.User,
@@ -182,5 +263,8 @@ func processAppHomeOpenedEvent(event *slackevents.AppHomeOpenedEvent) {
 		return
 	}
 
-	sendRequest(appHomeOpenedEvent)
+	hub.Scope().SetExtra("event", appHomeOpenedEvent)
+	hub.Scope().SetTag("event_type", "app_home_opened")
+
+	sendRequest(appHomeOpenedEvent, hub, transaction)
 }

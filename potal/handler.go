@@ -7,12 +7,18 @@ import (
 	"net/http"
 	"os"
 
+	"github.com/getsentry/sentry-go"
 	"github.com/julienschmidt/httprouter"
 	"github.com/slack-go/slack"
 	"github.com/slack-go/slack/slackevents"
 )
 
 func DefaultHandler(w http.ResponseWriter, r *http.Request, _ httprouter.Params) {
+	// Overwrite transaction source with something usefull
+	ctx := r.Context()
+	txn := sentry.TransactionFromContext(ctx)
+	txn.Source = sentry.SourceRoute
+
 	data := map[string]string{
 		"message": "The potato is a lie!",
 	}
@@ -21,6 +27,11 @@ func DefaultHandler(w http.ResponseWriter, r *http.Request, _ httprouter.Params)
 }
 
 func EventsHandler(w http.ResponseWriter, r *http.Request, _ httprouter.Params) {
+	// Overwrite transaction source with something usefull
+	ctx := r.Context()
+	txn := sentry.TransactionFromContext(ctx)
+	txn.Source = sentry.SourceRoute
+
 	// Verify the Slack request
 	// see https://github.com/slack-go/slack/blob/master/examples/eventsapi/events.go
 	body, err := io.ReadAll(r.Body)
@@ -67,13 +78,13 @@ func EventsHandler(w http.ResponseWriter, r *http.Request, _ httprouter.Params) 
 
 		switch ev := innerEvent.Data.(type) {
 		case *slackevents.ReactionAddedEvent:
-			go processReactionEvent(ev)
+			go processReactionEvent(ev, r.Context())
 		case *slackevents.MessageEvent:
-			go processMessageEvent(ev)
+			go processMessageEvent(ev, r.Context())
 		case *slackevents.AppMentionEvent:
-			go processAppMentionEvent(ev)
+			go processAppMentionEvent(ev, r.Context())
 		case *slackevents.AppHomeOpenedEvent:
-			go processAppHomeOpenedEvent(ev)
+			go processAppHomeOpenedEvent(ev, r.Context())
 		}
 	}
 
