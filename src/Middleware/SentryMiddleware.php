@@ -37,8 +37,8 @@ class SentryMiddleware implements MiddlewareInterface
         $requestStartTime = $request->getServerParams()['REQUEST_TIME_FLOAT'] ?? \microtime(true);
 
         $transactionContext->setOp('http.server');
-        $transactionContext->setName($request->getUri()->getPath());
-        $transactionContext->setSource(TransactionSource::url());
+        $transactionContext->setName($request->getMethod() . ' ' . $request->getUri()->getPath());
+        $transactionContext->setSource(TransactionSource::route());
         $transactionContext->setStartTimestamp($requestStartTime);
 
         $transaction = startTransaction($transactionContext);
@@ -47,7 +47,6 @@ class SentryMiddleware implements MiddlewareInterface
 
         $spanContext = new SpanContext();
         $spanContext->setOp('middleware.handle');
-
         $span = $transaction->startChild($spanContext);
 
         SentrySdk::getCurrentHub()->setSpan($span);
@@ -56,10 +55,12 @@ class SentryMiddleware implements MiddlewareInterface
 
         $response = $handler->handle($request);
 
+        $span->setHttpStatus($response->getStatusCode());
         $span->finish();
 
         SentrySdk::getCurrentHub()->setSpan($transaction);
 
+        $transaction->setHttpStatus($response->getStatusCode());
         $transaction->finish();
 
         return $response;
