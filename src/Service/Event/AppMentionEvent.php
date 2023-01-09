@@ -17,6 +17,7 @@ class AppMentionEvent extends AbstractEvent
         $this->sender = $event['sender'];
         $this->channel = $event['channel'];
         $this->text = $event['text'];
+        $this->eventTimestamp = $event['event_timestamp'];
     }
 
     public function process()

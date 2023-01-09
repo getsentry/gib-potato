@@ -16,7 +16,7 @@ class AppHomeOpenedEvent extends AbstractEvent
         $this->type = self::TYPE_APP_HOME_OPENED;
         $this->user = $event['user'];
         $this->tab = $event['tab'];
-        $this->timestamp = $event['timestamp'];
+        $this->eventTimestamp = $event['event_timestamp'];
     }
 
     public function process()
