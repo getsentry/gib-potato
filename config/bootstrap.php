@@ -98,6 +98,7 @@ Sentry\init([
     'traces_sample_rate' => 1.0,
     'environment' => env('ENVIRONMENT'),
     'release' => env('VERSION'),
+    'send_default_pii' => true,
     'in_app_exclude' => [
         ROOT . DS . 'vendor',
     ],
