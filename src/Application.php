@@ -17,6 +17,7 @@ declare(strict_types=1);
 namespace App;
 
 use App\Middleware\SentryMiddleware;
+use App\Middleware\SentryUserMiddleware;
 use Authentication\AuthenticationService;
 use Authentication\AuthenticationServiceInterface;
 use Authentication\AuthenticationServiceProviderInterface;
@@ -116,7 +117,9 @@ class Application extends BaseApplication implements AuthenticationServiceProvid
 
             ->add(new CspMiddleware($this->getCspPolicy()))
 
-            ->add(new AuthenticationMiddleware($this));
+            ->add(new AuthenticationMiddleware($this))
+
+            ->add(new SentryUserMiddleware());
 
         return $middlewareQueue;
     }
