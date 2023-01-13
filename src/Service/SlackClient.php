@@ -3,11 +3,11 @@ declare(strict_types=1);
 
 namespace App\Service;
 
-use Cake\Http\Client;
+use App\Http\Client;
 
 class SlackClient
 {
-    protected const SLACK_API_URL = 'slack.com/api/';
+    protected const SLACK_API_URL = 'slack.com/api';
 
     protected Client $client;
 
