@@ -9,7 +9,9 @@ class EventFactory
 {
     public static function createEvent(array $data): AbstractEvent
     {
-        switch ($data['type']) {
+        $eventType = $data['type'] ?? null;
+
+        switch ($eventType) {
             case AbstractEvent::TYPE_MESSAGE:
                 return new MessageEvent($data);
             case AbstractEvent::TYPE_REACTION_ADDED:
