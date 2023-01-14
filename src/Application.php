@@ -154,10 +154,7 @@ class Application extends BaseApplication implements AuthenticationServiceProvid
 
     public function getAuthenticationService(ServerRequestInterface $request): AuthenticationServiceInterface
     {
-        $service = new AuthenticationService();
-
-        // Define where users should be redirected to when they are not authenticated
-        $service->setConfig([
+        $config = [
             'unauthenticatedRedirect' => Router::url([
                 'prefix' => false,
                 'plugin' => null,
@@ -165,9 +162,32 @@ class Application extends BaseApplication implements AuthenticationServiceProvid
                 'action' => 'login',
             ]),
             'queryParam' => 'redirect',
+        ];
+        // Do not respond with a redirect in case an api token is provided
+        if ($request->hasHeader('Authorization')) {
+            $config = [];
+        }
+        $service = new AuthenticationService($config);
+
+        $service->loadIdentifier('Authentication.Callback', [
+            'callback' => function($data) {
+
+                $token = $data['token'] ?? null;
+                if ($token === env('API_TOKEN')) {
+                    $usersTable = FactoryLocator::get('Table')->get('Users');
+
+                    return $usersTable->get('c729751e-f8c1-4b40-aeb5-01ce39a62bd3');
+                }
+        
+                return null;
+            },
         ]);
 
         $service->loadAuthenticator('Authentication.Session');
+        $service->loadAuthenticator('Authentication.Token', [
+            'header' => 'Authorization',
+            'tokenPrefix' => 'Bearer',
+        ]);
 
         return $service;
     }

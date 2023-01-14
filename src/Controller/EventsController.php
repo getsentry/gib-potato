@@ -5,19 +5,20 @@ namespace App\Controller;
 
 use App\Service\Event\EventFactory;
 use Cake\Controller\Controller;
-use Cake\Event\EventInterface;
-use Cake\I18n\FrozenTime;
-use Cake\Utility\Security;
 
 class EventsController extends Controller
 {
-    public function beforeFilter(EventInterface $event)
+    public function initialize(): void
     {
-        parent::beforeFilter($event);
+        parent::initialize();
+
+        $this->loadComponent('Authentication.Authentication');
     }
 
     public function index()
     {
+        $this->request->allowMethod('POST');
+
         $event = EventFactory::createEvent($this->request->getData());
         $event->process();
 
