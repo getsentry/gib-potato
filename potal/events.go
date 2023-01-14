@@ -14,16 +14,29 @@ type Event interface {
 	isValid() bool
 }
 
+type EventType string
+
+const (
+	message       EventType = "message"
+	reactionAdded EventType = "reaction_added"
+	appMention    EventType = "app_mention"
+	appHomeOpened EventType = "app_home_opened"
+)
+
+func (e EventType) String() string {
+	return string(e)
+}
+
 type MessageEvent struct {
-	Type           string   `json:"type"`
-	Amount         int      `json:"amount"`
-	Sender         string   `json:"sender"`
-	Receivers      []string `json:"receivers"`
-	Channel        string   `json:"channel"`
-	Text           string   `json:"text"`
-	Timestamp      string   `json:"timestamp"`
-	EventTimestamp string   `json:"event_timestamp"`
-	Permalink      string   `json:"permalink"`
+	Type           EventType `json:"type"`
+	Amount         int       `json:"amount"`
+	Sender         string    `json:"sender"`
+	Receivers      []string  `json:"receivers"`
+	Channel        string    `json:"channel"`
+	Text           string    `json:"text"`
+	Timestamp      string    `json:"timestamp"`
+	EventTimestamp string    `json:"event_timestamp"`
+	Permalink      string    `json:"permalink"`
 
 	ThreadTimestamp string `json:"thread_timestamp,omitempty"`
 
@@ -31,34 +44,34 @@ type MessageEvent struct {
 }
 
 type ReactionAddedEvent struct {
-	Type           string   `json:"type"`
-	Amount         int      `json:"amount"`
-	Sender         string   `json:"sender"`
-	Receivers      []string `json:"receivers"`
-	Channel        string   `json:"channel"`
-	Text           string   `json:"text"`
-	Reaction       string   `json:"reaction"`
-	Timestamp      string   `json:"timestamp"`
-	EventTimestamp string   `json:"event_timestamp"`
-	Permalink      string   `json:"permalink"`
+	Type           EventType `json:"type"`
+	Amount         int       `json:"amount"`
+	Sender         string    `json:"sender"`
+	Receivers      []string  `json:"receivers"`
+	Channel        string    `json:"channel"`
+	Text           string    `json:"text"`
+	Reaction       string    `json:"reaction"`
+	Timestamp      string    `json:"timestamp"`
+	EventTimestamp string    `json:"event_timestamp"`
+	Permalink      string    `json:"permalink"`
 
 	ThreadTimestamp string `json:"thread_timestamp,omitempty"`
 }
 
 type AppMentionEvent struct {
-	Type           string `json:"type"`
-	Sender         string `json:"sender"`
-	Channel        string `json:"channel"`
-	Text           string `json:"text"`
-	EventTimestamp string `json:"event_timestamp"`
-	BotID          string `json:"-"`
+	Type           EventType `json:"type"`
+	Sender         string    `json:"sender"`
+	Channel        string    `json:"channel"`
+	Text           string    `json:"text"`
+	EventTimestamp string    `json:"event_timestamp"`
+	BotID          string    `json:"-"`
 }
 
 type AppHomeOpenedEvent struct {
-	Type           string `json:"type"`
-	User           string `json:"user"`
-	Tab            string `json:"tab"`
-	EventTimestamp string `json:"event_timestamp"`
+	Type           EventType `json:"type"`
+	User           string    `json:"user"`
+	Tab            string    `json:"tab"`
+	EventTimestamp string    `json:"event_timestamp"`
 }
 
 func (e MessageEvent) isValid() bool {
@@ -98,7 +111,7 @@ func processMessageEvent(event *slackevents.MessageEvent, ctxx context.Context) 
 	defer transaction.Finish()
 
 	messageEvent := MessageEvent{
-		Type:            "message",
+		Type:            message,
 		Amount:          utils.MessageAmount(event.Text),
 		Sender:          event.User,
 		Receivers:       utils.MessageReceivers(event.Text),
@@ -133,7 +146,7 @@ func processMessageEvent(event *slackevents.MessageEvent, ctxx context.Context) 
 	span.Finish()
 
 	hub.Scope().SetExtra("event", messageEvent)
-	hub.Scope().SetTag("event_type", "message")
+	hub.Scope().SetTag("event_type", message.String())
 
 	sendRequest(messageEvent, hub, transaction)
 }
@@ -182,7 +195,7 @@ func processReactionEvent(event *slackevents.ReactionAddedEvent, ctxx context.Co
 	threadTimestamp := conversationHistory.Messages[0].ThreadTimestamp
 
 	reactionEvent = ReactionAddedEvent{
-		Type:            "reaction_added",
+		Type:            reactionAdded,
 		Amount:          1, // Amount is always 1 for reactions
 		Sender:          event.User,
 		Receivers:       utils.ReactionReceivers(text, event.ItemUser),
@@ -196,7 +209,7 @@ func processReactionEvent(event *slackevents.ReactionAddedEvent, ctxx context.Co
 	}
 
 	hub.Scope().SetExtra("event", reactionEvent)
-	hub.Scope().SetTag("event_type", "reaction_added")
+	hub.Scope().SetTag("event_type", reactionAdded.String())
 
 	sendRequest(reactionEvent, hub, transaction)
 }
@@ -218,7 +231,7 @@ func processAppMentionEvent(event *slackevents.AppMentionEvent, ctxx context.Con
 	defer transaction.Finish()
 
 	appMentionEvent := AppMentionEvent{
-		Type:           "app_mention",
+		Type:           appMention,
 		Sender:         event.User,
 		Channel:        event.Channel,
 		Text:           event.Text,
@@ -231,7 +244,7 @@ func processAppMentionEvent(event *slackevents.AppMentionEvent, ctxx context.Con
 	}
 
 	hub.Scope().SetExtra("event", appMentionEvent)
-	hub.Scope().SetTag("event_type", "app_mention")
+	hub.Scope().SetTag("event_type", appMention.String())
 
 	sendRequest(appMentionEvent, hub, transaction)
 }
@@ -253,7 +266,7 @@ func processAppHomeOpenedEvent(event *slackevents.AppHomeOpenedEvent, ctxx conte
 	defer transaction.Finish()
 
 	appHomeOpenedEvent := AppHomeOpenedEvent{
-		Type:           "app_home_opened",
+		Type:           appHomeOpened,
 		User:           event.User,
 		Tab:            event.Tab,
 		EventTimestamp: event.EventTimeStamp,
@@ -264,7 +277,7 @@ func processAppHomeOpenedEvent(event *slackevents.AppHomeOpenedEvent, ctxx conte
 	}
 
 	hub.Scope().SetExtra("event", appHomeOpenedEvent)
-	hub.Scope().SetTag("event_type", "app_home_opened")
+	hub.Scope().SetTag("event_type", appHomeOpened.String())
 
 	sendRequest(appHomeOpenedEvent, hub, transaction)
 }
