@@ -8,5 +8,14 @@ func ReactionReceivers(text string, itemUser string) []string {
 		return []string{itemUser}
 	}
 
+	// If more than one person is mentioned and the person reacting is one of them, remove them
+	if len(receivers) > 1 {
+		for i, v := range receivers {
+			if v == itemUser {
+				receivers = append(receivers[:i], receivers[i+1:]...)
+			}
+		}
+	}
+
 	return receivers
 }
