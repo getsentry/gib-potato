@@ -34,13 +34,13 @@ class AwardService
         // @FIXME Allow users to opt-out
         $this->slackClient->postMessage(
             channel: $fromUser->slack_user_id,
-            text: sprintf('You did gib *%s* :%s: to <@%s>.%s', $amount, $type, $toUser->slack_user_id, PHP_EOL),
+            text: sprintf('You did gib *%s* :%s: to <@%s>.', $amount, $type, $toUser->slack_user_id),
         );
 
         // @FIXME Allow users to opt-out
         $this->slackClient->postMessage(
             channel: $toUser->slack_user_id,
-            text: sprintf('<@%s> did gib you *%s* :%s:', $fromUser->slack_user_id, $amount, $type),
+            text: sprintf('<@%s> did gib you *%s* :%s:.', $fromUser->slack_user_id, $amount, $type),
         );
     }
 }
