@@ -16,8 +16,10 @@ class MessageEvent extends AbstractEvent
     public array $receivers;
     public string $channel;
     public string $text;
-    public string $permalink;
+    public string $reaction;
     public string $timestamp;
+    public string $permalink;
+
     public ?string $threadTimestamp;
 
     public function __construct(array $event)
@@ -30,9 +32,11 @@ class MessageEvent extends AbstractEvent
         $this->receivers = $event['receivers'];
         $this->channel = $event['channel'];
         $this->text = $event['text'];
-        $this->permalink = $event['permalink'];
+        $this->reaction = $event['reaction'];
         $this->timestamp = $event['timestamp'];
         $this->eventTimestamp = $event['event_timestamp'];
+        $this->permalink = $event['permalink'];
+
         $this->threadTimestamp = $event['thread_timestamp'] ?? null;
     }
 
@@ -41,7 +45,7 @@ class MessageEvent extends AbstractEvent
         $userService = new UserService();
         $awardService = new AwardService();
 
-        $fromUser = $userService->createOrUpdateUser($this->sender);
+        $fromUser = $userService->getOrCreateUser($this->sender);
         $validator = new Validation(
             event: $this,
             sender: $fromUser,
@@ -64,12 +68,11 @@ class MessageEvent extends AbstractEvent
         }
 
         foreach ($this->receivers as $receiver) {
-            $toUser = $userService->createOrUpdateUser($receiver);
+            $toUser = $userService->getOrCreateUser($receiver);
             $awardService->gib(
                 fromUser: $fromUser,
                 toUser: $toUser, 
-                amount: $this->amount,
-                type: Message::TYPE_POTATO,
+                event: $this,
             );
         }
     }
