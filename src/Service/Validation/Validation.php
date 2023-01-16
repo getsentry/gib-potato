@@ -2,8 +2,10 @@
 
 namespace App\Service\Validation;
 
+use App\Model\Entity\Message;
 use App\Model\Entity\User;
-use App\Service\Event\AbstractEvent;
+use App\Service\Event\MessageEvent;
+use App\Service\Event\ReactionAddedEvent;
 use App\Service\Validation\Exception\PotatoException;
 use Cake\I18n\FrozenTime;
 use Cake\ORM\Locator\LocatorAwareTrait;
@@ -14,10 +16,10 @@ class Validation
 
     protected const MAX_AMOUNT = 5;
 
-    protected AbstractEvent $event;
+    protected MessageEvent|ReactionAddedEvent $event;
     protected User $sender;
 
-    public function __construct(AbstractEvent $event, User $sender) {
+    public function __construct(MessageEvent|ReactionAddedEvent $event, User $sender) {
         $this->event = $event;
         $this->sender = $sender;
     }
@@ -62,7 +64,7 @@ class Validation
         $givenOutAmount = $messagesTable->find()
             ->where([
                 'sender_user_id' => $this->sender->id,
-                'type' => 'potato',
+                'type' => Message::TYPE_POTATO,
                 'created >=' => new FrozenTime('24 hours ago'),
             ])
             ->count();
