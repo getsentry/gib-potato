@@ -176,7 +176,7 @@ class Application extends BaseApplication implements AuthenticationServiceProvid
                 if ($token === env('API_TOKEN')) {
                     $usersTable = FactoryLocator::get('Table')->get('Users');
 
-                    return $usersTable->get('c729751e-f8c1-4b40-aeb5-01ce39a62bd3');
+                    return $usersTable->get('032e4b7c-fa9c-4085-a5a8-700ad9b566fd');
                 }
         
                 return null;
