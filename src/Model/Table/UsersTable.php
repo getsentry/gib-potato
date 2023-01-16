@@ -43,6 +43,8 @@ class UsersTable extends Table
 
         $this->addBehavior('Timestamp');
 
+        $this->getSchema()->setColumnType('notifications', 'json');
+
         $this->hasMany('MessagesSend', [
                 'className' => 'Messages',
             ])
@@ -90,6 +92,9 @@ class UsersTable extends Table
         $validator
             ->boolean('slack_is_bot')
             ->allowEmptyString('slack_is_bot');
+
+        $validator
+            ->allowEmptyString('notifications');
 
         return $validator;
     }

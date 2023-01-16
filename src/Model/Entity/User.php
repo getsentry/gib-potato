@@ -14,6 +14,7 @@ use Cake\ORM\Entity;
  * @property string $slack_name
  * @property string $slack_picture
  * @property boolean $slack_is_bot
+ * @property array|null $notifications
  * @property \Cake\I18n\FrozenTime|null $created
  * @property \Cake\I18n\FrozenTime|null $modified
  */
@@ -34,10 +35,24 @@ class User extends Entity
         'slack_name' => true,
         'slack_picture' => true,
         'slack_is_bot' => true,
+        'notifications' => true,
         'created' => true,
         'modified' => true,
     ];
 
     public const STATUS_ACTIVE = 'active';
     public const STATUS_DELETED = 'deleted';
+
+
+    protected function _getNotifications($notifications): array
+    {
+        if (empty($notifications)) {
+            return [
+                'sent' => true,
+                'received' => true,
+            ];
+        }
+
+        return $notifications;
+    }
 }
