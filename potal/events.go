@@ -4,6 +4,7 @@ import (
 	"context"
 	"log"
 
+	"github.com/getsentry/gib-potato/internal/constants"
 	"github.com/getsentry/gib-potato/internal/utils"
 	"github.com/getsentry/sentry-go"
 	"github.com/slack-go/slack"
@@ -34,6 +35,7 @@ type MessageEvent struct {
 	Receivers      []string  `json:"receivers"`
 	Channel        string    `json:"channel"`
 	Text           string    `json:"text"`
+	Reaction       string    `json:"reaction"`
 	Timestamp      string    `json:"timestamp"`
 	EventTimestamp string    `json:"event_timestamp"`
 	Permalink      string    `json:"permalink"`
@@ -117,6 +119,7 @@ func processMessageEvent(event *slackevents.MessageEvent, ctxx context.Context) 
 		Receivers:       utils.MessageReceivers(event.Text),
 		Channel:         event.Channel,
 		Text:            event.Text,
+		Reaction:        constants.Potato, // hardoced for now
 		Timestamp:       event.TimeStamp,
 		EventTimestamp:  event.EventTimeStamp,
 		ThreadTimestamp: event.ThreadTimeStamp,
@@ -201,7 +204,7 @@ func processReactionEvent(event *slackevents.ReactionAddedEvent, ctxx context.Co
 		Receivers:       utils.ReactionReceivers(text, event.ItemUser),
 		Channel:         event.Item.Channel,
 		Text:            text,
-		Reaction:        event.Reaction,
+		Reaction:        constants.Potato, // hardoced for now
 		Permalink:       permalink,
 		Timestamp:       event.Item.Timestamp,
 		EventTimestamp:  event.EventTimestamp,
