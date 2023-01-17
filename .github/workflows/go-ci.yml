@@ -8,7 +8,7 @@ permissions:
   contents: read
 
 jobs:
-  build:
+  ci:
     runs-on: ubuntu-latest
 
     steps:
@@ -16,10 +16,6 @@ jobs:
     
     - name: Setup Go
       uses: actions/setup-go@v3
-    
-    - name: Install dependencies
-      working-directory: ./potal
-      run: go get -u golang.org/x/lint/golint
         
     - name: Run build
       working-directory: ./potal
@@ -30,8 +26,9 @@ jobs:
       run: go vet .
     
     - name: Run lint
-      working-directory: ./potal
-      run: golint .
+      uses: golangci/golangci-lint-action@v3
+      with:
+        working-directory: ./potal
     
     - name: Run tests
       working-directory: ./potal
