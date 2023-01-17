@@ -21,14 +21,14 @@ func sendRequest(e Event, hub *sentry.Hub, transaction *sentry.Span) {
 	body, jsonErr := json.Marshal(e)
 	if jsonErr != nil {
 		hub.CaptureException(jsonErr)
-		log.Fatalf("An Error Occured %v", jsonErr)
+		log.Printf("An Error Occured %v", jsonErr)
 		return
 	}
 
 	r, newReqErr := http.NewRequest("POST", url, bytes.NewBuffer(body))
 	if newReqErr != nil {
 		hub.CaptureException(newReqErr)
-		log.Fatalf("An Error Occured %v", newReqErr)
+		log.Printf("An Error Occured %v", newReqErr)
 		return
 	}
 
@@ -43,7 +43,7 @@ func sendRequest(e Event, hub *sentry.Hub, transaction *sentry.Span) {
 		hub.CaptureException(reqErr)
 		span.Status = sentry.SpanStatusInternalError
 
-		log.Fatalf("An Error Occured %v", reqErr)
+		log.Printf("An Error Occured %v", reqErr)
 		return
 	}
 	defer res.Body.Close()

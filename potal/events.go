@@ -141,7 +141,7 @@ func processMessageEvent(event *slackevents.MessageEvent, ctxx context.Context) 
 	if err != nil {
 		span.Status = sentry.SpanStatusInternalError
 		hub.CaptureException(err)
-		log.Fatalf("An Error Occured %v", err)
+		log.Printf("An Error Occured %v", err)
 	} else {
 		span.Status = sentry.SpanStatusOK
 	}
@@ -186,7 +186,7 @@ func processReactionEvent(event *slackevents.ReactionAddedEvent, ctxx context.Co
 	})
 	if err != nil {
 		hub.CaptureException(err)
-		log.Fatalf("An Error Occured %v", err)
+		log.Printf("An Error Occured %v", err)
 		return
 	}
 
