@@ -18,18 +18,23 @@ jobs:
       uses: actions/setup-go@v3
     
     - name: Install dependencies
+      working-directory: ./potal
       run: go get -u golang.org/x/lint/golint
         
     - name: Run build
+      working-directory: ./potal
       run: go build . 
       
     - name: Run vet
+      working-directory: ./potal
       run: go vet .
     
     - name: Run lint
+      working-directory: ./potal
       run: golint .
     
     - name: Run tests
+      working-directory: ./potal
       run: go test -v -count=1 -race ./... -coverprofile=coverage.out -covermode=atomic
 
     - name: Upload coverage to Codecov
