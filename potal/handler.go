@@ -83,14 +83,14 @@ func EventsHandler(w http.ResponseWriter, r *http.Request, _ httprouter.Params) 
 		innerEvent := eventsAPIEvent.InnerEvent
 
 		switch ev := innerEvent.Data.(type) {
-		case *slackevents.ReactionAddedEvent:
-			go processReactionEvent(ev, r.Context())
 		case *slackevents.MessageEvent:
-			go processMessageEvent(ev, r.Context())
+			go processMessageEvent(r.Context(), ev)
+		case *slackevents.ReactionAddedEvent:
+			go processReactionEvent(r.Context(), ev)
 		case *slackevents.AppMentionEvent:
-			go processAppMentionEvent(ev, r.Context())
+			go processAppMentionEvent(r.Context(), ev)
 		case *slackevents.AppHomeOpenedEvent:
-			go processAppHomeOpenedEvent(ev, r.Context())
+			go processAppHomeOpenedEvent(r.Context(), ev)
 		}
 	}
 

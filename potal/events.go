@@ -96,20 +96,20 @@ func (e AppHomeOpenedEvent) isValid() bool {
 	return e.Tab == "home"
 }
 
-func processMessageEvent(event *slackevents.MessageEvent, ctxx context.Context) {
+func processMessageEvent(ctx context.Context, event *slackevents.MessageEvent) {
 	// Recive the transaction attached to the context
-	httpTxn := sentry.TransactionFromContext(ctxx)
-	ctx := context.Background()
+	httpTxn := sentry.TransactionFromContext(ctx)
 
 	// Clone the current hub
 	hub := sentry.CurrentHub().Clone()
+
 	options := []sentry.SpanOption{
 		sentry.OpName("event.process"),
 		sentry.TransctionSource(sentry.SourceTask),
 		// Continue the trace
 		sentry.ContinueFromHeaders(httpTxn.ToSentryTrace(), httpTxn.ToBaggage()),
 	}
-	transaction := sentry.StartTransaction(ctx, "EVENT message", options...)
+	transaction := sentry.StartTransaction(context.Background(), "EVENT message", options...)
 	defer transaction.Finish()
 
 	messageEvent := MessageEvent{
@@ -154,10 +154,9 @@ func processMessageEvent(event *slackevents.MessageEvent, ctxx context.Context) 
 	sendRequest(messageEvent, hub, transaction)
 }
 
-func processReactionEvent(event *slackevents.ReactionAddedEvent, ctxx context.Context) {
+func processReactionEvent(ctx context.Context, event *slackevents.ReactionAddedEvent) {
 	// Recive the transaction attached to the context
-	httpTxn := sentry.TransactionFromContext(ctxx)
-	ctx := context.Background()
+	httpTxn := sentry.TransactionFromContext(ctx)
 
 	// Clone the current hub
 	hub := sentry.CurrentHub().Clone()
@@ -167,7 +166,7 @@ func processReactionEvent(event *slackevents.ReactionAddedEvent, ctxx context.Co
 		// Continue the trace
 		sentry.ContinueFromHeaders(httpTxn.ToSentryTrace(), httpTxn.ToBaggage()),
 	}
-	transaction := sentry.StartTransaction(ctx, "EVENT reaction_added", options...)
+	transaction := sentry.StartTransaction(context.Background(), "EVENT reaction_added", options...)
 	defer transaction.Finish()
 
 	reactionEvent := ReactionAddedEvent{
@@ -217,10 +216,9 @@ func processReactionEvent(event *slackevents.ReactionAddedEvent, ctxx context.Co
 	sendRequest(reactionEvent, hub, transaction)
 }
 
-func processAppMentionEvent(event *slackevents.AppMentionEvent, ctxx context.Context) {
+func processAppMentionEvent(ctx context.Context, event *slackevents.AppMentionEvent) {
 	// Recive the transaction attached to the context
-	httpTxn := sentry.TransactionFromContext(ctxx)
-	ctx := context.Background()
+	httpTxn := sentry.TransactionFromContext(ctx)
 
 	// Clone the current hub
 	hub := sentry.CurrentHub().Clone()
@@ -230,7 +228,7 @@ func processAppMentionEvent(event *slackevents.AppMentionEvent, ctxx context.Con
 		// Continue the trace
 		sentry.ContinueFromHeaders(httpTxn.ToSentryTrace(), httpTxn.ToBaggage()),
 	}
-	transaction := sentry.StartTransaction(ctx, "EVENT app_mention", options...)
+	transaction := sentry.StartTransaction(context.Background(), "EVENT app_mention", options...)
 	defer transaction.Finish()
 
 	appMentionEvent := AppMentionEvent{
@@ -252,10 +250,9 @@ func processAppMentionEvent(event *slackevents.AppMentionEvent, ctxx context.Con
 	sendRequest(appMentionEvent, hub, transaction)
 }
 
-func processAppHomeOpenedEvent(event *slackevents.AppHomeOpenedEvent, ctxx context.Context) {
+func processAppHomeOpenedEvent(ctx context.Context, event *slackevents.AppHomeOpenedEvent) {
 	// Recive the transaction attached to the context
-	httpTxn := sentry.TransactionFromContext(ctxx)
-	ctx := context.Background()
+	httpTxn := sentry.TransactionFromContext(ctx)
 
 	// Clone the current hub
 	hub := sentry.CurrentHub().Clone()
@@ -265,7 +262,7 @@ func processAppHomeOpenedEvent(event *slackevents.AppHomeOpenedEvent, ctxx conte
 		// Continue the trace
 		sentry.ContinueFromHeaders(httpTxn.ToSentryTrace(), httpTxn.ToBaggage()),
 	}
-	transaction := sentry.StartTransaction(ctx, "EVENT app_home_opened", options...)
+	transaction := sentry.StartTransaction(context.Background(), "EVENT app_home_opened", options...)
 	defer transaction.Finish()
 
 	appHomeOpenedEvent := AppHomeOpenedEvent{
