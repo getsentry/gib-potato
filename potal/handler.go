@@ -23,7 +23,10 @@ func DefaultHandler(w http.ResponseWriter, r *http.Request, _ httprouter.Params)
 		"message": "The potato is a lie!",
 	}
 	w.Header().Set("Content-Type", "application/json")
-	json.NewEncoder(w).Encode(data)
+	if err := json.NewEncoder(w).Encode(data); err != nil {
+		w.WriteHeader(http.StatusInternalServerError)
+		return
+	}
 }
 
 func EventsHandler(w http.ResponseWriter, r *http.Request, _ httprouter.Params) {
@@ -67,7 +70,10 @@ func EventsHandler(w http.ResponseWriter, r *http.Request, _ httprouter.Params) 
 			return
 		}
 		w.Header().Set("Content-Type", "text")
-		w.Write([]byte(r.Challenge))
+		if _, err := w.Write([]byte(r.Challenge)); err != nil {
+			w.WriteHeader(http.StatusInternalServerError)
+			return
+		}
 	}
 
 	fmt.Printf("Event received: %+v\n", eventsAPIEvent.Type)
