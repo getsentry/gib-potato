@@ -22,8 +22,7 @@ func main() {
 	}
 
 	sentryErr := sentry.Init(sentry.ClientOptions{
-		//Dsn:              os.Getenv("SENTRY_DSN"),
-		Dsn:              "https://5f94b2e57fee494484c806272ca9b3b1@o447951.ingest.sentry.io/4504476875096064",
+		Dsn:              os.Getenv("SENTRY_DSN"),
 		Release:          os.Getenv("SENTRY_RELEASE"),
 		Environment:      os.Getenv("SENTRY_ENVIRONMENT"),
 		AttachStacktrace: true,
