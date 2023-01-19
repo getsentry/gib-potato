@@ -16,6 +16,7 @@ Sentry.init({
   app,
   dsn: params.sentry.dsn,
   environment: params.sentry.environment,
+  release: params.sentry.version,
   integrations: [
     new BrowserTracing({
       tracePropagationTargets: [
@@ -24,8 +25,14 @@ Sentry.init({
         "gipotato.app",
       ],
     }),
+    // new Sentry.Replay({
+    //   maskAllText: false,
+    //   blockAllMedia: false,
+    // }),
   ],
   tracesSampleRate: 1.0,
+  replaysSessionSampleRate: 1.0,
+  replaysOnErrorSampleRate: 1.0,
 });
 
 const pinia = createPinia();
