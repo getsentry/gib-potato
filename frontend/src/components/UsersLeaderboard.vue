@@ -1,10 +1,28 @@
 <script setup lang="ts">
+import { onMounted, onUnmounted } from 'vue';
 import { useUsersStore } from '@/stores/users';
 import { storeToRefs } from 'pinia';
 
 const usersStore = useUsersStore();
 const { users } = storeToRefs(usersStore);
 
+// Small little easter egg so we can dogfood:
+// If you type "taco" on the leaderboard page, an error is thrown.
+let lastFourKeystrokes: string[] = [];
+const recordKeystroke = (e: KeyboardEvent) => {
+  lastFourKeystrokes.push(e.key);
+  lastFourKeystrokes = lastFourKeystrokes.slice(-4);
+  if (lastFourKeystrokes.join('') === 'taco') {
+    throw new Error("We don't like Tacos!");
+  }
+};
+
+onMounted(() => {
+  window.addEventListener('keydown', recordKeystroke);
+});
+onUnmounted(() => {
+  window.removeEventListener('keydown', recordKeystroke);
+});
 </script>
 
 <template>
