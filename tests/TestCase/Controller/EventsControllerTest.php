@@ -48,7 +48,7 @@ class EventsControllerTest extends TestCase
                 'U002',
             ],
             'channel' => 'C001',
-            'text' => '<@U042CECCR7A> <@U041NS747K4> :potato:',
+            'text' => '<@U002> :potato:',
             'timestamp' => '1672531200',
             'event_timestamp' => '1672531200',
             'permalink' => 'https://example.com/permalink',
