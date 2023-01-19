@@ -65,21 +65,6 @@ class Application extends BaseApplication implements AuthenticationServiceProvid
             );
         }
 
-        /*
-         * Only try to load DebugKit in development mode
-         * Debug Kit should not be installed on a production system
-         */
-        if (Configure::read('debug')) {
-            /**
-             * We have to use forceEnable to be able to work with
-             * ngrok hosts, like gipotato.eu.ngrok.io
-             */
-            Configure::write('DebugKit.forceEnable', true);
-            $this->addPlugin('DebugKit', [
-                'forceEnable' => true,
-            ]);
-        }
-
         $this->addPlugin('Authentication');
     }
 

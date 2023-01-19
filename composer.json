@@ -24,7 +24,6 @@
     "require-dev": {
         "cakephp/bake": "^2.6",
         "cakephp/cakephp-codesniffer": "^4.5",
-        "cakephp/debug_kit": "^4.5",
         "phpstan/phpstan": "^1.9",
         "phpunit/phpunit": "^9.3"
     },
