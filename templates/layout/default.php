@@ -19,7 +19,7 @@
     <?= $this->fetch('script') ?>
     <?= $this->fetch('css') ?>
 </head>
-<body class="h-full bg-gray-50 dark:text-zinc-50 text-zinc-900 dark:bg-zinc-900 font-mono">
+<body class="h-full bg-gray-50 dark:bg-zinc-900 text-zinc-900 dark:text-zinc-50 font-mono">
     <?= $this->fetch('content') ?>
 </body>
 </html>
