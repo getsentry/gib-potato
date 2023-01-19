@@ -17,7 +17,7 @@
                 'controller' => 'Login',
                 'action' => 'startOpenId',
             ], [
-                'class' => 'inline-flex items-center px-6 py-3 border border-transparent text-base font-semibold rounded-md text-amber-700 bg-amber-100 hover:bg-amber-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-amber-500'
+                'class' => 'inline-flex items-center px-6 py-3 border border-transparent text-base font-semibold rounded-md text-amber-700 bg-amber-100 hover:bg-amber-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-amber-500 focus:ring-offset-gray-50 dark:focus:ring-offset-zinc-900',
             ]);
         ?>
     </div>
