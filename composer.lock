@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "fd4c9d25b2ba9cfc8de7e4e183819e62",
+    "content-hash": "32885481f33483c820a535cd14338440",
     "packages": [
         {
             "name": "cakephp/authentication",
@@ -1379,16 +1379,16 @@
         },
         {
             "name": "paragonie/csp-builder",
-            "version": "v2.8.0",
+            "version": "v2.7.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/paragonie/csp-builder.git",
-                "reference": "1a1a85fcf115400d7753af842403ec6e846319de"
+                "reference": "613c0d251f796c718a0da7ebc9e0e6d94e55de8a"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/paragonie/csp-builder/zipball/1a1a85fcf115400d7753af842403ec6e846319de",
-                "reference": "1a1a85fcf115400d7753af842403ec6e846319de",
+                "url": "https://api.github.com/repos/paragonie/csp-builder/zipball/613c0d251f796c718a0da7ebc9e0e6d94e55de8a",
+                "reference": "613c0d251f796c718a0da7ebc9e0e6d94e55de8a",
                 "shasum": ""
             },
             "require": {
@@ -1434,7 +1434,7 @@
                 "issues": "https://github.com/paragonie/csp-builder/issues",
                 "source": "https://github.com/paragonie/csp-builder"
             },
-            "time": "2022-12-15T03:49:58+00:00"
+            "time": "2022-10-01T19:09:15+00:00"
         },
         {
             "name": "php-http/client-common",
@@ -5163,16 +5163,16 @@
         },
         {
             "name": "phpstan/phpstan",
-            "version": "1.9.11",
+            "version": "1.9.13",
             "source": {
                 "type": "git",
                 "url": "https://github.com/phpstan/phpstan.git",
-                "reference": "60f3d68481eef216199eae7a2603cd5fe124d464"
+                "reference": "a0922426da3a7d0d9334e99a363f7f9f6e23e84f"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/phpstan/phpstan/zipball/60f3d68481eef216199eae7a2603cd5fe124d464",
-                "reference": "60f3d68481eef216199eae7a2603cd5fe124d464",
+                "url": "https://api.github.com/repos/phpstan/phpstan/zipball/a0922426da3a7d0d9334e99a363f7f9f6e23e84f",
+                "reference": "a0922426da3a7d0d9334e99a363f7f9f6e23e84f",
                 "shasum": ""
             },
             "require": {
@@ -5202,7 +5202,7 @@
             ],
             "support": {
                 "issues": "https://github.com/phpstan/phpstan/issues",
-                "source": "https://github.com/phpstan/phpstan/tree/1.9.11"
+                "source": "https://github.com/phpstan/phpstan/tree/1.9.13"
             },
             "funding": [
                 {
@@ -5218,7 +5218,7 @@
                     "type": "tidelift"
                 }
             ],
-            "time": "2023-01-12T14:04:13+00:00"
+            "time": "2023-01-18T15:26:53+00:00"
         },
         {
             "name": "phpunit/php-code-coverage",
