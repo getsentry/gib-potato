@@ -24,7 +24,10 @@ Sentry.init({
   dsn: process.env.SENTRY_DSN,
   tracesSampleRate: 1,
   profilesSampleRate: 1,
-  integrations: [new ProfilingIntegration()] 
+  integrations: [new ProfilingIntegration()],
+  _experiments: {
+    includeStackLocals: true,
+  },
 });
 
 const maxPotato = process.env.MAX_POTATO
