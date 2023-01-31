@@ -240,6 +240,11 @@ async function givePotato({user, text, channel, ts}) {
     receivers += `<@${userSlackId}> `;
   });
 
+  const doNotSpam = process.env.DO_NOT_SPAM.split(";");
+  if (doNotSpam.includes(senderSlackId)) {
+    return;
+  }
+
   // Send the a Message to the sender of the Potatoes
   app.client.chat.postMessage({
     channel: senderSlackId,
