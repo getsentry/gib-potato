@@ -22,6 +22,7 @@ const { App } = require("@slack/bolt");
 
 Sentry.init({ 
   dsn: process.env.SENTRY_DSN,
+  includeLocalVariables: true,
   tracesSampleRate: 1,
   profilesSampleRate: 1,
   includeStackLocals: true,
