@@ -30,9 +30,7 @@ return static function (RouteBuilder $routes) {
 
     // Cross Site Request Forgery (CSRF) Protection Middleware
     // https://book.cakephp.org/4/en/security/csrf.html#cross-site-request-forgery-csrf-middleware
-    $routes->registerMiddleware('csrf', new CsrfProtectionMiddleware([
-        'httponly' => true,
-    ]));
+    $routes->registerMiddleware('csrf', new CsrfProtectionMiddleware());
 
     $routes->scope('/', function (RouteBuilder $builder) {
         $builder->applyMiddleware('csrf');
@@ -43,6 +41,9 @@ return static function (RouteBuilder $routes) {
         $builder->connect('/open-id', ['controller' => 'Login', 'action' => 'openId']);
 
         $builder->connect('/', ['controller' => 'Home', 'action' => 'index']);
+        $builder->connect('/shop', ['controller' => 'Home', 'action' => 'index']);
+        $builder->connect('/profile', ['controller' => 'Home', 'action' => 'index']);
+        $builder->connect('/settings', ['controller' => 'Home', 'action' => 'index']);
 
         $builder->fallbacks();
     });
