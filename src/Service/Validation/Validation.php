@@ -32,7 +32,7 @@ class Validation
 
         $recieversCount = count($this->event->receivers);
         if ($this->event->amount * $recieversCount > self::MAX_AMOUNT) {
-            throw new PotatoException('You can only gib out *5* potato a day 😢');
+            throw new PotatoException('Each :potato: is multiplied by the amount of people you @ mention. You can only gib out *5* potato a day 😢');
         }
 
         return $this;
