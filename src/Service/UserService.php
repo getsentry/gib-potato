@@ -45,6 +45,14 @@ class UserService {
             'slack_name' => $slackUser['real_name'],
             'slack_picture' => $slackUser['profile']['image_72'],
             'slack_is_bot' => $slackUser['is_bot'] ?? false,
+        ], [
+            'accessibleFields' => [
+                'status' => true,
+                'slack_user_id' => true,
+                'slack_name' => true,
+                'slack_picture' => true,
+                'slack_is_bot' => true,
+            ],
         ]);
 
         return $this->Users->saveOrFail($user);

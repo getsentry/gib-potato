@@ -30,14 +30,7 @@ class User extends Entity
      * @var array<string, bool>
      */
     protected $_accessible = [
-        'status' => true,
-        'slack_user_id' => true,
-        'slack_name' => true,
-        'slack_picture' => true,
-        'slack_is_bot' => true,
-        'notifications' => true,
-        'created' => true,
-        'modified' => true,
+        '*' => false,
     ];
 
     public const STATUS_ACTIVE = 'active';
