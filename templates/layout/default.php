@@ -21,5 +21,6 @@
 </head>
 <body class="h-full bg-gray-50 dark:bg-zinc-900 text-zinc-900 dark:text-zinc-50 font-mono">
     <?= $this->fetch('content') ?>
+    <?= $this->element('footer') ?>
 </body>
 </html>
