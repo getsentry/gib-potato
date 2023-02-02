@@ -41,4 +41,47 @@ class ApiController extends Controller
             ->withType('json')
             ->withStringBody(json_encode($users));
     }
+
+    public function user(): Response
+    {
+        $usersTable = $this->fetchTable('Users');
+
+        if ($this->request->is('GET')) {
+            $user = $usersTable->find()
+            ->where(['Users.id' => $this->Authentication->getIdentityData('id')])
+            ->first();
+
+            return $this->response
+                ->withStatus(200)
+                ->withType('json')
+                ->withStringBody(json_encode($user));
+        }
+        if ($this->request->is('POST')) {
+            $user = $usersTable->find()
+                ->where(['Users.id' => $this->Authentication->getIdentityData('id')])
+                ->first();
+
+            $user = $usersTable->patchEntity($user, [
+                'notifications' => [
+                    'sent' => $this->request->getData('notifications.sent'),
+                    'received' => $this->request->getData('notifications.received'),
+                ]
+            ], [
+                'accessibleFields' => [
+                    'notifications' => true,
+                ],
+            ]);
+            $usersTable->saveOrFail($user);
+
+            return $this->response
+                ->withStatus(204);
+        }
+
+        return $this->response
+            ->withStatus(405)
+            ->withType('json')
+            ->withStringBody(json_encode([
+                'error' => 'Method not allowed',
+            ]));
+    }
 }
