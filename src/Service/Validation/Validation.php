@@ -61,19 +61,23 @@ class Validation
     {
         $messagesTable = $this->fetchTable('Messages');
 
-        $givenOutAmount = $messagesTable->find()
+        $query = $messagesTable->find();
+        $result = $query
+            ->select([
+                'given_out' => $query->func()->sum('amount')
+            ])
             ->where([
                 'sender_user_id' => $this->sender->id,
                 'type' => Message::TYPE_POTATO,
                 'created >=' => new FrozenTime('24 hours ago'),
             ])
-            ->count();
+            ->first();
 
-        if ($givenOutAmount >= self::MAX_AMOUNT) {
+        if ($result->given_out >= self::MAX_AMOUNT) {
             throw new PotatoException('You already gib out all your :potato: today 😢');
         }
 
-        $amountLeftToday = self::MAX_AMOUNT - $givenOutAmount;
+        $amountLeftToday = self::MAX_AMOUNT - $result->given_out;
         if ($this->event->amount > $amountLeftToday) {
             throw new PotatoException(sprintf('You only have *%s* :potato: left to gib today 😢', $amountLeftToday));
         }
