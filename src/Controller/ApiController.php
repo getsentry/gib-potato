@@ -58,10 +58,11 @@ class ApiController extends Controller
                 ->where(['Users.id' => $this->Authentication->getIdentityData('id')])
                 ->first();
 
+            // Being super explicit here on purpose
             $user = $usersTable->patchEntity($user, [
                 'notifications' => [
-                    'sent' => $this->request->getData('notifications.sent'),
-                    'received' => $this->request->getData('notifications.received'),
+                    'sent' => (bool) $this->request->getData('notifications.sent'),
+                    'received' => (bool) $this->request->getData('notifications.received'),
                 ]
             ], [
                 'accessibleFields' => [
