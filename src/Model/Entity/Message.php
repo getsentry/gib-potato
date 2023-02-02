@@ -29,12 +29,7 @@ class Message extends Entity
      * @var array<string, bool>
      */
     protected $_accessible = [
-        'sender_user_id' => true,
-        'receiver_user_id' => true,
-        'amount' => true,
-        'type' => true,
-        'created' => true,
-        'user' => true,
+        '*' => false,
     ];
 
     public const TYPE_POTATO = 'potato';

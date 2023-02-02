@@ -32,6 +32,13 @@ class AwardService
             'receiver_user_id' => $toUser->id,
             'amount' => $event->amount,
             'type' => str_replace(':', '', $event->reaction),
+        ], [
+            'accessibleFields' => [
+                'sender_user_id' => true,
+                'receiver_user_id' => true,
+                'amount' => true,
+                'type' => true,
+            ],
         ]);
         $this->Messages->saveOrFail($message);
 
