@@ -4,7 +4,7 @@
  */
 ?>
 <!DOCTYPE html>
-<html class="h-full">
+<html class="h-full min-w-[320px]">
 <head>
     <?= $this->Html->charset() ?>
     <meta name="viewport" content="width=device-width, initial-scale=1">
