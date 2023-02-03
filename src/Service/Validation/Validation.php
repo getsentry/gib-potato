@@ -14,8 +14,6 @@ class Validation
 {
     use LocatorAwareTrait;
 
-    protected const MAX_AMOUNT = 5;
-
     protected MessageEvent|ReactionAddedEvent $event;
     protected User $sender;
 
@@ -26,12 +24,12 @@ class Validation
 
     public function amount(): self
     {
-        if ($this->event->amount > self::MAX_AMOUNT) {
+        if ($this->event->amount > Message::MAX_AMOUNT) {
             throw new PotatoException('You can only gib out *5* potato a day 😢');
         }
 
         $recieversCount = count($this->event->receivers);
-        if ($this->event->amount * $recieversCount > self::MAX_AMOUNT) {
+        if ($this->event->amount * $recieversCount > Message::MAX_AMOUNT) {
             throw new PotatoException('Each :potato: is multiplied by the amount of people you @ mention. You can only gib out *5* potato a day 😢');
         }
 
@@ -73,11 +71,11 @@ class Validation
             ])
             ->first();
 
-        if ($result->given_out >= self::MAX_AMOUNT) {
+        if ($result->given_out >= Message::MAX_AMOUNT) {
             throw new PotatoException('You already gib out all your :potato: today 😢');
         }
 
-        $amountLeftToday = self::MAX_AMOUNT - $result->given_out;
+        $amountLeftToday = Message::MAX_AMOUNT - $result->given_out;
         if ($this->event->amount > $amountLeftToday) {
             throw new PotatoException(sprintf('You only have *%s* :potato: left to gib today 😢', $amountLeftToday));
         }

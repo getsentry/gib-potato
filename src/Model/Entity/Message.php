@@ -33,4 +33,5 @@ class Message extends Entity
     ];
 
     public const TYPE_POTATO = 'potato';
+    public const MAX_AMOUNT = 5;
 }
