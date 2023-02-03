@@ -7,6 +7,7 @@ use App\Http\Client;
 use Sentry\SentrySdk;
 
 use function Sentry\captureMessage;
+use function Sentry\withScope;
 
 class SlackClient
 {
@@ -39,8 +40,12 @@ class SlackClient
             $json = $response->getJson();
 
             if ($json['ok'] === false) {
-                SentrySdk::getCurrentHub()->withScope(function ($scope) use ($json) {
-                    $scope->setExtra('slack_response', $json);
+                withScope(function ($scope) use ($json, $channel, $text) {
+                    $scope->setExtras([
+                        'channel' => $channel,
+                        'text' => $text,
+                        'slack_response' => $json,
+                    ]);
                     captureMessage('Slack API error: https://api.slack.com/methods/chat.postMessage');
                 });
             }
@@ -63,8 +68,14 @@ class SlackClient
             $json = $response->getJson();
 
             if ($json['ok'] === false) {
-                SentrySdk::getCurrentHub()->withScope(function ($scope) use ($json) {
-                    $scope->setExtra('slack_response', $json);
+                withScope(function ($scope) use ($json, $channel, $user, $text, $threadTimestamp) {
+                    $scope->setExtras([
+                        'channel' => $channel,
+                        'user' => $user,
+                        'text' => $text,
+                        'thread_ts' => $threadTimestamp,
+                        'slack_response' => $json,
+                    ]);
                     captureMessage('Slack API error: https://api.slack.com/methods/chat.postEphemeral');
                 });
             }
@@ -85,8 +96,12 @@ class SlackClient
             $json = $response->getJson();
 
             if ($json['ok'] === false) {
-                SentrySdk::getCurrentHub()->withScope(function ($scope) use ($json) {
-                    $scope->setExtra('slack_response', $json);
+                withScope(function ($scope) use ($json, $user, $view) {
+                    $scope->setExtras([
+                        'user_id' => $user,
+                        'view' => $view,
+                        'slack_response' => $json,
+                    ]);
                     captureMessage('Slack API error: https://api.slack.com/methods/views.publish');
                 });
             }
@@ -108,8 +123,11 @@ class SlackClient
             if ($json['ok'] === true) {
                 return $json['user'];
             } else {
-                SentrySdk::getCurrentHub()->withScope(function ($scope) use ($json) {
-                    $scope->setExtra('slack_response', $json);
+                withScope(function ($scope) use ($json, $user) {
+                    $scope->setExtras([
+                        'user' => $user,
+                        'slack_response' => $json,
+                    ]);
                     captureMessage('Slack API error: https://api.slack.com/methods/users.info');
                 });
             }
