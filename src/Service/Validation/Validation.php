@@ -7,13 +7,9 @@ use App\Model\Entity\User;
 use App\Service\Event\MessageEvent;
 use App\Service\Event\ReactionAddedEvent;
 use App\Service\Validation\Exception\PotatoException;
-use Cake\I18n\FrozenTime;
-use Cake\ORM\Locator\LocatorAwareTrait;
 
 class Validation
 {
-    use LocatorAwareTrait;
-
     protected MessageEvent|ReactionAddedEvent $event;
     protected User $sender;
 
@@ -57,27 +53,14 @@ class Validation
 
     public function sender(): self
     {
-        $messagesTable = $this->fetchTable('Messages');
-
-        $query = $messagesTable->find();
-        $result = $query
-            ->select([
-                'given_out' => $query->func()->sum('amount')
-            ])
-            ->where([
-                'sender_user_id' => $this->sender->id,
-                'type' => Message::TYPE_POTATO,
-                'created >=' => new FrozenTime('24 hours ago'),
-            ])
-            ->first();
-
-        if ($result->given_out >= Message::MAX_AMOUNT) {
+        $sent = $this->sender->potatoSentToday();
+        if ($sent >= Message::MAX_AMOUNT) {
             throw new PotatoException('You already gib out all your :potato: today 😢');
         }
 
-        $amountLeftToday = Message::MAX_AMOUNT - $result->given_out;
-        if ($this->event->amount > $amountLeftToday) {
-            throw new PotatoException(sprintf('You only have *%s* :potato: left to gib today 😢', $amountLeftToday));
+        $left = $this->sender->potatoLeftToday();
+        if ($this->event->amount > $left) {
+            throw new PotatoException(sprintf('You only have *%s* :potato: left to gib today 😢', $left));
         }
 
         return $this;

@@ -3,7 +3,9 @@ declare(strict_types=1);
 
 namespace App\Model\Entity;
 
+use Cake\I18n\FrozenTime;
 use Cake\ORM\Entity;
+use Cake\ORM\Locator\LocatorAwareTrait;
 
 /**
  * User Entity
@@ -20,6 +22,8 @@ use Cake\ORM\Entity;
  */
 class User extends Entity
 {
+    use LocatorAwareTrait;
+
     /**
      * Fields that can be mass assigned using newEntity() or patchEntity().
      *
@@ -47,5 +51,98 @@ class User extends Entity
         }
 
         return $notifications;
+    }
+
+    public function potatoSent(): int
+    {
+        $messagesTable = $this->fetchTable('Messages');
+
+        $query = $messagesTable->find();
+        $result = $query
+            ->select([
+                'sent' => $query->func()->sum('amount')
+            ])
+            ->where([
+                'sender_user_id' => $this->id,
+                'type' => Message::TYPE_POTATO,
+            ])
+            ->first();
+
+        return (int) $result->sent;
+    }
+
+    public function potatoReceived(): int
+    {
+        $messagesTable = $this->fetchTable('Messages');
+
+        $query = $messagesTable->find();
+        $result = $query
+            ->select([
+                'received' => $query->func()->sum('amount')
+            ])
+            ->where([
+                'receiver_user_id' => $this->id,
+                'type' => Message::TYPE_POTATO,
+            ])
+            ->first();
+
+        return (int) $result->received;
+    }
+
+    public function potatoSentToday(): int
+    {
+        $messagesTable = $this->fetchTable('Messages');
+
+        $query = $messagesTable->find();
+        $result = $query
+            ->select([
+                'sent' => $query->func()->sum('amount')
+            ])
+            ->where([
+                'sender_user_id' => $this->id,
+                'type' => Message::TYPE_POTATO,
+                'created >=' => new FrozenTime('24 hours ago'),
+            ])
+            ->first();
+
+        return (int) $result->sent;
+    }
+
+    public function potatoReceivedToday(): int
+    {
+        $messagesTable = $this->fetchTable('Messages');
+
+        $query = $messagesTable->find();
+        $result = $query
+            ->select([
+                'received' => $query->func()->sum('amount')
+            ])
+            ->where([
+                'receiver_user_id' => $this->id,
+                'type' => Message::TYPE_POTATO,
+                'created >=' => new FrozenTime('24 hours ago'),
+            ])
+            ->first();
+
+        return (int) $result->received;
+    }
+
+    public function potatoLeftToday(): int
+    {
+        $messagesTable = $this->fetchTable('Messages');
+
+        $query = $messagesTable->find();
+        $result = $query
+            ->select([
+                'sent' => $query->func()->sum('amount')
+            ])
+            ->where([
+                'sender_user_id' => $this->id,
+                'type' => Message::TYPE_POTATO,
+                'created >=' => new FrozenTime('24 hours ago'),
+            ])
+            ->first();
+
+        return Message::MAX_AMOUNT - (int) $result->sent;
     }
 }
