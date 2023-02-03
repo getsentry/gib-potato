@@ -6,7 +6,7 @@
                 <h2 class="text-lg font-medium leading-6">Notifications</h2>
                 <p class="mt-1 text-sm text-zinc-500">Set your notification preferences when the <code>@Gibpotato</code> Slack bot should notify you.</p>
             </div>
-            <ul role="list" class="mt-2 divide-y divide-gray-200">
+            <ul role="list" class="mt-2 divide-y divide-zinc-200">
                 <li class="flex items-center justify-between py-4">
                     <div class="flex flex-col">
                         <p class="text-sm font-medium">Sent Notifications</p>
@@ -15,7 +15,7 @@
                         </p>
                     </div>
                     <button type="button"
-                        class="bg-gray-200 relative ml-4 inline-flex h-6 w-11 flex-shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors duration-200 ease-in-out"
+                        class="bg-zinc-200 dark:bg-zinc-600 relative ml-4 inline-flex h-6 w-11 flex-shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors duration-200 ease-in-out"
                         :class="{ '!bg-green-500': user.notifications.sent === true }"
                         @click="toggleSentNotifications"
                     >
@@ -36,7 +36,7 @@
                         </p>
                     </div>
                     <button type="button"
-                        class="bg-gray-200 relative ml-4 inline-flex h-6 w-11 flex-shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors duration-200 ease-in-out"
+                        class="bg-zinc-200 dark:bg-zinc-600 relative ml-4 inline-flex h-6 w-11 flex-shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors duration-200 ease-in-out"
                         :class="{ '!bg-green-500': user.notifications.received === true }"
                         @click="toggleReceivedNotifications"
                     >
