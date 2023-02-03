@@ -53,6 +53,7 @@ class ApiController extends Controller
                 ->withType('json')
                 ->withStringBody(json_encode($user));
         }
+
         if ($this->request->is('POST')) {
             $user = $usersTable->find()
                 ->where(['Users.id' => $this->Authentication->getIdentityData('id')])
