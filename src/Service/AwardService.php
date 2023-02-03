@@ -3,10 +3,13 @@ declare(strict_types=1);
 
 namespace App\Service;
 
+use App\Model\Entity\Message;
 use App\Model\Entity\User;
 use App\Model\Table\MessagesTable;
+use App\Model\Table\UsersTable;
 use App\Service\Event\MessageEvent;
 use App\Service\Event\ReactionAddedEvent;
+use Cake\I18n\FrozenTime;
 use Cake\ORM\Locator\LocatorAwareTrait;
 
 class AwardService
@@ -43,7 +46,21 @@ class AwardService
         $this->Messages->saveOrFail($message);
 
         if ($fromUser->notifications['sent'] === true) {
+            $query = $this->Messages->find();
+            $result = $query
+                ->select([
+                    'given_out' => $query->func()->sum('amount')
+                ])
+                ->where([
+                    'sender_user_id' => $toUser->id,
+                    'type' => Message::TYPE_POTATO,
+                    'created >=' => new FrozenTime('24 hours ago'),
+                ])
+                ->first();
+
             $gibMessage = sprintf('You did gib *%s* %s to <@%s>.', $event->amount, $event->reaction, $toUser->slack_user_id);
+            $gibMessage .= PHP_EOL;
+            $gibMessage .= sprintf('You have *%s* :potato: left.', Message::MAX_AMOUNT - $result->given_out);
             $gibMessage .= PHP_EOL;
             $gibMessage .= sprintf('> %s', $event->permalink);
 
