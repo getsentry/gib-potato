@@ -4,6 +4,9 @@ declare(strict_types=1);
 namespace App\Service;
 
 use App\Http\Client;
+use Sentry\SentrySdk;
+
+use function Sentry\captureMessage;
 
 class SlackClient
 {
@@ -27,10 +30,21 @@ class SlackClient
      */
     public function postMessage(string $channel, string $text): void
     {
-        $this->client->post('chat.postMessage', [
+        $response = $this->client->post('chat.postMessage', [
             'channel' => $channel,
             'text' => $text,
         ]);
+
+        if ($response->isSuccess()) {
+            $json = $response->getJson();
+
+            if ($json['ok'] === false) {
+                SentrySdk::getCurrentHub()->withScope(function ($scope) use ($json) {
+                    $scope->setExtra('slack_response', $json);
+                    captureMessage('Slack API error: https://api.slack.com/methods/chat.postMessage');
+                });
+            }
+        }
     }
 
     /**
@@ -38,12 +52,23 @@ class SlackClient
      */
     public function postEphemeral(string $channel, string $user, string $text, ?string $threadTimestamp = null): void
     {
-        $this->client->post('chat.postEphemeral', [
+        $response = $this->client->post('chat.postEphemeral', [
             'channel' => $channel,
             'user' => $user,
             'text' => $text,
             'thread_ts' => $threadTimestamp,
         ]);
+
+        if ($response->isSuccess()) {
+            $json = $response->getJson();
+
+            if ($json['ok'] === false) {
+                SentrySdk::getCurrentHub()->withScope(function ($scope) use ($json) {
+                    $scope->setExtra('slack_response', $json);
+                    captureMessage('Slack API error: https://api.slack.com/methods/chat.postEphemeral');
+                });
+            }
+        }
     }
 
     /**
@@ -51,16 +76,27 @@ class SlackClient
      */
     public function publishView(string $user, array $view): void
     {
-        $this->client->post('views.publish', [
+        $response = $this->client->post('views.publish', [
             'user_id' => $user,
             'view' => json_encode($view),
         ]);
+
+        if ($response->isSuccess()) {
+            $json = $response->getJson();
+
+            if ($json['ok'] === false) {
+                SentrySdk::getCurrentHub()->withScope(function ($scope) use ($json) {
+                    $scope->setExtra('slack_response', $json);
+                    captureMessage('Slack API error: https://api.slack.com/methods/views.publish');
+                });
+            }
+        }
     }
 
     /**
      * @see https://api.slack.com/methods/users.info
      */
-    public function getUser(string $user): ?array
+    public function getUser(string $user): array
     {
         $response = $this->client->get('users.info', [
             'user' => $user,
@@ -69,7 +105,14 @@ class SlackClient
         if ($response->isSuccess()) {
             $json = $response->getJson();
 
-            return $json['user'];
+            if ($json['ok'] === true) {
+                return $json['user'];
+            } else {
+                SentrySdk::getCurrentHub()->withScope(function ($scope) use ($json) {
+                    $scope->setExtra('slack_response', $json);
+                    captureMessage('Slack API error: https://api.slack.com/methods/users.info');
+                });
+            }
         }
 
         return [];
