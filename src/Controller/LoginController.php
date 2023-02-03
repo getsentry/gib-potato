@@ -57,6 +57,7 @@ class LoginController extends AppController
             if ($json['ok'] === true) {
                 try {
                     $parser = new Parser(new JoseEncoder());
+                    /** @var $jwt \Lcobucci\JWT\Token\Plain */
                     $jwt = $parser->parse($json['id_token']);
                 } catch (Throwable $e) {
                     $this->Flash->error('Slack sign in failed');
