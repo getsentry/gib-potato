@@ -12,7 +12,7 @@ import (
 )
 
 func sendRequest(e Event, hub *sentry.Hub, transaction *sentry.Span) {
-	url := os.Getenv("API_URL")
+	url := os.Getenv("POTAL_URL")
 
 	span := transaction.StartChild("http.client")
 	span.Description = fmt.Sprintf("POST %s", url)
@@ -35,7 +35,7 @@ func sendRequest(e Event, hub *sentry.Hub, transaction *sentry.Span) {
 	r.Header.Add("Content-Type", "application/json")
 	r.Header.Add("Sentry-Trace", span.ToSentryTrace())
 	r.Header.Add("Baggage", transaction.ToBaggage())
-	r.Header.Add("Authorization", fmt.Sprintf("Bearer %s", os.Getenv("API_TOKEN")))
+	r.Header.Add("Authorization", os.Getenv("POTAL_TOKEN"))
 
 	client := &http.Client{}
 	res, reqErr := client.Do(r)
