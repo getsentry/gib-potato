@@ -200,7 +200,7 @@ func processReactionEvent(ctx context.Context, event *slackevents.ReactionAddedE
 		Type:            reactionAdded,
 		Amount:          1, // Amount is always 1 for reactions
 		Sender:          event.User,
-		Receivers:       utils.ReactionReceivers(text, event.ItemUser),
+		Receivers:       utils.ReactionReceivers(text, event.User, event.ItemUser),
 		Channel:         event.Item.Channel,
 		Text:            text,
 		Reaction:        constants.Potato, // hardoced for now
