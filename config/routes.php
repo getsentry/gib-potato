@@ -21,6 +21,8 @@
  * @license       https://opensource.org/licenses/mit-license.php MIT License
  */
 
+use Authentication\AuthenticationService;
+use Authentication\Middleware\AuthenticationMiddleware;
 use Cake\Http\Middleware\CsrfProtectionMiddleware;
 use Cake\Routing\Route\DashedRoute;
 use Cake\Routing\RouteBuilder;
@@ -32,8 +34,16 @@ return static function (RouteBuilder $routes) {
     // https://book.cakephp.org/4/en/security/csrf.html#cross-site-request-forgery-csrf-middleware
     $routes->registerMiddleware('csrf', new CsrfProtectionMiddleware());
 
+    $webAuthService = new AuthenticationService([
+        'unauthenticatedRedirect' => '/login',
+        'queryParam' => 'redirect',
+    ]);
+    $webAuthService->loadAuthenticator('Authentication.Session');
+    $routes->registerMiddleware('web-auth', new AuthenticationMiddleware($webAuthService));
+
     $routes->scope('/', function (RouteBuilder $builder) {
         $builder->applyMiddleware('csrf');
+        $builder->applyMiddleware('web-auth');
 
         $builder->connect('/login', ['controller' => 'Login', 'action' => 'login']);
         $builder->connect('/logout', ['controller' => 'Login', 'action' => 'logout']);
@@ -45,11 +55,24 @@ return static function (RouteBuilder $routes) {
         $builder->connect('/profile', ['controller' => 'Home', 'action' => 'index']);
         $builder->connect('/settings', ['controller' => 'Home', 'action' => 'index']);
 
-        $builder->fallbacks();
+        $builder->scope('/api', function (RouteBuilder $builder) {    
+            $builder->get('/users', ['controller' => 'Api', 'action' => 'list']);
+            $builder->get('/user', ['controller' => 'Api', 'action' => 'get']);
+            $builder->patch('/user', ['controller' => 'Api', 'action' => 'edit']);
+        });
     });
 
-    // Routes in this scope don't have CSRF protection.
+    $serviceAuthService = new AuthenticationService();
+    $serviceAuthService->loadAuthenticator('Authentication.Token', [
+        'header' => 'Authorization',
+    ]);
+    $serviceAuthService->loadIdentifier('Potal');
+    $routes->registerMiddleware('service-auth', new AuthenticationMiddleware($serviceAuthService));
+
+
     $routes->scope('/', function (RouteBuilder $builder) {
+        $builder->applyMiddleware('service-auth');
+
         $builder->connect('/events', ['controller' => 'Events', 'action' => 'index']);
     });
 };

@@ -18,10 +18,6 @@ namespace App;
 
 use App\Middleware\SentryMiddleware;
 use App\Middleware\SentryUserMiddleware;
-use Authentication\AuthenticationService;
-use Authentication\AuthenticationServiceInterface;
-use Authentication\AuthenticationServiceProviderInterface;
-use Authentication\Middleware\AuthenticationMiddleware;
 use Cake\Core\Configure;
 use Cake\Core\ContainerInterface;
 use Cake\Datasource\FactoryLocator;
@@ -33,9 +29,7 @@ use Cake\Http\MiddlewareQueue;
 use Cake\ORM\Locator\TableLocator;
 use Cake\Routing\Middleware\AssetMiddleware;
 use Cake\Routing\Middleware\RoutingMiddleware;
-use Cake\Routing\Router;
 use ParagonIE\CSPBuilder\CSPBuilder;
-use Psr\Http\Message\ServerRequestInterface;
 use Sentry\SentrySdk;
 
 /**
@@ -44,7 +38,7 @@ use Sentry\SentrySdk;
  * This defines the bootstrapping logic and middleware layers you
  * want to use in your application.
  */
-class Application extends BaseApplication implements AuthenticationServiceProviderInterface
+class Application extends BaseApplication
 {
     /**
      * Load all the application configuration and bootstrap logic.
@@ -102,8 +96,6 @@ class Application extends BaseApplication implements AuthenticationServiceProvid
 
             ->add(new CspMiddleware($this->getCspPolicy()))
 
-            ->add(new AuthenticationMiddleware($this))
-
             ->add(new SentryUserMiddleware());
 
         return $middlewareQueue;
@@ -135,46 +127,6 @@ class Application extends BaseApplication implements AuthenticationServiceProvid
         $this->addPlugin('Migrations');
 
         // Load more plugins here
-    }
-
-    public function getAuthenticationService(ServerRequestInterface $request): AuthenticationServiceInterface
-    {
-        $config = [
-            'unauthenticatedRedirect' => Router::url([
-                'prefix' => false,
-                'plugin' => null,
-                'controller' => 'Login',
-                'action' => 'login',
-            ]),
-            'queryParam' => 'redirect',
-        ];
-        // Do not respond with a redirect in case an api token is provided
-        if ($request->hasHeader('Authorization')) {
-            $config = [];
-        }
-        $service = new AuthenticationService($config);
-
-        $service->loadIdentifier('Authentication.Callback', [
-            'callback' => function($data) {
-
-                $token = $data['token'] ?? null;
-                if ($token === env('API_TOKEN')) {
-                    $usersTable = FactoryLocator::get('Table')->get('Users');
-
-                    return $usersTable->get('032e4b7c-fa9c-4085-a5a8-700ad9b566fd');
-                }
-        
-                return null;
-            },
-        ]);
-
-        $service->loadAuthenticator('Authentication.Session');
-        $service->loadAuthenticator('Authentication.Token', [
-            'header' => 'Authorization',
-            'tokenPrefix' => 'Bearer',
-        ]);
-
-        return $service;
     }
 
     protected function getCspPolicy()
