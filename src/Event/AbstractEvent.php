@@ -1,9 +1,9 @@
 <?php
 declare(strict_types=1);
 
-namespace App\Service\Event;
+namespace App\Event;
 
-use App\Service\SlackClient;
+use App\Http\SlackClient;
 
 abstract class AbstractEvent
 {

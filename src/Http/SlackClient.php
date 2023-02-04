@@ -1,10 +1,7 @@
 <?php
 declare(strict_types=1);
 
-namespace App\Service;
-
-use App\Http\Client;
-use Sentry\SentrySdk;
+namespace App\Http;
 
 use function Sentry\captureMessage;
 use function Sentry\withScope;

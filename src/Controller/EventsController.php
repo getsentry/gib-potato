@@ -3,7 +3,7 @@ declare(strict_types=1);
 
 namespace App\Controller;
 
-use App\Service\Event\EventFactory;
+use App\Event\EventFactory;
 use Cake\Controller\Controller;
 
 class EventsController extends Controller

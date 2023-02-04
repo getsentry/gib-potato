@@ -3,10 +3,10 @@ declare(strict_types=1);
 
 namespace App\Service;
 
+use App\Event\MessageEvent;
+use App\Event\ReactionAddedEvent;
+use App\Http\SlackClient;
 use App\Model\Entity\User;
-use App\Model\Table\MessagesTable;
-use App\Service\Event\MessageEvent;
-use App\Service\Event\ReactionAddedEvent;
 use Cake\ORM\Locator\LocatorAwareTrait;
 
 class AwardService

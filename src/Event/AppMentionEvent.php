@@ -1,7 +1,7 @@
 <?php
 declare(strict_types=1);
 
-namespace App\Service\Event;
+namespace App\Event;
 
 class AppMentionEvent extends AbstractEvent
 {
@@ -22,9 +22,5 @@ class AppMentionEvent extends AbstractEvent
 
     public function process()
     {
-        // $this->slackClient->postMessage(
-        //     channel: $this->channel,
-        //     text: 'Potato, potato :potato:',
-        // );
     }
 }

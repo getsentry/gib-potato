@@ -1,12 +1,12 @@
 <?php
 
-namespace App\Service\Validation;
+namespace App\Event\Validation;
 
+use App\Event\MessageEvent;
+use App\Event\ReactionAddedEvent;
+use App\Event\Validation\Exception\PotatoException;
 use App\Model\Entity\Message;
 use App\Model\Entity\User;
-use App\Service\Event\MessageEvent;
-use App\Service\Event\ReactionAddedEvent;
-use App\Service\Validation\Exception\PotatoException;
 
 class Validation
 {
@@ -58,8 +58,10 @@ class Validation
             throw new PotatoException('You already gib out all your :potato: today 😢');
         }
 
+        $recieversCount = count($this->event->receivers);
+
         $left = $this->sender->potatoLeftToday();
-        if ($this->event->amount > $left) {
+        if ($this->event->amount * $recieversCount > $left) {
             throw new PotatoException(sprintf('You only have *%s* :potato: left to gib today 😢', $left));
         }
 

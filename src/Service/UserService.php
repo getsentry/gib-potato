@@ -3,6 +3,7 @@ declare(strict_types=1);
 
 namespace App\Service;
 
+use App\Http\SlackClient;
 use App\Model\Entity\User;
 use App\Model\Table\UsersTable;
 use Cake\ORM\Locator\LocatorAwareTrait;

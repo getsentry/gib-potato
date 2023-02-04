@@ -1,15 +1,14 @@
 <?php
 declare(strict_types=1);
 
-namespace App\Service\Event;
+namespace App\Event;
 
-use App\Model\Entity\Message;
+use App\Event\Validation\Validation;
+use App\Event\Validation\Exception\PotatoException;
 use App\Service\AwardService;
 use App\Service\UserService;
-use App\Service\Validation\Exception\PotatoException;
-use App\Service\Validation\Validation;
 
-class MessageEvent extends AbstractEvent
+class ReactionAddedEvent extends AbstractEvent
 {
     public int $amount;
     public string $sender;
@@ -26,7 +25,7 @@ class MessageEvent extends AbstractEvent
     {
         parent::__construct();
 
-        $this->type = self::TYPE_MESSAGE;
+        $this->type = self::TYPE_REACTION_ADDED;
         $this->amount = $event['amount'];
         $this->sender = $event['sender'];
         $this->receivers = $event['receivers'];
