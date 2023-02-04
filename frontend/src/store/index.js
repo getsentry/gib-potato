@@ -32,7 +32,7 @@ const store = createStore({
         async toggleSentNotifications({ commit, getters }) {
             commit('TOGGLE_SENT_NOTIFICATIONS')
             try {
-                const response = await api.post('user', getters.user)
+                const response = await api.patch('user', getters.user)
             } catch (error) {
                 console.log(error)
             }
@@ -40,11 +40,11 @@ const store = createStore({
         async toggleReceivedNotifications({ commit, getters }) {
             commit('TOGGLE_RECEIVED_NOTIFICATIONS')
             try {
-                const response = await api.post('user', getters.user)
+                const response = await api.patch('user', getters.user)
             } catch (error) {
                 console.log(error)
             }
-        }
+        },
     },
     mutations: {
         SET_USERS(state, users) {
@@ -58,7 +58,7 @@ const store = createStore({
         },
         TOGGLE_RECEIVED_NOTIFICATIONS(state) {
             state.user.notifications.received = !state.user.notifications.received
-        }
+        },
     },
 })
 
