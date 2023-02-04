@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 namespace App\Controller;
@@ -15,7 +16,7 @@ class ApiController extends Controller
         $this->loadComponent('Authentication.Authentication');
     }
 
-    public function users(): Response
+    public function list(): Response
     {
         $usersTable = $this->fetchTable('Users');
 
@@ -39,48 +40,42 @@ class ApiController extends Controller
             ->withStringBody(json_encode($users));
     }
 
-    public function user(): Response
+    public function get(): Response
     {
         $usersTable = $this->fetchTable('Users');
 
-        if ($this->request->is('GET')) {
-            $user = $usersTable->find()
+        $user = $usersTable->find()
             ->where(['Users.id' => $this->Authentication->getIdentityData('id')])
             ->first();
 
-            return $this->response
-                ->withStatus(200)
-                ->withType('json')
-                ->withStringBody(json_encode($user));
-        }
+        return $this->response
+            ->withStatus(200)
+            ->withType('json')
+            ->withStringBody(json_encode($user));
+    }
 
-        if ($this->request->is('POST')) {
-            $user = $usersTable->find()
-                ->where(['Users.id' => $this->Authentication->getIdentityData('id')])
-                ->first();
+    public function edit(): Response
+    {
+        $usersTable = $this->fetchTable('Users');
 
-            // Being super explicit here on purpose
-            $user = $usersTable->patchEntity($user, [
-                'notifications' => [
-                    'sent' => (bool) $this->request->getData('notifications.sent'),
-                    'received' => (bool) $this->request->getData('notifications.received'),
-                ]
-            ], [
-                'accessibleFields' => [
-                    'notifications' => true,
-                ],
-            ]);
-            $usersTable->saveOrFail($user);
+        $user = $usersTable->find()
+            ->where(['Users.id' => $this->Authentication->getIdentityData('id')])
+            ->first();
 
-            return $this->response
-                ->withStatus(204);
-        }
+        // Being super explicit here on purpose
+        $user = $usersTable->patchEntity($user, [
+            'notifications' => [
+                'sent' => (bool) $this->request->getData('notifications.sent'),
+                'received' => (bool) $this->request->getData('notifications.received'),
+            ]
+        ], [
+            'accessibleFields' => [
+                'notifications' => true,
+            ],
+        ]);
+        $usersTable->saveOrFail($user);
 
         return $this->response
-            ->withStatus(405)
-            ->withType('json')
-            ->withStringBody(json_encode([
-                'error' => 'Method not allowed',
-            ]));
+            ->withStatus(204);
     }
 }
