@@ -11,7 +11,7 @@
                     <div class="flex flex-col">
                         <p class="text-sm font-medium">Sent Notifications</p>
                         <p class="text-sm text-zinc-500" id="privacy-option-1-description">
-                            Recieve a notification when you sent someone a potato.
+                            Receive a notification when you sent someone a potato.
                         </p>
                     </div>
                     <button type="button"
@@ -32,7 +32,7 @@
                             Received Notifications
                         </p>
                         <p class="text-sm text-zinc-500" id="privacy-option-2-description">
-                            Recieve a notification when someone sent you a potato.
+                            Receive a notification when someone sent you a potato.
                         </p>
                     </div>
                     <button type="button"
