@@ -5,7 +5,7 @@ namespace App\Command;
 
 use App\Database\Log\SentryQueryLogger;
 use App\Model\Entity\User;
-use App\Service\SlackClient;
+use App\Http\SlackClient;
 use Cake\Command\Command;
 use Cake\Console\Arguments;
 use Cake\Console\ConsoleIo;
@@ -89,21 +89,32 @@ class UpdateUsersCommand extends Command
 
             $slackUser = $slackClient->getUser($user->slack_user_id);
 
-            $user = $usersTable->patchEntity($user, [
-                'status' => $slackUser['deleted'] ? User::STATUS_DELETED : User::STATUS_ACTIVE,
-                'slack_user_id' => $slackUser['id'],
-                'slack_name' => $slackUser['real_name'],
-                'slack_picture' => $slackUser['profile']['image_72'],
-                'slack_is_bot' => $slackUser['is_bot'] ?? false,
-            ], [
-                'accessibleFields' => [
-                    'status' => true,
-                    'slack_user_id' => true,
-                    'slack_name' => true,
-                    'slack_picture' => true,
-                    'slack_is_bot' => true,
-                ],
-            ]);
+            // Once a user is deleted, the data structure is different
+            if ($slackUser['deleted'] === false) {
+                $user = $usersTable->patchEntity($user, [
+                    'status' => User::STATUS_ACTIVE,
+                    'slack_user_id' => $slackUser['id'],
+                    'slack_name' => $slackUser['real_name'],
+                    'slack_picture' => $slackUser['profile']['image_72'],
+                    'slack_is_bot' => $slackUser['is_bot'] ?? false,
+                ], [
+                    'accessibleFields' => [
+                        'status' => true,
+                        'slack_user_id' => true,
+                        'slack_name' => true,
+                        'slack_picture' => true,
+                        'slack_is_bot' => true,
+                    ],
+                ]);
+            } else {
+                $user = $usersTable->patchEntity($user, [
+                    'status' => User::STATUS_DELETED,
+                ], [
+                    'accessibleFields' => [
+                        'status' => true,
+                    ],
+                ]);
+            }
     
             try {
                 $usersTable->saveOrFail($user);
