@@ -78,7 +78,8 @@ type AppMentionEvent struct {
 	Channel        string    `json:"channel"`
 	Text           string    `json:"text"`
 	EventTimestamp string    `json:"event_timestamp"`
-	BotID          string    `json:"-"`
+
+	BotID string `json:"-"`
 }
 
 type AppHomeOpenedEvent struct {
