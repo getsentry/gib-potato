@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Controller;
 
+use App\Model\Entity\User;
 use Cake\Controller\Controller;
 use Cake\Http\Response;
 
@@ -28,7 +29,11 @@ class ApiController extends Controller
             ])
             ->leftJoinWith('MessagesSend')
             ->leftJoinWith('MessagesReceived')
-            ->where(['Users.slack_is_bot' => false])
+            ->where([
+                'Users.slack_is_bot' => false,
+                'Users.status' => User::STATUS_ACTIVE,
+                'Users.role !=' => User::ROLE_SERVICE,
+            ])
             ->group(['Users.id'])
             ->order(['received_count' => 'DESC'])
             ->enableAutoFields(true)
