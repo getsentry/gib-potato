@@ -6,6 +6,7 @@ namespace App\Event;
 use App\Event\Validation\Validation;
 use App\Event\Validation\Exception\PotatoException;
 use App\Service\AwardService;
+use App\Service\NotificationService;
 use App\Service\UserService;
 
 class MessageEvent extends AbstractEvent
@@ -43,6 +44,7 @@ class MessageEvent extends AbstractEvent
     {
         $userService = new UserService();
         $awardService = new AwardService();
+        $notificationService = new NotificationService();
 
         $fromUser = $userService->getOrCreateUser($this->sender);
         $validator = new Validation(
@@ -66,13 +68,21 @@ class MessageEvent extends AbstractEvent
             return;
         }
 
+        $toUsers = [];
         foreach ($this->receivers as $receiver) {
             $toUser = $userService->getOrCreateUser($receiver);
-            $awardService->gib(
-                fromUser: $fromUser,
-                toUser: $toUser, 
-                event: $this,
-            );
+            $toUsers[] = $toUser;
         }
+
+        $awardService->gib(
+            fromUser: $fromUser,
+            toUsers: $toUsers, 
+            event: $this,
+        );
+        $notificationService->notifyUsers(
+            fromUser: $fromUser,
+            toUsers: $toUsers,
+            event: $this,
+        );
     }
 }

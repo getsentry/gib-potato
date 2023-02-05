@@ -5,7 +5,6 @@ namespace App\Service;
 
 use App\Event\MessageEvent;
 use App\Event\ReactionAddedEvent;
-use App\Http\SlackClient;
 use App\Model\Entity\User;
 use Cake\ORM\Locator\LocatorAwareTrait;
 
@@ -13,14 +12,21 @@ class AwardService
 {
     use LocatorAwareTrait;
 
-    protected SlackClient $slackClient;
-
-    public function __construct()
-    {
-        $this->slackClient = new SlackClient();
+    public function gib(
+        User $fromUser,
+        array $toUsers,
+        MessageEvent|ReactionAddedEvent $event,
+    ) {
+        foreach ($toUsers as $toUser) {
+            $this->gibToUser(
+                fromUser: $fromUser,
+                toUser: $toUser,
+                event: $event,
+            );
+        }
     }
 
-    public function gib(
+    private function gibToUser(
         User $fromUser,
         User $toUser,
         MessageEvent|ReactionAddedEvent $event,
@@ -41,31 +47,5 @@ class AwardService
             ],
         ]);
         $messagesTable->saveOrFail($message);
-
-        if ($fromUser->notifications['sent'] === true) {
-            $potatoLeftToday = $fromUser->potatoLeftToday();
-
-            $gibMessage = sprintf('You did gib *%s* %s to <@%s>.', $event->amount, $event->reaction, $toUser->slack_user_id);
-            $gibMessage .= PHP_EOL;
-            $gibMessage .= sprintf('You have *%s* :potato: left.', $potatoLeftToday);
-            $gibMessage .= PHP_EOL;
-            $gibMessage .= sprintf('> %s', $event->permalink);
-
-            $this->slackClient->postMessage(
-                channel: $fromUser->slack_user_id,
-                text: $gibMessage,
-            );
-        }
-
-        if ($toUser->notifications['received'] === true) {
-            $receivedMessage = sprintf('<@%s> did gib you *%s* %s.', $fromUser->slack_user_id, $event->amount, $event->reaction);
-            $receivedMessage .= PHP_EOL;
-            $receivedMessage .= sprintf('> %s', $event->permalink);
-
-            $this->slackClient->postMessage(
-                channel: $toUser->slack_user_id,
-                text: $receivedMessage,
-            );
-        }
     }
 }
