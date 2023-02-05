@@ -4,7 +4,7 @@
         <div>
             <div>
                 <h2 class="text-lg font-medium leading-6">Notifications</h2>
-                <p class="mt-1 text-sm text-zinc-500">Set your notification preferences when the <code>@Gibpotato</code> Slack bot should notify you.</p>
+                <p class="mt-1 text-sm text-zinc-500">Set your notification preferences when the <code>@GibPotato</code> Slack bot should notify you.</p>
             </div>
             <ul role="list" class="mt-2 divide-y divide-zinc-200">
                 <li class="flex items-center justify-between py-4">
