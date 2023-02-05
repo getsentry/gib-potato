@@ -156,7 +156,7 @@ class User extends Entity
         $time = new FrozenTime();
         $hours = 23 - (int) $time->i18nFormat('HH');
 
-        return str_pad((string) $hours, 2, '0', STR_PAD_LEFT);
+        return (string) $hours;
     }
 
     public function potatoResetInMinutes(): string
@@ -164,6 +164,6 @@ class User extends Entity
         $time = new FrozenTime();
         $minutes = 59 - (int) $time->i18nFormat('mm');
 
-        return str_pad((string) $minutes, 2, '0', STR_PAD_LEFT);
+        return (string) $minutes;
     }
 }
