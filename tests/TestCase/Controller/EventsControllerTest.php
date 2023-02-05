@@ -37,8 +37,6 @@ class EventsControllerTest extends TestCase
 
     public function testTypeMessage(): void
     {
-        $this->mockSlackClientGetUser('U1111');
-        $this->mockSlackClientGetUser('U2222');
         $this->mockSlackClientPostMessage();
 
         $this->post('/events', json_encode([
@@ -88,8 +86,6 @@ class EventsControllerTest extends TestCase
 
     public function testTypeReactionAdded(): void
     {
-        $this->mockSlackClientGetUser('U1111');
-        $this->mockSlackClientGetUser('U2222');
         $this->mockSlackClientPostMessage();
 
         $this->post('/events', json_encode([
@@ -137,7 +133,6 @@ class EventsControllerTest extends TestCase
 
     public function testTypeAppHomeOpened(): void
     {
-        $this->mockSlackClientGetUser('U1111');
         $this->mockSlackClientPublishView();
 
         $this->post('/events', json_encode([

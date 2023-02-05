@@ -27,17 +27,17 @@ class UserService {
      */
     public function getOrCreateUser(string $slackUserId): ?User
     {
-        $slackUser = $this->slackClient->getUser($slackUserId);
-        if (empty($slackUser)) {
-            throw new Exception('Slack API: User not found');
-        }
-
         $user = $this->Users
-            ->findBySlackUserId($slackUser['id'])
+            ->findBySlackUserId($slackUserId)
             ->first();
 
         if ($user instanceof User) {
             return $user;
+        }
+
+        $slackUser = $this->slackClient->getUser($slackUserId);
+        if (empty($slackUser)) {
+            throw new Exception('Slack API: User not found');
         }
 
         $user = $this->Users->newEntity([
