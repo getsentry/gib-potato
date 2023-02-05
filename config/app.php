@@ -338,7 +338,7 @@ return [
              * mysql configuration directive 'innodb_stats_on_metadata = 0'
              * which is the recommended value in production environments
              */
-            'init' => ['SET GLOBAL innodb_stats_on_metadata = 0'],
+            // 'init' => ['SET GLOBAL innodb_stats_on_metadata = 0'],
         ],
 
         /*
@@ -354,7 +354,7 @@ return [
             'cacheMetadata' => true,
             'quoteIdentifiers' => false,
             'log' => false,
-            'init' => ['SET GLOBAL innodb_stats_on_metadata = 0'],
+            // 'init' => ['SET GLOBAL innodb_stats_on_metadata = 0'],
         ],
     ],
 
