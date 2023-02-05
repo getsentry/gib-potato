@@ -49,6 +49,7 @@ return static function (RouteBuilder $routes) {
         $builder->connect('/logout', ['controller' => 'Login', 'action' => 'logout']);
 
         $builder->connect('/open-id', ['controller' => 'Login', 'action' => 'openId']);
+        $builder->connect('/start-open-id', ['controller' => 'Login', 'action' => 'startOpenId']);
 
         $builder->connect('/', ['controller' => 'Home', 'action' => 'index']);
         $builder->connect('/shop', ['controller' => 'Home', 'action' => 'index']);
