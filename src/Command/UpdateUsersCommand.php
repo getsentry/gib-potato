@@ -109,9 +109,12 @@ class UpdateUsersCommand extends Command
             } else {
                 $user = $usersTable->patchEntity($user, [
                     'status' => User::STATUS_DELETED,
+                    // Demote deleted users to regular users
+                    'role' => User::ROLE_USER,
                 ], [
                     'accessibleFields' => [
                         'status' => true,
+                        'role' => true,
                     ],
                 ]);
             }
@@ -122,13 +125,16 @@ class UpdateUsersCommand extends Command
                 $progress->increment(1);
                 $progress->draw();
 
-                usleep(500 * 1000); // 500ms
                 $span->setStatus(SpanStatus::ok());
             } catch (Throwable $e) {
                 captureException($e);
                 $span->setStatus(SpanStatus::internalError());
+            } finally {
+                $span->finish();
+
+                // Avoid getting rate limited by Slack
+                usleep(200 * 1000); // 200ms
             }
-            $span->finish();
         }
         SentrySdk::getCurrentHub()->setSpan($transaction);
 
