@@ -19,7 +19,7 @@ import './assets/main.css'
         integrations: [
             new BrowserTracing({
                 routingInstrumentation: Sentry.vueRouterInstrumentation(router),
-                tracePropagationTargets: ["localhost", "gitpoato.app", /^\//],
+                tracePropagationTargets: ["localhost", "gibpotato.app", /^\//],
             }),
             // new Sentry.Replay(),
         ],
