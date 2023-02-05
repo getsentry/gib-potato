@@ -310,7 +310,7 @@ return [
             /*
              * For MariaDB/MySQL the internal default changed from utf8 to utf8mb4, aka full utf-8 support, in CakePHP 3.6
              */
-            //'encoding' => 'utf8mb4',
+            'encoding' => 'utf8mb4',
 
             /*
              * If your MySQL server is configured with `skip-character-set-client-handshake`
@@ -338,7 +338,7 @@ return [
              * mysql configuration directive 'innodb_stats_on_metadata = 0'
              * which is the recommended value in production environments
              */
-            //'init' => ['SET GLOBAL innodb_stats_on_metadata = 0'],
+            'init' => ['SET GLOBAL innodb_stats_on_metadata = 0'],
         ],
 
         /*
@@ -349,12 +349,12 @@ return [
             'driver' => Mysql::class,
             'persistent' => false,
             'timezone' => 'UTC',
-            //'encoding' => 'utf8mb4',
+            'encoding' => 'utf8mb4',
             'flags' => [],
             'cacheMetadata' => true,
             'quoteIdentifiers' => false,
             'log' => false,
-            //'init' => ['SET GLOBAL innodb_stats_on_metadata = 0'],
+            'init' => ['SET GLOBAL innodb_stats_on_metadata = 0'],
         ],
     ],
 
