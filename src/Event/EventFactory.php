@@ -14,6 +14,8 @@ class EventFactory
         switch ($eventType) {
             case AbstractEvent::TYPE_MESSAGE:
                 return new MessageEvent($data);
+            case AbstractEvent::TYPE_DIRECT_MESSAGE:
+                return new DirectMessageEvent($data);
             case AbstractEvent::TYPE_REACTION_ADDED:
                 return new ReactionAddedEvent($data);
             case AbstractEvent::TYPE_APP_MENTION:

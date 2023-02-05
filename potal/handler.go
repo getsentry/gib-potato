@@ -2,7 +2,6 @@ package main
 
 import (
 	"encoding/json"
-	"fmt"
 	"io"
 	"net/http"
 	"os"
@@ -76,15 +75,19 @@ func EventsHandler(w http.ResponseWriter, r *http.Request, _ httprouter.Params) 
 		}
 	}
 
-	fmt.Printf("Event received: %+v\n", eventsAPIEvent.Type)
-	fmt.Printf("Event received: %+v\n", eventsAPIEvent.InnerEvent.Type)
-
 	if eventsAPIEvent.Type == slackevents.CallbackEvent {
 		innerEvent := eventsAPIEvent.InnerEvent
 
 		switch ev := innerEvent.Data.(type) {
 		case *slackevents.MessageEvent:
-			go processMessageEvent(r.Context(), ev)
+
+			switch ev.ChannelType {
+			case "im":
+				// Handle direct messages to the bot separately
+				go processDirectMessageEvent(r.Context(), ev)
+			default:
+				go processMessageEvent(r.Context(), ev)
+			}
 		case *slackevents.ReactionAddedEvent:
 			go processReactionEvent(r.Context(), ev)
 		case *slackevents.AppMentionEvent:

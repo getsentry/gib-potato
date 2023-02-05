@@ -19,6 +19,7 @@ type EventType string
 
 const (
 	message       EventType = "message"
+	directMessage EventType = "direct_message"
 	reactionAdded EventType = "reaction_added"
 	appMention    EventType = "app_mention"
 	appHomeOpened EventType = "app_home_opened"
@@ -43,6 +44,15 @@ type MessageEvent struct {
 	ThreadTimestamp string `json:"thread_timestamp,omitempty"`
 
 	BotID string `json:"-"`
+}
+
+type DirectEvent struct {
+	Type           EventType `json:"type"`
+	Sender         string    `json:"sender"`
+	Channel        string    `json:"channel"`
+	Text           string    `json:"text"`
+	Timestamp      string    `json:"timestamp"`
+	EventTimestamp string    `json:"event_timestamp"`
 }
 
 type ReactionAddedEvent struct {
@@ -94,6 +104,11 @@ func (e AppMentionEvent) isValid() bool {
 func (e AppHomeOpenedEvent) isValid() bool {
 	// Only process home tab
 	return e.Tab == "home"
+}
+
+func (e DirectEvent) isValid() bool {
+	// All direct messages are valid
+	return true
 }
 
 func processMessageEvent(ctx context.Context, event *slackevents.MessageEvent) {
@@ -152,6 +167,41 @@ func processMessageEvent(ctx context.Context, event *slackevents.MessageEvent) {
 	hub.Scope().SetTag("event_type", message.String())
 
 	sendRequest(messageEvent, hub, transaction)
+}
+
+func processDirectMessageEvent(ctx context.Context, event *slackevents.MessageEvent) {
+	// Recive the transaction attached to the context
+	httpTxn := sentry.TransactionFromContext(ctx)
+
+	// Clone the current hub
+	hub := sentry.CurrentHub().Clone()
+
+	options := []sentry.SpanOption{
+		sentry.OpName("event.process"),
+		sentry.TransctionSource(sentry.SourceTask),
+		// Continue the trace
+		sentry.ContinueFromHeaders(httpTxn.ToSentryTrace(), httpTxn.ToBaggage()),
+	}
+	transaction := sentry.StartTransaction(context.Background(), "EVENT direct_message", options...)
+	defer transaction.Finish()
+
+	directMessageEvent := DirectEvent{
+		Type:           directMessage,
+		Sender:         event.User,
+		Channel:        event.Channel,
+		Text:           event.Text,
+		Timestamp:      event.TimeStamp,
+		EventTimestamp: event.EventTimeStamp,
+	}
+
+	if !directMessageEvent.isValid() {
+		return
+	}
+
+	hub.Scope().SetExtra("event", directMessageEvent)
+	hub.Scope().SetTag("event_type", directMessage.String())
+
+	sendRequest(directMessageEvent, hub, transaction)
 }
 
 func processReactionEvent(ctx context.Context, event *slackevents.ReactionAddedEvent) {
