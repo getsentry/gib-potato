@@ -25,7 +25,7 @@
         "cakephp/bake": "^2.8.2",
         "cakephp/cakephp-codesniffer": "^4.6",
         "phpstan/phpstan": "^1.9.14",
-        "phpunit/phpunit": "^9.5.28"
+        "phpunit/phpunit": "^9.6.3"
     },
     "autoload": {
         "psr-4": {
