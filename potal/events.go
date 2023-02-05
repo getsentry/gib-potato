@@ -230,6 +230,10 @@ func processReactionEvent(ctx context.Context, event *slackevents.ReactionAddedE
 		return
 	}
 
+	converationSpan := transaction.StartChild("http.client")
+	converationSpan.Description = "GET https://slack.com/api/conversations.history"
+
+	// Get the text and thread timestamp for the original message
 	conversationHistory, err := slackClient.GetConversationHistory(&slack.GetConversationHistoryParameters{
 		ChannelID: event.Item.Channel,
 		Latest:    event.Item.Timestamp,
@@ -237,17 +241,37 @@ func processReactionEvent(ctx context.Context, event *slackevents.ReactionAddedE
 		Limit:     1,
 	})
 	if err != nil {
+		converationSpan.Status = sentry.SpanStatusInternalError
 		hub.CaptureException(err)
 		log.Printf("An Error Occured %v", err)
 		return
+	} else {
+		converationSpan.Status = sentry.SpanStatusOK
 	}
+	converationSpan.Finish()
 
 	if len(conversationHistory.Messages) == 0 {
 		return
 	}
 	text := conversationHistory.Messages[0].Text
-	permalink := conversationHistory.Messages[0].Permalink
 	threadTimestamp := conversationHistory.Messages[0].ThreadTimestamp
+
+	permaLinkSpan := transaction.StartChild("http.client")
+	permaLinkSpan.Description = "GET https://slack.com/api/chat.getPermalink"
+
+	// Get the permalink for the original message
+	permalink, err := slackClient.GetPermalink(&slack.PermalinkParameters{
+		Channel: event.Item.Channel,
+		Ts:      event.Item.Timestamp,
+	})
+	if err != nil {
+		permaLinkSpan.Status = sentry.SpanStatusInternalError
+		hub.CaptureException(err)
+		log.Printf("An Error Occured %v", err)
+	} else {
+		permaLinkSpan.Status = sentry.SpanStatusOK
+	}
+	permaLinkSpan.Finish()
 
 	reactionEvent = ReactionAddedEvent{
 		Type:            reactionAdded,
