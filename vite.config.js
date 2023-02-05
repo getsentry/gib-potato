@@ -2,10 +2,27 @@ import { fileURLToPath, URL } from 'node:url'
 
 import { defineConfig } from 'vite'
 import vue from '@vitejs/plugin-vue'
+import { sentryVitePlugin } from '@sentry/vite-plugin'
 
 // https://vitejs.dev/config/
 export default defineConfig({
-  plugins: [vue()],
+  plugins: [
+    vue(),
+    sentryVitePlugin({
+      include: './webroot/assets',
+      org: process.env.SENTRY_ORG,
+      project: process.env.SENTRY_PROJECT,
+      authToken: process.env.SENTRY_AUTH_TOKEN,
+      dryRun: !process.env.SENTRY_AUTH_TOKEN,
+      cleanArtifacts: true,
+      stripCommonPrefix: true,
+      rewrite: true,
+      setCommits: {
+        auto: true,
+        ignoreEmpty: true,
+      },
+    }),
+  ],
   build: {
     sourcemap: true,
     emptyOutDir: false,
@@ -16,9 +33,10 @@ export default defineConfig({
       input: './frontend/src/main.js'
     },
   },
+  envDir: './frontend/config',
   resolve: {
     alias: {
       '@': fileURLToPath(new URL('./frontend/src', import.meta.url))
-    }
-  }
+    },
+  },
 })
