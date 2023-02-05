@@ -150,4 +150,20 @@ class User extends Entity
 
         return Message::MAX_AMOUNT - (int) $result->sent;
     }
+
+    public function potatoResetInHours(): string
+    {
+        $time = new FrozenTime();
+        $hours = 23 - (int) $time->i18nFormat('HH');
+
+        return str_pad((string) $hours, 2, '0', STR_PAD_LEFT);
+    }
+
+    public function potatoResetInMinutes(): string
+    {
+        $time = new FrozenTime();
+        $minutes = 59 - (int) $time->i18nFormat('mm');
+
+        return str_pad((string) $minutes, 2, '0', STR_PAD_LEFT);
+    }
 }
