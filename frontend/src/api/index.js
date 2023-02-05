@@ -7,24 +7,24 @@ const api = {
         axios.defaults.xsrfHeaderName = 'X-Csrf-Token';
     },
 
-    get(resource, id = '', options = {}) {
-        return axios.get(`${resource}/${id}`, options)
+    get(resource, config) {
+        return axios.get(`${resource}`, config)
     },
 
-    post(resource, params) {
-        return axios.post(`${resource}`, params)
+    post(resource, data, config) {
+        return axios.post(`${resource}`, data, config)
     },
 
-    put(resource, params) {
-        return axios.put(`${resource}`, params)
+    put(resource, data, config) {
+        return axios.put(`${resource}`, data, config)
     },
 
-    patch(resource, params) {
-        return axios.patch(`${resource}`, params)
+    patch(resource, data, config) {
+        return axios.patch(`${resource}`, data, config)
     },
 
-    delete(resource, params) {
-        return axios.delete(resource, params)
+    delete(resource, config) {
+        return axios.delete(resource, config)
     },
 };
 

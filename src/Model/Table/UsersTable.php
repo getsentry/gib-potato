@@ -45,7 +45,7 @@ class UsersTable extends Table
 
         $this->getSchema()->setColumnType('notifications', 'json');
 
-        $this->hasMany('MessagesSend', [
+        $this->hasMany('MessagesSent', [
                 'className' => 'Messages',
             ])
             ->setForeignKey('sender_user_id');

@@ -7,6 +7,7 @@ namespace App\Controller;
 use App\Model\Entity\User;
 use Cake\Controller\Controller;
 use Cake\Http\Response;
+use Cake\I18n\FrozenTime;
 
 class ApiController extends Controller
 {
@@ -24,10 +25,10 @@ class ApiController extends Controller
         $query = $usersTable->find();
         $users = $query
             ->select([
-                'sent_count' => $query->func()->sum('MessagesSend.amount'),
-                'received_count' => $query->func()->sum('MessagesReceived.amount'),
+                // 'sent_count' =>  $query->func()->sum('MessagesSent.amount'),
+                'received_count' =>  $query->func()->sum('MessagesReceived.amount'),
             ])
-            ->leftJoinWith('MessagesSend')
+            // ->leftJoinWith('MessagesSent')
             ->leftJoinWith('MessagesReceived')
             ->where([
                 'Users.slack_is_bot' => false,
@@ -35,8 +36,57 @@ class ApiController extends Controller
                 'Users.role !=' => User::ROLE_SERVICE,
             ])
             ->group(['Users.id'])
-            ->order(['received_count' => 'DESC'])
-            ->enableAutoFields(true)
+            ->having([
+                'OR' => [
+                    // 'sent_count >' => 0,
+                    'received_count >' => 0
+                ],
+            ])
+            ->enableAutoFields(true);
+
+        $range = $this->request->getQuery('range');
+        if (!empty($range)) {
+            switch ($range) {
+                case 'week':
+                    $query->andWhere([
+                        'OR' => [
+                            // 'MessagesSent.created >=' => new FrozenTime('1 week ago'),
+                            'MessagesReceived.created >=' => new FrozenTime('1 week ago'),
+                        ],
+                    ]);
+                    break;
+                case 'month':
+                    $query->andWhere([
+                        'OR' => [
+                            // 'MessagesSent.created >=' => new FrozenTime('1 month ago'),
+                            'MessagesReceived.created >=' => new FrozenTime('1 month ago'),
+                        ],
+                    ]);
+                    break;
+                case 'year':
+                    $query->andWhere([
+                        'OR' => [
+                            // 'MessagesSent.created >=' => new FrozenTime('1 year ago'),
+                            'MessagesReceived.created >=' => new FrozenTime('1 year ago'),
+                        ],
+                    ]);
+                    break;
+            }
+        }
+
+        $order = $this->request->getQuery('order');
+        if (!empty($order)) {
+            switch ($order) {
+                // case 'sent':
+                //     $query->order(['sent_count' => 'DESC']);
+                //     break;
+                case 'received':
+                    $query->order(['received_count' => 'DESC']);
+                    break;
+            }
+        }
+
+        $query
             ->all();
 
         return $this->response

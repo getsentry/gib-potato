@@ -6,16 +6,27 @@ const store = createStore({
         return {
             user: null,
             users: [],
+            filter: {
+                range: 'all',
+                order: 'received',
+            },
         }
     },
     getters: {
         user: state => state.user,
         users: state => state.users,
+        filter: state => state.filter,
+        range: state => state.filter.range,
+        order: state => state.filter.order,
     },
     actions: {
-        async getUsers({ commit }) {
+        async getUsers({ commit, getters }) {
             try {
-                const response = await api.get('users')
+                const response = await api.get('users', {
+                    params: {
+                        ...getters.filter,
+                    }
+                })
                 commit('SET_USERS', response.data)
             } catch (error) {
                 console.log(error)
@@ -45,6 +56,12 @@ const store = createStore({
                 console.log(error)
             }
         },
+        setRangeFilter({ commit }, range) {
+            commit('SET_RANGE_FILTER', range)
+        },
+        setOrderFilter({ commit }, order) {
+            commit('SET_ORDER_FILTER', order)
+        },
     },
     mutations: {
         SET_USERS(state, users) {
@@ -58,6 +75,12 @@ const store = createStore({
         },
         TOGGLE_RECEIVED_NOTIFICATIONS(state) {
             state.user.notifications.received = !state.user.notifications.received
+        },
+        SET_RANGE_FILTER(state, range) {
+            state.filter.range = range
+        },
+        SET_ORDER_FILTER(state, order) {
+            state.filter.order = order
         },
     },
 })
