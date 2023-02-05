@@ -1,5 +1,5 @@
 <template>
-    <table class="w-full divide-y divide-zinc-300 mb-32">
+    <table class="w-full table-auto divide-y divide-zinc-300 mb-32">
         <thead>
             <tr>
                 <th scope="col" class="py-3.5 pr-3 text-left text-sm font-semibold">
