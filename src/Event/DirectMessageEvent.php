@@ -3,10 +3,8 @@ declare(strict_types=1);
 
 namespace App\Event;
 
-use App\Event\Validation\Validation;
-use App\Event\Validation\Exception\PotatoException;
-use App\Service\AwardService;
 use App\Service\UserService;
+use Cake\I18n\FrozenTime;
 
 class DirectMessageEvent extends AbstractEvent
 {
@@ -30,9 +28,17 @@ class DirectMessageEvent extends AbstractEvent
     public function process()
     {
         if ($this->text === 'potato') {
+            $userService = new UserService();
+
+            $user = $userService->getOrCreateUser($this->sender);
+
+            $message = sprintf('You have *%s* left to gib today.', $user->potatoLeftToday());
+            $message .= PHP_EOL;
+            $message .= sprintf('Your potato reset in *%s hours* and *%s minutes*.', $user->potatoResetInHours(), $user->potatoResetInMinutes());
+
             $this->slackClient->postMessage(
                 channel: $this->channel,
-                text: 'Potato!',
+                text: $message,
             );
 
             return;

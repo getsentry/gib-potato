@@ -53,6 +53,8 @@ type DirectEvent struct {
 	Text           string    `json:"text"`
 	Timestamp      string    `json:"timestamp"`
 	EventTimestamp string    `json:"event_timestamp"`
+
+	BotID string `json:"-"`
 }
 
 type ReactionAddedEvent struct {
@@ -91,6 +93,11 @@ func (e MessageEvent) isValid() bool {
 	return e.Amount > 0 && e.BotID == ""
 }
 
+func (e DirectEvent) isValid() bool {
+	// Only process messages not from a bot
+	return e.BotID == ""
+}
+
 func (e ReactionAddedEvent) isValid() bool {
 	// Only process potato reactions
 	return e.Reaction == "potato"
@@ -104,11 +111,6 @@ func (e AppMentionEvent) isValid() bool {
 func (e AppHomeOpenedEvent) isValid() bool {
 	// Only process home tab
 	return e.Tab == "home"
-}
-
-func (e DirectEvent) isValid() bool {
-	// All direct messages are valid
-	return true
 }
 
 func processMessageEvent(ctx context.Context, event *slackevents.MessageEvent) {
@@ -192,6 +194,7 @@ func processDirectMessageEvent(ctx context.Context, event *slackevents.MessageEv
 		Text:           event.Text,
 		Timestamp:      event.TimeStamp,
 		EventTimestamp: event.EventTimeStamp,
+		BotID:          event.BotID,
 	}
 
 	if !directMessageEvent.isValid() {
