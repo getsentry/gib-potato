@@ -12,6 +12,7 @@ use Cake\ORM\Locator\LocatorAwareTrait;
  *
  * @property string $id
  * @property string $status
+ * @property string $role
  * @property string $slack_user_id
  * @property string $slack_name
  * @property string $slack_picture
@@ -40,6 +41,10 @@ class User extends Entity
     public const STATUS_ACTIVE = 'active';
     public const STATUS_DELETED = 'deleted';
 
+    public const ROLE_ROOT = 'root';
+    public const ROLE_ADMIN = 'admin';
+    public const ROLE_USER = 'user';
+    public const ROLE_SERVICE = 'service';
 
     protected function _getNotifications($notifications): array
     {

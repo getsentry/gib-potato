@@ -42,6 +42,7 @@ class UserService {
 
         $user = $this->Users->newEntity([
             'status' => User::STATUS_ACTIVE,
+            'role' => User::ROLE_USER,
             'slack_user_id' => $slackUser['id'],
             'slack_name' => $slackUser['real_name'],
             'slack_picture' => $slackUser['profile']['image_72'],

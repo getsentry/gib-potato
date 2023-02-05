@@ -14,7 +14,6 @@ class AddUsersNotifications extends AbstractMigration
      */
     public function up(): void
     {
-
         $this->table('users')
             ->addColumn('notifications', 'json', [
                 'after' => 'slack_is_bot',
@@ -34,7 +33,6 @@ class AddUsersNotifications extends AbstractMigration
      */
     public function down(): void
     {
-
         $this->table('users')
             ->removeColumn('notifications')
             ->update();

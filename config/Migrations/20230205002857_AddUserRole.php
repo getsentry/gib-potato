@@ -3,7 +3,7 @@ declare(strict_types=1);
 
 use Migrations\AbstractMigration;
 
-class AddUserStatus extends AbstractMigration
+class AddUserRole extends AbstractMigration
 {
     /**
      * Up Method.
@@ -15,8 +15,8 @@ class AddUserStatus extends AbstractMigration
     public function up(): void
     {
         $this->table('users')
-            ->addColumn('status', 'string', [
-                'after' => 'id',
+            ->addColumn('role', 'string', [
+                'after' => 'status',
                 'default' => null,
                 'length' => 255,
                 'null' => false,
@@ -34,7 +34,7 @@ class AddUserStatus extends AbstractMigration
     public function down(): void
     {
         $this->table('users')
-            ->removeColumn('status')
+            ->removeColumn('role')
             ->update();
     }
 }

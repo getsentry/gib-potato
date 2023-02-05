@@ -69,6 +69,12 @@ class UsersTable extends Table
             ->maxLength('status', 255)
             ->requirePresence('status', 'create')
             ->notEmptyString('status');
+        
+        $validator
+            ->scalar('role')
+            ->maxLength('role', 255)
+            ->requirePresence('role', 'create')
+            ->notEmptyString('role');
 
         $validator
             ->scalar('slack_user_id')
