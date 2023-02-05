@@ -194,6 +194,7 @@ return [
             'Cake\Http\Exception\ForbiddenException',
             'Cake\Http\Exception\InvalidCsrfTokenException',
             'Cake\Http\Exception\NotFoundException',
+            'Cake\Routing\Exception\MissingRouteException',
         ],
         'log' => true,
         'trace' => true,
