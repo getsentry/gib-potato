@@ -50,6 +50,7 @@ class UserService {
         ], [
             'accessibleFields' => [
                 'status' => true,
+                'role' => true,
                 'slack_user_id' => true,
                 'slack_name' => true,
                 'slack_picture' => true,
