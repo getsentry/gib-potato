@@ -37,6 +37,35 @@ class ApiController extends Controller
                 'receiver_user_id = Users.id',
             ]);
 
+        $range = $this->request->getQuery('range');
+        if (!empty($range)) {
+            switch ($range) {
+                case 'week':
+                    $sentCountQuery->where([
+                        'created >=' => new FrozenTime('1 week ago'),
+                    ]);
+                    $reivedCountQuery->where([
+                        'created >=' => new FrozenTime('1 week ago'),
+                    ]);
+                    break;
+                case 'month':
+                    $sentCountQuery->where([
+                        'created >=' => new FrozenTime('1 month ago'),
+                    ]);
+                    $reivedCountQuery->where([
+                        'created >=' => new FrozenTime('1 month ago'),
+                    ]);
+                    break;
+                case 'year':
+                    $sentCountQuery->where([
+                        'created >=' => new FrozenTime('1 year ago'),
+                    ]);
+                    $reivedCountQuery->where([
+                        'created >=' => new FrozenTime('1 year ago'),
+                    ]);
+                    break;
+            }
+        }
 
         $usersTable = $this->fetchTable('Users');
 
@@ -46,42 +75,15 @@ class ApiController extends Controller
                 'sent_count' =>  $sentCountQuery,
                 'received_count' =>  $reivedCountQuery,
             ])
+            ->leftJoinWith('MessagesSent')
+            ->leftJoinWith('MessagesReceived')
             ->where([
                 'Users.slack_is_bot' => false,
                 'Users.status' => User::STATUS_ACTIVE,
                 'Users.role !=' => User::ROLE_SERVICE,
             ])
+            ->group(['Users.id'])
             ->enableAutoFields(true);
-
-        $range = $this->request->getQuery('range');
-        if (!empty($range)) {
-            switch ($range) {
-                case 'week':
-                    $query->andWhere([
-                        'OR' => [
-                            'MessagesSent.created >=' => new FrozenTime('1 week ago'),
-                            'MessagesReceived.created >=' => new FrozenTime('1 week ago'),
-                        ],
-                    ]);
-                    break;
-                case 'month':
-                    $query->andWhere([
-                        'OR' => [
-                            'MessagesSent.created >=' => new FrozenTime('1 month ago'),
-                            'MessagesReceived.created >=' => new FrozenTime('1 month ago'),
-                        ],
-                    ]);
-                    break;
-                case 'year':
-                    $query->andWhere([
-                        'OR' => [
-                            'MessagesSent.created >=' => new FrozenTime('1 year ago'),
-                            'MessagesReceived.created >=' => new FrozenTime('1 year ago'),
-                        ],
-                    ]);
-                    break;
-            }
-        }
 
         $order = $this->request->getQuery('order');
         if (!empty($order)) {
