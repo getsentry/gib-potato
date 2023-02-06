@@ -1,6 +1,6 @@
 <template>
     <h1 class="text-xl font-semibold leading-6">Settings</h1>
-    <div class="divide-y divide-gray-200 pt-6">
+    <div class="divide-y divide-zinc-300 pt-6">
         <div>
             <div>
                 <h2 class="text-lg font-medium leading-6">Notifications</h2>
