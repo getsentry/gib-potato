@@ -58,8 +58,11 @@ return static function (RouteBuilder $routes) {
 
         $builder->scope('/api', function (RouteBuilder $builder) {    
             $builder->get('/users', ['controller' => 'Api', 'action' => 'list']);
+
             $builder->get('/user', ['controller' => 'Api', 'action' => 'get']);
             $builder->patch('/user', ['controller' => 'Api', 'action' => 'edit']);
+
+            $builder->get('/user/profile', ['controller' => 'Api', 'action' => 'profile']);
         });
     });
 
