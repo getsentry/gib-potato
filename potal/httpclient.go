@@ -51,6 +51,7 @@ func sendRequest(e Event, hub *sentry.Hub, transaction *sentry.Span) {
 	switch res.StatusCode {
 	case http.StatusOK:
 		span.Status = sentry.SpanStatusOK
+		transaction.Status = sentry.SpanStatusOK
 		return
 	case http.StatusUnauthorized:
 		fallthrough
@@ -61,6 +62,8 @@ func sendRequest(e Event, hub *sentry.Hub, transaction *sentry.Span) {
 	case http.StatusInternalServerError:
 		span.Status = sentry.SpanStatusInternalError
 	}
+
+	transaction.Status = sentry.SpanStatusInternalError
 
 	msg := fmt.Sprintf("GibPotato API: Got %s response", res.Status)
 
