@@ -6,22 +6,11 @@ services:
     ports:
       - 8080:80
     volumes:
-      - ./backend:/var/www/gib-potato:consistent
+      - .:/var/www/gib-potato:consistent
     networks:
       gib-potato:
         aliases:
           - gib-potato.test
-
-  service:
-    build: docker/service
-    ports:
-      - 3000:3000
-    volumes:
-      - ./slack-service:/usr/gib-potato:consistent
-    networks:
-      gib-potato:
-        aliases:
-          - service.gib-potato.test
 
   db:
     build: docker/mysql

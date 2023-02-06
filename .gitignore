@@ -1,0 +1,58 @@
+# Project specific files #
+##########################
+/config/Migrations/*.lock
+/config/app_local.php
+/logs/*
+/tmp/*
+/vendor/*
+/potal/tmp/*
+.env
+
+# Assets #
+##########
+/webroot/manifest.json
+/webroot/assets/*
+
+# OS generated files #
+######################
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+Icon?
+ehthumbs.db
+Thumbs.db
+.directory
+
+# Tool specific files #
+#######################
+# PHPUnit
+.phpunit.result.cache
+# vim
+*~
+*.swp
+*.swo
+# sublime text & textmate
+*.sublime-*
+*.stTheme.cache
+*.tmlanguage.cache
+*.tmPreferences.cache
+# Eclipse
+.settings/*
+# JetBrains, aka PHPStorm, IntelliJ IDEA
+.idea/*
+# NetBeans
+nbproject/*
+# Visual Studio Code
+.vscode
+# Panic Nova
+.nova/*
+# Sass preprocessor
+.sass-cache/
+# node
+/node_modules/*
+# yarn
+/node_modules/*
+.yarn/
+yarn-error.log

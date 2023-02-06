@@ -1,0 +1,40 @@
+name: "Go CI"
+
+on:
+  push:
+  pull_request:
+
+permissions:
+  contents: read
+
+jobs:
+  ci:
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v3
+    
+    - name: Setup Go
+      uses: actions/setup-go@v3
+        
+    - name: Run build
+      working-directory: ./potal
+      run: go build . 
+      
+    - name: Run vet
+      working-directory: ./potal
+      run: go vet .
+    
+    - name: Run lint
+      uses: golangci/golangci-lint-action@v3
+      with:
+        working-directory: ./potal
+    
+    - name: Run tests
+      working-directory: ./potal
+      run: go test -v -count=1 -race ./... -coverprofile=coverage.out -covermode=atomic
+
+    - name: Upload coverage to Codecov
+      uses: codecov/codecov-action@v3
+      with:
+        working-directory: ./potal

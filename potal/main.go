@@ -1,81 +1,57 @@
 package main
 
 import (
-	"context"
 	"log"
 	"net/http"
 	"os"
 	"time"
 
 	"github.com/getsentry/sentry-go"
-	"github.com/gofiber/fiber/v2"
-	"github.com/gofiber/fiber/v2/utils"
-	"github.com/valyala/fasthttp/fasthttpadaptor"
+	sentryhttp "github.com/getsentry/sentry-go/http"
+	"github.com/joho/godotenv"
+	"github.com/julienschmidt/httprouter"
+	"github.com/slack-go/slack"
 )
 
-func SentryHandler() fiber.Handler {
-	return func(c *fiber.Ctx) error {
-		var r http.Request
-		if err := fasthttpadaptor.ConvertRequest(c.Context(), &r, true); err != nil {
-			return err
-		}
-
-		// Init sentry hub
-		hub := sentry.CurrentHub().Clone()
-		scope := hub.Scope()
-		scope.SetRequest(&r)
-		scope.SetRequestBody(utils.CopyBytes(c.Body()))
-		c.Locals("sentry-hub", hub)
-
-		// Catch panics
-		defer func() {
-			if err := recover(); err != nil {
-				hub.RecoverWithContext(
-					context.WithValue(context.Background(), sentry.RequestContextKey, c),
-					err,
-				)
-			}
-		}()
-
-		transaction := sentry.StartTransaction(
-			c.Context(),
-			r.RequestURI,
-			func(s *sentry.Span) {
-				s.StartTime = time.Now()
-				s.Op = "http.server"
-			},
-		)
-		defer transaction.Finish()
-
-		return c.Next()
-	}
-}
+var slackClient *slack.Client
 
 func main() {
-	sentryerr := sentry.Init(sentry.ClientOptions{
-		Dsn:              os.Getenv("SENTRY_DSN"),
-		Debug:            true,
-		Environment:      "production",
-		TracesSampleRate: 1.0,
-		AttachStacktrace: true,
-	})
-	if sentryerr != nil {
-		log.Fatalf("sentry.Init: %s", sentryerr)
+	envErr := godotenv.Load(".env")
+	if envErr != nil {
+		log.Fatalf("An Error Occured: %v", envErr)
 	}
 
-	app := fiber.New()
+	sentryErr := sentry.Init(sentry.ClientOptions{
+		Dsn:              os.Getenv("SENTRY_DSN"),
+		Release:          os.Getenv("SENTRY_RELEASE"),
+		Environment:      os.Getenv("SENTRY_ENVIRONMENT"),
+		AttachStacktrace: true,
+		SendDefaultPII:   true,
+		EnableTracing:    true,
+		TracesSampleRate: 1.0,
+		Debug:            true,
+	})
+	if sentryErr != nil {
+		log.Fatalf("An Error Occured: %v", sentryErr)
+	}
+	// Flush buffered events before the program terminates.
+	// Set the timeout to the maximum duration the program can afford to wait.
+	defer sentry.Flush(2 * time.Second)
 
-	app.Use(SentryHandler())
-
-	app.Get("/", func(c *fiber.Ctx) error {
-		return c.JSON(&fiber.Map{
-			"message": "the potato is a lie.",
-		})
+	sentryHandler := sentryhttp.New(sentryhttp.Options{
+		Repanic: true,
 	})
 
-	app.Get("/panic", func(c *fiber.Ctx) error {
-		panic("panic 🔥")
-	})
+	slackClient = slack.New(os.Getenv("SLACK_BOT_TOKEN"))
 
-	log.Fatal(app.Listen(":3001"))
+	router := httprouter.New()
+	router.GET("/", DefaultHandler)
+	router.POST("/events", EventsHandler)
+
+	httpErr := http.ListenAndServe(":3000", sentryHandler.Handle(router))
+	if httpErr != nil {
+		sentry.CaptureException(httpErr)
+		log.Fatalf("An Error Occured: %v", httpErr)
+	}
+
 }
