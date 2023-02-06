@@ -5,7 +5,7 @@
         <p class="mt-1 text-sm text-zinc-500">I hope you're having a potastic day!</p>
     </div>
 
-    <div class="mt-2">
+    <div class="mt-2 mb-32">
         <div class="py-4">
             <h2 class="text-lg font-medium leading-6">Your Potato Stats</h2>
             <p class="mt-1 text-sm text-zinc-500">
