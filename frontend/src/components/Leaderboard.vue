@@ -8,9 +8,9 @@
                 <th scope="col" class="py-3.5 px-3 text-left text-sm font-semibold">
                     Person
                 </th>
-                <!-- <th scope="col" class="hidden md:table-cell py-3.5 px-3 text-right text-sm font-semibold">
+                <th scope="col" class="hidden md:table-cell py-3.5 px-3 text-right text-sm font-semibold">
                     Sent
-                </th> -->
+                </th>
                 <th scope="col" class="hidden md:table-cell relative py-3.5 pl-3 text-right text-sm font-semibold">
                     Received
                 </th>
@@ -29,9 +29,9 @@
                         </span>
                     </div>
                 </td>
-                <!-- <td class="hidden md:table-cell whitespace-nowrap py-4 px-3 text-right text-sm">
+                <td class="hidden md:table-cell whitespace-nowrap py-4 px-3 text-right text-sm">
                     {{ user.sent_count ?? 0 }}
-                </td> -->
+                </td>
                 <td class="hidden md:table-cell relative whitespace-nowrap py-4 pl-3 pr-4 text-right text-sm">
                     {{ user.received_count ?? 0 }}
                 </td>

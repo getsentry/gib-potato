@@ -1,5 +1,5 @@
 <template>
-    <div class="isolate inline-flex rounded-md mb-4">
+    <div class="isolate flex md:inline-flex rounded-md mb-4 md:mb-8 md:mr-8">
         <button
             class="relative inline-flex items-center rounded-l-md border border-zinc-300 px-4 py-2 text-sm font-medium"
             :class="{ '!bg-amber-200 !text-zinc-900': filter.range === 'all' }"
@@ -29,7 +29,7 @@
             Last Week
         </button>
     </div>
-    <!-- <div class="isolate inline-flex rounded-md mb-4 md:mb-8">
+    <div class="isolate flex md:inline-flex rounded-md mb-4 md:mb-8">
         <button
             class="relative inline-flex items-center rounded-l-md border border-zinc-300 px-4 py-2 text-sm font-medium"
             :class="{ '!bg-amber-200 !text-zinc-900': filter.order === 'received' }"
@@ -44,7 +44,7 @@
         >
             Sent
         </button>
-    </div> -->
+    </div>
 </template>
 
 <script>

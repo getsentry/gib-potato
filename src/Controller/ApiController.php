@@ -20,27 +20,36 @@ class ApiController extends Controller
 
     public function list(): Response
     {
+        $messagesTable = $this->fetchTable('Messages');
+        $sentCountQuery = $messagesTable->find()
+            ->select([
+                'amount' => $messagesTable->find()->func()->sum('amount'),
+            ])
+            ->where([
+                'sender_user_id = Users.id',
+            ]);
+        
+        $reivedCountQuery = $messagesTable->find()
+            ->select([
+                'amount' => $messagesTable->find()->func()->sum('amount'),
+            ])
+            ->where([
+                'receiver_user_id = Users.id',
+            ]);
+
+
         $usersTable = $this->fetchTable('Users');
 
         $query = $usersTable->find();
-        $users = $query
+        $query
             ->select([
-                // 'sent_count' =>  $query->func()->sum('MessagesSent.amount'),
-                'received_count' =>  $query->func()->sum('MessagesReceived.amount'),
+                'sent_count' =>  $sentCountQuery,
+                'received_count' =>  $reivedCountQuery,
             ])
-            // ->leftJoinWith('MessagesSent')
-            ->leftJoinWith('MessagesReceived')
             ->where([
                 'Users.slack_is_bot' => false,
                 'Users.status' => User::STATUS_ACTIVE,
                 'Users.role !=' => User::ROLE_SERVICE,
-            ])
-            ->group(['Users.id'])
-            ->having([
-                'OR' => [
-                    // 'sent_count >' => 0,
-                    'received_count >' => 0
-                ],
             ])
             ->enableAutoFields(true);
 
@@ -50,7 +59,7 @@ class ApiController extends Controller
                 case 'week':
                     $query->andWhere([
                         'OR' => [
-                            // 'MessagesSent.created >=' => new FrozenTime('1 week ago'),
+                            'MessagesSent.created >=' => new FrozenTime('1 week ago'),
                             'MessagesReceived.created >=' => new FrozenTime('1 week ago'),
                         ],
                     ]);
@@ -58,7 +67,7 @@ class ApiController extends Controller
                 case 'month':
                     $query->andWhere([
                         'OR' => [
-                            // 'MessagesSent.created >=' => new FrozenTime('1 month ago'),
+                            'MessagesSent.created >=' => new FrozenTime('1 month ago'),
                             'MessagesReceived.created >=' => new FrozenTime('1 month ago'),
                         ],
                     ]);
@@ -66,7 +75,7 @@ class ApiController extends Controller
                 case 'year':
                     $query->andWhere([
                         'OR' => [
-                            // 'MessagesSent.created >=' => new FrozenTime('1 year ago'),
+                            'MessagesSent.created >=' => new FrozenTime('1 year ago'),
                             'MessagesReceived.created >=' => new FrozenTime('1 year ago'),
                         ],
                     ]);
@@ -77,16 +86,16 @@ class ApiController extends Controller
         $order = $this->request->getQuery('order');
         if (!empty($order)) {
             switch ($order) {
-                // case 'sent':
-                //     $query->order(['sent_count' => 'DESC']);
-                //     break;
+                case 'sent':
+                    $query->order(['sent_count' => 'DESC']);
+                    break;
                 case 'received':
                     $query->order(['received_count' => 'DESC']);
                     break;
             }
         }
 
-        $query
+        $users = $query
             ->all();
 
         return $this->response
