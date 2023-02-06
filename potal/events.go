@@ -231,31 +231,60 @@ func processReactionEvent(ctx context.Context, event *slackevents.ReactionAddedE
 		return
 	}
 
-	converationSpan := transaction.StartChild("http.client")
-	converationSpan.Description = "GET https://slack.com/api/conversations.history"
+	var text string
+	var threadTimestamp string
+
+	converationHistorySpan := transaction.StartChild("http.client")
+	converationHistorySpan.Description = "GET https://slack.com/api/conversations.history"
 
 	// Get the text and thread timestamp for the original message
 	conversationHistory, err := slackClient.GetConversationHistory(&slack.GetConversationHistoryParameters{
 		ChannelID: event.Item.Channel,
-		Latest:    event.Item.Timestamp,
+		Oldest:    event.Item.Timestamp,
 		Inclusive: true,
 		Limit:     1,
 	})
 	if err != nil {
-		converationSpan.Status = sentry.SpanStatusInternalError
+		converationHistorySpan.Status = sentry.SpanStatusInternalError
 		hub.CaptureException(err)
 		log.Printf("An Error Occured %v", err)
 		return
 	} else {
-		converationSpan.Status = sentry.SpanStatusOK
+		converationHistorySpan.Status = sentry.SpanStatusOK
 	}
-	converationSpan.Finish()
+	converationHistorySpan.Finish()
 
-	if len(conversationHistory.Messages) == 0 {
-		return
+	// Check if the call to conversations.history hailed any results.
+	// If not, try to get the message from conversations.replies (thread message).
+	if len(conversationHistory.Messages) > 0 {
+		text = conversationHistory.Messages[0].Text
+		threadTimestamp = conversationHistory.Messages[0].ThreadTimestamp
+	} else {
+		converationRepliesSpan := transaction.StartChild("http.client")
+		converationRepliesSpan.Description = "GET https://slack.com/api/conversations.history"
+
+		conversationReplies, _, _, err := slackClient.GetConversationReplies(&slack.GetConversationRepliesParameters{
+			ChannelID: event.Item.Channel,
+			Timestamp: event.Item.Timestamp,
+			Limit:     1,
+		})
+
+		if err != nil {
+			converationRepliesSpan.Status = sentry.SpanStatusInternalError
+			hub.CaptureException(err)
+			log.Printf("An Error Occured %v", err)
+			return
+		} else {
+			converationRepliesSpan.Status = sentry.SpanStatusOK
+		}
+
+		if len(conversationReplies) == 0 {
+			return
+		}
+
+		text = conversationReplies[0].Text
+		threadTimestamp = conversationReplies[0].ThreadTimestamp
 	}
-	text := conversationHistory.Messages[0].Text
-	threadTimestamp := conversationHistory.Messages[0].ThreadTimestamp
 
 	permaLinkSpan := transaction.StartChild("http.client")
 	permaLinkSpan.Description = "GET https://slack.com/api/chat.getPermalink"
