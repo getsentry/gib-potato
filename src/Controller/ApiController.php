@@ -46,11 +46,14 @@ class ApiController extends Controller
                 'sent_count' =>  $sentCountQuery,
                 'received_count' =>  $reivedCountQuery,
             ])
+            ->leftJoinWith('MessagesSent')
+            ->leftJoinWith('MessagesReceived')
             ->where([
                 'Users.slack_is_bot' => false,
                 'Users.status' => User::STATUS_ACTIVE,
                 'Users.role !=' => User::ROLE_SERVICE,
             ])
+            ->group(['Users.id'])
             ->enableAutoFields(true);
 
         $range = $this->request->getQuery('range');
