@@ -106,10 +106,32 @@ class ApiController extends Controller
 
     public function get(): Response
     {
+        $messagesTable = $this->fetchTable('Messages');
+        $sentCountQuery = $messagesTable->find()
+            ->select([
+                'amount' => $messagesTable->find()->func()->sum('amount'),
+            ])
+            ->where([
+                'sender_user_id = Users.id',
+            ]);
+        
+        $reivedCountQuery = $messagesTable->find()
+            ->select([
+                'amount' => $messagesTable->find()->func()->sum('amount'),
+            ])
+            ->where([
+                'receiver_user_id = Users.id',
+            ]);
+
         $usersTable = $this->fetchTable('Users');
 
         $user = $usersTable->find()
+            ->select([
+                'sent_count' =>  $sentCountQuery,
+                'received_count' =>  $reivedCountQuery,
+            ])
             ->where(['Users.id' => $this->Authentication->getIdentityData('id')])
+            ->enableAutoFields(true)
             ->first();
 
         return $this->response
@@ -141,5 +163,27 @@ class ApiController extends Controller
 
         return $this->response
             ->withStatus(204);
+    }
+
+    public function profile(): Response
+    {
+        $messagesTable = $this->fetchTable('Messages');
+        $messages = $messagesTable->find()
+            ->where([
+                'OR' => [
+                    'sender_user_id' => $this->Authentication->getIdentityData('id'),
+                    'receiver_user_id' => $this->Authentication->getIdentityData('id'),
+                ],
+                'Messages.created >=' => new FrozenTime('30 days ago'),
+            ])
+            ->contain('SentUsers')
+            ->contain('ReceivedUsers')
+            ->order(['Messages.created' => 'DESC'])
+            ->all();
+        
+        return $this->response
+            ->withStatus(200)
+            ->withType('json')
+            ->withStringBody(json_encode($messages));
     }
 }

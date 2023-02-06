@@ -40,10 +40,10 @@
                             </div>
                             <div v-show="menuOpen === true"
                                 class="absolute right-0 z-10 mt-2 w-48 origin-top-right rounded-md bg-zinc-50 dark:bg-zinc-800 py-1 shadow-lg ring-1 ring-zinc-900 ring-opacity-5 focus:outline-none">
-                                <!-- <RouterLink to="/profile" class="block px-4 py-2 text-sm"
+                                <RouterLink to="/profile" class="block px-4 py-2 text-sm"
                                     :class="{ 'bg-zinc-200 dark:bg-zinc-900': $route.path === '/profile' }">
                                     Your Profile
-                                </RouterLink> -->
+                                </RouterLink>
                                 <RouterLink
                                     to="/settings"
                                     class="block px-4 py-2 text-sm"
@@ -98,14 +98,14 @@
                     </div>
                     <div class="ml-3">
                         <div class="text-base font-medium text-zinc-900">{{ user.slack_name }}</div>
-                        <div class="text-sm text-zinc-700">Joined {{ user.created.slice(0, 10) }}</div>
+                        <div class="text-sm text-zinc-700">Joined {{ new Date(user.created).toLocaleDateString('en-us', { year:"numeric", month:"short", day:"numeric"}) }}</div>
                     </div>
                 </div>
                 <div class="mt-3 space-y-1 px-2">
-                    <!-- <RouterLink to="/profile" class="block rounded-md px-3 py-2 text-base font-medium text-zinc-900"
+                    <RouterLink to="/profile" class="block rounded-md px-3 py-2 text-base font-medium text-zinc-900"
                         :class="{ 'bg-zinc-900 text-zinc-50': $route.path === '/profile' }">
                         Your Profile
-                    </RouterLink> -->
+                    </RouterLink>
                     <RouterLink
                         to="/settings"
                         class="block rounded-md px-3 py-2 text-base font-medium text-zinc-900"
