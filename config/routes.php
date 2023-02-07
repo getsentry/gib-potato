@@ -63,6 +63,9 @@ return static function (RouteBuilder $routes) {
             $builder->patch('/user', ['controller' => 'Api', 'action' => 'edit']);
 
             $builder->get('/user/profile', ['controller' => 'Api', 'action' => 'profile']);
+
+            $builder->get('/shop/products', ['controller' => 'Api', 'action' => 'products']);
+            $builder->post('/shop/purchase', ['controller' => 'Api', 'action' => 'purchase']);
         });
     });
 

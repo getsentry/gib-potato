@@ -54,6 +54,9 @@ class UsersTable extends Table
                 'className' => 'Messages',
             ])
             ->setForeignKey('receiver_user_id');
+
+        $this->hasMany('Purchases')
+            ->setForeignKey('user_id');
     }
 
     /**
