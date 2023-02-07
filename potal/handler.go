@@ -31,8 +31,8 @@ func DefaultHandler(w http.ResponseWriter, r *http.Request, _ httprouter.Params)
 func EventsHandler(w http.ResponseWriter, r *http.Request, _ httprouter.Params) {
 	// Overwrite transaction source with something usefull
 	ctx := r.Context()
-	txn := sentry.TransactionFromContext(ctx)
-	txn.Source = sentry.SourceRoute
+	transaction := sentry.TransactionFromContext(ctx)
+	transaction.Source = sentry.SourceRoute
 
 	// Verify the Slack request
 	// see https://github.com/slack-go/slack/blob/master/examples/eventsapi/events.go
