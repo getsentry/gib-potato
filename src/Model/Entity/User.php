@@ -106,7 +106,7 @@ class User extends Entity
             ->where([
                 'sender_user_id' => $this->id,
                 'type' => Message::TYPE_POTATO,
-                'created >=' => new FrozenTime('24 hours ago'),
+                'DATE(created)' => $query->func()->now('date'),
             ])
             ->first();
 
@@ -125,7 +125,7 @@ class User extends Entity
             ->where([
                 'receiver_user_id' => $this->id,
                 'type' => Message::TYPE_POTATO,
-                'created >=' => new FrozenTime('24 hours ago'),
+                'DATE(created)' => $query->func()->now('date'),
             ])
             ->first();
 
@@ -144,7 +144,7 @@ class User extends Entity
             ->where([
                 'sender_user_id' => $this->id,
                 'type' => Message::TYPE_POTATO,
-                'created >=' => new FrozenTime('24 hours ago'),
+                'DATE(created)' => $query->func()->now('date'),
             ])
             ->first();
 
