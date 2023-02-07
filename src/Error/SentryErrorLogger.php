@@ -36,7 +36,7 @@ class SentryErrorLogger extends ErrorLogger
     {
         $hint = EventHint::fromArray([
             'exception' => $exception,
-            'mechanism' => new ExceptionMechanism(ExceptionMechanism::TYPE_GENERIC, false),
+            'mechanism' => new ExceptionMechanism(ExceptionMechanism::TYPE_GENERIC, false, ['code' => $exception->getCode()]),
         ]);
 
         captureEvent(Event::createEvent(), $hint);
