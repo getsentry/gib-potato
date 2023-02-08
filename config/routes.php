@@ -57,15 +57,17 @@ return static function (RouteBuilder $routes) {
         $builder->connect('/settings', ['controller' => 'Home', 'action' => 'index']);
 
         $builder->scope('/api', function (RouteBuilder $builder) {    
-            $builder->get('/users', ['controller' => 'Api', 'action' => 'list']);
+            $builder->get('/users', ['prefix' => 'Api', 'controller' => 'Users', 'action' => 'list']);
 
-            $builder->get('/user', ['controller' => 'Api', 'action' => 'get']);
-            $builder->patch('/user', ['controller' => 'Api', 'action' => 'edit']);
+            $builder->get('/user', ['prefix' => 'Api', 'controller' => 'Users', 'action' => 'get']);
+            $builder->patch('/user', ['prefix' => 'Api', 'controller' => 'Users', 'action' => 'edit']);
 
-            $builder->get('/user/profile', ['controller' => 'Api', 'action' => 'profile']);
+            $builder->get('/user/profile', ['prefix' => 'Api', 'controller' => 'Users', 'action' => 'profile']);
 
-            $builder->get('/shop/products', ['controller' => 'Api', 'action' => 'products']);
-            $builder->post('/shop/purchase', ['controller' => 'Api', 'action' => 'purchase']);
+            $builder->get('/shop/products', ['prefix' => 'Api', 'controller' => 'Shop', 'action' => 'products']);
+            $builder->patch('/shop/purchase', ['prefix' => 'Api', 'controller' => 'Shop', 'action' => 'purchase']);
+
+            
         });
     });
 
