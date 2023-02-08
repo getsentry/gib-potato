@@ -9,7 +9,7 @@
         <div class="py-4">
             <h2 class="text-lg font-medium leading-6">Your Potato Stats</h2>
             <p class="mt-1 text-sm text-zinc-500">
-                You did gib <strong>{{ user.sent_count }}</strong> 🥔 and received <strong>{{ user.received_count }}</strong> 🥔 since you started potatoing
+                You did gib <strong>{{ user.sent_count }}</strong> 🥔 and did receive <strong>{{ user.received_count }}</strong> 🥔 since you started potatoing
                 <strong>{{ new Date(user.created).toLocaleDateString('en-us', { year:"numeric", month:"short", day:"numeric"}) }}.</strong>
             </p>
         </div>
@@ -39,7 +39,7 @@
                                 </p>
                             </div>
                             <p class="text-sm text-zinc-500">
-                                You sent <strong>{{ message.amount }}</strong> 🥔 to {{ message.received_user.slack_name }}
+                                You did gib <strong>{{ message.amount }}</strong> 🥔 to {{ message.received_user.slack_name }}
                             </p>
                         </div>
                         </template>
@@ -60,7 +60,7 @@
                                 </p>
                             </div>
                             <p class="text-sm text-zinc-500">
-                                You received <strong>{{ message.amount }}</strong> 🥔 from {{ message.sent_user.slack_name }}
+                                You did receive <strong>{{ message.amount }}</strong> 🥔 from {{ message.sent_user.slack_name }}
                             </p>
                         </div>
                         </template>

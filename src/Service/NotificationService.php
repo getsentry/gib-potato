@@ -46,7 +46,7 @@ class NotificationService
 
             $gibMessage = sprintf('You did gib *%s* %s to %s.', $event->amount * count($toUserNames), $event->reaction, implode(', ', $toUserNames));
             $gibMessage .= PHP_EOL;
-            $gibMessage .= sprintf('You have *%s* :potato: left. Your potato reset in *%s hours* and *%s minutes*.', $potatoLeftToday, $fromUser->potatoResetInHours(), $fromUser->potatoResetInMinutes());
+            $gibMessage .= sprintf('You have *%s* :potato: left. Your potato do reset in *%s hours* and *%s minutes*.', $potatoLeftToday, $fromUser->potatoResetInHours(), $fromUser->potatoResetInMinutes());
             $gibMessage .= PHP_EOL;
             $gibMessage .= sprintf('> %s', $event->permalink);
 
