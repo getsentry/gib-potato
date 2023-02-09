@@ -5,6 +5,7 @@ namespace App\Command;
 
 use App\Http\SlackClient;
 use App\Model\Entity\Message;
+use App\Service\UserService;
 use Cake\Command\Command;
 use Cake\Console\Arguments;
 use Cake\Console\ConsoleIo;
@@ -50,11 +51,12 @@ class ShowAndTellCommand extends Command
         $messagesTable = $this->fetchTable('Messages');
 
         $slackClient = new SlackClient();
+        $userService = new UserService();
 
         $gibPotatoUserId = $usersTable->findBySlackUserId(env('POTATO_SLACK_USER_ID'))->first()->id;
 
         foreach ($users as $user) {
-            $user = $usersTable->findBySlackUserId($user)->first();
+            $user = $userService->getOrCreateUser($user);
 
             $message = $messagesTable->newEntity([
                 'sender_user_id' => $gibPotatoUserId,
