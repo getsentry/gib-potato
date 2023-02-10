@@ -42,7 +42,7 @@ jobs:
     - name: Run PHPUnit
       run: |
         export CODECOVERAGE=1
-        export DATABASE_TEST_URL: mysql://root:root@127.0.0.1/gib_potato
+        export DATABASE_TEST_URL=mysql://root:root@127.0.0.1/gib_potato
         vendor/bin/phpunit --verbose --colors=always --coverage-clover=coverage.xml
 
     - name: Upload coverage to Codecov
