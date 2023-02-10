@@ -78,7 +78,8 @@ class AppHomeOpenedEvent extends AbstractEvent
                         'type' => 'section',
                         'text' => [
                             'type' => 'mrkdwn',
-                            'text' => 'You did gib *' . $sent . '* :potato: and did receive *' . $received . '* :potato: since you started potatoing *' . $user->created->format('M j, Y') . '*.',
+                            'text' => 'You did gib *' . $sent . '* :potato: and did receive *' . $received .
+                                '* :potato: since you started potatoing *' . $user->created->format('M j, Y') . '*.',
                         ],
                     ],
                     [
