@@ -28,10 +28,18 @@ jobs:
       run: composer update --no-progress
 
     - name: Run PHP CodeSniffer
-      run: composer cs-check
+      run: phpcs --colors -p  src/ tests/
     
     - name: Run PHPStan
-      run: composer PHPStan
-    
+      run: phpstan analyse
+
+    - name: Setup MySQL
+      run: docker run --rm --name=mysqld -e MYSQL_ROOT_PASSWORD=root -e MYSQL_DATABASE=gib_potato -p 3306:3306 -d mysql:8 --default-authentication-plugin=mysql_native_password --disable-log-bin
+
     - name: Run PHPUnit
-      run: composer test
+      run: |
+        export CODECOVERAGE=1
+        vendor/bin/phpunit --verbose --colors=always --coverage-clover=coverage.xml
+
+    - name: Upload coverage to Codecov
+      uses: codecov/codecov-action@v3
