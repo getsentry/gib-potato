@@ -8,6 +8,9 @@ use Cake\Controller\Controller;
 use Cake\Http\Response;
 use Cake\I18n\FrozenTime;
 
+/**
+ * @property \Authentication\Controller\Component\AuthenticationComponent $Authentication
+ */
 class ApiController extends Controller
 {
     /**

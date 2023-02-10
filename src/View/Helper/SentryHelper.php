@@ -8,7 +8,7 @@ use Sentry\SentrySdk;
 use Sentry\Tracing\Span;
 
 /**
- * Sentry helper
+ * @property \Cake\View\Helper\HtmlHelper $Html
  */
 class SentryHelper extends Helper
 {

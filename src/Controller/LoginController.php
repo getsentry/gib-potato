@@ -10,6 +10,9 @@ use Lcobucci\JWT\Encoding\JoseEncoder;
 use Lcobucci\JWT\Token\Parser;
 use Throwable;
 
+/**
+ * @property \Authentication\Controller\Component\AuthenticationComponent $Authentication
+ */
 class LoginController extends AppController
 {
     /**

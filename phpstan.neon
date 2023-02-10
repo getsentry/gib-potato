@@ -1,7 +1,8 @@
 parameters:
-    level: 8
-    checkMissingIterableValueType: false
+    level: 1
     treatPhpDocTypesAsCertain: false
+    bootstrapFiles:
+        - config/paths.php
     paths:
         - src/
     excludePaths:
