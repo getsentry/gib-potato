@@ -11,6 +11,9 @@ use Sentry\Tracing\SpanContext;
 
 class Client extends CakeClient
 {
+    /**
+     * @inheritDoc
+     */
     protected function _sendRequest(RequestInterface $request, array $options): Response
     {
         $parentSpan = SentrySdk::getCurrentHub()->getSpan();

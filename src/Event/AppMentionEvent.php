@@ -9,6 +9,11 @@ class AppMentionEvent extends AbstractEvent
     protected string $channel;
     protected string $text;
 
+    /**
+     * Constructor
+     *
+     * @param array $event Event data.
+     */
     public function __construct(array $event)
     {
         parent::__construct();
@@ -20,7 +25,10 @@ class AppMentionEvent extends AbstractEvent
         $this->eventTimestamp = $event['event_timestamp'];
     }
 
-    public function process()
+    /**
+     * @inheritDoc
+     */
+    public function process(): void
     {
     }
 }

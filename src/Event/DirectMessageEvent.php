@@ -4,7 +4,6 @@ declare(strict_types=1);
 namespace App\Event;
 
 use App\Service\UserService;
-use Cake\I18n\FrozenTime;
 
 class DirectMessageEvent extends AbstractEvent
 {
@@ -13,6 +12,11 @@ class DirectMessageEvent extends AbstractEvent
     public string $text;
     public string $timestamp;
 
+    /**
+     * Constructor
+     *
+     * @param array $event Event data.
+     */
     public function __construct(array $event)
     {
         parent::__construct();
@@ -25,7 +29,10 @@ class DirectMessageEvent extends AbstractEvent
         $this->eventTimestamp = $event['event_timestamp'];
     }
 
-    public function process()
+    /**
+     * @inheritDoc
+     */
+    public function process(): void
     {
         if ($this->text === 'potato') {
             $userService = new UserService();

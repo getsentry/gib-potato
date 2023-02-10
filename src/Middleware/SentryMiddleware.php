@@ -66,7 +66,10 @@ class SentryMiddleware implements MiddlewareInterface
         return $response;
     }
 
-    public function setupQueryLogging()
+    /**
+     * @return void
+     */
+    public function setupQueryLogging(): void
     {
         $logger = new SentryQueryLogger();
 

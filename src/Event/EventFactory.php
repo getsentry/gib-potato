@@ -8,11 +8,16 @@ use Sentry\SentrySdk;
 
 class EventFactory
 {
+    /**
+     * @param array $data Event data.
+     * @return \App\Event\AbstractEvent
+     * @throws \Exception
+     */
     public static function createEvent(array $data): AbstractEvent
     {
         $eventType = $data['type'] ?? null;
 
-        if (null === $eventType) {
+        if ($eventType === null) {
             throw new Exception('Unknown event type');
         }
 

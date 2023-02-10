@@ -29,11 +29,11 @@ class SentryQueryLogger extends AbstractLogger
         $loggedQuery = $context['query'];
 
         if ($loggedQuery->query === 'BEGIN') {
-            $context = new SpanContext;
+            $context = new SpanContext();
             $context->setOp('db.transaction');
-    
+
             $this->pushSpan($parentSpan->startChild($context));
-            
+
             return;
         }
 
@@ -56,6 +56,10 @@ class SentryQueryLogger extends AbstractLogger
         $parentSpan->startChild($context);
     }
 
+    /**
+     * @param \Sentry\Tracing\Span $span The span.
+     * @return void
+     */
     private function pushSpan(Span $span): void
     {
         $hub = SentrySdk::getCurrentHub();
@@ -67,6 +71,9 @@ class SentryQueryLogger extends AbstractLogger
         $this->currentSpanStack[] = $span;
     }
 
+    /**
+     * @return \Sentry\Tracing\Span|null
+     */
     private function popSpan(): ?Span
     {
         if (count($this->currentSpanStack) === 0) {

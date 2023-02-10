@@ -11,6 +11,11 @@ class AppHomeOpenedEvent extends AbstractEvent
     protected string $tab;
     protected string $timestamp;
 
+    /**
+     * Constructor
+     *
+     * @param array $event Event data.
+     */
     public function __construct(array $event)
     {
         parent::__construct();
@@ -21,7 +26,10 @@ class AppHomeOpenedEvent extends AbstractEvent
         $this->eventTimestamp = $event['event_timestamp'];
     }
 
-    public function process()
+    /**
+     * @inheritDoc
+     */
+    public function process(): void
     {
         $userService = new UserService();
         $user = $userService->getOrCreateUser($this->user);

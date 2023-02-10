@@ -12,6 +12,9 @@ class SlackClient
 
     protected Client $client;
 
+    /**
+     * Constructor.
+     */
     public function __construct()
     {
         $this->client = new Client([
@@ -24,6 +27,9 @@ class SlackClient
     }
 
     /**
+     * @param string $channel The channel to send the message to.
+     * @param string $text The text of the message to send.
+     * @return void
      * @see https://api.slack.com/methods/chat.postMessage
      */
     public function postMessage(string $channel, string $text): void
@@ -50,6 +56,11 @@ class SlackClient
     }
 
     /**
+     * @param string $channel The channel to send the message to.
+     * @param string $user The user to send the message to.
+     * @param string $text The text of the message to send.
+     * @param string|null $threadTimestamp The thread timestamp of the message.
+     * @return void
      * @see https://api.slack.com/methods/chat.postEphemeral
      */
     public function postEphemeral(string $channel, string $user, string $text, ?string $threadTimestamp = null): void
@@ -80,6 +91,9 @@ class SlackClient
     }
 
     /**
+     * @param string $user The user to publish the view for.
+     * @param array $view The view to publish.
+     * @return void
      * @see https://api.slack.com/methods/views.publish
      */
     public function publishView(string $user, array $view): void
@@ -106,6 +120,8 @@ class SlackClient
     }
 
     /**
+     * @param string $user The Slack user ID.
+     * @return array
      * @see https://api.slack.com/methods/users.info
      */
     public function getUser(string $user): array

@@ -1,4 +1,5 @@
 <?php
+declare(strict_types=1);
 
 namespace App\Event\Validation;
 
@@ -13,12 +14,24 @@ class Validation
     protected MessageEvent|ReactionAddedEvent $event;
     protected User $sender;
 
-    public function __construct(MessageEvent|ReactionAddedEvent $event, User $sender) {
+    /**
+     * Constructor
+     *
+     * @param \App\Event\MessageEvent|\App\Event\ReactionAddedEvent $event The event.
+     * @param \App\Model\Entity\User $sender User you did potato.
+     * @return void
+     */
+    public function __construct(MessageEvent|ReactionAddedEvent $event, User $sender)
+    {
         $this->event = $event;
         $this->sender = $sender;
     }
 
-    public function amount(): self
+    /**
+     * @return $this
+     * @throws \App\Event\Validation\Exception\PotatoException
+     */
+    public function amount()
     {
         if ($this->event->amount > Message::MAX_AMOUNT) {
             throw new PotatoException('You can only gib out *5* potato a day 😢');
@@ -32,7 +45,11 @@ class Validation
         return $this;
     }
 
-    public function receivers(): self
+    /**
+     * @return $this
+     * @throws \App\Event\Validation\Exception\PotatoException
+     */
+    public function receivers()
     {
         $recieversCount = count($this->event->receivers);
 
@@ -51,7 +68,11 @@ class Validation
         return $this;
     }
 
-    public function sender(): self
+    /**
+     * @return $this
+     * @throws \App\Event\Validation\Exception\PotatoException
+     */
+    public function sender()
     {
         $sent = $this->sender->potatoSentToday();
         if ($sent >= Message::MAX_AMOUNT) {

@@ -32,11 +32,18 @@ class SentryErrorLogger extends ErrorLogger
     /**
      * @inheritDoc
      */
-    public function logException(Throwable $exception, ?ServerRequestInterface $request = null, bool $includeTrace = false): void
-    {
+    public function logException(
+        Throwable $exception,
+        ?ServerRequestInterface $request = null,
+        bool $includeTrace = false
+    ): void {
         $hint = EventHint::fromArray([
             'exception' => $exception,
-            'mechanism' => new ExceptionMechanism(ExceptionMechanism::TYPE_GENERIC, false, ['code' => $exception->getCode()]),
+            'mechanism' => new ExceptionMechanism(
+                type: ExceptionMechanism::TYPE_GENERIC,
+                handled: false,
+                data: ['code' => $exception->getCode()],
+            ),
         ]);
 
         captureEvent(Event::createEvent(), $hint);

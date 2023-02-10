@@ -3,8 +3,8 @@ declare(strict_types=1);
 
 namespace App\Event;
 
-use App\Event\Validation\Validation;
 use App\Event\Validation\Exception\PotatoException;
+use App\Event\Validation\Validation;
 use App\Service\AwardService;
 use App\Service\NotificationService;
 use App\Service\UserService;
@@ -22,6 +22,11 @@ class MessageEvent extends AbstractEvent
 
     public ?string $threadTimestamp;
 
+    /**
+     * Constructor
+     *
+     * @param array $event Event data.
+     */
     public function __construct(array $event)
     {
         parent::__construct();
@@ -40,7 +45,10 @@ class MessageEvent extends AbstractEvent
         $this->threadTimestamp = $event['thread_timestamp'] ?? null;
     }
 
-    public function process()
+    /**
+     * @inheritDoc
+     */
+    public function process(): void
     {
         $userService = new UserService();
         $awardService = new AwardService();
@@ -76,7 +84,7 @@ class MessageEvent extends AbstractEvent
 
         $awardService->gib(
             fromUser: $fromUser,
-            toUsers: $toUsers, 
+            toUsers: $toUsers,
             event: $this,
         );
         $notificationService->notifyUsers(

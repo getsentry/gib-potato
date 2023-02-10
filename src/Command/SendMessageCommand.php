@@ -27,15 +27,13 @@ class SendMessageCommand extends Command
 
         $parser->addArguments([
             'channel' => ['help' => 'The channel to post the message to', 'required' => true],
-            'message' => ['help' => 'The message to be send', 'required' => true]
+            'message' => ['help' => 'The message to be send', 'required' => true],
         ]);
 
         return $parser;
     }
 
     /**
-     * Implement this method with your command's logic.
-     *
      * @param \Cake\Console\Arguments $args The command arguments.
      * @param \Cake\Console\ConsoleIo $io The console io
      * @return null|void|int The exit code or null for success

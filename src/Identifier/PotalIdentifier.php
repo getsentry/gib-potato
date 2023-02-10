@@ -10,6 +10,9 @@ class PotalIdentifier extends AbstractIdentifier
 {
     use LocatorAwareTrait;
 
+    /**
+     * @inheritDoc
+     */
     public function identify(array $credentials)
     {
         if (!isset($credentials['token'])) {

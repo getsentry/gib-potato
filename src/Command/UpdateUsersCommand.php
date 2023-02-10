@@ -4,8 +4,8 @@ declare(strict_types=1);
 namespace App\Command;
 
 use App\Database\Log\SentryQueryLogger;
-use App\Model\Entity\User;
 use App\Http\SlackClient;
+use App\Model\Entity\User;
 use Cake\Command\Command;
 use Cake\Console\Arguments;
 use Cake\Console\ConsoleIo;
@@ -18,7 +18,6 @@ use Sentry\Tracing\SpanStatus;
 use Sentry\Tracing\TransactionContext;
 use Sentry\Tracing\TransactionSource;
 use Throwable;
-
 use function Sentry\captureException;
 use function Sentry\startTransaction;
 
@@ -42,8 +41,6 @@ class UpdateUsersCommand extends Command
     }
 
     /**
-     * Implement this method with your command's logic.
-     *
      * @param \Cake\Console\Arguments $args The command arguments.
      * @param \Cake\Console\ConsoleIo $io The console io
      * @return null|void|int The exit code or null for success
@@ -86,7 +83,7 @@ class UpdateUsersCommand extends Command
 
         $io->comment($users->count() . ' users will be updated');
 
-        /** @var $progress \Cake\Command\Helper\ProgressHelper */
+        /** @var \Cake\Command\Helper\ProgressHelper $progress */
         $progress = $io->helper('Progress');
         $progress->init([
             'total' => $users->count(),
@@ -97,7 +94,7 @@ class UpdateUsersCommand extends Command
             $spanContext->setOp('command');
             $spanContext->setDescription('Update user');
             $span = $transaction->startChild($spanContext);
-    
+
             SentrySdk::getCurrentHub()->setSpan($span);
 
             $slackUser = $slackClient->getUser($user->slack_user_id);
@@ -131,7 +128,7 @@ class UpdateUsersCommand extends Command
                     ],
                 ]);
             }
-    
+
             try {
                 $usersTable->saveOrFail($user);
 
