@@ -29,7 +29,7 @@ func main() {
 		SendDefaultPII:   true,
 		EnableTracing:    true,
 		TracesSampleRate: 1.0,
-		Debug:            true,
+		// Debug:            true,
 	})
 	if sentryErr != nil {
 		log.Fatalf("An Error Occured: %v", sentryErr)
