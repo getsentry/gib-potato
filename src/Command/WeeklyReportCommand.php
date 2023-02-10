@@ -80,7 +80,7 @@ class WeeklyReportCommand extends Command
             ->order(['sent_count' => 'DESC'])
             ->limit(5)
             ->enableAutoFields(true);
-        
+
         $topReceivers = $usersTable->find()
             ->select([
                 'received_count' => $reivedCountQuery,
@@ -102,14 +102,16 @@ class WeeklyReportCommand extends Command
         $channelMessage .= PHP_EOL . PHP_EOL;
 
         foreach ($topSenders as $index => $user) {
-            $channelMessage .= '*#' . $index + 1 . '* <@' . $user->slack_user_id . '> - They did gib out *' . $user->sent_count . '* potato';
+            $channelMessage .= '*#' . $index + 1 . '* <@' . $user->slack_user_id . '> - They did gib out *' .
+                $user->sent_count . '* potato';
             $channelMessage .= PHP_EOL;
         }
 
         $channelMessage .= PHP_EOL . PHP_EOL;
 
         foreach ($topReceivers as $index => $user) {
-            $channelMessage .= '*#' . $index + 1 . '* <@' . $user->slack_user_id . '> - They did receive *' . $user->received_count . '* potato';
+            $channelMessage .= '*#' . $index + 1 . '* <@' . $user->slack_user_id . '> - They did receive *' .
+                $user->received_count . '* potato';
             $channelMessage .= PHP_EOL;
         }
 
