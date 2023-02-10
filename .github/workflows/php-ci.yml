@@ -1,0 +1,33 @@
+name: "PHP CI"
+
+on:
+  push:
+  pull_request:
+
+permissions:
+  contents: read
+
+jobs:
+  ci:
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v3
+
+    - name: Setup PHP
+      uses: shivammathur/setup-php@v2
+      with:
+        php-version: '8.1'
+        extensions: mbstring, intl
+    
+    - name: Run composer install
+      run: composer update --no-progress
+
+    - name: Run PHP CodeSniffer
+      run: composer cs-check
+    
+    - name: Run PHPStan
+      run: composer PHPStan
+    
+    - name: Run PHPUnit
+      run: composer test
