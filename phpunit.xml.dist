@@ -8,6 +8,12 @@
     <php>
         <ini name="memory_limit" value="-1"/>
         <ini name="apc.enable_cli" value="1"/>
+
+        <env name="SECURITY_SALT" value="a-random-value-that-you-cannot-guess" />
+
+        <env name="CACHE_DEFAULT_URL" value="array://" />
+        <env name="CACHE_CAKECORE_URL" value="array://" />
+        <env name="CACHE_CAKEMODEL_URL" value="array://" />
     </php>
 
     <!-- Add any additional test suites you want to run here -->
