@@ -14,7 +14,8 @@ permissions:
 jobs:
   ci:
     runs-on: ubuntu-latest
-
+    env:
+      MYSQL_URL: mysql://root:root@127.0.0.1/gib_potato
     steps:
     - uses: actions/checkout@v3
 
