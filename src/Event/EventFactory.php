@@ -18,7 +18,7 @@ class EventFactory
         $eventType = $data['type'] ?? null;
 
         if ($eventType === null) {
-            throw new Exception('Unknown event type');
+            throw new Exception('Empty event type');
         }
 
         SentrySdk::getCurrentHub()->configureScope(function ($scope) use ($eventType) {
@@ -39,6 +39,8 @@ class EventFactory
                 return new AppMentionEvent($data);
             case AbstractEvent::TYPE_APP_HOME_OPENED:
                 return new AppHomeOpenedEvent($data);
+            default:
+                throw new Exception('Unknown event type');
         }
     }
 }
