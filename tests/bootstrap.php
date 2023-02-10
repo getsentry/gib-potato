@@ -16,6 +16,7 @@ declare(strict_types=1);
  */
 
 use Cake\Core\Configure;
+use Cake\Datasource\ConnectionManager;
 use Migrations\TestSuite\Migrator;
 
 /**
@@ -31,6 +32,11 @@ require dirname(__DIR__) . '/config/bootstrap.php';
 if (empty($_SERVER['HTTP_HOST']) && !Configure::read('App.fullBaseUrl')) {
     Configure::write('App.fullBaseUrl', 'http://localhost');
 }
+
+// Set test database connection
+ConnectionManager::setConfig('test', [
+    'url' => env('DATABASE_TEST_URL', null),
+]);
 
 // Fixate sessionid early on, as php7.2+
 // does not allow the sessionid to be set after stdout
