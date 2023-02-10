@@ -10,8 +10,14 @@ use Lcobucci\JWT\Encoding\JoseEncoder;
 use Lcobucci\JWT\Token\Parser;
 use Throwable;
 
+/**
+ * @property \Authentication\Controller\Component\AuthenticationComponent $Authentication
+ */
 class LoginController extends AppController
 {
+    /**
+     * @inheritDoc
+     */
     public function beforeFilter(EventInterface $event)
     {
         parent::beforeFilter($event);
@@ -19,6 +25,9 @@ class LoginController extends AppController
         $this->Authentication->allowUnauthenticated(['login', 'startOpenId', 'openId']);
     }
 
+    /**
+     * @return \Cake\Http\Response|null|void
+     */
     public function login()
     {
         $result = $this->Authentication->getResult();
@@ -30,6 +39,9 @@ class LoginController extends AppController
         }
     }
 
+    /**
+     * @return \Cake\Http\Response|null
+     */
     public function startOpenId()
     {
         $url = 'https://slack.com/openid/connect/authorize' .
@@ -41,6 +53,9 @@ class LoginController extends AppController
         return $this->redirect($url);
     }
 
+    /**
+     * @return \Cake\Http\Response|null
+     */
     public function openId()
     {
         $client = new Client();
@@ -57,7 +72,7 @@ class LoginController extends AppController
             if ($json['ok'] === true) {
                 try {
                     $parser = new Parser(new JoseEncoder());
-                    /** @var $jwt \Lcobucci\JWT\Token\Plain */
+                    /** @var \Lcobucci\JWT\Token\Plain $jwt */
                     $jwt = $parser->parse($json['id_token']);
                 } catch (Throwable $e) {
                     $this->Flash->error('Slack sign in failed');
@@ -92,6 +107,9 @@ class LoginController extends AppController
         return $this->redirect(['action' => 'login']);
     }
 
+    /**
+     * @return \Cake\Http\Response|null
+     */
     public function logout()
     {
         $this->Authentication->logout();

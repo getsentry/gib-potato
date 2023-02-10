@@ -8,6 +8,9 @@ use Cake\Controller\Controller;
 
 class EventsController extends Controller
 {
+    /**
+     * @inheritDoc
+     */
     public function initialize(): void
     {
         parent::initialize();
@@ -15,6 +18,9 @@ class EventsController extends Controller
         $this->loadComponent('Authentication.Authentication');
     }
 
+    /**
+     * @return \Cake\Http\Response
+     */
     public function index()
     {
         $this->request->allowMethod('POST');

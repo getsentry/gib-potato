@@ -1,0 +1,48 @@
+name: "PHP CI"
+
+on:
+  push:
+    branches:
+      - 'main'
+  pull_request:
+    branches:
+      - '*'
+
+permissions:
+  contents: read
+
+jobs:
+  ci:
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v3
+
+    - name: Setup PHP
+      uses: shivammathur/setup-php@v2
+      with:
+        php-version: '8.1'
+        extensions: mbstring, intl
+    
+    - name: Run composer install
+      run: composer update --no-progress
+
+    - name: Run PHP CodeSniffer
+      run: vendor/bin/phpcs --colors -p  src/ tests/
+    
+    - name: Run PHPStan
+      run: vendor/bin/phpstan analyse
+
+    - name: Setup MySQL
+      run: docker run --rm --name=mysqld -e MYSQL_ROOT_PASSWORD=password -e MYSQL_DATABASE=gib_potato_test -p 3306:3306 -d mysql:8 --default-authentication-plugin=mysql_native_password --disable-log-bin
+    
+    - name: Wait for MySQL
+      run: while ! `mysqladmin ping -h 127.0.0.1 --silent`; do printf 'Waiting for MySQL...\n'; sleep 2; done;
+
+    - name: Run PHPUnit
+      run: |
+        export CODECOVERAGE=1
+        vendor/bin/phpunit --verbose --colors=always --coverage-clover=coverage.xml
+
+    - name: Upload coverage to Codecov
+      uses: codecov/codecov-action@v3

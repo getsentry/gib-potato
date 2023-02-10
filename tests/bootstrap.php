@@ -33,6 +33,11 @@ if (empty($_SERVER['HTTP_HOST']) && !Configure::read('App.fullBaseUrl')) {
     Configure::write('App.fullBaseUrl', 'http://localhost');
 }
 
+// Set test database connection
+ConnectionManager::setConfig('test', [
+    'url' => env('DATABASE_TEST_URL', null),
+]);
+
 // Fixate sessionid early on, as php7.2+
 // does not allow the sessionid to be set after stdout
 // has been written to.

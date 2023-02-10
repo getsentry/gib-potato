@@ -16,7 +16,7 @@ use Cake\ORM\Locator\LocatorAwareTrait;
  * @property string $slack_user_id
  * @property string $slack_name
  * @property string $slack_picture
- * @property boolean $slack_is_bot
+ * @property bool $slack_is_bot
  * @property array|null $notifications
  * @property \Cake\I18n\FrozenTime|null $created
  * @property \Cake\I18n\FrozenTime|null $modified
@@ -46,7 +46,11 @@ class User extends Entity
     public const ROLE_USER = 'user';
     public const ROLE_SERVICE = 'service';
 
-    protected function _getNotifications($notifications): array
+    /**
+     * @param array<string, bool>|null $notifications The user's notification settings.
+     * @return array<string, bool>
+     */
+    protected function _getNotifications(?array $notifications = []): array
     {
         if (empty($notifications)) {
             return [
@@ -58,6 +62,9 @@ class User extends Entity
         return $notifications;
     }
 
+    /**
+     * @return int
+     */
     public function potatoSent(): int
     {
         $messagesTable = $this->fetchTable('Messages');
@@ -65,7 +72,7 @@ class User extends Entity
         $query = $messagesTable->find();
         $result = $query
             ->select([
-                'sent' => $query->func()->sum('amount')
+                'sent' => $query->func()->sum('amount'),
             ])
             ->where([
                 'sender_user_id' => $this->id,
@@ -73,9 +80,12 @@ class User extends Entity
             ])
             ->first();
 
-        return (int) $result->sent;
+        return (int)$result->sent;
     }
 
+    /**
+     * @return int
+     */
     public function potatoReceived(): int
     {
         $messagesTable = $this->fetchTable('Messages');
@@ -83,7 +93,7 @@ class User extends Entity
         $query = $messagesTable->find();
         $result = $query
             ->select([
-                'received' => $query->func()->sum('amount')
+                'received' => $query->func()->sum('amount'),
             ])
             ->where([
                 'receiver_user_id' => $this->id,
@@ -91,9 +101,12 @@ class User extends Entity
             ])
             ->first();
 
-        return (int) $result->received;
+        return (int)$result->received;
     }
 
+    /**
+     * @return int
+     */
     public function potatoSentToday(): int
     {
         $messagesTable = $this->fetchTable('Messages');
@@ -101,7 +114,7 @@ class User extends Entity
         $query = $messagesTable->find();
         $result = $query
             ->select([
-                'sent' => $query->func()->sum('amount')
+                'sent' => $query->func()->sum('amount'),
             ])
             ->where([
                 'sender_user_id' => $this->id,
@@ -110,9 +123,12 @@ class User extends Entity
             ])
             ->first();
 
-        return (int) $result->sent;
+        return (int)$result->sent;
     }
 
+    /**
+     * @return int
+     */
     public function potatoReceivedToday(): int
     {
         $messagesTable = $this->fetchTable('Messages');
@@ -120,7 +136,7 @@ class User extends Entity
         $query = $messagesTable->find();
         $result = $query
             ->select([
-                'received' => $query->func()->sum('amount')
+                'received' => $query->func()->sum('amount'),
             ])
             ->where([
                 'receiver_user_id' => $this->id,
@@ -129,9 +145,12 @@ class User extends Entity
             ])
             ->first();
 
-        return (int) $result->received;
+        return (int)$result->received;
     }
 
+    /**
+     * @return int
+     */
     public function potatoLeftToday(): int
     {
         $messagesTable = $this->fetchTable('Messages');
@@ -139,7 +158,7 @@ class User extends Entity
         $query = $messagesTable->find();
         $result = $query
             ->select([
-                'sent' => $query->func()->sum('amount')
+                'sent' => $query->func()->sum('amount'),
             ])
             ->where([
                 'sender_user_id' => $this->id,
@@ -148,22 +167,28 @@ class User extends Entity
             ])
             ->first();
 
-        return Message::MAX_AMOUNT - (int) $result->sent;
+        return Message::MAX_AMOUNT - (int)$result->sent;
     }
 
+    /**
+     * @return string
+     */
     public function potatoResetInHours(): string
     {
         $time = new FrozenTime();
-        $hours = 23 - (int) $time->i18nFormat('HH');
+        $hours = 23 - (int)$time->i18nFormat('HH');
 
-        return (string) $hours;
+        return (string)$hours;
     }
 
+    /**
+     * @return string
+     */
     public function potatoResetInMinutes(): string
     {
         $time = new FrozenTime();
-        $minutes = 59 - (int) $time->i18nFormat('mm');
+        $minutes = 59 - (int)$time->i18nFormat('mm');
 
-        return (string) $minutes;
+        return (string)$minutes;
     }
 }

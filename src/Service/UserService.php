@@ -9,13 +9,16 @@ use App\Model\Table\UsersTable;
 use Cake\ORM\Locator\LocatorAwareTrait;
 use Exception;
 
-class UserService {
-
+class UserService
+{
     use LocatorAwareTrait;
 
     protected SlackClient $slackClient;
     protected UsersTable $Users;
 
+    /**
+     * Constructor
+     */
     public function __construct()
     {
         $this->slackClient = new SlackClient();
@@ -23,7 +26,9 @@ class UserService {
     }
 
     /**
-     * @FIXME Fetching the user every time might get us rate limited...
+     * @param string $slackUserId Slack user ID.
+     * @return \App\Model\Entity\User|null
+     * @throws \Exception
      */
     public function getOrCreateUser(string $slackUserId): ?User
     {

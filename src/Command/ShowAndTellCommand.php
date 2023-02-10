@@ -36,8 +36,6 @@ class ShowAndTellCommand extends Command
     }
 
     /**
-     * Implement this method with your command's logic.
-     *
      * @param \Cake\Console\Arguments $args The command arguments.
      * @param \Cake\Console\ConsoleIo $io The console io
      * @return null|void|int The exit code or null for success
@@ -87,9 +85,13 @@ class ShowAndTellCommand extends Command
 
         $users = array_map(fn ($user) => '<@' . $user . '>', $users);
 
-        $channelMessage = '<!channel> 🚨 *Show & Tell* potato awards are happening 🚨' . PHP_EOL . PHP_EOL;
-        $channelMessage .= 'We just gib *10* 🥔 to the following lovely people, saying a lot of thank you for submitting a video' . PHP_EOL . PHP_EOL;
-        $channelMessage .= implode(' ', $users) . PHP_EOL . PHP_EOL;
+        $channelMessage = '<!channel> 🚨 *Show & Tell* potato awards are happening 🚨';
+        $channelMessage .= PHP_EOL . PHP_EOL;
+        $channelMessage .= 'We just gib *10* 🥔 to the following lovely people, ';
+        $channelMessage .= 'saying a lot of thank you for submitting a video';
+        $channelMessage .= PHP_EOL . PHP_EOL;
+        $channelMessage .= implode(' ', $users);
+        $channelMessage .= PHP_EOL . PHP_EOL;
         $channelMessage .= 'Jealous 😏? You know what to do 🎥! Until next time 👋';
 
         $slackClient->postMessage(

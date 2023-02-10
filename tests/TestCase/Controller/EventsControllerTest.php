@@ -60,7 +60,7 @@ class EventsControllerTest extends TestCase
         $messages = $this->fetchTable('Messages')
             ->find()
             ->all();
-        
+
         $this->assertSame(1, $messages->count());
         $this->assertSame('00000000-0000-0000-0000-000000000001', $messages->first()->sender_user_id);
         $this->assertSame('00000000-0000-0000-0000-000000000002', $messages->first()->receiver_user_id);
@@ -109,7 +109,7 @@ class EventsControllerTest extends TestCase
         $messages = $this->fetchTable('Messages')
             ->find()
             ->all();
-        
+
         $this->assertSame(1, $messages->count());
         $this->assertSame('00000000-0000-0000-0000-000000000001', $messages->first()->sender_user_id);
         $this->assertSame('00000000-0000-0000-0000-000000000002', $messages->first()->receiver_user_id);

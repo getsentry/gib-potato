@@ -12,11 +12,17 @@ class AwardService
 {
     use LocatorAwareTrait;
 
+    /**
+     * @param \App\Model\Entity\User $fromUser User who did gib the potato.
+     * @param \App\Model\Entity\User[] $toUsers Users who will receive the potato.
+     * @param \App\Event\MessageEvent|\App\Event\ReactionAddedEvent $event The event.
+     * @return void
+     */
     public function gib(
         User $fromUser,
         array $toUsers,
         MessageEvent|ReactionAddedEvent $event,
-    ) {
+    ): void {
         foreach ($toUsers as $toUser) {
             $this->gibToUser(
                 fromUser: $fromUser,
@@ -26,11 +32,17 @@ class AwardService
         }
     }
 
+    /**
+     * @param \App\Model\Entity\User $fromUser User who did gib the potato.
+     * @param \App\Model\Entity\User $toUser User who will receive the potato.
+     * @param \App\Event\MessageEvent|\App\Event\ReactionAddedEvent $event The event.
+     * @return void
+     */
     private function gibToUser(
         User $fromUser,
         User $toUser,
         MessageEvent|ReactionAddedEvent $event,
-    ) {
+    ): void {
         $messagesTable = $this->fetchTable('Messages');
 
         $message = $messagesTable->newEntity([

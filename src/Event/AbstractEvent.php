@@ -7,7 +7,6 @@ use App\Http\SlackClient;
 
 abstract class AbstractEvent
 {
-
     public const TYPE_MESSAGE = 'message';
     public const TYPE_DIRECT_MESSAGE = 'direct_message';
     public const TYPE_REACTION_ADDED = 'reaction_added';
@@ -19,10 +18,16 @@ abstract class AbstractEvent
     public string $type;
     public string $eventTimestamp;
 
+    /**
+     * @return void
+     */
     public function __construct()
     {
         $this->slackClient = new SlackClient();
     }
 
-    abstract public function process();
+    /**
+     * @return void
+     */
+    abstract public function process(): void;
 }

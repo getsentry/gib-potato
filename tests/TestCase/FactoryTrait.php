@@ -48,7 +48,7 @@ trait FactoryTrait
                     'deleted' => false,
                     'real_name' => 'User ' . $userId,
                     'profile' => [
-                        'image_72' => 'https://example.com/' . $userId . '.jpg'
+                        'image_72' => 'https://example.com/' . $userId . '.jpg',
                     ],
                     'is_bot' => false,
                 ],

@@ -8,12 +8,17 @@ use Sentry\SentrySdk;
 
 class EventFactory
 {
+    /**
+     * @param array $data Event data.
+     * @return \App\Event\AbstractEvent
+     * @throws \Exception
+     */
     public static function createEvent(array $data): AbstractEvent
     {
         $eventType = $data['type'] ?? null;
 
-        if (null === $eventType) {
-            throw new Exception('Unknown event type');
+        if ($eventType === null) {
+            throw new Exception('Empty event type');
         }
 
         SentrySdk::getCurrentHub()->configureScope(function ($scope) use ($eventType) {
@@ -34,6 +39,8 @@ class EventFactory
                 return new AppMentionEvent($data);
             case AbstractEvent::TYPE_APP_HOME_OPENED:
                 return new AppHomeOpenedEvent($data);
+            default:
+                throw new Exception('Unknown event type');
         }
     }
 }
