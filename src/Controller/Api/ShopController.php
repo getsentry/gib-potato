@@ -1,12 +1,18 @@
 <?php
-
 declare(strict_types=1);
 
 namespace App\Controller\Api;
 
+/**
+ * @property \Authentication\Controller\Component\AuthenticationComponent $Authentication
+ */
 class ShopController extends ApiController
 {
-    public function products() {
+    /**
+     * @return \Cake\Http\Response
+     */
+    public function products()
+    {
         $productsTable = $this->fetchTable('Products');
         $products = $productsTable->find()
             ->all();
@@ -17,7 +23,11 @@ class ShopController extends ApiController
             ->withStringBody(json_encode($products));
     }
 
-    public function purchase() {
+    /**
+     * @return \Cake\Http\Response
+     */
+    public function purchase()
+    {
         $productsTable = $this->fetchTable('Products');
         $product = $productsTable->find()
             ->where(['Products.id' => $this->request->getData('product_id')])

@@ -1,5 +1,4 @@
 <?php
-
 declare(strict_types=1);
 
 namespace App\Controller\Api;
@@ -8,8 +7,14 @@ use App\Model\Entity\User;
 use Cake\Http\Response;
 use Cake\I18n\FrozenTime;
 
+/**
+ * @property \Authentication\Controller\Component\AuthenticationComponent $Authentication
+ */
 class UsersController extends ApiController
 {
+    /**
+     * @return \Cake\Http\Response
+     */
     public function list(): Response
     {
         $messagesTable = $this->fetchTable('Messages');
@@ -20,7 +25,7 @@ class UsersController extends ApiController
             ->where([
                 'sender_user_id = Users.id',
             ]);
-        
+
         $reivedCountQuery = $messagesTable->find()
             ->select([
                 'amount' => $messagesTable->find()->func()->sum('amount'),
@@ -64,8 +69,8 @@ class UsersController extends ApiController
         $query = $usersTable->find();
         $query
             ->select([
-                'sent_count' =>  $sentCountQuery,
-                'received_count' =>  $reivedCountQuery,
+                'sent_count' => $sentCountQuery,
+                'received_count' => $reivedCountQuery,
             ])
             ->leftJoinWith('MessagesSent')
             ->leftJoinWith('MessagesReceived')
@@ -98,6 +103,9 @@ class UsersController extends ApiController
             ->withStringBody(json_encode($users));
     }
 
+    /**
+     * @return \Cake\Http\Response
+     */
     public function get(): Response
     {
         $messagesTable = $this->fetchTable('Messages');
@@ -108,7 +116,7 @@ class UsersController extends ApiController
             ->where([
                 'sender_user_id = Users.id',
             ]);
-        
+
         $reivedCountQuery = $messagesTable->find()
             ->select([
                 'amount' => $messagesTable->find()->func()->sum('amount'),
@@ -121,8 +129,8 @@ class UsersController extends ApiController
 
         $user = $usersTable->find()
             ->select([
-                'sent_count' =>  $sentCountQuery,
-                'received_count' =>  $reivedCountQuery,
+                'sent_count' => $sentCountQuery,
+                'received_count' => $reivedCountQuery,
             ])
             ->where(['Users.id' => $this->Authentication->getIdentityData('id')])
             ->enableAutoFields(true)
@@ -134,6 +142,9 @@ class UsersController extends ApiController
             ->withStringBody(json_encode($user));
     }
 
+    /**
+     * @return \Cake\Http\Response
+     */
     public function edit(): Response
     {
         $usersTable = $this->fetchTable('Users');
@@ -145,9 +156,9 @@ class UsersController extends ApiController
         // Being super explicit here on purpose
         $user = $usersTable->patchEntity($user, [
             'notifications' => [
-                'sent' => (bool) $this->request->getData('notifications.sent'),
-                'received' => (bool) $this->request->getData('notifications.received'),
-            ]
+                'sent' => (bool)$this->request->getData('notifications.sent'),
+                'received' => (bool)$this->request->getData('notifications.received'),
+            ],
         ], [
             'accessibleFields' => [
                 'notifications' => true,
@@ -159,6 +170,9 @@ class UsersController extends ApiController
             ->withStatus(204);
     }
 
+    /**
+     * @return \Cake\Http\Response
+     */
     public function profile(): Response
     {
         $messagesTable = $this->fetchTable('Messages');
@@ -174,7 +188,7 @@ class UsersController extends ApiController
             ->contain('ReceivedUsers')
             ->order(['Messages.created' => 'DESC'])
             ->all();
-        
+
         return $this->response
             ->withStatus(200)
             ->withType('json')
