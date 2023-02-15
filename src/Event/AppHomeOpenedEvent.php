@@ -83,6 +83,14 @@ class AppHomeOpenedEvent extends AbstractEvent
                         ],
                     ],
                     [
+                        'type' => 'section',
+                        'text' => [
+                            'type' => 'mrkdwn',
+                            'text' => 'Your current potato level is `Level ' . $user->progression->id . ' (' .
+                                $user->progression->name . ')`',
+                        ],
+                    ],
+                    [
                         'type' => 'divider',
                     ],
                     [
