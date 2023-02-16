@@ -93,7 +93,7 @@ class PollService
                 foreach ($option->poll_responses as $response) {
                     $users[] = "<@{$response->user->slack_user_id}>";
                 }
-                $users = implode('', $users);
+                $users = implode(' ', $users);
 
                 $title = "{$option->title} `{$responseCount}`\n{$users}";
             } else {
