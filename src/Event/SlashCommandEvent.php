@@ -40,12 +40,12 @@ class SlashCommandEvent extends AbstractEvent
         $pollsTable = $this->fetchTable('Polls');
         $pollOptionsTable = $this->fetchTable('PollOptions');
 
-        preg_match_all('/“(.*?)”/', $this->text, $matches);
+        preg_match_all('/(\“|\")(.*?)(\”|\")/', $this->text, $matches);
 
         $title = '';
         $options = [];
 
-        foreach ($matches[1] as $key => $match) {
+        foreach ($matches[2] as $key => $match) {
             if ($key === 0) {
                 $title = $match;
                 continue;
