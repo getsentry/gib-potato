@@ -47,11 +47,12 @@ func main() {
 	router := httprouter.New()
 	router.GET("/", DefaultHandler)
 	router.POST("/events", EventsHandler)
+	router.POST("/slash", SlashHandler)
+	router.POST("/interactions", InteractionsHandler)
 
 	httpErr := http.ListenAndServe(":3000", sentryHandler.Handle(router))
 	if httpErr != nil {
 		sentry.CaptureException(httpErr)
 		log.Fatalf("An Error Occured: %v", httpErr)
 	}
-
 }

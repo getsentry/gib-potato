@@ -18,11 +18,13 @@ type Event interface {
 type EventType string
 
 const (
-	message       EventType = "message"
-	directMessage EventType = "direct_message"
-	reactionAdded EventType = "reaction_added"
-	appMention    EventType = "app_mention"
-	appHomeOpened EventType = "app_home_opened"
+	message             EventType = "message"
+	directMessage       EventType = "direct_message"
+	reactionAdded       EventType = "reaction_added"
+	appMention          EventType = "app_mention"
+	appHomeOpened       EventType = "app_home_opened"
+	slashCommand        EventType = "slash_command"
+	interactionCallback EventType = "interaction_callback"
 )
 
 func (e EventType) String() string {
@@ -89,6 +91,21 @@ type AppHomeOpenedEvent struct {
 	EventTimestamp string    `json:"event_timestamp"`
 }
 
+type SlashCommandEvent struct {
+	Type    EventType `json:"type"`
+	Command string    `json:"command"`
+	User    string    `json:"user"`
+	Channel string    `json:"channel"`
+	Text    string    `json:"text"`
+}
+
+type InteractionCallbackEvent struct {
+	Type        EventType `json:"type"`
+	User        string    `json:"user"`
+	ActionID    string    `json:"action_id"`
+	ResponseURL string    `json:"response_url"`
+}
+
 func (e MessageEvent) isValid() bool {
 	// Only process messages with potato and not from a bot
 	return e.Amount > 0 && e.BotID == ""
@@ -112,6 +129,14 @@ func (e AppMentionEvent) isValid() bool {
 func (e AppHomeOpenedEvent) isValid() bool {
 	// Only process home tab
 	return e.Tab == "home"
+}
+
+func (e SlashCommandEvent) isValid() bool {
+	return true
+}
+
+func (e InteractionCallbackEvent) isValid() bool {
+	return true
 }
 
 func processMessageEvent(ctx context.Context, event *slackevents.MessageEvent) {
@@ -357,4 +382,73 @@ func processAppHomeOpenedEvent(ctx context.Context, event *slackevents.AppHomeOp
 	hub.Scope().SetTag("event_type", appHomeOpened.String())
 
 	sendRequest(appHomeOpenedEvent, hub, transaction)
+}
+
+func processSlashCommand(ctx context.Context, event slack.SlashCommand) {
+	// Recive the transaction attached to the context
+	httpTxn := sentry.TransactionFromContext(ctx)
+
+	// Clone the current hub
+	hub := sentry.CurrentHub().Clone()
+	options := []sentry.SpanOption{
+		sentry.OpName("event.process"),
+		sentry.TransctionSource(sentry.SourceTask),
+		// Continue the trace
+		sentry.ContinueFromHeaders(httpTxn.ToSentryTrace(), httpTxn.ToBaggage()),
+	}
+	transaction := sentry.StartTransaction(context.Background(), "EVENT slash_command", options...)
+	defer transaction.Finish()
+
+	slashCommandEvent := SlashCommandEvent{
+		Type:    slashCommand,
+		Command: event.Command,
+		User:    event.UserID,
+		Channel: event.ChannelID,
+		Text:    event.Text,
+	}
+
+	if !slashCommandEvent.isValid() {
+		return
+	}
+
+	hub.Scope().SetExtra("event", slashCommandEvent)
+	hub.Scope().SetTag("event_type", slashCommand.String())
+
+	sendRequest(slashCommandEvent, hub, transaction)
+}
+
+func processInteractionCallbackEvent(ctx context.Context, event slack.InteractionCallback) {
+	// Recive the transaction attached to the context
+	httpTxn := sentry.TransactionFromContext(ctx)
+
+	// Clone the current hub
+	hub := sentry.CurrentHub().Clone()
+	options := []sentry.SpanOption{
+		sentry.OpName("event.process"),
+		sentry.TransctionSource(sentry.SourceTask),
+		// Continue the trace
+		sentry.ContinueFromHeaders(httpTxn.ToSentryTrace(), httpTxn.ToBaggage()),
+	}
+	transaction := sentry.StartTransaction(context.Background(), "EVENT interaction_callback", options...)
+	defer transaction.Finish()
+
+	if ok := event.ActionCallback.BlockActions[0].ActionID; ok == "" {
+		return
+	}
+
+	interactionEvent := InteractionCallbackEvent{
+		Type:        interactionCallback,
+		User:        event.User.ID,
+		ActionID:    event.ActionCallback.BlockActions[0].ActionID,
+		ResponseURL: event.ResponseURL,
+	}
+
+	if !interactionEvent.isValid() {
+		return
+	}
+
+	hub.Scope().SetExtra("event", interactionEvent)
+	hub.Scope().SetTag("event_type", interactionCallback.String())
+
+	sendRequest(interactionEvent, hub, transaction)
 }
