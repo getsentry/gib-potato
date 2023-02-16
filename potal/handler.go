@@ -1,8 +1,10 @@
 package main
 
 import (
+	"bytes"
 	"encoding/json"
 	"io"
+	"io/ioutil"
 	"net/http"
 	"os"
 
@@ -98,4 +100,73 @@ func EventsHandler(w http.ResponseWriter, r *http.Request, _ httprouter.Params) 
 	}
 
 	w.WriteHeader(http.StatusOK)
+}
+
+func SlashHandler(w http.ResponseWriter, r *http.Request, _ httprouter.Params) {
+	// Verify the Slack request
+	// see https://github.com/slack-go/slack/blob/master/examples/slash/slash.go
+	signingSecret := os.Getenv("SLACK_SIGNING_SECRET")
+	sv, err := slack.NewSecretsVerifier(r.Header, signingSecret)
+	if err != nil {
+		w.WriteHeader(http.StatusBadRequest)
+		return
+	}
+	r.Body = ioutil.NopCloser(io.TeeReader(r.Body, &sv))
+	s, err := slack.SlashCommandParse(r)
+	if err != nil {
+		w.WriteHeader(http.StatusInternalServerError)
+		return
+	}
+	if err := sv.Ensure(); err != nil {
+		w.WriteHeader(http.StatusUnauthorized)
+		return
+	}
+
+	switch s.Command {
+	case "/gibopinion":
+		go processSlashCommand(r.Context(), s)
+	default:
+		w.WriteHeader(http.StatusInternalServerError)
+		return
+	}
+}
+
+func InteractionsHandler(w http.ResponseWriter, r *http.Request, _ httprouter.Params) {
+	body, err := ioutil.ReadAll(r.Body)
+	if err != nil {
+		w.WriteHeader(http.StatusBadRequest)
+		return
+	}
+	r.Body.Close()
+	r.Body = ioutil.NopCloser(bytes.NewBuffer(body))
+
+	signingSecret := os.Getenv("SLACK_SIGNING_SECRET")
+	sv, err := slack.NewSecretsVerifier(r.Header, signingSecret)
+	if err != nil {
+		w.WriteHeader(http.StatusBadRequest)
+		return
+	}
+	if _, err := sv.Write(body); err != nil {
+		w.WriteHeader(http.StatusInternalServerError)
+		return
+	}
+	if err := sv.Ensure(); err != nil {
+		w.WriteHeader(http.StatusUnauthorized)
+		return
+	}
+
+	var payload slack.InteractionCallback
+	jsonErr := json.Unmarshal([]byte(r.FormValue("payload")), &payload)
+	if jsonErr != nil {
+		w.WriteHeader(http.StatusInternalServerError)
+		return
+	}
+
+	switch payload.Type {
+	case slack.InteractionTypeBlockActions:
+		go processInteractionCallbackEvent(r.Context(), payload)
+	default:
+		w.WriteHeader(http.StatusInternalServerError)
+		return
+	}
 }

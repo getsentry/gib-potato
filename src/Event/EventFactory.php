@@ -39,6 +39,10 @@ class EventFactory
                 return new AppMentionEvent($data);
             case AbstractEvent::TYPE_APP_HOME_OPENED:
                 return new AppHomeOpenedEvent($data);
+            case AbstractEvent::TYPE_SLASH_COMMAND:
+                return new SlashCommandEvent($data);
+            case AbstractEvent::TYPE_INTERACTIONS_CALLBACK:
+                return new InteractionsCallbackEvent($data);
             default:
                 throw new Exception('Unknown event type');
         }
