@@ -24,7 +24,7 @@
     "require-dev": {
         "cakephp/bake": "^2.8.2",
         "cakephp/cakephp-codesniffer": "^4.6",
-        "phpstan/phpstan": "^1.9.17",
+        "phpstan/phpstan": "^1.9.18",
         "phpunit/phpunit": "^9.6.3"
     },
     "autoload": {
