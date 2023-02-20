@@ -60,10 +60,8 @@ class ProgressionService
 
         $progression = $progressionTable->find()
             ->where([
-                'OR' => [
-                    'sent_threshold <=' => $sentCount,
-                    'received_threshold <=' => $receivedCount,
-                ],
+                'sent_threshold <=' => $sentCount,
+                'received_threshold <=' => $receivedCount,
             ])
             ->order(['id' => 'DESC'])
             ->first();
