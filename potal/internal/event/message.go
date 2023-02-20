@@ -82,6 +82,5 @@ func ProcessMessageEvent(ctx context.Context, e *slackevents.MessageEvent, sc *s
 	hub.Scope().SetExtra("event", messageEvent)
 	hub.Scope().SetTag("event_type", message.String())
 
-	// Return the txn context, as only this context will have the transaction attached to it
 	return &messageEvent
 }
