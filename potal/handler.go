@@ -1,11 +1,13 @@
 package main
 
 import (
+	"context"
 	"encoding/json"
 	"io"
 	"net/http"
-	"os"
 
+	"github.com/getsentry/gib-potato/internal/event"
+	"github.com/getsentry/gib-potato/internal/potalhttp"
 	"github.com/getsentry/sentry-go"
 	"github.com/julienschmidt/httprouter"
 	"github.com/slack-go/slack"
@@ -15,17 +17,20 @@ import (
 func DefaultHandler(w http.ResponseWriter, r *http.Request, _ httprouter.Params) {
 	// Overwrite transaction source with something usefull
 	ctx := r.Context()
-	txn := sentry.TransactionFromContext(ctx)
-	txn.Source = sentry.SourceRoute
+	transaction := sentry.TransactionFromContext(ctx)
+	transaction.Source = sentry.SourceRoute
 
 	data := map[string]string{
 		"message": "The potato is a lie!",
 	}
 	w.Header().Set("Content-Type", "application/json")
 	if err := json.NewEncoder(w).Encode(data); err != nil {
+		transaction.Status = sentry.SpanStatusInternalError
 		w.WriteHeader(http.StatusInternalServerError)
 		return
 	}
+
+	transaction.Status = sentry.SpanStatusOK
 }
 
 func EventsHandler(w http.ResponseWriter, r *http.Request, _ httprouter.Params) {
@@ -34,29 +39,16 @@ func EventsHandler(w http.ResponseWriter, r *http.Request, _ httprouter.Params) 
 	transaction := sentry.TransactionFromContext(ctx)
 	transaction.Source = sentry.SourceRoute
 
-	// Verify the Slack request
-	// see https://github.com/slack-go/slack/blob/master/examples/eventsapi/events.go
 	body, err := io.ReadAll(r.Body)
 	if err != nil {
+		transaction.Status = sentry.SpanStatusInvalidArgument
 		w.WriteHeader(http.StatusBadRequest)
 		return
 	}
-	signingSecret := os.Getenv("SLACK_SIGNING_SECRET")
-	sv, err := slack.NewSecretsVerifier(r.Header, signingSecret)
-	if err != nil {
-		w.WriteHeader(http.StatusBadRequest)
-		return
-	}
-	if _, err := sv.Write(body); err != nil {
-		w.WriteHeader(http.StatusInternalServerError)
-		return
-	}
-	if err := sv.Ensure(); err != nil {
-		w.WriteHeader(http.StatusUnauthorized)
-		return
-	}
+
 	eventsAPIEvent, err := slackevents.ParseEvent(json.RawMessage(body), slackevents.OptionNoVerifyToken())
 	if err != nil {
+		transaction.Status = sentry.SpanStatusInternalError
 		w.WriteHeader(http.StatusInternalServerError)
 		return
 	}
@@ -65,14 +57,20 @@ func EventsHandler(w http.ResponseWriter, r *http.Request, _ httprouter.Params) 
 		var r *slackevents.ChallengeResponse
 		err := json.Unmarshal([]byte(body), &r)
 		if err != nil {
+			transaction.Status = sentry.SpanStatusInternalError
 			w.WriteHeader(http.StatusInternalServerError)
 			return
 		}
 		w.Header().Set("Content-Type", "text")
 		if _, err := w.Write([]byte(r.Challenge)); err != nil {
+			transaction.Status = sentry.SpanStatusInternalError
 			w.WriteHeader(http.StatusInternalServerError)
 			return
 		}
+
+		transaction.Status = sentry.SpanStatusOK
+		w.WriteHeader(http.StatusOK)
+		return
 	}
 
 	if eventsAPIEvent.Type == slackevents.CallbackEvent {
@@ -84,18 +82,241 @@ func EventsHandler(w http.ResponseWriter, r *http.Request, _ httprouter.Params) 
 			switch ev.ChannelType {
 			case "im":
 				// Handle direct messages to the bot separately
-				go processDirectMessageEvent(r.Context(), ev)
+				go func() {
+					hub := sentry.CurrentHub().Clone()
+					ctx := sentry.SetHubOnContext(context.Background(), hub)
+
+					options := []sentry.SpanOption{
+						sentry.OpName("event.handler"),
+						sentry.TransctionSource(sentry.SourceTask),
+						sentry.ContinueFromHeaders(transaction.ToSentryTrace(), transaction.ToBaggage()),
+					}
+					txn := sentry.StartTransaction(ctx, "EVENT direct_message", options...)
+					defer txn.Finish()
+
+					processedEvent := event.ProcessDirectMessageEvent(txn.Context(), ev)
+					if processedEvent == nil {
+						return
+					}
+					err := potalhttp.SendRequest(txn.Context(), processedEvent)
+					if err != nil {
+						txn.Status = sentry.SpanStatusInternalError
+						return
+					}
+
+					txn.Status = sentry.SpanStatusOK
+				}()
 			default:
-				go processMessageEvent(r.Context(), ev)
+				go func() {
+					hub := sentry.CurrentHub().Clone()
+					ctx := sentry.SetHubOnContext(context.Background(), hub)
+
+					options := []sentry.SpanOption{
+						sentry.OpName("event.handler"),
+						sentry.TransctionSource(sentry.SourceTask),
+						sentry.ContinueFromHeaders(transaction.ToSentryTrace(), transaction.ToBaggage()),
+					}
+					txn := sentry.StartTransaction(ctx, "EVENT message", options...)
+					defer txn.Finish()
+
+					processedEvent := event.ProcessMessageEvent(txn.Context(), ev, slackClient)
+					if processedEvent == nil {
+						return
+					}
+					err := potalhttp.SendRequest(txn.Context(), processedEvent)
+					if err != nil {
+						txn.Status = sentry.SpanStatusInternalError
+						return
+					}
+
+					txn.Status = sentry.SpanStatusOK
+				}()
 			}
 		case *slackevents.ReactionAddedEvent:
-			go processReactionEvent(r.Context(), ev)
+			go event.ProcessReactionEvent(r.Context(), ev, slackClient)
+			go func() {
+				hub := sentry.CurrentHub().Clone()
+				ctx := sentry.SetHubOnContext(context.Background(), hub)
+
+				options := []sentry.SpanOption{
+					sentry.OpName("event.handler"),
+					sentry.TransctionSource(sentry.SourceTask),
+					sentry.ContinueFromHeaders(transaction.ToSentryTrace(), transaction.ToBaggage()),
+				}
+				txn := sentry.StartTransaction(ctx, "EVENT reaction_added", options...)
+				defer txn.Finish()
+
+				processedEvent := event.ProcessReactionEvent(txn.Context(), ev, slackClient)
+				if processedEvent == nil {
+					txn.Status = sentry.SpanStatusInternalError
+					return
+				}
+				err := potalhttp.SendRequest(txn.Context(), processedEvent)
+				if err != nil {
+					txn.Status = sentry.SpanStatusInternalError
+					return
+				}
+
+				txn.Status = sentry.SpanStatusOK
+			}()
 		case *slackevents.AppMentionEvent:
-			go processAppMentionEvent(r.Context(), ev)
+			go event.ProcessAppMentionEvent(r.Context(), ev)
+			go func() {
+				hub := sentry.CurrentHub().Clone()
+				ctx := sentry.SetHubOnContext(context.Background(), hub)
+
+				options := []sentry.SpanOption{
+					sentry.OpName("event.handler"),
+					sentry.TransctionSource(sentry.SourceTask),
+					sentry.ContinueFromHeaders(transaction.ToSentryTrace(), transaction.ToBaggage()),
+				}
+				txn := sentry.StartTransaction(ctx, "EVENT app_mention", options...)
+				defer txn.Finish()
+
+				processedEvent := event.ProcessAppMentionEvent(txn.Context(), ev)
+				if processedEvent == nil {
+					txn.Status = sentry.SpanStatusInternalError
+					return
+				}
+				err := potalhttp.SendRequest(txn.Context(), processedEvent)
+				if err != nil {
+					txn.Status = sentry.SpanStatusInternalError
+					return
+				}
+
+				txn.Status = sentry.SpanStatusOK
+			}()
 		case *slackevents.AppHomeOpenedEvent:
-			go processAppHomeOpenedEvent(r.Context(), ev)
+			go event.ProcessAppHomeOpenedEvent(r.Context(), ev)
+			go func() {
+				hub := sentry.CurrentHub().Clone()
+				ctx := sentry.SetHubOnContext(context.Background(), hub)
+
+				options := []sentry.SpanOption{
+					sentry.OpName("event.handler"),
+					sentry.TransctionSource(sentry.SourceTask),
+					sentry.ContinueFromHeaders(transaction.ToSentryTrace(), transaction.ToBaggage()),
+				}
+				txn := sentry.StartTransaction(ctx, "EVENT app_home_opened", options...)
+				defer txn.Finish()
+
+				processedEvent := event.ProcessAppHomeOpenedEvent(txn.Context(), ev)
+				if processedEvent == nil {
+					txn.Status = sentry.SpanStatusInternalError
+					return
+				}
+				err := potalhttp.SendRequest(txn.Context(), processedEvent)
+				if err != nil {
+					txn.Status = sentry.SpanStatusInternalError
+					return
+				}
+
+				txn.Status = sentry.SpanStatusOK
+			}()
 		}
 	}
 
+	transaction.Status = sentry.SpanStatusOK
+	w.WriteHeader(http.StatusOK)
+}
+
+func SlashHandler(w http.ResponseWriter, r *http.Request, _ httprouter.Params) {
+	// Overwrite transaction source with something usefull
+	ctx := r.Context()
+	transaction := sentry.TransactionFromContext(ctx)
+	transaction.Source = sentry.SourceRoute
+
+	s, err := slack.SlashCommandParse(r)
+	if err != nil {
+		transaction.Status = sentry.SpanStatusInternalError
+		w.WriteHeader(http.StatusInternalServerError)
+		return
+	}
+
+	switch s.Command {
+	case "/gibopinion":
+		go func() {
+			hub := sentry.CurrentHub().Clone()
+			ctx := sentry.SetHubOnContext(context.Background(), hub)
+
+			options := []sentry.SpanOption{
+				sentry.OpName("command.handler"),
+				sentry.TransctionSource(sentry.SourceTask),
+				sentry.ContinueFromHeaders(transaction.ToSentryTrace(), transaction.ToBaggage()),
+			}
+			txn := sentry.StartTransaction(ctx, "COMMAND /gibopinion", options...)
+			defer txn.Finish()
+
+			processedEvent := event.ProcessSlashCommand(txn.Context(), s)
+			if processedEvent == nil {
+				txn.Status = sentry.SpanStatusInternalError
+				return
+			}
+			err := potalhttp.SendRequest(txn.Context(), processedEvent)
+			if err != nil {
+				txn.Status = sentry.SpanStatusInternalError
+				return
+			}
+
+			txn.Status = sentry.SpanStatusOK
+		}()
+	default:
+		transaction.Status = sentry.SpanStatusInvalidArgument
+		w.WriteHeader(http.StatusBadRequest)
+		return
+	}
+
+	transaction.Status = sentry.SpanStatusOK
+	w.WriteHeader(http.StatusOK)
+}
+
+func InteractionsHandler(w http.ResponseWriter, r *http.Request, _ httprouter.Params) {
+	// Overwrite transaction source with something usefull
+	ctx := r.Context()
+	transaction := sentry.TransactionFromContext(ctx)
+	transaction.Source = sentry.SourceRoute
+
+	var payload slack.InteractionCallback
+	jsonErr := json.Unmarshal([]byte(r.FormValue("payload")), &payload)
+	if jsonErr != nil {
+		transaction.Status = sentry.SpanStatusInternalError
+		w.WriteHeader(http.StatusInternalServerError)
+		return
+	}
+
+	switch payload.Type {
+	case slack.InteractionTypeBlockActions:
+		go func() {
+			hub := sentry.CurrentHub().Clone()
+			ctx := sentry.SetHubOnContext(context.Background(), hub)
+
+			options := []sentry.SpanOption{
+				sentry.OpName("interaction.handler"),
+				sentry.TransctionSource(sentry.SourceTask),
+				sentry.ContinueFromHeaders(transaction.ToSentryTrace(), transaction.ToBaggage()),
+			}
+			txn := sentry.StartTransaction(ctx, "INTERACTION block", options...)
+			defer txn.Finish()
+
+			processedEvent := event.ProcessInteractionCallbackEvent(txn.Context(), payload)
+			if processedEvent == nil {
+				txn.Status = sentry.SpanStatusInternalError
+				return
+			}
+			err := potalhttp.SendRequest(txn.Context(), processedEvent)
+			if err != nil {
+				txn.Status = sentry.SpanStatusInternalError
+				return
+			}
+
+			txn.Status = sentry.SpanStatusOK
+		}()
+	default:
+		transaction.Status = sentry.SpanStatusInvalidArgument
+		w.WriteHeader(http.StatusBadRequest)
+		return
+	}
+
+	transaction.Status = sentry.SpanStatusOK
 	w.WriteHeader(http.StatusOK)
 }

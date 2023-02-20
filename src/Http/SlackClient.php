@@ -57,6 +57,35 @@ class SlackClient
 
     /**
      * @param string $channel The channel to send the message to.
+     * @param string $blocks The blocks of the message to send.
+     * @return void
+     * @see https://api.slack.com/methods/chat.postMessage
+     */
+    public function postBlocks(string $channel, string $blocks): void
+    {
+        $response = $this->client->post('chat.postMessage', [
+            'channel' => $channel,
+            'blocks' => $blocks,
+        ]);
+
+        if ($response->isSuccess()) {
+            $json = $response->getJson();
+
+            if ($json['ok'] === false) {
+                withScope(function ($scope) use ($json, $channel, $blocks) {
+                    $scope->setExtras([
+                        'channel' => $channel,
+                        'blocks' => $blocks,
+                        'slack_response' => $json,
+                    ]);
+                    captureMessage('Slack API error: https://api.slack.com/methods/chat.postMessage');
+                });
+            }
+        }
+    }
+
+    /**
+     * @param string $channel The channel to send the message to.
      * @param string $user The user to send the message to.
      * @param string $text The text of the message to send.
      * @param string|null $threadTimestamp The thread timestamp of the message.

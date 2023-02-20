@@ -54,11 +54,15 @@ class UsersTable extends Table
         ])
             ->setForeignKey('receiver_user_id');
 
+        $this->hasMany('Polls')
+            ->setForeignKey('user_id');
+        $this->hasMany('PollResponses')
+            ->setForeignKey('user_id');
+
         $this->belongsTo('Progression', [
             'className' => 'Progression',
         ])
             ->setForeignKey('progression_id');
-
     }
 
     /**
