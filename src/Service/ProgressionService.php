@@ -58,9 +58,9 @@ class ProgressionService
             return null;
         }
 
-        // if ($progression->id <= $user->progression_id) {
-        //     return null;
-        // }
+        if ($progression->id <= $user->progression_id) {
+            return null;
+        }
 
         if ($progression->operator === Progression::OPERATOR_AND) {
             if (
