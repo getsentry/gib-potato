@@ -152,10 +152,6 @@ class AddPolls extends AbstractMigration
                 ]
             )
             ->update();
-
-        $this->table('products')->drop()->save();
-
-        $this->table('purchases')->drop()->save();
     }
 
     /**
@@ -184,93 +180,6 @@ class AddPolls extends AbstractMigration
             ->dropForeignKey(
                 'user_id'
             )->save();
-        $this->table('products')
-            ->addColumn('name', 'string', [
-                'default' => null,
-                'limit' => 255,
-                'null' => false,
-            ])
-            ->addColumn('description', 'text', [
-                'default' => null,
-                'limit' => null,
-                'null' => false,
-            ])
-            ->addColumn('image_link', 'string', [
-                'default' => null,
-                'limit' => 1024,
-                'null' => true,
-            ])
-            ->addColumn('price', 'integer', [
-                'default' => null,
-                'limit' => null,
-                'null' => false,
-            ])
-            ->addColumn('stock', 'integer', [
-                'default' => '0',
-                'limit' => null,
-                'null' => true,
-            ])
-            ->addColumn('created', 'datetime', [
-                'default' => null,
-                'limit' => null,
-                'null' => true,
-            ])
-            ->addColumn('modified', 'datetime', [
-                'default' => null,
-                'limit' => null,
-                'null' => true,
-            ])
-            ->create();
-
-        $this->table('purchases')
-            ->addColumn('user_id', 'char', [
-                'default' => null,
-                'limit' => 255,
-                'null' => false,
-            ])
-            ->addColumn('name', 'string', [
-                'default' => null,
-                'limit' => 255,
-                'null' => false,
-            ])
-            ->addColumn('description', 'text', [
-                'default' => null,
-                'limit' => null,
-                'null' => false,
-            ])
-            ->addColumn('image_link', 'string', [
-                'default' => null,
-                'limit' => 1024,
-                'null' => false,
-            ])
-            ->addColumn('price', 'integer', [
-                'default' => null,
-                'limit' => null,
-                'null' => false,
-            ])
-            ->addColumn('created', 'datetime', [
-                'default' => null,
-                'limit' => null,
-                'null' => true,
-            ])
-            ->addIndex(
-                [
-                    'user_id',
-                ]
-            )
-            ->create();
-
-        $this->table('purchases')
-            ->addForeignKey(
-                'user_id',
-                'users',
-                'id',
-                [
-                    'update' => 'NO_ACTION',
-                    'delete' => 'NO_ACTION',
-                ]
-            )
-            ->update();
 
         $this->table('poll_options')->drop()->save();
         $this->table('poll_responses')->drop()->save();
