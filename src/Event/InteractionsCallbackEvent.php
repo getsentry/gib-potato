@@ -11,6 +11,9 @@ class InteractionsCallbackEvent extends AbstractEvent
     protected string $user;
     protected string $actionId;
     protected string $responseUrl;
+    protected string $triggerId;
+    protected ?string $value;
+    protected ?string $selectOptionValue;
 
     /**
      * Constructor
@@ -25,6 +28,10 @@ class InteractionsCallbackEvent extends AbstractEvent
         $this->user = $event['user'];
         $this->actionId = $event['action_id'];
         $this->responseUrl = $event['response_url'];
+        $this->triggerId = $event['trigger_id'];
+
+        $this->value = $event['value'] ?? null;
+        $this->selectOptionValue = $event['selected_option']['value'] ?? null;
     }
 
     /**

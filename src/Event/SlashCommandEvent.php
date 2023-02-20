@@ -3,6 +3,7 @@ declare(strict_types=1);
 
 namespace App\Event;
 
+use App\Model\Entity\Poll;
 use App\Service\PollService;
 use App\Service\UserService;
 
@@ -62,11 +63,11 @@ class SlashCommandEvent extends AbstractEvent
 
             return;
         }
-        if (count($options) === 0) {
+        if (count($options) < 2) {
             $this->slackClient->postEphemeral(
                 channel: $this->channel,
                 user: $this->user,
-                text: 'You need to specify at least one option.'
+                text: 'You need to specify at least two options.'
                     . 'For example: `/gibopinion "Title" "Option 1" "Option 2" ...`',
             );
 
@@ -85,8 +86,8 @@ class SlashCommandEvent extends AbstractEvent
         $poll = $pollsTable->newEntity([
             'user_id' => $userService->getOrCreateUser($this->user)->id,
             'title' => $title,
-            'type' => 'multiple',
-            'status' => 'active',
+            'type' => Poll::TYPE_MULTIPLE,
+            'status' => Poll::STATUS_ACTIVE,
         ], [
             'accessibleFields' => [
                 'user_id' => true,
