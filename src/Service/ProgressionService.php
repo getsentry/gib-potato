@@ -12,10 +12,20 @@ class ProgressionService
 {
     use LocatorAwareTrait;
 
+    protected SlackClient $slackClient;
+
+    /**
+     * Constructor
+     */
     public function __construct()
     {
+        $this->slackClient = new SlackClient();
     }
 
+    /**
+     * @param \App\Model\Entity\User $user The user.
+     * @return void
+     */
     public function progress(User $user): void
     {
         $progression = $this->findNextProgression($user);
@@ -37,6 +47,10 @@ class ProgressionService
         $this->sendProgressionNotification($user, $progression);
     }
 
+    /**
+     * @param \App\Model\Entity\User $user The user.
+     * @return \App\Model\Entity\Progression|null
+     */
     protected function findNextProgression(User $user): ?Progression
     {
         $sentCount = $user->potatoSent();
@@ -82,14 +96,20 @@ class ProgressionService
         return null;
     }
 
+    /**
+     * @param \App\Model\Entity\User $user The user.
+     * @param \App\Model\Entity\Progression $progression Progression.
+     * @return void
+     */
     protected function sendProgressionNotification(User $user, Progression $progression): void
     {
-        $progressionMessage = 'Ohh dang, you just reached the next level of potato mastery 🤯' . PHP_EOL;
-        $progressionMessage .= 'By sending *' . $progression->sent_threshold . '* :potato: and receiving *'
-            . $progression->received_threshold . '* :potato:, you can proudly call yourself *' . $progression->name . '* 🥳.' . PHP_EOL;
-
         if ($user->notifications['received'] === true) {
-            (new SlackClient())->postMessage(
+            $progressionMessage = 'Ohh dang, you just reached the next level of potato mastery 🤯' . PHP_EOL;
+            $progressionMessage .= 'By sending *' . $progression->sent_threshold . '* :potato: and receiving *'
+                . $progression->received_threshold . '* :potato:, you can proudly call yourself *'
+                . $progression->name . '* 🥳.' . PHP_EOL;
+
+            $this->slackClient->postMessage(
                 channel: $user->slack_user_id,
                 text: $progressionMessage,
             );

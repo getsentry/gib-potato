@@ -86,8 +86,14 @@ class AppHomeOpenedEvent extends AbstractEvent
                         'type' => 'section',
                         'text' => [
                             'type' => 'mrkdwn',
-                            'text' => 'Your current potato level is `Level ' . $user->progression->id . ' (' .
-                                $user->progression->name . ')`',
+                            'text' => (function () use ($user): string {
+                                if ($user->progression === null) {
+                                    return 'Your current potato level is `Potato Novice`';
+                                }
+
+                                return 'Your current potato level is `Level ' . $user->progression->id . ' (' .
+                                    $user->progression->name . ')`';
+                            })(),
                         ],
                     ],
                     [
