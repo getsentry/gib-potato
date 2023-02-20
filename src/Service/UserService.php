@@ -34,6 +34,7 @@ class UserService
     {
         $user = $this->Users
             ->findBySlackUserId($slackUserId)
+            ->contain('Progression')
             ->first();
 
         if ($user instanceof User) {

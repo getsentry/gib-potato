@@ -9,8 +9,17 @@
         <div class="py-4">
             <h2 class="text-lg font-medium leading-6">Your Potato Stats</h2>
             <p class="mt-1 text-sm text-zinc-500">
-                You did gib <strong>{{ user.sent_count }}</strong> 🥔 and did receive <strong>{{ user.received_count }}</strong> 🥔 since you started potatoing
+                You did gib <strong>{{ user.sent_count ?? 0 }}</strong> 🥔 and did receive <strong>{{ user.received_count ?? 0 }}</strong> 🥔 since you started potatoing
                 <strong>{{ new Date(user.created).toLocaleDateString('en-us', { year:"numeric", month:"short", day:"numeric"}) }}.</strong>
+            </p>
+            <p
+                v-if="user.progression"
+                class="mt-1 text-sm text-zinc-500"
+            >
+                Your current potato level is
+                <span class="bg-purple-100 text-purple-800 text-sm font-medium ml-auto px-2.5 py-0.5 rounded dark:bg-purple-900 dark:text-purple-300">
+                    Level {{ user.progression.id }} ({{ user.progression.name }})
+                </span>
             </p>
         </div>
         <div class="py-4">
