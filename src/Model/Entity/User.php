@@ -11,6 +11,7 @@ use Cake\ORM\Locator\LocatorAwareTrait;
  * User Entity
  *
  * @property string $id
+ * @property int $progression_id
  * @property string $status
  * @property string $role
  * @property string $slack_user_id

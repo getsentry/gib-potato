@@ -29,7 +29,6 @@ func main() {
 		SendDefaultPII:   true,
 		EnableTracing:    true,
 		TracesSampleRate: 1.0,
-		// Debug:            true,
 	})
 	if sentryErr != nil {
 		log.Fatalf("An Error Occured: %v", sentryErr)
@@ -46,12 +45,13 @@ func main() {
 
 	router := httprouter.New()
 	router.GET("/", DefaultHandler)
-	router.POST("/events", EventsHandler)
+	router.POST("/events", slackVerification(EventsHandler))
+	router.POST("/slash", slackVerification(SlashHandler))
+	router.POST("/interactions", slackVerification(InteractionsHandler))
 
 	httpErr := http.ListenAndServe(":3000", sentryHandler.Handle(router))
 	if httpErr != nil {
 		sentry.CaptureException(httpErr)
 		log.Fatalf("An Error Occured: %v", httpErr)
 	}
-
 }

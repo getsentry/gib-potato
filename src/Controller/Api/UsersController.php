@@ -133,6 +133,7 @@ class UsersController extends ApiController
                 'received_count' => $reivedCountQuery,
             ])
             ->where(['Users.id' => $this->Authentication->getIdentityData('id')])
+            ->contain('Progression')
             ->enableAutoFields(true)
             ->first();
 

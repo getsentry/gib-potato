@@ -46,14 +46,24 @@ class UsersTable extends Table
         $this->getSchema()->setColumnType('notifications', 'json');
 
         $this->hasMany('MessagesSent', [
-                'className' => 'Messages',
-            ])
+            'className' => 'Messages',
+        ])
             ->setForeignKey('sender_user_id');
-
         $this->hasMany('MessagesReceived', [
-                'className' => 'Messages',
-            ])
+            'className' => 'Messages',
+        ])
             ->setForeignKey('receiver_user_id');
+
+
+        $this->hasMany('Polls')
+            ->setForeignKey('user_id');
+        $this->hasMany('PollResponses')
+            ->setForeignKey('user_id');
+
+        $this->belongsTo('Progression', [
+            'className' => 'Progression',
+        ])
+            ->setForeignKey('progression_id');
 
         $this->hasMany('Purchases')
             ->setForeignKey('user_id');
@@ -67,6 +77,10 @@ class UsersTable extends Table
      */
     public function validationDefault(Validator $validator): Validator
     {
+        $validator
+            ->integer('progression_id')
+            ->allowEmptyString('progression_id');
+
         $validator
             ->scalar('status')
             ->maxLength('status', 255)
@@ -118,6 +132,8 @@ class UsersTable extends Table
     public function buildRules(RulesChecker $rules): RulesChecker
     {
         $rules->add($rules->isUnique(['slack_user_id']), ['errorField' => 'slack_user_id']);
+
+        $rules->add($rules->existsIn('progression_id', 'Progression'), ['errorField' => 'progression_id']);
 
         return $rules;
     }

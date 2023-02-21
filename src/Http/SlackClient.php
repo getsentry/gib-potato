@@ -57,6 +57,35 @@ class SlackClient
 
     /**
      * @param string $channel The channel to send the message to.
+     * @param string $blocks The blocks of the message to send.
+     * @return void
+     * @see https://api.slack.com/methods/chat.postMessage
+     */
+    public function postBlocks(string $channel, string $blocks): void
+    {
+        $response = $this->client->post('chat.postMessage', [
+            'channel' => $channel,
+            'blocks' => $blocks,
+        ]);
+
+        if ($response->isSuccess()) {
+            $json = $response->getJson();
+
+            if ($json['ok'] === false) {
+                withScope(function ($scope) use ($json, $channel, $blocks) {
+                    $scope->setExtras([
+                        'channel' => $channel,
+                        'blocks' => $blocks,
+                        'slack_response' => $json,
+                    ]);
+                    captureMessage('Slack API error: https://api.slack.com/methods/chat.postMessage');
+                });
+            }
+        }
+    }
+
+    /**
+     * @param string $channel The channel to send the message to.
      * @param string $user The user to send the message to.
      * @param string $text The text of the message to send.
      * @param string|null $threadTimestamp The thread timestamp of the message.
@@ -114,6 +143,35 @@ class SlackClient
                         'slack_response' => $json,
                     ]);
                     captureMessage('Slack API error: https://api.slack.com/methods/views.publish');
+                });
+            }
+        }
+    }
+
+    /**
+     * @param string $triggerId The trigger ID to open the view for.
+     * @param array $view The view to open.
+     * @return void
+     * @see https://api.slack.com/methods/views.open
+     */
+    public function openView(string $triggerId, array $view): void
+    {
+        $response = $this->client->post('views.open', [
+            'trigger_id' => $triggerId,
+            'view' => json_encode($view),
+        ]);
+
+        if ($response->isSuccess()) {
+            $json = $response->getJson();
+
+            if ($json['ok'] === false) {
+                withScope(function ($scope) use ($json, $triggerId, $view) {
+                    $scope->setExtras([
+                        'trigger_id' => $triggerId,
+                        'view' => $view,
+                        'slack_response' => $json,
+                    ]);
+                    captureMessage('Slack API error: https://api.slack.com/methods/views.open');
                 });
             }
         }
