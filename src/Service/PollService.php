@@ -73,6 +73,46 @@ class PollService
 
     /**
      * @param \App\Model\Entity\Poll $poll The poll.
+     * @param string $responseUrl The response URL.
+     * @return void
+     */
+    public function deletePoll(Poll $poll, string $responseUrl): void
+    {
+        $client = new Client();
+        $response = $client->post($responseUrl, json_encode([
+            'delete_original' => true,
+        ]));
+        if ($response->isSuccess()) {
+            $json = $response->getJson();
+
+            if ($json['ok'] === false) {
+                withScope(function ($scope) use ($json, $responseUrl) {
+                    $scope->setExtras([
+                        'slack_response' => $json,
+                        'response_url' => $responseUrl,
+                    ]);
+                    captureMessage('Slack API error: RESPONSE_URL');
+                });
+            }
+        }
+    }
+
+    /**
+     * @param string $triggerId The trigger ID.
+     * @return void
+     */
+    public function triggerPollModal(string $triggerId): void
+    {
+        $view = $this->getPollModalView();
+
+        $this->slackClient->openView(
+            triggerId: $triggerId,
+            view: $view,
+        );
+    }
+
+    /**
+     * @param \App\Model\Entity\Poll $poll The poll.
      * @return array
      */
     protected function getPollBlocks(Poll $poll): array
@@ -92,6 +132,42 @@ class PollService
             ];
         }
 
+        if ($poll->status === Poll::STATUS_ACTIVE) {
+            $options = [
+                [
+                    'text' => [
+                        'type' => 'plain_text',
+                        'text' => '🔒 Close Poll',
+                    ],
+                    'value' => 'poll-close',
+                ],
+                [
+                    'text' => [
+                        'type' => 'plain_text',
+                        'text' => '❌ Delete Poll',
+                    ],
+                    'value' => 'poll-delete',
+                ],
+            ];
+        } else {
+            $options = [
+                [
+                    'text' => [
+                        'type' => 'plain_text',
+                        'text' => '🔓 Reopen Poll',
+                    ],
+                    'value' => 'poll-reopen',
+                ],
+                [
+                    'text' => [
+                        'type' => 'plain_text',
+                        'text' => '❌ Delete Poll',
+                    ],
+                    'value' => 'poll-delete',
+                ],
+            ];
+        }
+
         $blocks[] = [
             'type' => 'section',
             'block_id' => 'poll-actions',
@@ -102,22 +178,7 @@ class PollService
             'accessory' => [
                 'action_id' => (string)$poll->id,
                 'type' => 'overflow',
-                'options' => [
-                    [
-                        'text' => [
-                            'type' => 'plain_text',
-                            'text' => '🔒 Close Poll',
-                        ],
-                        'value' => 'poll-close',
-                    ],
-                    [
-                        'text' => [
-                            'type' => 'plain_text',
-                            'text' => '❌ Delete Poll',
-                        ],
-                        'value' => 'poll-delte',
-                    ],
-                ],
+                'options' => $options,
             ],
         ];
 
@@ -137,23 +198,33 @@ class PollService
 
             $emoji = $this->getEmojiForIndex($index);
 
-            $blocks[] = [
-                'type' => 'section',
-                'text' => [
-                    'type' => 'mrkdwn',
-                    'text' => "{$emoji} {$title}",
-                ],
-                'accessory' => [
-                    'type' => 'button',
+            if ($poll->status === Poll::STATUS_ACTIVE) {
+                $blocks[] = [
+                    'type' => 'section',
                     'text' => [
-                        'type' => 'plain_text',
-                        'text' => "{$emoji}",
-                        'emoji' => true,
+                        'type' => 'mrkdwn',
+                        'text' => "{$emoji} {$title}",
                     ],
-                    'value' => 'poll-vote',
-                    'action_id' => (string)$option->id,
-                ],
-            ];
+                    'accessory' => [
+                        'type' => 'button',
+                        'text' => [
+                            'type' => 'plain_text',
+                            'text' => "{$emoji}",
+                            'emoji' => true,
+                        ],
+                        'value' => 'poll-vote',
+                        'action_id' => (string)$option->id,
+                    ],
+                ];
+            } else {
+                $blocks[] = [
+                    'type' => 'section',
+                    'text' => [
+                        'type' => 'mrkdwn',
+                        'text' => "{$emoji} {$title}",
+                    ],
+                ];
+            }
         }
 
         $context = "Created by <@{$poll->user->slack_user_id}> with /gibopinion";
@@ -171,6 +242,29 @@ class PollService
         ];
 
         return $blocks;
+    }
+
+    /**
+     * @return array
+     */
+    public function getPollModalView(): array
+    {
+        return [
+            'type' => 'modal',
+            'title' => [
+                'type' => 'plain_text',
+                'text' => 'Nope, nope, nope 🫣',
+            ],
+            'blocks' => [
+                [
+                    'type' => 'section',
+                    'text' => [
+                        'type' => 'mrkdwn',
+                        'text' => 'You are not the poll creator 🚫',
+                    ],
+                ],
+            ],
+        ];
     }
 
     /**

@@ -149,6 +149,35 @@ class SlackClient
     }
 
     /**
+     * @param string $triggerId The trigger ID to open the view for.
+     * @param array $view The view to open.
+     * @return void
+     * @see https://api.slack.com/methods/views.open
+     */
+    public function openView(string $triggerId, array $view): void
+    {
+        $response = $this->client->post('views.open', [
+            'trigger_id' => $triggerId,
+            'view' => json_encode($view),
+        ]);
+
+        if ($response->isSuccess()) {
+            $json = $response->getJson();
+
+            if ($json['ok'] === false) {
+                withScope(function ($scope) use ($json, $triggerId, $view) {
+                    $scope->setExtras([
+                        'trigger_id' => $triggerId,
+                        'view' => $view,
+                        'slack_response' => $json,
+                    ]);
+                    captureMessage('Slack API error: https://api.slack.com/methods/views.open');
+                });
+            }
+        }
+    }
+
+    /**
      * @param string $user The Slack user ID.
      * @return array
      * @see https://api.slack.com/methods/users.info
