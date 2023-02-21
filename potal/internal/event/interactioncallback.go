@@ -8,10 +8,13 @@ import (
 )
 
 type InteractionCallbackEvent struct {
-	Type        PotalEventType `json:"type"`
-	User        string         `json:"user"`
-	ActionID    string         `json:"action_id"`
-	ResponseURL string         `json:"response_url"`
+	Type              PotalEventType `json:"type"`
+	User              string         `json:"user"`
+	ActionID          string         `json:"action_id"`
+	ResponseURL       string         `json:"response_url"`
+	TriggerID         string         `json:"trigger_id,omitempty"`
+	Value             string         `json:"value,omitempty"`
+	SelectOptionValue string         `json:"select_option_value,omitempty"`
 }
 
 func (e InteractionCallbackEvent) isValid() bool {
@@ -37,6 +40,13 @@ func ProcessInteractionCallbackEvent(ctx context.Context, e slack.InteractionCal
 		User:        e.User.ID,
 		ActionID:    e.ActionCallback.BlockActions[0].ActionID,
 		ResponseURL: e.ResponseURL,
+		TriggerID:   e.TriggerID,
+	}
+	if ok := e.ActionCallback.BlockActions[0].Value; ok != "" {
+		interactionEvent.Value = e.ActionCallback.BlockActions[0].Value
+	}
+	if ok := e.ActionCallback.BlockActions[0].SelectedOption.Value; ok != "" {
+		interactionEvent.SelectOptionValue = e.ActionCallback.BlockActions[0].SelectedOption.Value
 	}
 
 	if !interactionEvent.isValid() {

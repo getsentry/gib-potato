@@ -50,6 +50,8 @@ class PollsTable extends Table
         ]);
         $this->hasMany('PollOptions', [
             'foreignKey' => 'poll_id',
+            'dependent' => true,
+            'cascadeCallbacks' => true,
         ]);
     }
 

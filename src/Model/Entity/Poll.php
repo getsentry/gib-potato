@@ -32,4 +32,9 @@ class Poll extends Entity
     protected $_accessible = [
         '*' => false,
     ];
+
+    public const STATUS_ACTIVE = 'active';
+    public const STATUS_CLOSED = 'closed';
+
+    public const TYPE_MULTIPLE = 'multiple';
 }

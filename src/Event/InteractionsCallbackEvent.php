@@ -3,6 +3,10 @@ declare(strict_types=1);
 
 namespace App\Event;
 
+use App\Model\Entity\Poll;
+use App\Model\Table\PollOptionsTable;
+use App\Model\Table\PollResponsesTable;
+use App\Model\Table\PollsTable;
 use App\Service\PollService;
 use App\Service\UserService;
 
@@ -11,6 +15,16 @@ class InteractionsCallbackEvent extends AbstractEvent
     protected string $user;
     protected string $actionId;
     protected string $responseUrl;
+    protected string $triggerId;
+    protected ?string $value;
+    protected ?string $selectOptionValue;
+
+    protected UserService $userService;
+    protected PollService $pollService;
+
+    protected PollsTable $pollsTable;
+    protected PollOptionsTable $pollOptionsTable;
+    protected PollResponsesTable $pollResponsesTable;
 
     /**
      * Constructor
@@ -25,6 +39,17 @@ class InteractionsCallbackEvent extends AbstractEvent
         $this->user = $event['user'];
         $this->actionId = $event['action_id'];
         $this->responseUrl = $event['response_url'];
+        $this->triggerId = $event['trigger_id'];
+
+        $this->value = $event['value'] ?? null;
+        $this->selectOptionValue = $event['select_option_value'] ?? null;
+
+        $this->userService = new UserService();
+        $this->pollService = new PollService();
+
+        $this->pollsTable = $this->fetchTable('Polls');
+        $this->pollOptionsTable = $this->fetchTable('PollOptions');
+        $this->pollResponsesTable = $this->fetchTable('PollResponses');
     }
 
     /**
@@ -32,29 +57,52 @@ class InteractionsCallbackEvent extends AbstractEvent
      */
     public function process(): void
     {
-        $userService = new UserService();
-        $pollService = new PollService();
+        if ($this->value === 'poll-vote') {
+            $this->vote();
 
-        $pollsTable = $this->fetchTable('Polls');
-        $pollOptionsTable = $this->fetchTable('PollOptions');
-        $pollResponsesTable = $this->fetchTable('PollResponses');
+            return;
+        }
 
-        $pollOption = $pollOptionsTable->find()
+        if ($this->selectOptionValue === 'poll-close') {
+            $this->close();
+
+            return;
+        }
+
+        if ($this->selectOptionValue === 'poll-reopen') {
+            $this->reopen();
+
+            return;
+        }
+
+        if ($this->selectOptionValue === 'poll-delete') {
+            $this->delete();
+
+            return;
+        }
+    }
+
+    /**
+     * @return void
+     */
+    protected function vote(): void
+    {
+        $pollOption = $this->pollOptionsTable->find()
             ->where([
                 'id' => $this->actionId,
             ])
             ->firstOrFail();
 
-        $existingPollResponse = $pollResponsesTable->find()
+        $existingPollResponse = $this->pollResponsesTable->find()
             ->where([
-                'user_id' => $userService->getOrCreateUser($this->user)->id,
+                'user_id' => $this->userService->getOrCreateUser($this->user)->id,
                 'poll_option_id' => $pollOption->id,
             ])
             ->first();
 
         if (empty($existingPollResponse)) {
-            $pollResponse = $pollResponsesTable->newEntity([
-                'user_id' => $userService->getOrCreateUser($this->user)->id,
+            $pollResponse = $this->pollResponsesTable->newEntity([
+                'user_id' => $this->userService->getOrCreateUser($this->user)->id,
                 'poll_option_id' => $pollOption->id,
             ], [
                 'accessibleFields' => [
@@ -62,12 +110,12 @@ class InteractionsCallbackEvent extends AbstractEvent
                     'poll_option_id' => true,
                 ],
             ]);
-            $pollResponsesTable->saveOrFail($pollResponse);
+            $this->pollResponsesTable->saveOrFail($pollResponse);
         } else {
-            $pollResponsesTable->deleteOrFail($existingPollResponse);
+            $this->pollResponsesTable->deleteOrFail($existingPollResponse);
         }
 
-        $poll = $pollsTable->find()
+        $poll = $this->pollsTable->find()
             ->where(['Polls.id' => $pollOption->poll_id])
             ->contain([
                 'PollOptions' => [
@@ -79,6 +127,104 @@ class InteractionsCallbackEvent extends AbstractEvent
             ])
             ->firstOrFail();
 
-        $pollService->updatePoll($poll, $this->responseUrl);
+        $this->pollService->updatePoll($poll, $this->responseUrl);
+    }
+
+    /**
+     * @return void
+     */
+    protected function close(): void
+    {
+        $poll = $this->pollsTable->find()
+            ->where(['id' => $this->actionId])
+            ->firstOrFail();
+
+        if ($poll->user_id !== $this->userService->getOrCreateUser($this->user)->id) {
+            $this->pollService->triggerPollModal($this->triggerId);
+
+            return;
+        }
+
+        $poll = $this->pollsTable->patchEntity($poll, [
+            'status' => Poll::STATUS_CLOSED,
+        ], [
+            'accessibleFields' => [
+                'status' => true,
+            ],
+        ]);
+        $this->pollsTable->saveOrFail($poll);
+
+        $poll = $this->pollsTable->find()
+            ->where(['Polls.id' => $poll->id])
+            ->contain([
+                'PollOptions' => [
+                    'PollResponses' => [
+                        'Users',
+                    ],
+                ],
+                'Users',
+            ])
+            ->firstOrFail();
+
+        $this->pollService->updatePoll($poll, $this->responseUrl);
+    }
+
+    /**
+     * @return void
+     */
+    protected function reopen(): void
+    {
+        $poll = $this->pollsTable->find()
+            ->where(['id' => $this->actionId])
+            ->firstOrFail();
+
+        if ($poll->user_id !== $this->userService->getOrCreateUser($this->user)->id) {
+            $this->pollService->triggerPollModal($this->triggerId);
+
+            return;
+        }
+
+        $poll = $this->pollsTable->patchEntity($poll, [
+            'status' => Poll::STATUS_ACTIVE,
+        ], [
+            'accessibleFields' => [
+                'status' => true,
+            ],
+        ]);
+        $this->pollsTable->saveOrFail($poll);
+
+        $poll = $this->pollsTable->find()
+            ->where(['Polls.id' => $poll->id])
+            ->contain([
+                'PollOptions' => [
+                    'PollResponses' => [
+                        'Users',
+                    ],
+                ],
+                'Users',
+            ])
+            ->firstOrFail();
+
+        $this->pollService->updatePoll($poll, $this->responseUrl);
+    }
+
+    /**
+     * @return void
+     */
+    protected function delete(): void
+    {
+        $poll = $this->pollsTable->find()
+            ->where(['id' => $this->actionId])
+            ->firstOrFail();
+
+        if ($poll->user_id !== $this->userService->getOrCreateUser($this->user)->id) {
+            $this->pollService->triggerPollModal($this->triggerId);
+
+            return;
+        }
+
+        $this->pollsTable->deleteOrFail($poll);
+
+        $this->pollService->deletePoll($poll, $this->responseUrl);
     }
 }
