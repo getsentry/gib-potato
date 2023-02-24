@@ -96,6 +96,7 @@ if (file_exists(CONFIG . 'app_local.php')) {
 Sentry\init([
     'dsn' => env('SENTRY_DSN'),
     'traces_sample_rate' => 1.0,
+    'profiles_sample_rate' => 1.0,
     'environment' => env('ENVIRONMENT'),
     'release' => env('VERSION'),
     'send_default_pii' => true,
