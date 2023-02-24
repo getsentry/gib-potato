@@ -33,6 +33,18 @@ func DefaultHandler(w http.ResponseWriter, r *http.Request, _ httprouter.Params)
 	transaction.Status = sentry.SpanStatusOK
 }
 
+func ErrorHandler(w http.ResponseWriter, r *http.Request, _ httprouter.Params) {
+	// Overwrite transaction source with something usefull
+	ctx := r.Context()
+	transaction := sentry.TransactionFromContext(ctx)
+	transaction.Source = sentry.SourceRoute
+
+	sentry.CaptureMessage("This is an error 🔥")
+
+	transaction.Status = sentry.SpanStatusInternalError
+	w.WriteHeader(http.StatusInternalServerError)
+}
+
 func EventsHandler(w http.ResponseWriter, r *http.Request, _ httprouter.Params) {
 	// Overwrite transaction source with something usefull
 	ctx := r.Context()
