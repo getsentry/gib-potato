@@ -10,9 +10,11 @@ use Cake\ORM\Entity;
  *
  * @property int $id
  * @property string $user_id
+ * @property string $presentee_id
  * @property string $name
  * @property string $description
  * @property string $image_link
+ * @property string $message
  * @property int $price
  * @property \Cake\I18n\FrozenTime|null $created
  *

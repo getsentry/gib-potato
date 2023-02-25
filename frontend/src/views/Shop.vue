@@ -84,7 +84,7 @@
                                     </div>
                                 </div>
                             </div>
-                            <div>
+                            <div v-if="purchaseSuccess === false">
                                 <fieldset class="mt-4">
                                     <div class="space-y-2">
                                         <div class="flex items-center">
@@ -136,7 +136,7 @@
                         <button
                             v-if="user.spendable_count >= product.price"
                             class="inline-flex w-full justify-center rounded-md border border-transparent bg-amber-200 text-zinc-900 px-4 py-2 text-base font-medium sm:col-start-2 sm:text-sm"
-                            @click="purchase(product)"
+                            @click="purchase(product, presentee)"
                         >
                             Pay {{ product.price }} <span class="ml-2" :class="{ 'animate-spin': loading }">🥔</span>
                         </button>
@@ -189,24 +189,21 @@ export default {
 
         return {
             user: computed(() => store.getters.user),
+            users: computed(() => store.getters.users),
+            products: computed(() => store.getters.products),
         }
     },
     data() {
         return {
-            products: [],
-            users: [],
             product: null,
             presentee: null,
+            message: null,
             modalOpen: false,
             modalError: null,
             purchaseMode: 'myself',
             loading: false,
             purchaseSuccess: false,
         }
-    },
-    mounted() {
-        this.fetchProducts()
-        this.fetchUsers()
     },
     methods: {
         openModal(product) {
@@ -218,37 +215,24 @@ export default {
             this.modalError = null
             this.modalOpen = false
             this.purchaseSuccess = false
+            this.purchaseMode = 'myself'
         },
-        async fetchUsers() {
-            try {
-                const response = await api.get('users')
-                this.users = response.data
-            } catch (error) {
-                console.log(error)
-            }
-        },
-        async fetchProducts() {
-            try {
-                const response = await api.get('shop/products')
-                this.products = response.data
-            } catch (error) {
-                console.log(error)
-            }
-        },
-        async purchase(product) {
+        async purchase() {
             this.loading = true
             this.modalError = null
 
             try {
-                const responsen = await api.post('shop/purchase', {
-                    product_id: product.id,
-                    presentee_id: presentee,
+                await api.post('shop/purchase', {
+                    product_id: this.product.id,
+                    presentee_id: this.presentee?.id,
+                    message: this.message,
                 })
                 this.purchaseSuccess = true
 
                 await this.$store.dispatch('getUser')
-                await this.fetchProducts()
+                await this.$store.dispatch('getProducts')
             } catch (error) {
+                console.log(error)
                 this.modalError = error.response.data.error
             } finally {
                 this.loading = false

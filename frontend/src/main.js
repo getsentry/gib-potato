@@ -34,6 +34,8 @@ import './assets/main.css'
 
     await store.dispatch('getLeaderboard')
     await store.dispatch('getUser')
+    await store.dispatch('getUsers')
+    await store.dispatch('getProducts')
 
     app
         .use(router)

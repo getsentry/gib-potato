@@ -21,8 +21,7 @@
             </div>
             <div class="mt-6">
                 <button
-                    class="relative w-full flex items-center justify-center rounded-md border border-transparent bg-zinc-500 py-2 px-8 text-sm font-medium text-gray-900"
-                    disabled
+                    class="relative w-full flex items-center justify-center rounded-md border border-zinc-300 bg-zinc-100 py-2 px-8 text-sm font-medium text-gray-900"
                 >
                     Gift it to someone
                 </button>

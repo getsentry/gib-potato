@@ -34,6 +34,10 @@ class ShopController extends ApiController
             ->where(['Users.id' => $this->Authentication->getIdentity()->getIdentifier()])
             ->first();
 
+        $presentee = $usersTable->find()
+            ->where(['Users.id IS' => $this->request->getData('presentee_id')])
+            ->first();
+
         $productsTable = $this->fetchTable('Products');
         /** @var \App\Model\Entity\Product $product */
         $product = $productsTable->find()
@@ -60,17 +64,21 @@ class ShopController extends ApiController
         $purchasesTable = $this->fetchTable('Purchases');
         $purchase = $purchasesTable->newEntity([
             'user_id' => $user->id,
+            'presentee_id' => $presentee->id ?? null,
             'name' => $product->name,
             'description' => $product->description,
             'image_link' => $product->image_link,
             'price' => $product->price,
+            'message' => $this->request->getData('message')
         ], [
             'accessibleFields' => [
                 'user_id' => true,
+                'presentee_id' => true,
                 'name' => true,
                 'description' => true,
                 'image_link' => true,
                 'price' => true,
+                'message' => true,
             ],
         ]);
         $purchasesTable->saveOrFail($purchase);

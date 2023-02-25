@@ -4,8 +4,10 @@ import api from '@/api'
 const store = createStore({
     state () {
         return {
+            leaderboard: [],
             user: null,
             users: [],
+            products: [],
             filter: {
                 range: 'all',
                 order: 'received',
@@ -13,8 +15,10 @@ const store = createStore({
         }
     },
     getters: {
+        leaderboard: state => state.leaderboard,
         user: state => state.user,
         users: state => state.users,
+        products: state => state.products,
         filter: state => state.filter,
         range: state => state.filter.range,
         order: state => state.filter.order,
@@ -27,7 +31,7 @@ const store = createStore({
                         ...getters.filter,
                     }
                 })
-                commit('SET_USERS', response.data)
+                commit('SET_LEADERBOARD', response.data)
             } catch (error) {
                 console.log(error)
             }
@@ -36,6 +40,22 @@ const store = createStore({
             try {
                 const response = await api.get('user')
                 commit('SET_USER', response.data)
+            } catch (error) {
+                console.log(error)
+            }
+        },
+        async getUsers({ commit }) {
+            try {
+                const response = await api.get('users')
+                commit('SET_USERS', response.data)
+            } catch (error) {
+                console.log(error)
+            }
+        },
+        async getProducts({ commit }) {
+            try {
+                const response = await api.get('shop/products')
+                commit('SET_PRODUCTS', response.data)
             } catch (error) {
                 console.log(error)
             }
@@ -64,11 +84,17 @@ const store = createStore({
         },
     },
     mutations: {
-        SET_USERS(state, users) {
-            state.users = users
+        SET_LEADERBOARD(state, leaderboard) {
+            state.leaderboard = leaderboard
         },
         SET_USER(state, user) {
             state.user = user
+        },
+        SET_USERS(state, users) {
+            state.users = users
+        },
+        SET_PRODUCTS(state, products) {
+            state.products = products
         },
         TOGGLE_SENT_NOTIFICATIONS(state) {
             state.user.notifications.sent = !state.user.notifications.sent

@@ -45,7 +45,14 @@ class PurchasesTable extends Table
         $this->addBehavior('Timestamp');
 
         $this->belongsTo('Users', [
+            'className' => 'Users',
             'foreignKey' => 'user_id',
+            'joinType' => 'INNER',
+        ]);
+
+        $this->belongsTo('Presentee', [
+            'className' => 'Users',
+            'foreignKey' => 'presentee_id',
             'joinType' => 'INNER',
         ]);
     }
@@ -59,9 +66,12 @@ class PurchasesTable extends Table
     public function validationDefault(Validator $validator): Validator
     {
         $validator
-            ->scalar('user_id')
-            ->maxLength('user_id', 255)
+            ->uuid('user_id')
             ->notEmptyString('user_id');
+        
+        $validator
+            ->uuid('presentee_id')
+            ->allowEmptyString('presentee_id');
 
         $validator
             ->scalar('name')
@@ -84,6 +94,11 @@ class PurchasesTable extends Table
             ->integer('price')
             ->requirePresence('price', 'create')
             ->notEmptyString('price');
+        
+        $validator
+            ->scalar('message')
+            ->maxLength('message', 1024)
+            ->allowEmptyString('message');
 
         return $validator;
     }
@@ -98,6 +113,7 @@ class PurchasesTable extends Table
     public function buildRules(RulesChecker $rules): RulesChecker
     {
         $rules->add($rules->existsIn('user_id', 'Users'), ['errorField' => 'user_id']);
+        $rules->add($rules->existsIn('presentee_id', 'Users'), ['errorField' => 'presentee_id']);
 
         return $rules;
     }
