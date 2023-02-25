@@ -28,7 +28,14 @@ class ShopController extends ApiController
      */
     public function purchase()
     {
+        $usersTable = $this->fetchTable('Users');
+        /** @var \App\Model\Entity\User $user */
+        $user = $usersTable->find()
+            ->where(['Users.id' => $this->Authentication->getIdentity()->getIdentifier()])
+            ->first();
+
         $productsTable = $this->fetchTable('Products');
+        /** @var \App\Model\Entity\Product $product */
         $product = $productsTable->find()
             ->where(['Products.id' => $this->request->getData('product_id')])
             ->first();
@@ -41,10 +48,18 @@ class ShopController extends ApiController
                     'error' => 'Product out of stock 😥',
                 ]));
         }
+        if ($product->price > $user->spendablePotato()) {
+            return $this->response
+                ->withStatus(400)
+                ->withType('json')
+                ->withStringBody(json_encode([
+                    'error' => 'Not enough potato to buy 😥',
+                ]));
+        }
 
         $purchasesTable = $this->fetchTable('Purchases');
         $purchase = $purchasesTable->newEntity([
-            'user_id' => $this->Authentication->getIdentityData('id'),
+            'user_id' => $user->id,
             'name' => $product->name,
             'description' => $product->description,
             'image_link' => $product->image_link,

@@ -9,5 +9,6 @@ module.exports = {
   },
   plugons: [
     require('@tailwindcss/forms'),
+    require('@tailwindcss/typography'),
   ],
 };

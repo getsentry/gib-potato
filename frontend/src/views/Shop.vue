@@ -1,11 +1,15 @@
 <template>
     <div>
-        <h2 class="text-lg font-medium leading-6">You have 334 🥔 left</h2>
+        <h2 class="text-lg font-medium leading-6">You can spend up to {{ user.spendable_count ?? 0 }} 🥔</h2>
     </div>
 
-    <div class="mt-8 grid grid-cols-1 gap-y-12 sm:grid-cols-2 sm:gap-x-6 lg:grid-cols-4 xl:gap-x-8">
+    <div class="mt-8 grid grid-cols-1 gap-y-12 sm:grid-cols-2 sm:gap-x-6 lg:grid-cols-4 xl:gap-x-8 mb-32">
         <div v-for="(product, index) in products">
-            <div class="relative" :class="{ 'blur-[2px]': product.stock === 0 }">
+            <div
+                :index="index"
+                class="relative"
+                :class="{ 'blur-[2px]': product.stock === 0 }"
+            >
                 <div class="relative h-72 w-full overflow-hidden rounded-lg">
                     <img class="h-full w-full object-cover object-center" :src="product.image_link">
                 </div>
@@ -22,15 +26,17 @@
             <div class="mt-6">
                 <template v-if="product.stock > 0">
                     <button
-                        class="relative w-full flex items-center justify-center rounded-md border border-transparent bg-zinc-100 py-2 px-8 text-sm font-medium text-gray-900"
-                        @click="openModal(product)">
+                        class="relative w-full flex items-center justify-center rounded-md border border-zinc-300 bg-zinc-100 py-2 px-8 text-sm font-medium text-gray-900"
+                        @click="openModal(product)"
+                    >
                         I want this
                     </button>
                 </template>
                 <template v-else>
                     <button
-                        class="relative w-full flex items-center justify-center rounded-md border border-transparent bg-zinc-500 py-2 px-8 text-sm font-medium"
-                        disabled>
+                        class="relative w-full flex items-center justify-center rounded-md border border-transparent bg-zinc-500 py-2 px-8 text-sm font-medium text-gray-900"
+                        disabled
+                    >
                         Out of stock
                     </button>
                 </template>
@@ -42,8 +48,7 @@
 
         <div class="fixed inset-0 z-10 overflow-y-auto">
             <div class="flex min-h-full items-end justify-center p-4 text-center sm:items-center sm:p-0">
-                <div
-                    class="relative transform overflow-hidden rounded-lg bg-zinc-50 dark:bg-zinc-900 px-4 pt-5 pb-4 text-left shadow-xl transition-all sm:my-8 sm:w-full sm:max-w-sm sm:p-6">
+                <div class="relative transform overflow-hidden rounded-lg bg-zinc-50 dark:bg-zinc-900 px-4 pt-5 pb-4 text-left shadow-xl transition-all sm:my-8 sm:w-full sm:max-w-sm sm:p-6">
                     <div>
                         <div>
                             <div v-if="modalError" class="rounded-md bg-red-50 p-4 mb-4">
@@ -108,28 +113,62 @@
                                 </fieldset>
                                 <div
                                     v-if="purchaseMode === 'someone-else'"
-                                    class="mt-3"
+                                    class="mt-3 space-y-3"
                                 >
                                     <input
                                         type="email"
-                                        class="block w-full rounded-md text-sm p-2 ring-offset-zinc-50 dark:ring-offset-zinc-900 focus:border-indigo-500 focus:ring-indigo-500"
+                                        class="block w-full rounded-md text-sm p-2 text-zinc-900 border border-zinc-300 ring-offset-zinc-50 dark:ring-offset-zinc-900 focus:border-indigo-500 focus:ring-indigo-500"
                                         placeholder="Search..."
                                     >
+                                    <textarea
+                                        class="block w-full rounded-md text-sm p-2 text-zinc-900 border border-zinc-300 ring-offset-zinc-50 dark:ring-offset-zinc-900 focus:border-indigo-500 focus:ring-indigo-500"
+                                        rows="2"
+                                        placeholder="Write a message..."
+                                    />
                                 </div>
                             </div>
                         </div>
                     </div>
-                    <div class="mt-5 sm:mt-6 sm:grid sm:grid-flow-row-dense sm:grid-cols-2 sm:gap-3">
+                    <div
+                        v-if="purchaseSuccess === false"
+                        class="mt-5 sm:mt-6 sm:grid sm:grid-flow-row-dense sm:grid-cols-2 sm:gap-3"
+                    >
                         <button
+                            v-if="user.spendable_count >= product.price"
                             class="inline-flex w-full justify-center rounded-md border border-transparent bg-amber-200 text-zinc-900 px-4 py-2 text-base font-medium sm:col-start-2 sm:text-sm"
-                            @click="purchase(product)">
-                            Pay {{ product.price }} 🥔
+                            @click="purchase(product)"
+                        >
+                            Pay {{ product.price }} <span class="ml-2" :class="{ 'animate-spin': loading }">🥔</span>
                         </button>
                         <button
-                            class="mt-3 inline-flex w-full justify-center rounded-md border border-gray-300 bg-white px-4 py-2 text-base font-medium text-zinc-900 sm:mt-0 sm:text-sm"
-                            @click="closeModal">
+                            v-else
+                            class="inline-flex w-full justify-center rounded-md border border-transparent bg-zinc-500 text-zinc-900 px-4 py-2 text-base font-medium sm:col-start-2 sm:text-sm"
+                            disabled
+                        >
+                            Not enough 🥔
+                        </button>
+                        <button
+                            class="mt-3 inline-flex w-full justify-center rounded-md border border-zinc-300 bg-zinc-100 px-4 py-2 text-base font-medium text-zinc-900 sm:mt-0 sm:text-sm"
+                            :disabled="loading"
+                            @click="closeModal"
+                        >
                             Cancel
                         </button>
+                    </div>
+                    <div
+                        v-if="purchaseSuccess"
+                        class="mt-5 sm:mt-6"
+                    >
+                        <button
+                            class="mt-3 inline-flex w-full justify-center rounded-md border border-zinc-300 bg-zinc-100 px-4 py-2 text-base font-medium text-zinc-900 sm:mt-0 sm:text-sm"
+                            :disabled="loading"
+                            @click="closeModal"
+                        >
+                            All set 🚀
+                        </button>
+                    </div>
+                    <div class="mt-5 text-xs text-center text-zinc-500">
+                        <a href="/terms" target="_blank" class="underline">Terms & Conditions</a> apply.
                     </div>
                 </div>
             </div>
@@ -150,19 +189,24 @@ export default {
 
         return {
             user: computed(() => store.getters.user),
-        };
+        }
     },
     data() {
         return {
             products: [],
+            users: [],
             product: null,
+            presentee: null,
             modalOpen: false,
             modalError: null,
             purchaseMode: 'myself',
+            loading: false,
+            purchaseSuccess: false,
         }
     },
     mounted() {
         this.fetchProducts()
+        this.fetchUsers()
     },
     methods: {
         openModal(product) {
@@ -173,6 +217,15 @@ export default {
             this.product = null
             this.modalError = null
             this.modalOpen = false
+            this.purchaseSuccess = false
+        },
+        async fetchUsers() {
+            try {
+                const response = await api.get('users')
+                this.users = response.data
+            } catch (error) {
+                console.log(error)
+            }
         },
         async fetchProducts() {
             try {
@@ -183,15 +236,22 @@ export default {
             }
         },
         async purchase(product) {
+            this.loading = true
+            this.modalError = null
+
             try {
                 const responsen = await api.post('shop/purchase', {
                     product_id: product.id,
-                    purchase_mode: this.purchaseMode,
+                    presentee_id: presentee,
                 })
-                this.closeModal()
-                this.fetchProducts()
+                this.purchaseSuccess = true
+
+                await this.$store.dispatch('getUser')
+                await this.fetchProducts()
             } catch (error) {
                 this.modalError = error.response.data.error
+            } finally {
+                this.loading = false
             }
         }
     }

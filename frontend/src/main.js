@@ -32,7 +32,7 @@ import './assets/main.css'
 
     api.init()
 
-    await store.dispatch('getUsers')
+    await store.dispatch('getLeaderboard')
     await store.dispatch('getUser')
 
     app

@@ -7,6 +7,8 @@ RUN \
     apt-get install -y --no-install-recommends \
     ca-certificates \
     software-properties-common \
+    git \
+    make \
     supervisor \
     apache2 \
     php8.1 \
@@ -17,8 +19,17 @@ RUN \
     php8.1-mysql \
     php8.1-sqlite3 \
     php8.1-xml \
-    php8.1-zip && \
+    php8.1-zip \
+    php-dev && \
     rm -rf /var/lib/apt/lists/*
+
+WORKDIR /root
+
+RUN git clone https://gerrit.wikimedia.org/r/mediawiki/php/excimer.git
+RUN cd excimer && phpize && ./configure && make && make install
+
+RUN mkdir /etc/php/8.1/fpm/mods-available
+RUN echo "extension=excimer.so" > /etc/php/8.1/fpm/conf.d/excimer.ini
 
 RUN rm /etc/apache2/sites-available/*.conf
 COPY apache/gib-potato.conf /etc/apache2/sites-available/gib-potato.conf

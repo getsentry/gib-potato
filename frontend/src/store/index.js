@@ -20,9 +20,9 @@ const store = createStore({
         order: state => state.filter.order,
     },
     actions: {
-        async getUsers({ commit, getters }) {
+        async getLeaderboard({ commit, getters }) {
             try {
-                const response = await api.get('users', {
+                const response = await api.get('leaderboard', {
                     params: {
                         ...getters.filter,
                     }
