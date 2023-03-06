@@ -21,13 +21,13 @@
         "lcobucci/jwt": "^4.3",
         "paragonie/csp-builder": "2.7",
         "sentry/sentry": "dev-profiling",
-        "symfony/http-client": "^6.2"
+        "symfony/http-client": "^6.2.7"
     },
     "require-dev": {
         "cakephp/bake": "^2.8.2",
         "cakephp/cakephp-codesniffer": "^4.6",
-        "phpstan/phpstan": "^1.9.18",
-        "phpunit/phpunit": "^9.6.3"
+        "phpstan/phpstan": "^1.10.4",
+        "phpunit/phpunit": "^9.6.4"
     },
     "autoload": {
         "psr-4": {
