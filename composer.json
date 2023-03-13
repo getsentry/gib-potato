@@ -20,11 +20,11 @@
         "josegonzalez/dotenv": "^3.2",
         "lcobucci/jwt": "^4.3",
         "paragonie/csp-builder": "2.7",
-        "sentry/sentry": "dev-profiling",
+        "sentry/sentry": "^3.15",
         "symfony/http-client": "^6.2.7"
     },
     "require-dev": {
-        "cakephp/bake": "^2.8.2",
+        "cakephp/bake": "^2.8.3",
         "cakephp/cakephp-codesniffer": "^4.6",
         "phpstan/phpstan": "^1.10.6",
         "phpunit/phpunit": "^9.6.5"
