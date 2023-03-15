@@ -42,7 +42,7 @@ class DirectMessageEvent extends AbstractEvent
             $message = sprintf('You have *%s* left to gib today.', $user->potatoLeftToday());
             $message .= PHP_EOL;
             $message .= sprintf(
-                'Your potatos do reset in *%s hours* and *%s minutes*.',
+                'Your potato does reset in *%s hours* and *%s minutes*.',
                 $user->potatoResetInHours(),
                 $user->potatoResetInMinutes(),
             );

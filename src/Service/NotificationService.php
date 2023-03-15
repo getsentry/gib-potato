@@ -66,7 +66,7 @@ class NotificationService
             );
             $gibMessage .= PHP_EOL;
             $gibMessage .= sprintf(
-                'You have *%s* :potato: left. Your potatos do reset in *%s hours* and *%s minutes*.',
+                'You have *%s* :potato: left. Your potato does reset in *%s hours* and *%s minutes*.',
                 $potatoLeftToday,
                 $fromUser->potatoResetInHours(),
                 $fromUser->potatoResetInMinutes(),
