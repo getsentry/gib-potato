@@ -58,7 +58,7 @@ class UpdateUsersCommand extends Command
         $event = Event::createCheckIn();
         $event->setCheckIn($checkIn);
 
-        $this->hub->captureEvent($event);
+        SentrySdk::getCurrentHub()->captureEvent($event);
 
         $slackClient = new SlackClient();
 
@@ -155,7 +155,7 @@ class UpdateUsersCommand extends Command
         $event = Event::createCheckIn();
         $event->setCheckIn($checkIn);
 
-        $this->hub->captureEvent($event);
+        SentrySdk::getCurrentHub()->captureEvent($event);
 
         $io->success("\n[DONE]");
     }
