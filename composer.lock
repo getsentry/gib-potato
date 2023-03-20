@@ -4,20 +4,20 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "36a1205284344eb24f3ad11070c70538",
+    "content-hash": "391f8022c24751fd4e4aaee6df50acd1",
     "packages": [
         {
             "name": "cakephp/authentication",
-            "version": "2.10.0",
+            "version": "2.10.1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/cakephp/authentication.git",
-                "reference": "c6ae517b0edf4ba1d229f25b8b08e893d48a7064"
+                "reference": "643e17bcbbe2c5a01a5aaaa10d56df1a609ca6ab"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/cakephp/authentication/zipball/c6ae517b0edf4ba1d229f25b8b08e893d48a7064",
-                "reference": "c6ae517b0edf4ba1d229f25b8b08e893d48a7064",
+                "url": "https://api.github.com/repos/cakephp/authentication/zipball/643e17bcbbe2c5a01a5aaaa10d56df1a609ca6ab",
+                "reference": "643e17bcbbe2c5a01a5aaaa10d56df1a609ca6ab",
                 "shasum": ""
             },
             "require": {
@@ -72,7 +72,7 @@
                 "issues": "https://github.com/cakephp/authentication/issues",
                 "source": "https://github.com/cakephp/authentication"
             },
-            "time": "2022-12-04T02:32:30+00:00"
+            "time": "2023-03-17T16:13:23+00:00"
         },
         {
             "name": "cakephp/cakephp",
