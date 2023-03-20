@@ -11,7 +11,9 @@ use Cake\Console\Arguments;
 use Cake\Console\ConsoleIo;
 use Cake\Console\ConsoleOptionParser;
 use Cake\Datasource\ConnectionManager;
-use Cake\Http\Client;
+use Sentry\CheckIn;
+use Sentry\CheckInStatus;
+use Sentry\Event;
 use Sentry\SentrySdk;
 use Sentry\Tracing\SpanContext;
 use Sentry\Tracing\SpanStatus;
@@ -49,17 +51,14 @@ class UpdateUsersCommand extends Command
     {
         $io->out('Updating all users from Slack');
 
-        $httpClient = new Client([
-            'host' => 'sentry.io',
-            'scheme' => 'https',
-            'headers' => [
-                'Authorization' => 'DSN ' . env('SENTRY_DSN'),
-            ],
-        ]);
-        $response = $httpClient->post('/api/0/monitors/' . env('SENTRY_MONITOR_ID') . '/checkins/', [
-            'status' => 'in_progress',
-        ]);
-        $checkinId = $response->getJson()['id'];
+        $checkIn = new CheckIn(
+            monitorSlug: env('SENTRY_MONITOR_ID'),
+            status: CheckInStatus::inProgress(),
+        );
+        $event = Event::createCheckIn();
+        $event->setCheckIn($checkIn);
+
+        SentrySdk::getCurrentHub()->captureEvent($event);
 
         $slackClient = new SlackClient();
 
@@ -151,9 +150,12 @@ class UpdateUsersCommand extends Command
         $transaction->setStatus(SpanStatus::ok());
         $transaction->finish();
 
-        $response = $httpClient->put('/api/0/monitors/' . env('SENTRY_MONITOR_ID') . '/checkins/' . $checkinId . '/', [
-            'status' => 'ok',
-        ]);
+        $checkIn->setStatus(CheckInStatus::ok());
+
+        $event = Event::createCheckIn();
+        $event->setCheckIn($checkIn);
+
+        SentrySdk::getCurrentHub()->captureEvent($event);
 
         $io->success("\n[DONE]");
     }

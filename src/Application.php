@@ -134,9 +134,7 @@ class Application extends BaseApplication
      */
     protected function getCspPolicy(): CSPBuilder
     {
-        $allow = [
-            'plausible.io',
-        ];
+        $allow = [];
         if (Configure::read('debug')) {
             $allow = [
                 'localhost:5173',
