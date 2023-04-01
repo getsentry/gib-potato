@@ -18,7 +18,7 @@ import './assets/main.css'
         environment: import.meta.env.VITE_APP_ENVIRONMENT,
         release: import.meta.env.VITE_APP_VERSION,
         integrations: [
-            new BrowserTracing({
+            new Sentry.BrowserTracing({
                 routingInstrumentation: Sentry.vueRouterInstrumentation(router),
                 tracePropagationTargets: ["localhost", "gibpotato.app", /^\//],
             }),
