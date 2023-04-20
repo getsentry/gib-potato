@@ -29,6 +29,11 @@ class SentryMiddleware implements MiddlewareInterface
      */
     public function process(ServerRequestInterface $request, RequestHandlerInterface $handler): ResponseInterface
     {
+        // We don't want to trace OPTIONS and HEAD requests as they are not relevant for performance monitoring.
+        if (in_array($request->getMethod(), ['OPTIONS', 'HEAD'], true)) {
+            return $handler->handle($request);
+        }
+
         $sentryTraceHeader = $request->getHeaderLine('sentry-trace');
         $baggageHeader = $request->getHeaderLine('baggage');
 
