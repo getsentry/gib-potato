@@ -150,6 +150,7 @@ class Application extends BaseApplication
             'style-src' => ['self' => true, 'unsafe-inline' => true, 'allow' => $allow],
             'object-src' => [],
             'plugin-types' => [],
+            'worker-src' => ['self' => true, 'blob' => true],
             'report-uri' => SentrySdk::getCurrentHub()->getClient()->getCspReportUrl(),
         ]);
 

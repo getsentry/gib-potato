@@ -22,9 +22,7 @@ import './assets/main.css'
                 routingInstrumentation: Sentry.vueRouterInstrumentation(router),
                 tracePropagationTargets: ["localhost", "gibpotato.app", /^\//],
             }),
-            new Sentry.Replay({
-                useCompression: false,
-            }),
+            new Sentry.Replay(),
         ],
         tracesSampleRate: 1.0,
         replaysSessionSampleRate: 0.0,
