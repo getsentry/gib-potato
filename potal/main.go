@@ -17,8 +17,8 @@ var slackClient *slack.Client
 func main() {
 	sentryErr := sentry.Init(sentry.ClientOptions{
 		Dsn:              os.Getenv("SENTRY_DSN"),
-		Release:          os.Getenv("SENTRY_RELEASE"),
-		Environment:      os.Getenv("SENTRY_ENVIRONMENT"),
+		Release:          os.Getenv("RELEASE"),
+		Environment:      os.Getenv("ENVIRONMENT"),
 		AttachStacktrace: true,
 		SendDefaultPII:   true,
 		EnableTracing:    true,
@@ -35,7 +35,7 @@ func main() {
 		Repanic: true,
 	})
 
-	slackClient = slack.New(os.Getenv("SLACK_BOT_TOKEN"))
+	slackClient = slack.New(os.Getenv("SLACK_BOT_USER_OAUTH_TOKEN"))
 
 	router := httprouter.New()
 	router.GET("/", DefaultHandler)
