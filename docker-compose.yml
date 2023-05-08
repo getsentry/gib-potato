@@ -1,3 +1,4 @@
+version: '3.1'
 services:
   web:
     build: docker/web
@@ -33,16 +34,14 @@ services:
       gib-potato:
         aliases:
           - gib-potato.test
-
   db:
-    build: docker/mysql
-    ports:
-      - 8306:3306
+    image: postgres
+    restart: always
     environment:
-      MYSQL_DATABASE: gib_potato
-      MYSQL_ROOT_PASSWORD: password
+      POSTGRES_USER: gib_potato
+      POSTGRES_PASSWORD: password
     volumes:
-      - db:/var/lib/mysql
+      - db:/var/lib/postgresql/data
     networks:
       gib-potato:
         aliases:
