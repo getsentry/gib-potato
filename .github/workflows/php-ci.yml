@@ -18,6 +18,9 @@ jobs:
     steps:
     - uses: actions/checkout@v3
 
+    - name: Setup PostgreSQL
+      run: docker run --rm --name=postgres -e POSTGRES_DB=gib_potato_test -e POSTGRES_USER=gib_potato -e POSTGRES_PASSWORD=password -p 5432:5432 -d postgres:14
+
     - name: Setup PHP
       uses: shivammathur/setup-php@v2
       with:
@@ -32,12 +35,6 @@ jobs:
     
     - name: Run PHPStan
       run: vendor/bin/phpstan analyse
-
-    - name: Setup PostgreSQL
-      run: docker run --rm --name=postgres -e POSTGRES_DB=gib_potato_test -e POSTGRES_USER=gib_potato -e POSTGRES_PASSWORD=password -p 5432:5432 -d postgres:14
-
-    - name: Wait for PostgreSQL
-      run: while ! `pg_isready -U gib_potato`; do sleep 2; done
     
     - name: Run PHPUnit
       run: |
