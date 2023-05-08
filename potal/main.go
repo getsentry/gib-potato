@@ -8,7 +8,6 @@ import (
 
 	"github.com/getsentry/sentry-go"
 	sentryhttp "github.com/getsentry/sentry-go/http"
-	"github.com/joho/godotenv"
 	"github.com/julienschmidt/httprouter"
 	"github.com/slack-go/slack"
 )
@@ -16,11 +15,6 @@ import (
 var slackClient *slack.Client
 
 func main() {
-	envErr := godotenv.Load(".env")
-	if envErr != nil {
-		log.Fatalf("An Error Occured: %v", envErr)
-	}
-
 	sentryErr := sentry.Init(sentry.ClientOptions{
 		Dsn:              os.Getenv("SENTRY_DSN"),
 		Release:          os.Getenv("SENTRY_RELEASE"),
