@@ -37,7 +37,7 @@ jobs:
       run: docker run --rm --name=postgres -e POSTGRES_DB=gib_potato_test -e POSTGRES_USER=gib_potato -e POSTGRES_PASSWORD=password -p 5432:5432 -d postgres:14
 
     - name: Wait for PostgreSQL
-      run: pg_isready -U gib_potato
+      run: while ! `pg_isready -U gib_potato`; sleep 2;
     
     - name: Run PHPUnit
       run: |
