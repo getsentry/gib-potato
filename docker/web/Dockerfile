@@ -14,7 +14,7 @@ RUN \
     php8.1-fpm \
     php8.1-intl \
     php8.1-mbstring \
-    php8.1-mysql \
+    php8.1-pgsql \
     php8.1-sqlite3 \
     php8.1-xml \
     php8.1-zip && \
