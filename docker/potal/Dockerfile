@@ -2,7 +2,7 @@ ARG GOVERSION=latest
 FROM golang:$GOVERSION AS builder
 
 WORKDIR /src
-COPY . .
+COPY ./potal .
 
 RUN GOOS=linux GOARCH=amd64 CGO_ENABLED=0 go build -o potal -ldflags="-s -w" .
 

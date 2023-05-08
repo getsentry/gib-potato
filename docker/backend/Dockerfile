@@ -1,4 +1,19 @@
-FROM ubuntu:22.04
+FROM node:18-bullseye as js-build
+
+WORKDIR /app
+
+COPY ./frontend frontend
+COPY ./package.json package.json
+COPY ./package-lock.json package-lock.json
+COPY ./postcss.config.js postcss.config.js
+COPY ./tailwind.config.js tailwind.config.js
+COPY ./vite.config.js vite.config.js
+COPY ./webroot/assets webroot/assets
+
+RUN npm install
+RUN npm run build
+
+FROM ubuntu:22.04 as php-build
 
 ENV DEBIAN_FRONTEND=noninteractive
 
@@ -21,7 +36,7 @@ RUN \
     rm -rf /var/lib/apt/lists/*
 
 RUN rm /etc/apache2/sites-available/*.conf
-COPY apache/gib-potato.conf /etc/apache2/sites-available/gib-potato.conf
+COPY ./docker/backend/apache/gib-potato.conf /etc/apache2/sites-available/gib-potato.conf
 
 RUN \
     a2ensite gib-potato && \
@@ -37,7 +52,27 @@ COPY --from=composer:latest /usr/bin/composer /usr/local/bin/composer
 
 WORKDIR /var/www/gib-potato
 
-COPY run.sh /run.sh
+COPY ./bin bin
+COPY ./config config
+COPY ./resources resources
+COPY ./src src
+COPY ./templates templates
+COPY ./webroot webroot
+COPY --from=js-build /app/webroot/assets webroot/assets
+COPY ./composer.json composer.json
+COPY ./composer.lock composer.lock
+COPY index.php index.php
+
+RUN mkdir logs
+
+RUN chmod 700 /var/www/gib-potato
+RUN chown -R www-data:www-data /var/www/gib-potato
+
+USER www-data
+RUN composer install --no-dev
+USER root
+
+COPY ./docker/backend/run.sh /run.sh
 RUN chmod +x /run.sh
 
 EXPOSE 80
