@@ -56,3 +56,5 @@ nbproject/*
 /node_modules/*
 .yarn/
 yarn-error.log
+
+.terraform
