@@ -12,6 +12,7 @@ services:
         - APP_ENCODING
         - APP_DEFAULT_LOCALE
         - APP_DEFAULT_TIMEZONE
+        - SECURITY_SALT
         - MAIN_DOMAIN
         - DATABASE_URL
         - SLACK_CLIENT_ID

@@ -58,32 +58,9 @@ class Installer
 
         $rootDir = dirname(dirname(__DIR__));
 
-        static::createAppLocalConfig($rootDir, $io);
         static::createWritableDirectories($rootDir, $io);
 
         static::setFolderPermissions($rootDir, $io);
-        static::setSecuritySalt($rootDir, $io);
-
-        if (class_exists(CodeceptionInstaller::class)) {
-            CodeceptionInstaller::customizeCodeceptionBinary($event);
-        }
-    }
-
-    /**
-     * Create config/app_local.php file if it does not exist.
-     *
-     * @param string $dir The application's root directory.
-     * @param \Composer\IO\IOInterface $io IO interface to write to console.
-     * @return void
-     */
-    public static function createAppLocalConfig($dir, $io)
-    {
-        $appLocalConfig = $dir . '/config/app_local.php';
-        $appLocalConfigTemplate = $dir . '/config/app_local.example.php';
-        if (!file_exists($appLocalConfig)) {
-            copy($appLocalConfigTemplate, $appLocalConfig);
-            $io->write('Created `config/app_local.php` file');
-        }
     }
 
     /**
@@ -168,50 +145,6 @@ class Installer
         $walker($dir . '/tmp');
         $changePerms($dir . '/tmp');
         $changePerms($dir . '/logs');
-    }
-
-    /**
-     * Set the security.salt value in the application's config file.
-     *
-     * @param string $dir The application's root directory.
-     * @param \Composer\IO\IOInterface $io IO interface to write to console.
-     * @return void
-     */
-    public static function setSecuritySalt($dir, $io)
-    {
-        $newKey = hash('sha256', Security::randomBytes(64));
-        static::setSecuritySaltInFile($dir, $io, $newKey, 'app_local.php');
-    }
-
-    /**
-     * Set the security.salt value in a given file
-     *
-     * @param string $dir The application's root directory.
-     * @param \Composer\IO\IOInterface $io IO interface to write to console.
-     * @param string $newKey key to set in the file
-     * @param string $file A path to a file relative to the application's root
-     * @return void
-     */
-    public static function setSecuritySaltInFile($dir, $io, $newKey, $file)
-    {
-        $config = $dir . '/config/' . $file;
-        $content = file_get_contents($config);
-
-        $content = str_replace('__SALT__', $newKey, $content, $count);
-
-        if ($count == 0) {
-            $io->write('No Security.salt placeholder to replace.');
-
-            return;
-        }
-
-        $result = file_put_contents($config, $content);
-        if ($result) {
-            $io->write('Updated Security.salt value in config/' . $file);
-
-            return;
-        }
-        $io->write('Unable to update Security.salt value.');
     }
 
     /**

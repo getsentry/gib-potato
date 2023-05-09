@@ -37,6 +37,7 @@ RUN \
 
 RUN rm /etc/apache2/sites-available/*.conf
 COPY ./docker/backend/apache/gib-potato.conf /etc/apache2/sites-available/gib-potato.conf
+COPY ./docker/backend/apache/environment.conf /etc/apache2/conf-available/environment.conf
 
 RUN \
     a2ensite gib-potato && \
@@ -45,6 +46,7 @@ RUN \
     a2enmod proxy_fcgi && \
     a2enmod setenvif && \
     a2enconf php8.1-fpm && \
+    a2enconf environment && \
     sed -i 's/Options Indexes FollowSymLinks/Options FollowSymLinks/g' /etc/apache2/apache2.conf && \
     sed -i "s/AllowOverride None/AllowOverride All/g" /etc/apache2/apache2.conf
 
@@ -59,6 +61,7 @@ COPY ./src src
 COPY ./templates templates
 COPY ./webroot webroot
 COPY --from=js-build /app/webroot/assets webroot/assets
+COPY --from=js-build /app/webroot/manifest.json webroot/manifest.json
 COPY ./composer.json composer.json
 COPY ./composer.lock composer.lock
 COPY index.php index.php
