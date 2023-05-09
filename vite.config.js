@@ -9,23 +9,23 @@ import { sentryVitePlugin } from '@sentry/vite-plugin';
 export default defineConfig({
   plugins: [
     vue(),
-    sentryVitePlugin({
-      include: [], // we're using debug ID upload instead (see _experiments.debugIdUpload)
-      org: process.env.SENTRY_ORG,
-      project: process.env.SENTRY_PROJECT,
-      authToken: process.env.SENTRY_AUTH_TOKEN,
-      dryRun: !process.env.SENTRY_AUTH_TOKEN,
-      setCommits: {
-        auto: true,
-        ignoreEmpty: true,
-      },
-      _experiments: {
-        injectBuildInformation: true,
-        debugIdUpload: {
-          include: './webroot/assets/**',
-        },
-      },
-    }),
+    // sentryVitePlugin({
+    //   include: [], // we're using debug ID upload instead (see _experiments.debugIdUpload)
+    //   org: process.env.SENTRY_ORG,
+    //   project: process.env.SENTRY_PROJECT,
+    //   authToken: process.env.SENTRY_AUTH_TOKEN,
+    //   dryRun: !process.env.SENTRY_AUTH_TOKEN,
+    //   setCommits: {
+    //     auto: true,
+    //     ignoreEmpty: true,
+    //   },
+    //   _experiments: {
+    //     injectBuildInformation: true,
+    //     debugIdUpload: {
+    //       include: './webroot/assets/**',
+    //     },
+    //   },
+    // }),
   ],
   build: {
     sourcemap: true,
