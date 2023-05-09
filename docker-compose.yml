@@ -12,7 +12,6 @@ services:
         - APP_ENCODING
         - APP_DEFAULT_LOCALE
         - APP_DEFAULT_TIMEZONE
-        - SECURITY_SALT
         - MAIN_DOMAIN
         - DATABASE_URL
         - SLACK_CLIENT_ID
@@ -63,6 +62,8 @@ services:
       POSTGRES_PASSWORD: password
     volumes:
       - db:/var/lib/postgresql/data
+    ports:
+      - 8432:5432
     networks:
       gib-potato:
         aliases:
