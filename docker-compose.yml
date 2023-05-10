@@ -1,7 +1,9 @@
 version: '3.1'
 services:
-  web:
-    build: docker/web
+  backend:
+    build:
+      context: .
+      dockerfile: ./docker/backend/Dockerfile
     environment:
         - APP_NAME
         - ENVIRONMENT
@@ -26,22 +28,43 @@ services:
         - POTATO_SLACK_USER_ID
     depends_on:
       - db
+      - potal
     ports:
       - 8080:80
-    volumes:
-      - .:/var/www/gib-potato:consistent
     networks:
       gib-potato:
         aliases:
           - gib-potato.test
+
+  potal:
+    build:
+      context: .
+      dockerfile: ./docker/potal/Dockerfile
+    environment:
+      - SENTRY_DSN
+      - RELEASE
+      - ENVIRONMENT
+      - SLACK_BOT_USER_OAUTH_TOKEN
+      - SLACK_SIGNING_SECRET
+      - POTAL_URL
+      - POTAL_TOKEN
+    ports:
+      - 3000:3000
+    networks:
+      gib-potato:
+        aliases:
+          - potal.gib-potato.test
+
   db:
-    image: postgres
+    image: postgres:14
     restart: always
     environment:
       POSTGRES_USER: gib_potato
       POSTGRES_PASSWORD: password
     volumes:
       - db:/var/lib/postgresql/data
+    ports:
+      - 8432:5432
     networks:
       gib-potato:
         aliases:
