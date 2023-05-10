@@ -19,7 +19,12 @@
     <?= $this->fetch('script') ?>
     <?= $this->fetch('css') ?>
 </head>
-<body class="h-full bg-gray-50 dark:bg-zinc-900 text-zinc-900 dark:text-zinc-50 font-mono">
+<body
+    class="h-full bg-gray-50 dark:bg-zinc-900 text-zinc-900 dark:text-zinc-50 font-mono"
+    data-sentry-frontend-dsn="<?= env('SENTRY_FRONTEND_DSN') ?>"
+    data-sentry-environment="<?= env('ENVIRONMENT') ?>"
+    data-sentry-release="<?= env('RELEASE') ?>"
+>
     <?= $this->fetch('content') ?>
     <?= $this->element('footer') ?>
 </body>

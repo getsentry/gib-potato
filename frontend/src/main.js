@@ -12,11 +12,13 @@ import './assets/main.css'
 (async () => {
     const app = createApp(App)
 
+    let dataSet = document.querySelector('body').dataset
+
     Sentry.init({
         app,
-        dsn: import.meta.env.VITE_APP_SENTRY_DSN,
-        environment: import.meta.env.VITE_ENVIRONMENT,
-        release: import.meta.env.VITE_RELEASE,
+        dsn: dataSet.sentryFrontendDsn,
+        environment: dataSet.sentryEnvironment,
+        release: dataSet.sentryRelease,
         integrations: [
             new Sentry.BrowserTracing({
                 routingInstrumentation: Sentry.vueRouterInstrumentation(router),

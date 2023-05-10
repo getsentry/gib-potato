@@ -63,16 +63,8 @@ try {
     exit($e->getMessage() . "\n");
 }
 
-/*
- * Load an environment local configuration file to provide overrides to your configuration.
- * Notice: For security reasons app_local.php **should not** be included in your git repo.
- */
-if (file_exists(CONFIG . 'app_local.php')) {
-    Configure::load('app_local', 'default');
-}
-
 Sentry\init([
-    'dsn' => env('SENTRY_DSN'),
+    'dsn' => env('SENTRY_BACKEND_DSN'),
     'traces_sample_rate' => 1.0,
     'profiles_sample_rate' => 1.0,
     'environment' => env('ENVIRONMENT'),

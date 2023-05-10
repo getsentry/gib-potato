@@ -16,7 +16,7 @@ var slackClient *slack.Client
 
 func main() {
 	sentryErr := sentry.Init(sentry.ClientOptions{
-		Dsn:              os.Getenv("SENTRY_DSN"),
+		Dsn:              os.Getenv("SENTRY_POTAL_DSN"),
 		Release:          os.Getenv("RELEASE"),
 		Environment:      os.Getenv("ENVIRONMENT"),
 		AttachStacktrace: true,
