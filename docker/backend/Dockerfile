@@ -3,13 +3,14 @@ FROM node:18-bullseye as js-build
 WORKDIR /app
 
 COPY ./frontend frontend
+COPY ./templates templates
 COPY ./package.json package.json
 COPY ./package-lock.json package-lock.json
 COPY ./postcss.config.js postcss.config.js
 COPY ./tailwind.config.js tailwind.config.js
 COPY ./vite.config.js vite.config.js
 
-RUN npm install
+RUN npm install --frozen-lock
 RUN npm run build
 
 FROM ubuntu:22.04 as php-build
