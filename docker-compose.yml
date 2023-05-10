@@ -21,7 +21,8 @@ services:
         - SLACK_TEAM_ID
         - SLACK_REDIRECT_URI
         - SLACK_BOT_USER_OAUTH_TOKEN
-        - SENTRY_DSN
+        - SENTRY_BACKEND_DSN
+        - SENTRY_FRONTEND_DSN
         - SENTRY_MONITOR_ID
         - POTAL_TOKEN
         - POTATO_CHANNEL
@@ -41,7 +42,7 @@ services:
       context: .
       dockerfile: ./docker/potal/Dockerfile
     environment:
-      - SENTRY_DSN
+      - SENTRY_POTAL_DSN
       - RELEASE
       - ENVIRONMENT
       - SLACK_BOT_USER_OAUTH_TOKEN
