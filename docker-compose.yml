@@ -7,7 +7,7 @@ services:
     environment:
         - APP_NAME
         - ENVIRONMENT
-        - VERSION
+        - RELEASE
         - DEBUG
         - APP_ENCODING
         - APP_DEFAULT_LOCALE
