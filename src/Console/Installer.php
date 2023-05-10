@@ -20,8 +20,6 @@ if (!defined('STDIN')) {
     define('STDIN', fopen('php://stdin', 'r'));
 }
 
-use Cake\Codeception\Console\Installer as CodeceptionInstaller;
-use Cake\Utility\Security;
 use Composer\Script\Event;
 use Exception;
 
