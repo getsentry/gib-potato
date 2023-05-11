@@ -344,7 +344,7 @@ return [
             'username' => env('DATABASE_USER'),
             'password' => env('DATABASE_PASSWORD'),
             'database' => env('DATABASE_NAME'),
-            'unix_socket' => env('DATABASE_SOCKET'),
+            'host' => env('DATABASE_SOCKET'),
         ],
     ],
 
