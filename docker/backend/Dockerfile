@@ -48,7 +48,9 @@ RUN \
     a2enconf php8.1-fpm && \
     a2enconf environment && \
     sed -i 's/Options Indexes FollowSymLinks/Options FollowSymLinks/g' /etc/apache2/apache2.conf && \
-    sed -i "s/AllowOverride None/AllowOverride All/g" /etc/apache2/apache2.conf
+    sed -i "s/AllowOverride None/AllowOverride All/g" /etc/apache2/apache2.conf && \
+    sed -i "s/80/8080/g" /etc/apache2/ports.conf && \
+    sed -i "s/;clear_env = no/clear_env = no/g" /etc/php/8.1/fpm/pool.d/www.conf
 
 COPY --from=composer:latest /usr/bin/composer /usr/local/bin/composer
 
@@ -78,6 +80,6 @@ USER root
 COPY ./docker/backend/run.sh /run.sh
 RUN chmod +x /run.sh
 
-EXPOSE 80
+EXPOSE 8080
 
 CMD [ "/bin/bash", "/run.sh" ]
