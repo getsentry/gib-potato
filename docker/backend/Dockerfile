@@ -30,27 +30,22 @@ RUN \
     php8.1-intl \
     php8.1-mbstring \
     php8.1-pgsql \
-    php8.1-sqlite3 \
     php8.1-xml \
     php8.1-zip && \
     rm -rf /var/lib/apt/lists/*
 
 RUN rm /etc/apache2/sites-available/*.conf
 COPY ./docker/backend/apache/gib-potato.conf /etc/apache2/sites-available/gib-potato.conf
-COPY ./docker/backend/apache/environment.conf /etc/apache2/conf-available/environment.conf
 
 RUN \
     a2ensite gib-potato && \
-    a2enmod rewrite && \
-    a2enmod headers && \
-    a2enmod proxy_fcgi && \
-    a2enmod setenvif && \
     a2enconf php8.1-fpm && \
-    a2enconf environment && \
-    sed -i 's/Options Indexes FollowSymLinks/Options FollowSymLinks/g' /etc/apache2/apache2.conf && \
-    sed -i "s/AllowOverride None/AllowOverride All/g" /etc/apache2/apache2.conf && \
-    sed -i "s/80/8080/g" /etc/apache2/ports.conf && \
+    a2enmod proxy_fcgi && \
+    a2enmod rewrite && \
     sed -i "s/;clear_env = no/clear_env = no/g" /etc/php/8.1/fpm/pool.d/www.conf
+
+RUN mkdir -p /run/php/
+COPY ./docker/backend/supervisord/conf.d/ /etc/supervisor/conf.d/
 
 COPY --from=composer:latest /usr/bin/composer /usr/local/bin/composer
 
