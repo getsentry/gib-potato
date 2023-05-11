@@ -14,7 +14,10 @@ services:
         - APP_DEFAULT_TIMEZONE
         - SECURITY_SALT
         - MAIN_DOMAIN
-        - DATABASE_URL
+        - DATABASE_USER
+        - DATABASE_PASSWORD
+        - DATABASE_NAME
+        - DATABASE_SOCKET
         - SLACK_CLIENT_ID
         - SLACK_CLIENT_SECRET
         - SLACK_SIGNING_SECRET
