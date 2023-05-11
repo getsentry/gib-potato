@@ -1,8 +1,8 @@
 steps:
 - name: 'gcr.io/cloud-builders/docker'
-  args: [ 'build', '-f', './docker/potal/Dockerfile', '-t', '${LOCATION}-docker.pkg.dev/$PROJECT_ID/potal/potal:latest', '.']
+  args: [ 'build', '-f', './docker/potal/Dockerfile', '-t', 'us-central1-docker.pkg.dev/$PROJECT_ID/potal/potal:latest', '.']
 - name: 'gcr.io/cloud-builders/docker'
-  args: [ 'build', '-f', './docker/backend/Dockerfile', '-t', '${LOCATION}-docker.pkg.dev/$PROJECT_ID/backend/backend:latest', '.']
+  args: [ 'build', '-f', './docker/backend/Dockerfile', '-t', 'us-central1-docker.pkg.dev/$PROJECT_ID/backend/backend:latest', '.']
 images:
-- '$LOCATION-docker.pkg.dev/$PROJECT_ID/backend/backend:latest'
-- '$LOCATION-docker.pkg.dev/$PROJECT_ID/potal/potal:latest'
+- 'us-central1-docker.pkg.dev/$PROJECT_ID/backend/backend:latest'
+- 'us-central1-docker.pkg.dev/$PROJECT_ID/potal/potal:latest'
