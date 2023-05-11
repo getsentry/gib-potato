@@ -43,7 +43,7 @@ RUN \
     a2enmod proxy_fcgi && \
     a2enmod rewrite && \
     sed -i "s/;clear_env = no/clear_env = no/g" /etc/php/8.1/fpm/pool.d/www.conf && \
-    sed -i "s/Listen 80/Listen 8080/g" /etc/apache/ports.conf
+    sed -i "s/Listen 80/Listen 8080/g" /etc/apache2/ports.conf
 
 RUN mkdir -p /run/php/
 COPY ./docker/backend/supervisord/conf.d/ /etc/supervisor/conf.d/
