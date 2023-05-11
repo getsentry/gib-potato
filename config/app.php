@@ -341,7 +341,10 @@ return [
              */
             // 'init' => ['SET GLOBAL innodb_stats_on_metadata = 0'],
 
-            'url' => env('DATABASE_URL', null),
+            'username' => env('DATABASE_USER'),
+            'password' => env('DATABASE_PASSWORD'),
+            'database' => env('DATABASE_NAME'),
+            'unix_socket' => env('DATABASE_SOCKET'),
         ],
     ],
 
