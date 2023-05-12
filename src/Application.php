@@ -19,11 +19,12 @@ namespace App;
 use App\Middleware\SentryMiddleware;
 use App\Middleware\SentryUserMiddleware;
 use Cake\Core\Configure;
+use Cake\Http\BaseApplication;
+use Cake\Http\Middleware\BodyParserMiddleware;
+
 use Cake\Core\ContainerInterface;
 use Cake\Datasource\FactoryLocator;
 use Cake\Error\Middleware\ErrorHandlerMiddleware;
-use Cake\Http\BaseApplication;
-use Cake\Http\Middleware\BodyParserMiddleware;
 use Cake\Http\Middleware\CspMiddleware;
 use Cake\Http\MiddlewareQueue;
 use Cake\ORM\Locator\TableLocator;
