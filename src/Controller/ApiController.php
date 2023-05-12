@@ -97,10 +97,10 @@ class ApiController extends Controller
         if (!empty($order)) {
             switch ($order) {
                 case 'sent':
-                    $query->order(['sent_count' => $query->newExpr('DESC NULLS FIRST')]);
+                    $query->order(['sent_count' => $query->newExpr('DESC NULLS LAST')]);
                     break;
                 case 'received':
-                    $query->order(['received_count' => $query->newExpr('DESC NULLS FIRST')]);
+                    $query->order(['received_count' => $query->newExpr('DESC NULLS LAST')]);
                     break;
             }
         }
