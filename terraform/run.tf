@@ -1,5 +1,5 @@
-resource "google_cloud_run_v2_service" "web" {
-  name     = "gib-potato-web"
+resource "google_cloud_run_v2_service" "backend" {
+  name     = "backend"
   location = "us-central1"
   ingress  = "INGRESS_TRAFFIC_ALL"
 
@@ -16,78 +16,109 @@ resource "google_cloud_run_v2_service" "web" {
     }
 
     containers {
-      image = "ghcr.io/getsentry/gib-potato-potal:main"
+      image = "us-central1-docker.pkg.dev/hackweek-gib-potato/backend/backend:latest"
 
-      env {
-        name = "APP_NAME"
+      volume_mounts {
+        name       = "cloudsql"
+        mount_path = "/cloudsql"
+      }
+
+      ports {
+        container_port = 8080
       }
 
       env {
-        name = "ENVIRONMENT"
+        name  = "APP_NAME"
+        value = "gib_potato"
       }
 
       env {
-        name = "VERSION"
+        name  = "ENVIRONMENT"
+        value = "production"
       }
 
       env {
-        name = "DEBUG"
+        name  = "VERSION"
+        value = "2023.1"
       }
 
       env {
-        name = "APP_ENCODING"
+        name  = "DEBUG"
+        value = "false"
       }
 
       env {
-        name = "APP_DEFAULT_LOCALE"
+        name  = "APP_ENCODING"
+        value = "UTF-8"
       }
 
       env {
-        name = "APP_DEFAULT_TIMEZONE"
+        name  = "APP_DEFAULT_LOCALE"
+        value = "en_US"
       }
 
       env {
-        name = "MAIN_DOMAIN"
+        name  = "APP_DEFAULT_TIMEZONE"
+        value = "UTC"
       }
 
       env {
-        name = "DATABASE_URL"
+        name  = "MAIN_DOMAIN"
+        value = ".gibpotato.app"
       }
 
       env {
-        name = "SLACK_CLIENT_ID"
+        name  = "SLACK_REDIRECT_URI"
+        value = "https://gibpotato.app/open-id"
+      }
+
+      env {
+        name  = "LOG_DEBUG_URL"
+        value = "file:///var/log/"
+      }
+
+      env {
+
+        name  = "LOG_ERROR_URL"
+        value = "file:///var/log/"
       }
 
       env {
         name = "SLACK_TEAM_ID"
-      }
-
-      env {
-        name = "SLACK_REDIRECT_URI"
-      }
-
-      env {
-        name = "SENTRY_DSN"
-      }
-
-      env {
-        name = "SENTRY_MONITOR_ID"
+        value_source {
+          secret_key_ref {
+            secret  = google_secret_manager_secret.slack_team_id.secret_id
+            version = "latest"
+          }
+        }
       }
 
       env {
         name = "POTATO_CHANNEL"
+        value_source {
+          secret_key_ref {
+            secret  = google_secret_manager_secret.potato_channel.secret_id
+            version = "latest"
+          }
+        }
       }
 
       env {
         name = "POTATO_SLACK_USER_ID"
+        value_source {
+          secret_key_ref {
+            secret  = google_secret_manager_secret.potato_slack_user_id.secret_id
+            version = "latest"
+          }
+        }
       }
 
       env {
-        name = "SECURITY_SALT"
+        name = "SLACK_CLIENT_ID"
         value_source {
           secret_key_ref {
-            secret  = google_secret_manager_secret.security_salt.secret_id
-            version = "1"
+            secret  = google_secret_manager_secret.slack_client_secret.secret_id
+            version = "latest"
           }
         }
       }
@@ -97,7 +128,7 @@ resource "google_cloud_run_v2_service" "web" {
         value_source {
           secret_key_ref {
             secret  = google_secret_manager_secret.slack_client_secret.secret_id
-            version = "1"
+            version = "latest"
           }
         }
       }
@@ -107,7 +138,7 @@ resource "google_cloud_run_v2_service" "web" {
         value_source {
           secret_key_ref {
             secret  = google_secret_manager_secret.slack_signing_secret.secret_id
-            version = "1"
+            version = "latest"
           }
         }
       }
@@ -117,7 +148,7 @@ resource "google_cloud_run_v2_service" "web" {
         value_source {
           secret_key_ref {
             secret  = google_secret_manager_secret.slack_bot_user_oauth_token.secret_id
-            version = "1"
+            version = "latest"
           }
         }
       }
@@ -127,14 +158,79 @@ resource "google_cloud_run_v2_service" "web" {
         value_source {
           secret_key_ref {
             secret  = google_secret_manager_secret.potal_token.secret_id
-            version = "1"
+            version = "latest"
           }
         }
       }
 
-      volume_mounts {
-        name       = "cloudsql"
-        mount_path = "/cloudsql"
+      env {
+        name = "SECURITY_SALT"
+        value_source {
+          secret_key_ref {
+            secret  = google_secret_manager_secret.security_salt.secret_id
+            version = "latest"
+          }
+        }
+      }
+
+      env {
+        name = "SENTRY_FRONTEND_DSN"
+        value_source {
+          secret_key_ref {
+            secret  = google_secret_manager_secret.frontend_dsn.secret_id
+            version = "latest"
+          }
+        }
+      }
+
+      env {
+        name = "SENTRY_BACKEND_DSN"
+        value_source {
+          secret_key_ref {
+            secret  = google_secret_manager_secret.backend_dsn.secret_id
+            version = "latest"
+          }
+        }
+      }
+
+      env {
+        name = "DATABASE_USER"
+        value_source {
+          secret_key_ref {
+            secret  = google_secret_manager_secret.database_user.secret_id
+            version = "latest"
+          }
+        }
+      }
+
+      env {
+        name = "DATABASE_PASSWORD"
+        value_source {
+          secret_key_ref {
+            secret  = google_secret_manager_secret.database_password.secret_id
+            version = "latest"
+          }
+        }
+      }
+
+      env {
+        name = "DATABASE_NAME"
+        value_source {
+          secret_key_ref {
+            secret  = google_secret_manager_secret.database_name.secret_id
+            version = "latest"
+          }
+        }
+      }
+
+      env {
+        name = "DATABASE_SOCKET"
+        value_source {
+          secret_key_ref {
+            secret  = google_secret_manager_secret.database_socket.secret_id
+            version = "latest"
+          }
+        }
       }
     }
   }
@@ -151,29 +247,55 @@ resource "google_cloud_run_v2_service" "web" {
     data.google_secret_manager_secret_version.slack_bot_user_oauth_token,
     data.google_secret_manager_secret_version.potal_token,
     google_sql_database_instance.db,
-
   ]
 }
 
 resource "google_cloud_run_v2_service" "potal" {
-  name     = "gib-potato-potal"
+  name     = "potal"
   location = "us-central1"
   ingress  = "INGRESS_TRAFFIC_ALL"
 
   template {
     containers {
-      image = "ghcr.io/getsentry/gib-potato-potal:main"
+      image = "us-central1-docker.pkg.dev/hackweek-gib-potato/potal/potal:latest"
 
-      env {
-        name = "ENVIRONMENT"
+      ports {
+        container_port = 3000
       }
 
       env {
-        name = "RELEASE"
+        name  = "ENVIRONMENT"
+        value = "production"
       }
 
       env {
-        name = "POTAL_URL"
+        name  = "RELEASE"
+        value = "2023.2"
+      }
+
+      env {
+        name  = "POTAL_URL"
+        value = "https://gibpotato.app/events"
+      }
+
+      env {
+        name = "SLACK_BOT_USER_OAUTH_TOKEN"
+        value_source {
+          secret_key_ref {
+            secret  = google_secret_manager_secret.slack_bot_user_oauth_token.secret_id
+            version = "latest"
+          }
+        }
+      }
+
+      env {
+        name = "SENTRY_POTAL_DSN"
+        value_source {
+          secret_key_ref {
+            secret  = google_secret_manager_secret.potal_dsn.secret_id
+            version = "latest"
+          }
+        }
       }
 
       env {
@@ -181,7 +303,7 @@ resource "google_cloud_run_v2_service" "potal" {
         value_source {
           secret_key_ref {
             secret  = google_secret_manager_secret.slack_signing_secret.secret_id
-            version = "1"
+            version = "latest"
           }
         }
       }
@@ -191,7 +313,7 @@ resource "google_cloud_run_v2_service" "potal" {
         value_source {
           secret_key_ref {
             secret  = google_secret_manager_secret.potal_token.secret_id
-            version = "1"
+            version = "latest"
           }
         }
       }
@@ -206,5 +328,6 @@ resource "google_cloud_run_v2_service" "potal" {
   depends_on = [
     data.google_secret_manager_secret_version.slack_signing_secret,
     data.google_secret_manager_secret_version.potal_token,
+    data.google_secret_manager_secret_version.potal_dsn,
   ]
 }
