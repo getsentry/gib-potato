@@ -39,8 +39,8 @@ resource "google_cloud_run_v2_service" "backend" {
       }
 
       env {
-        name  = "VERSION"
-        value = "2023.1"
+        name  = "RELEASE"
+        value = "2023.2"
       }
 
       env {
