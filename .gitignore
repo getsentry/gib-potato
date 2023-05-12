@@ -57,4 +57,4 @@ nbproject/*
 .yarn/
 yarn-error.log
 
-.terraform
+.terraform*
