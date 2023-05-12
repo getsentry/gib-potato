@@ -7,8 +7,23 @@ resource "google_sql_database_instance" "db" {
   name             = "gib-potato-db"
   region           = "us-central1"
   database_version = "POSTGRES_14"
+
   settings {
-    tier = "db-f1-micro"
+    tier = "db-custom-1-3840"
+    availability_type = "REGIONAL"
+
+    backup_configuration {
+      enabled = true
+      point_in_time_recovery_enabled = true
+
+      backup_retention_settings {
+        retained_backups = 7
+      }
+    }
+
+    insights_config {
+      query_insights_enabled = true
+    }
   }
 
   deletion_protection = "true"
