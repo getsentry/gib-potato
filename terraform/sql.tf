@@ -9,11 +9,11 @@ resource "google_sql_database_instance" "db" {
   database_version = "POSTGRES_14"
 
   settings {
-    tier = "db-custom-1-3840"
+    tier              = "db-custom-1-3840"
     availability_type = "REGIONAL"
 
     backup_configuration {
-      enabled = true
+      enabled                        = true
       point_in_time_recovery_enabled = true
 
       backup_retention_settings {

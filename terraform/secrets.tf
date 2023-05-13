@@ -10,10 +10,9 @@ data "google_secret_manager_secret_version" "security_salt" {
 }
 
 resource "google_secret_manager_secret_iam_member" "security_salt" {
-  secret_id  = google_secret_manager_secret.security_salt.id
-  role       = "roles/secretmanager.secretAccessor"
-  member     = "serviceAccount:${data.google_project.project.number}-compute@developer.gserviceaccount.com"
-  depends_on = [google_secret_manager_secret.security_salt]
+  secret_id = google_secret_manager_secret.security_salt.id
+  role      = "roles/secretmanager.secretAccessor"
+  member    = "serviceAccount:${data.google_project.project.number}-compute@developer.gserviceaccount.com"
 }
 
 resource "google_secret_manager_secret" "slack_client_secret" {
@@ -28,10 +27,9 @@ data "google_secret_manager_secret_version" "slack_client_secret" {
 }
 
 resource "google_secret_manager_secret_iam_member" "slack_client_secret" {
-  secret_id  = google_secret_manager_secret.slack_client_secret.id
-  role       = "roles/secretmanager.secretAccessor"
-  member     = "serviceAccount:${data.google_project.project.number}-compute@developer.gserviceaccount.com"
-  depends_on = [google_secret_manager_secret.slack_client_secret]
+  secret_id = google_secret_manager_secret.slack_client_secret.id
+  role      = "roles/secretmanager.secretAccessor"
+  member    = "serviceAccount:${data.google_project.project.number}-compute@developer.gserviceaccount.com"
 }
 
 resource "google_secret_manager_secret" "slack_client_id" {
@@ -46,10 +44,9 @@ data "google_secret_manager_secret_version" "slack_client_id" {
 }
 
 resource "google_secret_manager_secret_iam_member" "slack_client_id" {
-  secret_id  = google_secret_manager_secret.slack_client_id.id
-  role       = "roles/secretmanager.secretAccessor"
-  member     = "serviceAccount:${data.google_project.project.number}-compute@developer.gserviceaccount.com"
-  depends_on = [google_secret_manager_secret.slack_client_id]
+  secret_id = google_secret_manager_secret.slack_client_id.id
+  role      = "roles/secretmanager.secretAccessor"
+  member    = "serviceAccount:${data.google_project.project.number}-compute@developer.gserviceaccount.com"
 }
 
 resource "google_secret_manager_secret" "slack_signing_secret" {
@@ -64,10 +61,9 @@ data "google_secret_manager_secret_version" "slack_signing_secret" {
 }
 
 resource "google_secret_manager_secret_iam_member" "slack_signing_secret" {
-  secret_id  = google_secret_manager_secret.slack_signing_secret.id
-  role       = "roles/secretmanager.secretAccessor"
-  member     = "serviceAccount:${data.google_project.project.number}-compute@developer.gserviceaccount.com"
-  depends_on = [google_secret_manager_secret.slack_signing_secret]
+  secret_id = google_secret_manager_secret.slack_signing_secret.id
+  role      = "roles/secretmanager.secretAccessor"
+  member    = "serviceAccount:${data.google_project.project.number}-compute@developer.gserviceaccount.com"
 }
 
 resource "google_secret_manager_secret" "slack_bot_user_oauth_token" {
@@ -82,10 +78,9 @@ data "google_secret_manager_secret_version" "slack_bot_user_oauth_token" {
 }
 
 resource "google_secret_manager_secret_iam_member" "slack_bot_user_oauth_token" {
-  secret_id  = google_secret_manager_secret.slack_bot_user_oauth_token.id
-  role       = "roles/secretmanager.secretAccessor"
-  member     = "serviceAccount:${data.google_project.project.number}-compute@developer.gserviceaccount.com"
-  depends_on = [google_secret_manager_secret.slack_bot_user_oauth_token]
+  secret_id = google_secret_manager_secret.slack_bot_user_oauth_token.id
+  role      = "roles/secretmanager.secretAccessor"
+  member    = "serviceAccount:${data.google_project.project.number}-compute@developer.gserviceaccount.com"
 }
 
 resource "google_secret_manager_secret" "potal_token" {
@@ -100,10 +95,9 @@ data "google_secret_manager_secret_version" "potal_token" {
 }
 
 resource "google_secret_manager_secret_iam_member" "potal_token" {
-  secret_id  = google_secret_manager_secret.potal_token.id
-  role       = "roles/secretmanager.secretAccessor"
-  member     = "serviceAccount:${data.google_project.project.number}-compute@developer.gserviceaccount.com"
-  depends_on = [google_secret_manager_secret.potal_token]
+  secret_id = google_secret_manager_secret.potal_token.id
+  role      = "roles/secretmanager.secretAccessor"
+  member    = "serviceAccount:${data.google_project.project.number}-compute@developer.gserviceaccount.com"
 }
 
 resource "google_secret_manager_secret" "database_user" {
@@ -118,10 +112,9 @@ data "google_secret_manager_secret_version" "database_user" {
 }
 
 resource "google_secret_manager_secret_iam_member" "database_user" {
-  secret_id  = google_secret_manager_secret.database_user.id
-  role       = "roles/secretmanager.secretAccessor"
-  member     = "serviceAccount:${data.google_project.project.number}-compute@developer.gserviceaccount.com"
-  depends_on = [google_secret_manager_secret.database_user]
+  secret_id = google_secret_manager_secret.database_user.id
+  role      = "roles/secretmanager.secretAccessor"
+  member    = "serviceAccount:${data.google_project.project.number}-compute@developer.gserviceaccount.com"
 }
 
 resource "google_secret_manager_secret" "database_password" {
@@ -136,10 +129,9 @@ data "google_secret_manager_secret_version" "database_password" {
 }
 
 resource "google_secret_manager_secret_iam_member" "database_password" {
-  secret_id  = google_secret_manager_secret.database_password.id
-  role       = "roles/secretmanager.secretAccessor"
-  member     = "serviceAccount:${data.google_project.project.number}-compute@developer.gserviceaccount.com"
-  depends_on = [google_secret_manager_secret.database_password]
+  secret_id = google_secret_manager_secret.database_password.id
+  role      = "roles/secretmanager.secretAccessor"
+  member    = "serviceAccount:${data.google_project.project.number}-compute@developer.gserviceaccount.com"
 }
 
 resource "google_secret_manager_secret" "database_name" {
@@ -154,10 +146,9 @@ data "google_secret_manager_secret_version" "database_mame" {
 }
 
 resource "google_secret_manager_secret_iam_member" "database_name" {
-  secret_id  = google_secret_manager_secret.database_name.id
-  role       = "roles/secretmanager.secretAccessor"
-  member     = "serviceAccount:${data.google_project.project.number}-compute@developer.gserviceaccount.com"
-  depends_on = [google_secret_manager_secret.database_name]
+  secret_id = google_secret_manager_secret.database_name.id
+  role      = "roles/secretmanager.secretAccessor"
+  member    = "serviceAccount:${data.google_project.project.number}-compute@developer.gserviceaccount.com"
 }
 
 resource "google_secret_manager_secret" "database_socket" {
@@ -172,10 +163,9 @@ data "google_secret_manager_secret_version" "database_socket" {
 }
 
 resource "google_secret_manager_secret_iam_member" "database_socket" {
-  secret_id  = google_secret_manager_secret.database_socket.id
-  role       = "roles/secretmanager.secretAccessor"
-  member     = "serviceAccount:${data.google_project.project.number}-compute@developer.gserviceaccount.com"
-  depends_on = [google_secret_manager_secret.database_socket]
+  secret_id = google_secret_manager_secret.database_socket.id
+  role      = "roles/secretmanager.secretAccessor"
+  member    = "serviceAccount:${data.google_project.project.number}-compute@developer.gserviceaccount.com"
 }
 
 resource "google_secret_manager_secret" "slack_team_id" {
@@ -190,10 +180,9 @@ data "google_secret_manager_secret_version" "slack_team_id" {
 }
 
 resource "google_secret_manager_secret_iam_member" "slack_team_id" {
-  secret_id  = google_secret_manager_secret.slack_team_id.id
-  role       = "roles/secretmanager.secretAccessor"
-  member     = "serviceAccount:${data.google_project.project.number}-compute@developer.gserviceaccount.com"
-  depends_on = [google_secret_manager_secret.slack_team_id]
+  secret_id = google_secret_manager_secret.slack_team_id.id
+  role      = "roles/secretmanager.secretAccessor"
+  member    = "serviceAccount:${data.google_project.project.number}-compute@developer.gserviceaccount.com"
 }
 
 resource "google_secret_manager_secret" "potato_channel" {
@@ -208,10 +197,9 @@ data "google_secret_manager_secret_version" "potato_channel" {
 }
 
 resource "google_secret_manager_secret_iam_member" "potato_channel" {
-  secret_id  = google_secret_manager_secret.potato_channel.id
-  role       = "roles/secretmanager.secretAccessor"
-  member     = "serviceAccount:${data.google_project.project.number}-compute@developer.gserviceaccount.com"
-  depends_on = [google_secret_manager_secret.potato_channel]
+  secret_id = google_secret_manager_secret.potato_channel.id
+  role      = "roles/secretmanager.secretAccessor"
+  member    = "serviceAccount:${data.google_project.project.number}-compute@developer.gserviceaccount.com"
 }
 
 resource "google_secret_manager_secret" "potato_slack_user_id" {
@@ -226,10 +214,9 @@ data "google_secret_manager_secret_version" "potato_slack_user_id" {
 }
 
 resource "google_secret_manager_secret_iam_member" "potato_slack_user_id" {
-  secret_id  = google_secret_manager_secret.potato_slack_user_id.id
-  role       = "roles/secretmanager.secretAccessor"
-  member     = "serviceAccount:${data.google_project.project.number}-compute@developer.gserviceaccount.com"
-  depends_on = [google_secret_manager_secret.potato_slack_user_id]
+  secret_id = google_secret_manager_secret.potato_slack_user_id.id
+  role      = "roles/secretmanager.secretAccessor"
+  member    = "serviceAccount:${data.google_project.project.number}-compute@developer.gserviceaccount.com"
 }
 
 resource "google_secret_manager_secret" "backend_dsn" {
@@ -244,10 +231,9 @@ data "google_secret_manager_secret_version" "backend_dsn" {
 }
 
 resource "google_secret_manager_secret_iam_member" "backend_dsn" {
-  secret_id  = google_secret_manager_secret.backend_dsn.id
-  role       = "roles/secretmanager.secretAccessor"
-  member     = "serviceAccount:${data.google_project.project.number}-compute@developer.gserviceaccount.com"
-  depends_on = [google_secret_manager_secret.backend_dsn]
+  secret_id = google_secret_manager_secret.backend_dsn.id
+  role      = "roles/secretmanager.secretAccessor"
+  member    = "serviceAccount:${data.google_project.project.number}-compute@developer.gserviceaccount.com"
 }
 
 resource "google_secret_manager_secret" "frontend_dsn" {
@@ -262,10 +248,9 @@ data "google_secret_manager_secret_version" "frontend_dsn" {
 }
 
 resource "google_secret_manager_secret_iam_member" "frontend_dsn" {
-  secret_id  = google_secret_manager_secret.frontend_dsn.id
-  role       = "roles/secretmanager.secretAccessor"
-  member     = "serviceAccount:${data.google_project.project.number}-compute@developer.gserviceaccount.com"
-  depends_on = [google_secret_manager_secret.frontend_dsn]
+  secret_id = google_secret_manager_secret.frontend_dsn.id
+  role      = "roles/secretmanager.secretAccessor"
+  member    = "serviceAccount:${data.google_project.project.number}-compute@developer.gserviceaccount.com"
 }
 
 resource "google_secret_manager_secret" "potal_dsn" {
@@ -280,8 +265,7 @@ data "google_secret_manager_secret_version" "potal_dsn" {
 }
 
 resource "google_secret_manager_secret_iam_member" "potal_dsn" {
-  secret_id  = google_secret_manager_secret.potal_dsn.id
-  role       = "roles/secretmanager.secretAccessor"
-  member     = "serviceAccount:${data.google_project.project.number}-compute@developer.gserviceaccount.com"
-  depends_on = [google_secret_manager_secret.potal_dsn]
+  secret_id = google_secret_manager_secret.potal_dsn.id
+  role      = "roles/secretmanager.secretAccessor"
+  member    = "serviceAccount:${data.google_project.project.number}-compute@developer.gserviceaccount.com"
 }

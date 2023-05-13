@@ -240,15 +240,6 @@ resource "google_cloud_run_v2_service" "backend" {
     type    = "TRAFFIC_TARGET_ALLOCATION_TYPE_LATEST"
     percent = 100
   }
-
-  depends_on = [
-    data.google_secret_manager_secret_version.security_salt,
-    data.google_secret_manager_secret_version.slack_client_secret,
-    data.google_secret_manager_secret_version.slack_signing_secret,
-    data.google_secret_manager_secret_version.slack_bot_user_oauth_token,
-    data.google_secret_manager_secret_version.potal_token,
-    google_sql_database_instance.db,
-  ]
 }
 
 resource "google_cloud_run_v2_service" "potal" {
@@ -325,10 +316,4 @@ resource "google_cloud_run_v2_service" "potal" {
     type    = "TRAFFIC_TARGET_ALLOCATION_TYPE_LATEST"
     percent = 100
   }
-
-  depends_on = [
-    data.google_secret_manager_secret_version.slack_signing_secret,
-    data.google_secret_manager_secret_version.potal_token,
-    data.google_secret_manager_secret_version.potal_dsn,
-  ]
 }
