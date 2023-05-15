@@ -31,7 +31,8 @@ RUN \
     php8.1-mbstring \
     php8.1-pgsql \
     php8.1-xml \
-    php8.1-zip && \
+    php8.1-zip \
+    php-excimer && \
     rm -rf /var/lib/apt/lists/*
 
 RUN rm /etc/apache2/sites-available/*.conf
@@ -42,6 +43,7 @@ RUN \
     a2enconf php8.1-fpm && \
     a2enmod proxy_fcgi && \
     a2enmod rewrite && \
+    phpenmod -s fpm excimer && \
     sed -i "s/;clear_env = no/clear_env = no/g" /etc/php/8.1/fpm/pool.d/www.conf && \
     sed -i "s/Listen 80/Listen 8080/g" /etc/apache2/ports.conf
 
