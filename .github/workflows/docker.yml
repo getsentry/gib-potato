@@ -9,7 +9,7 @@ on:
       - '*'
 
 jobs:
-  push-potal:
+  build-potal:
     runs-on: ubuntu-latest
     permissions:
       packages: write
@@ -24,7 +24,7 @@ jobs:
           file: ./docker/potal/Dockerfile
           push: false
 
-  push-backend:
+  build-backend:
     runs-on: ubuntu-latest
     permissions:
       packages: write
