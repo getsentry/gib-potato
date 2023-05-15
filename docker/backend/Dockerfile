@@ -67,7 +67,6 @@ WORKDIR /app
 COPY ./composer.json composer.json
 COPY ./composer.lock composer.lock
 
-USER www-data
 RUN composer install --no-dev
 
 FROM php-local as php-prod
