@@ -1,19 +1,4 @@
-FROM node:18-bullseye as js-build
-
-WORKDIR /app
-
-COPY ./frontend frontend
-COPY ./templates templates
-COPY ./package.json package.json
-COPY ./package-lock.json package-lock.json
-COPY ./postcss.config.js postcss.config.js
-COPY ./tailwind.config.js tailwind.config.js
-COPY ./vite.config.js vite.config.js
-
-RUN npm install --frozen-lock
-RUN npm run build
-
-FROM ubuntu:22.04 as php-build
+FROM ubuntu:22.04 as php-local
 
 ENV DEBIAN_FRONTEND=noninteractive
 
@@ -48,7 +33,44 @@ RUN \
 RUN mkdir -p /run/php/
 COPY ./docker/backend/supervisord/conf.d/ /etc/supervisor/conf.d/
 
+WORKDIR /var/www/gib-potato
+
+COPY ./docker/backend/run.sh /run.sh
+RUN chmod +x /run.sh
+
+EXPOSE 8080
+
+CMD [ "/bin/bash", "/run.sh" ]
+
+FROM node:18-bullseye as js-build
+
+WORKDIR /app
+
+COPY ./frontend frontend
+COPY ./templates templates
+COPY ./package.json package.json
+COPY ./package-lock.json package-lock.json
+COPY ./postcss.config.js postcss.config.js
+COPY ./tailwind.config.js tailwind.config.js
+COPY ./vite.config.js vite.config.js
+
+RUN \
+    npm install --frozen-lock && \
+    npm run build
+
+FROM php-local as php-build
+
 COPY --from=composer:latest /usr/bin/composer /usr/local/bin/composer
+
+WORKDIR /app
+
+COPY ./composer.json composer.json
+COPY ./composer.lock composer.lock
+
+USER www-data
+RUN composer install --no-dev
+
+FROM php-local as php-prod
 
 WORKDIR /var/www/gib-potato
 
@@ -60,18 +82,15 @@ COPY ./templates templates
 COPY ./webroot webroot
 COPY --from=js-build /app/webroot/assets webroot/assets
 COPY --from=js-build /app/webroot/manifest.json webroot/manifest.json
+COPY --from=php-build /app/vendor vendor
 COPY ./composer.json composer.json
 COPY ./composer.lock composer.lock
 COPY index.php index.php
 
-RUN mkdir logs
-
-RUN chmod 700 /var/www/gib-potato
-RUN chown -R www-data:www-data /var/www/gib-potato
-
-USER www-data
-RUN composer install --no-dev
-USER root
+RUN \
+    mkdir logs && \
+    chmod 700 /var/www/gib-potato && \
+    chown -R www-data:www-data /var/www/gib-potato
 
 COPY ./docker/backend/run.sh /run.sh
 RUN chmod +x /run.sh
