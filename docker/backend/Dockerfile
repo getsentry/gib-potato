@@ -64,8 +64,7 @@ COPY --from=composer:latest /usr/bin/composer /usr/local/bin/composer
 
 WORKDIR /app
 
-COPY ./composer.json composer.json
-COPY ./composer.lock composer.lock
+COPY composer.json composer.lock .
 
 RUN composer install --no-dev
 
