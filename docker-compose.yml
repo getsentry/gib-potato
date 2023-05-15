@@ -10,10 +10,10 @@ services:
         - RELEASE
         - SECURITY_SALT
         - MAIN_DOMAIN
+        - DATABASE_HOST
         - DATABASE_USER
         - DATABASE_PASSWORD
         - DATABASE_NAME
-        - DATABASE_HOST
         - LOG_DEBUG_URL
         - LOG_ERROR_URL
         - SLACK_CLIENT_ID
