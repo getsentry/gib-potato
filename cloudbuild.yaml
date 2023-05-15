@@ -1,0 +1,32 @@
+steps:
+- name: 'gcr.io/cloud-builders/docker'
+  args: [ 'build', '-f', './docker/potal/Dockerfile', '-t', 'us-central1-docker.pkg.dev/$PROJECT_ID/potal/potal:latest', '.']
+- name: 'gcr.io/cloud-builders/docker'
+  args: [ 'build', '-f', './docker/backend/Dockerfile', '-t', 'us-central1-docker.pkg.dev/$PROJECT_ID/backend/backend:latest', '.']
+- name: 'gcr.io/cloud-builders/docker'
+  args: [ 'push', 'us-central1-docker.pkg.dev/$PROJECT_ID/backend/backend:latest']
+- name: 'gcr.io/cloud-builders/docker'
+  args: [ 'push', 'us-central1-docker.pkg.dev/$PROJECT_ID/potal/potal:latest']
+- name: 'gcr.io/google.com/cloudsdktool/cloud-sdk'
+  entrypoint: gcloud
+  args:
+  - 'run'
+  - 'deploy'
+  - 'potal'
+  - '--image'
+  - 'us-central1-docker.pkg.dev/$PROJECT_ID/potal/potal:latest'
+  - '--region'
+  - 'us-central1'
+- name: 'gcr.io/google.com/cloudsdktool/cloud-sdk'
+  entrypoint: gcloud
+  args:
+  - 'run'
+  - 'deploy'
+  - 'backend'
+  - '--image'
+  - 'us-central1-docker.pkg.dev/$PROJECT_ID/backend/backend:latest'
+  - '--region'
+  - 'us-central1'
+images:
+- 'us-central1-docker.pkg.dev/$PROJECT_ID/backend/backend:latest'
+- 'us-central1-docker.pkg.dev/$PROJECT_ID/potal/potal:latest'

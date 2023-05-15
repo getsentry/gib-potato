@@ -36,7 +36,7 @@ services:
       - db
       - potal
     ports:
-      - 8080:80
+      - 8080:8080
     networks:
       gib-potato:
         aliases:
