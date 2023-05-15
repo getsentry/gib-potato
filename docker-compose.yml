@@ -4,6 +4,7 @@ services:
     build:
       context: .
       dockerfile: ./docker/backend/Dockerfile
+      target: php-local
     environment:
         - APP_NAME
         - ENVIRONMENT
@@ -37,6 +38,8 @@ services:
       - potal
     ports:
       - 8080:8080
+    volumes:
+      - .:/var/www/gib-potato:consistent
     networks:
       gib-potato:
         aliases:
