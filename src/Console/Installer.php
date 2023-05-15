@@ -144,34 +144,4 @@ class Installer
         $changePerms($dir . '/tmp');
         $changePerms($dir . '/logs');
     }
-
-    /**
-     * Set the APP_NAME value in a given file
-     *
-     * @param string $dir The application's root directory.
-     * @param \Composer\IO\IOInterface $io IO interface to write to console.
-     * @param string $appName app name to set in the file
-     * @param string $file A path to a file relative to the application's root
-     * @return void
-     */
-    public static function setAppNameInFile($dir, $io, $appName, $file)
-    {
-        $config = $dir . '/config/' . $file;
-        $content = file_get_contents($config);
-        $content = str_replace('__APP_NAME__', $appName, $content, $count);
-
-        if ($count == 0) {
-            $io->write('No __APP_NAME__ placeholder to replace.');
-
-            return;
-        }
-
-        $result = file_put_contents($config, $content);
-        if ($result) {
-            $io->write('Updated __APP_NAME__ value in config/' . $file);
-
-            return;
-        }
-        $io->write('Unable to update __APP_NAME__ value.');
-    }
 }
