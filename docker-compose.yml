@@ -6,19 +6,14 @@ services:
       dockerfile: ./docker/backend/Dockerfile
       target: php-local
     environment:
-        - APP_NAME
         - ENVIRONMENT
         - RELEASE
-        - DEBUG
-        - APP_ENCODING
-        - APP_DEFAULT_LOCALE
-        - APP_DEFAULT_TIMEZONE
         - SECURITY_SALT
         - MAIN_DOMAIN
+        - DATABASE_HOST
         - DATABASE_USER
         - DATABASE_PASSWORD
         - DATABASE_NAME
-        - DATABASE_SOCKET
         - LOG_DEBUG_URL
         - LOG_ERROR_URL
         - SLACK_CLIENT_ID
@@ -50,11 +45,11 @@ services:
       context: .
       dockerfile: ./docker/potal/Dockerfile
     environment:
-      - SENTRY_POTAL_DSN
-      - RELEASE
       - ENVIRONMENT
+      - RELEASE
       - SLACK_BOT_USER_OAUTH_TOKEN
       - SLACK_SIGNING_SECRET
+      - SENTRY_POTAL_DSN
       - POTAL_URL
       - POTAL_TOKEN
     ports:

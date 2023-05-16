@@ -336,10 +336,10 @@ return [
              */
             // 'init' => ['SET GLOBAL innodb_stats_on_metadata = 0'],
 
+            'host' => env('DATABASE_HOST') ?? env('DATABASE_SOCKET'),
             'username' => env('DATABASE_USER'),
             'password' => env('DATABASE_PASSWORD'),
             'database' => env('DATABASE_NAME'),
-            'host' => env('DATABASE_SOCKET'),
         ],
     ],
 
