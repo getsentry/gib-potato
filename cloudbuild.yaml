@@ -40,8 +40,8 @@ steps:
   - 'storage'
   - 'cp'
   - '-rn'
-  - 'assets/*'
-  - 'manifest.json'
+  - 'webroot/assets/*'
+  - 'webroot/manifest.json'
   - 'gs://gib-potato-assets'
   waitFor: ['build-assets']
 images:
@@ -51,5 +51,5 @@ artifacts:
   objects:
     location: gs://gib-potato-assets/
     paths: 
-    - 'assets/*'
-    - 'manifest.json'
+    - 'webroot/assets/*'
+    - 'webroot/manifest.json'
