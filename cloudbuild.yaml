@@ -39,7 +39,6 @@ steps:
   args:
   - 'storage'
   - 'cp'
-  - '-rn'
   - 'webroot/assets/*'
   - 'webroot/manifest.json'
   - 'gs://gib-potato-assets'
