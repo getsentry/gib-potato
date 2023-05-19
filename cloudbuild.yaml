@@ -1,12 +1,20 @@
 steps:
 - name: 'gcr.io/cloud-builders/docker'
+  id: build-potal
   args: [ 'build', '-f', './docker/potal/Dockerfile', '-t', 'us-central1-docker.pkg.dev/$PROJECT_ID/potal/potal:latest', '.']
+  waitFor: ['-']
 - name: 'gcr.io/cloud-builders/docker'
-  args: [ 'build', '-f', './docker/backend/Dockerfile', '-t', 'us-central1-docker.pkg.dev/$PROJECT_ID/backend/backend:latest', '.']
-- name: 'gcr.io/cloud-builders/docker'
-  args: [ 'push', 'us-central1-docker.pkg.dev/$PROJECT_ID/backend/backend:latest']
-- name: 'gcr.io/cloud-builders/docker'
+  id: push-potal
   args: [ 'push', 'us-central1-docker.pkg.dev/$PROJECT_ID/potal/potal:latest']
+  waitFor: ['build-potal']
+- name: 'gcr.io/cloud-builders/docker'
+  id: build-backend
+  args: [ 'build', '-f', './docker/backend/Dockerfile', '-t', 'us-central1-docker.pkg.dev/$PROJECT_ID/backend/backend:latest', '.']
+  waitFor: ['-']
+- name: 'gcr.io/cloud-builders/docker'
+  id: push-backend
+  args: [ 'push', 'us-central1-docker.pkg.dev/$PROJECT_ID/backend/backend:latest']
+  waitFor: ['build-backend']
 - name: 'gcr.io/google.com/cloudsdktool/cloud-sdk'
   entrypoint: gcloud
   args:
@@ -17,16 +25,31 @@ steps:
   - 'us-central1-docker.pkg.dev/$PROJECT_ID/potal/potal:latest'
   - '--region'
   - 'us-central1'
+  waitFor: ['push-backend', 'push-potal']
+- name: 'gcr.io/cloud-builders/npm'
+  id: 'npm-install'
+  args: ['install', '--frozen-lock'] 
+  waitFor: ['-']
+- name: 'gcr.io/cloud-builders/npm'
+  id: 'build-assets'
+  args: ['run', 'build']
+  waitFor: ['npm-install']
 - name: 'gcr.io/google.com/cloudsdktool/cloud-sdk'
   entrypoint: gcloud
   args:
-  - 'run'
-  - 'deploy'
-  - 'backend'
-  - '--image'
-  - 'us-central1-docker.pkg.dev/$PROJECT_ID/backend/backend:latest'
-  - '--region'
-  - 'us-central1'
+  - 'storage'
+  - 'cp'
+  - '-rn'
+  - 'assets/*'
+  - 'manifest.json'
+  - 'gs://gib-potato-assets'
+  waitFor: ['build-assets']
 images:
 - 'us-central1-docker.pkg.dev/$PROJECT_ID/backend/backend:latest'
 - 'us-central1-docker.pkg.dev/$PROJECT_ID/potal/potal:latest'
+artifacts:
+  objects:
+    location: gs://gib-potato-assets/
+    paths: 
+    - 'assets/*'
+    - 'manifest.json'
