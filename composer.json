@@ -19,7 +19,7 @@
         "http-interop/http-factory-guzzle": "^1.2",
         "lcobucci/jwt": "^4.3",
         "paragonie/csp-builder": "2.7",
-        "sentry/sentry": "^3.18",
+        "sentry/sentry": "^3.19.1",
         "symfony/http-client": "^6.2.10"
     },
     "require-dev": {
