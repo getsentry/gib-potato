@@ -1,3 +1,28 @@
+x-require-environment-file: &require-environment
+  environment:
+    - ENVIRONMENT
+    - RELEASE
+    - SECURITY_SALT
+    - MAIN_DOMAIN
+    - DATABASE_HOST
+    - DATABASE_USER
+    - DATABASE_PASSWORD
+    - DATABASE_NAME
+    - LOG_DEBUG_URL
+    - LOG_ERROR_URL
+    - SLACK_CLIENT_ID
+    - SLACK_CLIENT_SECRET
+    - SLACK_SIGNING_SECRET
+    - SLACK_TEAM_ID
+    - SLACK_REDIRECT_URI
+    - SLACK_BOT_USER_OAUTH_TOKEN
+    - SENTRY_BACKEND_DSN
+    - SENTRY_FRONTEND_DSN
+    - SENTRY_MONITOR_ID
+    - POTAL_TOKEN
+    - POTATO_CHANNEL
+    - POTATO_SLACK_USER_ID
+
 version: '3.1'
 services:
   backend:
@@ -5,34 +30,12 @@ services:
       context: .
       dockerfile: ./docker/backend/Dockerfile
       target: php-local
-    environment:
-        - ENVIRONMENT
-        - RELEASE
-        - SECURITY_SALT
-        - MAIN_DOMAIN
-        - DATABASE_HOST
-        - DATABASE_USER
-        - DATABASE_PASSWORD
-        - DATABASE_NAME
-        - LOG_DEBUG_URL
-        - LOG_ERROR_URL
-        - SLACK_CLIENT_ID
-        - SLACK_CLIENT_SECRET
-        - SLACK_SIGNING_SECRET
-        - SLACK_TEAM_ID
-        - SLACK_REDIRECT_URI
-        - SLACK_BOT_USER_OAUTH_TOKEN
-        - SENTRY_BACKEND_DSN
-        - SENTRY_FRONTEND_DSN
-        - SENTRY_MONITOR_ID
-        - POTAL_TOKEN
-        - POTATO_CHANNEL
-        - POTATO_SLACK_USER_ID
     depends_on:
       - db
       - potal
     ports:
       - 8080:8080
+    <<: *require-environment
     volumes:
       - .:/var/www/gib-potato:consistent
     networks:
@@ -73,6 +76,17 @@ services:
       gib-potato:
         aliases:
           - db.gib-potato.test
+
+  dev-container:
+    # Used from bin/composer
+    # Apply random profile name to ensure that 'docker-compose up' does not start this container
+    profiles: ["dockerized-php"]
+    build:
+      context: .
+      dockerfile: ./docker/backend/Dockerfile
+      target: php-build
+    volumes:
+      - .:/app
 
 volumes:
   db:

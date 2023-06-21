@@ -1,0 +1,2 @@
+#!/bin/sh
+exec docker-compose run -it dev-container composer "$@"
