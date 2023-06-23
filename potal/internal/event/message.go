@@ -29,8 +29,10 @@ type MessageEvent struct {
 }
 
 func (e MessageEvent) isValid() bool {
-	// Only process messages with potato and not from a bot
-	return e.Amount > 0 && e.BotID == ""
+	// Only process messages with potato, not from a bot and not sent by slackbot
+	return e.Amount > 0 &&
+		e.BotID == "" &&
+		e.Sender != "USLACKBOT"
 }
 
 func ProcessMessageEvent(ctx context.Context, e *slackevents.MessageEvent, sc *slack.Client) *MessageEvent {
