@@ -16,13 +16,14 @@ var slackClient *slack.Client
 
 func main() {
 	sentryErr := sentry.Init(sentry.ClientOptions{
-		Dsn:              os.Getenv("SENTRY_POTAL_DSN"),
-		Release:          os.Getenv("RELEASE"),
-		Environment:      os.Getenv("ENVIRONMENT"),
-		AttachStacktrace: true,
-		SendDefaultPII:   true,
-		EnableTracing:    true,
-		TracesSampleRate: 1.0,
+		Dsn:                os.Getenv("SENTRY_POTAL_DSN"),
+		Release:            os.Getenv("RELEASE"),
+		Environment:        os.Getenv("ENVIRONMENT"),
+		AttachStacktrace:   true,
+		SendDefaultPII:     true,
+		EnableTracing:      true,
+		TracesSampleRate:   1.0,
+		ProfilesSampleRate: 1.0,
 	})
 	if sentryErr != nil {
 		log.Fatalf("An Error Occured: %v", sentryErr)
