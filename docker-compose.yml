@@ -6,6 +6,7 @@ services:
       dockerfile: ./docker/backend/Dockerfile
       target: php-local
     environment:
+        - DEBUG
         - ENVIRONMENT
         - RELEASE
         - SECURITY_SALT
