@@ -66,9 +66,8 @@ class WeeklyReportCommand extends Command
                 'created >=' => new FrozenTime('1 week ago'),
             ]);
 
-        $query = $usersTable->find();
-
-        $topSenders = $query
+        $topSendersQuery = $usersTable->find();
+        $topSenders = $topSendersQuery
             ->select([
                 'sent_count' => $sentCountQuery,
             ])
@@ -79,11 +78,12 @@ class WeeklyReportCommand extends Command
                 'Users.role !=' => User::ROLE_SERVICE,
             ])
             ->group(['Users.id'])
-            ->order(['sent_count' => $query->newExpr('DESC NULLS LAST')])
+            ->order(['sent_count' => $topSendersQuery->newExpr('DESC NULLS LAST')])
             ->limit(5)
             ->enableAutoFields(true);
 
-        $topReceivers = $query
+        $topReceiversQuery = $usersTable->find();
+        $topReceivers = $topReceiversQuery
             ->select([
                 'received_count' => $reivedCountQuery,
             ])
@@ -94,7 +94,7 @@ class WeeklyReportCommand extends Command
                 'Users.role !=' => User::ROLE_SERVICE,
             ])
             ->group(['Users.id'])
-            ->order(['received_count' => $query->newExpr('DESC NULLS LAST')])
+            ->order(['received_count' => $topReceiversQuery->newExpr('DESC NULLS LAST')])
             ->limit(5)
             ->enableAutoFields(true);
 
