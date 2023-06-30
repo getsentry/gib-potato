@@ -10,5 +10,7 @@ class HomeController extends AppController
      */
     public function index()
     {
+        $this->response = $this->response
+            ->withHeader('Document-Policy', 'js-profiling');
     }
 }
