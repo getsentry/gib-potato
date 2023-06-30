@@ -23,10 +23,17 @@ import './assets/main.css'
             new Sentry.BrowserTracing({
                 routingInstrumentation: Sentry.vueRouterInstrumentation(router),
                 tracePropagationTargets: ["localhost", "gibpotato.app", /^\//],
+                _experiments: {
+                    enableInteractions: true,
+                    // If you want automatic route transactions in react or similar
+                    onStartRouteTransaction: Sentry.onProfilingStartRouteTransaction,
+                },
             }),
+            new Sentry.BrowserProfilingIntegration(),
             new Sentry.Replay(),
         ],
         tracesSampleRate: 1.0,
+        profilesSampleRate: 1,
         replaysSessionSampleRate: 0.0,
         replaysOnErrorSampleRate: 1.0,
     })
