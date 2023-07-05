@@ -16,6 +16,7 @@ import './assets/main.css'
 
     Sentry.init({
         app,
+        debug: true,
         dsn: dataSet.sentryFrontendDsn,
         environment: dataSet.sentryEnvironment,
         release: dataSet.sentryRelease,
