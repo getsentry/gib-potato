@@ -28,6 +28,7 @@ steps:
   args: [ 'push', 'us-central1-docker.pkg.dev/$PROJECT_ID/backend/backend:$COMMIT_SHA']
   waitFor: ['build-backend']
 - name: 'gcr.io/google.com/cloudsdktool/cloud-sdk'
+  id: deploy-potal
   entrypoint: gcloud
   args:
   - 'run'
@@ -39,6 +40,7 @@ steps:
   - 'us-central1'
   waitFor: ['push-potal']
 - name: 'gcr.io/google.com/cloudsdktool/cloud-sdk'
+  id: deploy-backend
   entrypoint: gcloud
   args:
   - 'run'
@@ -57,15 +59,6 @@ steps:
   id: 'build-assets'
   args: ['run', 'build']
   waitFor: ['npm-install']
-- name: 'gcr.io/google.com/cloudsdktool/cloud-sdk'
-  entrypoint: gcloud
-  args:
-  - 'storage'
-  - 'cp'
-  - 'webroot/assets/*'
-  - 'webroot/manifest.json'
-  - 'gs://gib-potato-assets'
-  waitFor: ['build-assets']
 images:
 - 'us-central1-docker.pkg.dev/$PROJECT_ID/backend/backend:latest'
 - 'us-central1-docker.pkg.dev/$PROJECT_ID/potal/potal:latest'
