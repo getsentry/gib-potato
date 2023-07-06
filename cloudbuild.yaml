@@ -37,7 +37,18 @@ steps:
   - 'us-central1-docker.pkg.dev/$PROJECT_ID/potal/potal:$COMMIT_SHA'
   - '--region'
   - 'us-central1'
-  waitFor: ['push-backend', 'push-potal']
+  waitFor: ['push-potal']
+- name: 'gcr.io/google.com/cloudsdktool/cloud-sdk'
+  entrypoint: gcloud
+  args:
+  - 'run'
+  - 'deploy'
+  - 'backend'
+  - '--image'
+  - 'us-central1-docker.pkg.dev/$PROJECT_ID/backend/backend:$COMMIT_SHA'
+  - '--region'
+  - 'us-central1'
+  waitFor: ['push-backend']
 - name: 'gcr.io/cloud-builders/npm'
   id: 'npm-install'
   args: ['install', '--frozen-lock'] 
