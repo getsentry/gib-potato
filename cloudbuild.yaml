@@ -1,19 +1,31 @@
 steps:
 - name: 'gcr.io/cloud-builders/docker'
   id: build-potal
-  args: [ 'build', '-f', './docker/potal/Dockerfile', '-t', 'us-central1-docker.pkg.dev/$PROJECT_ID/potal/potal:latest', '.']
+  args: [
+    'build',
+    '-f', './docker/potal/Dockerfile',
+    '-t', 'us-central1-docker.pkg.dev/$PROJECT_ID/potal/potal:$COMMIT_SHA',
+    '-t', 'us-central1-docker.pkg.dev/$PROJECT_ID/potal/potal:latest',
+    '.',
+    ]
   waitFor: ['-']
 - name: 'gcr.io/cloud-builders/docker'
   id: push-potal
-  args: [ 'push', 'us-central1-docker.pkg.dev/$PROJECT_ID/potal/potal:latest']
+  args: [ 'push', 'us-central1-docker.pkg.dev/$PROJECT_ID/potal/potal:$COMMIT_SHA']
   waitFor: ['build-potal']
 - name: 'gcr.io/cloud-builders/docker'
   id: build-backend
-  args: [ 'build', '-f', './docker/backend/Dockerfile', '-t', 'us-central1-docker.pkg.dev/$PROJECT_ID/backend/backend:latest', '.']
+  args: [
+    'build',
+    '-f', './docker/backend/Dockerfile',
+    '-t', 'us-central1-docker.pkg.dev/$PROJECT_ID/backend/backend:$COMMIT_SHA',
+    '-t', 'us-central1-docker.pkg.dev/$PROJECT_ID/backend/backend:latest',
+    '.',
+    ]
   waitFor: ['-']
 - name: 'gcr.io/cloud-builders/docker'
   id: push-backend
-  args: [ 'push', 'us-central1-docker.pkg.dev/$PROJECT_ID/backend/backend:latest']
+  args: [ 'push', 'us-central1-docker.pkg.dev/$PROJECT_ID/backend/backend:$COMMIT_SHA']
   waitFor: ['build-backend']
 - name: 'gcr.io/google.com/cloudsdktool/cloud-sdk'
   entrypoint: gcloud
@@ -22,10 +34,21 @@ steps:
   - 'deploy'
   - 'potal'
   - '--image'
-  - 'us-central1-docker.pkg.dev/$PROJECT_ID/potal/potal:latest'
+  - 'us-central1-docker.pkg.dev/$PROJECT_ID/potal/potal:$COMMIT_SHA'
   - '--region'
   - 'us-central1'
-  waitFor: ['push-backend', 'push-potal']
+  waitFor: ['push-potal']
+- name: 'gcr.io/google.com/cloudsdktool/cloud-sdk'
+  entrypoint: gcloud
+  args:
+  - 'run'
+  - 'deploy'
+  - 'backend'
+  - '--image'
+  - 'us-central1-docker.pkg.dev/$PROJECT_ID/backend/backend:$COMMIT_SHA'
+  - '--region'
+  - 'us-central1'
+  waitFor: ['push-backend']
 - name: 'gcr.io/cloud-builders/npm'
   id: 'npm-install'
   args: ['install', '--frozen-lock'] 
