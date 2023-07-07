@@ -86,7 +86,7 @@ class UserService
             . 'Simply @ mention them and add a 🥔 to your message.' . PHP_EOL;
         $welcomeMessage .= ' - Alternatively, you can also react to a message with a 🥔. '
             . 'They either go to the people mentioned in the message or, '
-            - 'if nobody was mentioned, to the author of the message.' . PHP_EOL;
+            . 'if nobody was mentioned, to the author of the message.' . PHP_EOL;
         $welcomeMessage .= PHP_EOL;
         $welcomeMessage .= 'Hope you\'ll enjoy using GibPotato. '
             . 'Make sure to join <#' . env('POTATO_CHANNEL') . '> as well.';
