@@ -59,6 +59,7 @@ steps:
   id: 'build-assets'
   args: ['run', 'build']
   waitFor: ['npm-install']
+  secretEnv: ['SENTRY_AUTH_TOKEN']
 images:
 - 'us-central1-docker.pkg.dev/$PROJECT_ID/backend/backend:latest'
 - 'us-central1-docker.pkg.dev/$PROJECT_ID/potal/potal:latest'
@@ -68,3 +69,7 @@ artifacts:
     paths: 
     - 'webroot/assets/*'
     - 'webroot/manifest.json'
+availableSecrets:
+  secretManager:
+  - versionName: projects/841923001753/secrets/sentry_auth_token/versions/1
+    env: 'SENTRY_AUTH_TOKEN'
