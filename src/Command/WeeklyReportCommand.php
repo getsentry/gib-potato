@@ -95,7 +95,7 @@ class WeeklyReportCommand extends Command
                 'Users.role !=' => User::ROLE_SERVICE,
             ])
             ->group(['Users.id'])
-            ->order(['sent_count' => $topSendersQuery->newExpr('DESC NULLS LAST')])
+            ->order(['sent_count' => $topSendersQuery->expr('DESC NULLS LAST')])
             ->limit(5)
             ->enableAutoFields(true);
 
@@ -111,7 +111,7 @@ class WeeklyReportCommand extends Command
                 'Users.role !=' => User::ROLE_SERVICE,
             ])
             ->group(['Users.id'])
-            ->order(['received_count' => $topReceiversQuery->newExpr('DESC NULLS LAST')])
+            ->order(['received_count' => $topReceiversQuery->expr('DESC NULLS LAST')])
             ->limit(5)
             ->enableAutoFields(true);
 
