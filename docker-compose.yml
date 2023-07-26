@@ -26,6 +26,7 @@ services:
         - SENTRY_BACKEND_DSN
         - SENTRY_FRONTEND_DSN
         - SENTRY_MONITOR_ID
+        - SENTRY_AUTH_TOKEN
         - POTAL_TOKEN
         - POTATO_CHANNEL
         - POTATO_SLACK_USER_ID
