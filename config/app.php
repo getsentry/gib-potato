@@ -199,6 +199,7 @@ return [
         'log' => true,
         'trace' => true,
         'ignoredDeprecationPaths' => [],
+        'convertStatementToDatabaseException' => true,
     ],
 
     /*
