@@ -20,7 +20,6 @@ use Sentry\Tracing\SpanStatus;
 use Sentry\Tracing\TransactionContext;
 use Sentry\Tracing\TransactionSource;
 use Throwable;
-
 use function Sentry\captureCheckIn;
 use function Sentry\captureException;
 use function Sentry\startTransaction;
