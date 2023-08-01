@@ -10,6 +10,10 @@ use Cake\Console\Arguments;
 use Cake\Console\ConsoleIo;
 use Cake\Console\ConsoleOptionParser;
 use Cake\I18n\FrozenTime;
+use Sentry\CheckInStatus;
+use Sentry\MonitorConfig;
+use Sentry\MonitorSchedule;
+use function Sentry\captureCheckIn;
 
 /**
  * WeeklyReport command.
@@ -41,6 +45,19 @@ class WeeklyReportCommand extends Command
      */
     public function execute(Arguments $args, ConsoleIo $io)
     {
+        $io->out('Sending out Weekly Report');
+
+        $checkInId = captureCheckIn(
+            slug: 'weekly-report',
+            status: CheckInStatus::inProgress(),
+            monitorConfig: new MonitorConfig(
+                schedule: MonitorSchedule::crontab('15 23 * * 5'),
+                checkinMargin: 60,
+                maxRuntime: 320,
+                timezone: 'UTC',
+            ),
+        );
+
         $channel = $args->getArgument('channel') ?? env('POTATO_CHANNEL');
 
         $usersTable = $this->fetchTable('Users');
@@ -124,5 +141,13 @@ class WeeklyReportCommand extends Command
             channel: $channel,
             text: $channelMessage,
         );
+
+        captureCheckIn(
+            slug: 'weekly-report',
+            status: CheckInStatus::ok(),
+            checkInId: $checkInId,
+        );
+
+        $io->success("\n[DONE]");
     }
 }
