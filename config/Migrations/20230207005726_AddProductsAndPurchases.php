@@ -53,9 +53,9 @@ class AddProductsAndPurchases extends AbstractMigration
             ->create();
 
         $this->table('purchases')
-            ->addColumn('user_id', 'char', [
+            ->addColumn('user_id', 'uuid', [
                 'default' => null,
-                'limit' => 255,
+                'limit' => null,
                 'null' => false,
             ])
             ->addColumn('name', 'string', [
