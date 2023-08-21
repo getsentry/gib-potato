@@ -15,6 +15,7 @@ class ShopController extends ApiController
     {
         $productsTable = $this->fetchTable('Products');
         $products = $productsTable->find()
+            ->order(['name' => 'ASC'])
             ->all();
 
         return $this->response
