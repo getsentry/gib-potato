@@ -123,9 +123,15 @@ class UsersController extends ApiController
                 'received_count' => $reivedCountQuery,
             ])
             ->where(['Users.id' => $this->Authentication->getIdentityData('id')])
-            ->contain('Progression')
+            ->contain([
+                'Progression',
+                'Purchases',
+            ])
             ->enableAutoFields(true)
             ->first();
+
+        /** @var \App\Model\Entity\User $user */
+        $user->spendable_count = $user->spendablePotato();
 
         return $this->response
             ->withStatus(200)
