@@ -74,4 +74,6 @@
     Diese Nutzungsbedingungen sind wirksam ab dem Datum Ihrer Zustimmung zu den Bedingungen.
     [Ihr Unternehmen] behält sich das Recht vor, diese Bedingungen jederzeit zu ändern.
     Wenn wir Änderungen vornehmen, werden wir Sie darüber informieren und Sie werden gebeten, die aktualisierten Bedingungen zu akzeptieren, bevor Sie den Service weiterhin nutzen.
+
+    <div class="mt-32"></div>
 </div>
