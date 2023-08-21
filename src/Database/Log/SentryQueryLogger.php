@@ -31,6 +31,9 @@ class SentryQueryLogger extends AbstractLogger
         if ($loggedQuery->query === 'BEGIN') {
             $context = new SpanContext();
             $context->setOp('db.transaction');
+            $context->setData([
+                'db.system' => 'mysql',
+            ]);
 
             $this->pushSpan($parentSpan->startChild($context));
 
@@ -50,6 +53,9 @@ class SentryQueryLogger extends AbstractLogger
 
         $context = new SpanContext();
         $context->setOp('db.sql.query');
+        $context->setData([
+            'db.system' => 'mysql',
+        ]);
         $context->setDescription($loggedQuery->query);
         $context->setStartTimestamp(microtime(true) - $loggedQuery->took / 1000);
         $context->setEndTimestamp($context->getStartTimestamp() + $loggedQuery->took / 1000);

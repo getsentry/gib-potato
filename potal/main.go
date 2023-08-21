@@ -8,7 +8,6 @@ import (
 
 	"github.com/getsentry/sentry-go"
 	sentryhttp "github.com/getsentry/sentry-go/http"
-	"github.com/joho/godotenv"
 	"github.com/julienschmidt/httprouter"
 	"github.com/slack-go/slack"
 )
@@ -16,19 +15,15 @@ import (
 var slackClient *slack.Client
 
 func main() {
-	envErr := godotenv.Load(".env")
-	if envErr != nil {
-		log.Fatalf("An Error Occured: %v", envErr)
-	}
-
 	sentryErr := sentry.Init(sentry.ClientOptions{
-		Dsn:              os.Getenv("SENTRY_DSN"),
-		Release:          os.Getenv("SENTRY_RELEASE"),
-		Environment:      os.Getenv("SENTRY_ENVIRONMENT"),
-		AttachStacktrace: true,
-		SendDefaultPII:   true,
-		EnableTracing:    true,
-		TracesSampleRate: 1.0,
+		Dsn:                os.Getenv("SENTRY_POTAL_DSN"),
+		Release:            os.Getenv("RELEASE"),
+		Environment:        os.Getenv("ENVIRONMENT"),
+		AttachStacktrace:   true,
+		SendDefaultPII:     true,
+		EnableTracing:      true,
+		TracesSampleRate:   1.0,
+		ProfilesSampleRate: 1.0,
 	})
 	if sentryErr != nil {
 		log.Fatalf("An Error Occured: %v", sentryErr)
@@ -41,7 +36,7 @@ func main() {
 		Repanic: true,
 	})
 
-	slackClient = slack.New(os.Getenv("SLACK_BOT_TOKEN"))
+	slackClient = slack.New(os.Getenv("SLACK_BOT_USER_OAUTH_TOKEN"))
 
 	router := httprouter.New()
 	router.GET("/", DefaultHandler)

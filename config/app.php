@@ -3,7 +3,7 @@
 use App\Error\SentryErrorLogger;
 use Cake\Cache\Engine\FileEngine;
 use Cake\Database\Connection;
-use Cake\Database\Driver\Mysql;
+use Cake\Database\Driver\Postgres;
 use Cake\Log\Engine\FileLog;
 use Cake\Mailer\Transport\MailTransport;
 
@@ -199,6 +199,7 @@ return [
         'log' => true,
         'trace' => true,
         'ignoredDeprecationPaths' => [],
+        'convertStatementToDatabaseException' => true,
     ],
 
     /*
@@ -304,14 +305,9 @@ return [
          */
         'default' => [
             'className' => Connection::class,
-            'driver' => Mysql::class,
+            'driver' => Postgres::class,
             'persistent' => false,
             'timezone' => 'UTC',
-
-            /*
-             * For MariaDB/MySQL the internal default changed from utf8 to utf8mb4, aka full utf-8 support, in CakePHP 3.6
-             */
-            'encoding' => 'utf8mb4',
 
             /*
              * If your MySQL server is configured with `skip-character-set-client-handshake`
@@ -340,6 +336,11 @@ return [
              * which is the recommended value in production environments
              */
             // 'init' => ['SET GLOBAL innodb_stats_on_metadata = 0'],
+
+            'host' => env('DATABASE_HOST') ?? env('DATABASE_SOCKET'),
+            'username' => env('DATABASE_USER'),
+            'password' => env('DATABASE_PASSWORD'),
+            'database' => env('DATABASE_NAME'),
         ],
     ],
 
@@ -417,8 +418,6 @@ return [
         'defaults' => 'database',
         'timeout' => 60 * 24 * 14, // 2 weeks
         'ini' => [
-            // @FIXME Make this depending on env
-            'session.cookie_domain' => 'gipotato.eu.ngrok.io',
             'session.gc_maxlifetime' => 60 * 60 * 24 * 14, // 2 weeks
             'session.cookie_lifetime' => 60 * 60 * 24 * 14,
             'session.cookie_domain' => env('MAIN_DOMAIN'),

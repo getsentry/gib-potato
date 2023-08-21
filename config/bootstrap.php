@@ -49,28 +49,6 @@ use Cake\Routing\Router;
 use Cake\Utility\Security;
 
 /*
- * See https://github.com/josegonzalez/php-dotenv for API details.
- *
- * Uncomment block of code below if you want to use `.env` file during development.
- * You should copy `config/.env.example` to `config/.env` and set/modify the
- * variables as required.
- *
- * The purpose of the .env file is to emulate the presence of the environment
- * variables like they would be present in production.
- *
- * If you use .env files, be careful to not commit them to source control to avoid
- * security risks. See https://github.com/josegonzalez/php-dotenv#general-security-information
- * for more information for recommended practices.
-*/
-if (!env('APP_NAME') && file_exists(CONFIG . '.env')) {
-    $dotenv = new \josegonzalez\Dotenv\Loader([CONFIG . '.env']);
-    $dotenv->parse()
-        ->putenv()
-        ->toEnv()
-        ->toServer();
-}
-
-/*
  * Read configuration file and inject configuration into various
  * CakePHP classes.
  *
@@ -85,20 +63,12 @@ try {
     exit($e->getMessage() . "\n");
 }
 
-/*
- * Load an environment local configuration file to provide overrides to your configuration.
- * Notice: For security reasons app_local.php **should not** be included in your git repo.
- */
-if (file_exists(CONFIG . 'app_local.php')) {
-    Configure::load('app_local', 'default');
-}
-
 Sentry\init([
-    'dsn' => env('SENTRY_DSN'),
+    'dsn' => env('SENTRY_BACKEND_DSN'),
     'traces_sample_rate' => 1.0,
     'profiles_sample_rate' => 1.0,
     'environment' => env('ENVIRONMENT'),
-    'release' => env('VERSION'),
+    'release' => env('RELEASE'),
     'send_default_pii' => true,
     'in_app_exclude' => [
         ROOT . DS . 'vendor',

@@ -29,6 +29,11 @@ class SentryMiddleware implements MiddlewareInterface
      */
     public function process(ServerRequestInterface $request, RequestHandlerInterface $handler): ResponseInterface
     {
+        // We don't want to trace OPTIONS and HEAD requests as they are not relevant for performance monitoring.
+        if (in_array($request->getMethod(), ['OPTIONS', 'HEAD'], true)) {
+            return $handler->handle($request);
+        }
+
         $sentryTraceHeader = $request->getHeaderLine('sentry-trace');
         $baggageHeader = $request->getHeaderLine('baggage');
 
@@ -54,6 +59,10 @@ class SentryMiddleware implements MiddlewareInterface
         $this->setupQueryLogging();
 
         $response = $handler->handle($request);
+        // We don't want to trace 404 responses as they are not relevant for performance monitoring.
+        if ($response->getStatusCode() === 404) {
+            $transaction->setSampled(false);
+        }
 
         $span->setHttpStatus($response->getStatusCode());
         $span->finish();

@@ -64,6 +64,36 @@ class UserService
             ],
         ]);
 
-        return $this->Users->saveOrFail($user);
+        $user = $this->Users->saveOrFail($user);
+
+        $this->sendWelcomeNotification($user);
+
+        return $user;
+    }
+
+    /**
+     * @param \App\Model\Entity\User $user The user.
+     * @return void
+     */
+    protected function sendWelcomeNotification(User $user): void
+    {
+        $welcomeMessage = 'Hello there 👋' . PHP_EOL;
+        $welcomeMessage .= PHP_EOL;
+        $welcomeMessage .= '*Welcome to GibPotato!*' . PHP_EOL;
+        $welcomeMessage .= PHP_EOL;
+        $welcomeMessage .= ' - Every day, you get five 🥔' . PHP_EOL;
+        $welcomeMessage .= ' - You can gib them to people as a token of appreciation.'
+            . 'Simply @ mention them and add a 🥔 to your message.' . PHP_EOL;
+        $welcomeMessage .= ' - Alternatively, you can also react to a message with a 🥔. '
+            . 'They either go to the people mentioned in the message or, '
+            . 'if nobody was mentioned, to the author of the message.' . PHP_EOL;
+        $welcomeMessage .= PHP_EOL;
+        $welcomeMessage .= 'Hope you\'ll enjoy using GibPotato. '
+            . 'Make sure to join <#' . env('POTATO_CHANNEL') . '> as well.';
+
+        $this->slackClient->postMessage(
+            channel: $user->slack_user_id,
+            text: $welcomeMessage,
+        );
     }
 }

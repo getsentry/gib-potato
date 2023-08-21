@@ -1,10 +1,39 @@
+version: '3.1'
 services:
-  web:
-    build: docker/web
+  backend:
+    build:
+      context: .
+      dockerfile: ./docker/backend/Dockerfile
+      target: php-local
+    environment:
+        - DEBUG
+        - ENVIRONMENT
+        - RELEASE
+        - SECURITY_SALT
+        - MAIN_DOMAIN
+        - DATABASE_HOST
+        - DATABASE_USER
+        - DATABASE_PASSWORD
+        - DATABASE_NAME
+        - LOG_DEBUG_URL
+        - LOG_ERROR_URL
+        - SLACK_CLIENT_ID
+        - SLACK_CLIENT_SECRET
+        - SLACK_SIGNING_SECRET
+        - SLACK_TEAM_ID
+        - SLACK_REDIRECT_URI
+        - SLACK_BOT_USER_OAUTH_TOKEN
+        - SENTRY_BACKEND_DSN
+        - SENTRY_FRONTEND_DSN
+        - SENTRY_AUTH_TOKEN
+        - POTAL_TOKEN
+        - POTATO_CHANNEL
+        - POTATO_SLACK_USER_ID
     depends_on:
       - db
+      - potal
     ports:
-      - 8080:80
+      - 8080:8080
     volumes:
       - .:/var/www/gib-potato:consistent
     networks:
@@ -12,15 +41,35 @@ services:
         aliases:
           - gib-potato.test
 
-  db:
-    build: docker/mysql
-    ports:
-      - 8306:3306
+  potal:
+    build:
+      context: .
+      dockerfile: ./docker/potal/Dockerfile
     environment:
-      MYSQL_DATABASE: gib_potato
-      MYSQL_ROOT_PASSWORD: password
+      - ENVIRONMENT
+      - RELEASE
+      - SLACK_BOT_USER_OAUTH_TOKEN
+      - SLACK_SIGNING_SECRET
+      - SENTRY_POTAL_DSN
+      - POTAL_URL
+      - POTAL_TOKEN
+    ports:
+      - 3000:3000
+    networks:
+      gib-potato:
+        aliases:
+          - potal.gib-potato.test
+
+  db:
+    image: postgres:14
+    restart: always
+    environment:
+      POSTGRES_USER: gib_potato
+      POSTGRES_PASSWORD: password
     volumes:
-      - db:/var/lib/mysql
+      - db:/var/lib/postgresql/data
+    ports:
+      - 8432:5432
     networks:
       gib-potato:
         aliases:
