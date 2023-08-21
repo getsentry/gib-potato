@@ -1,28 +1,17 @@
 <?php
 declare(strict_types=1);
 
-namespace App\Controller;
+namespace App\Controller\Api;
 
 use App\Model\Entity\User;
-use Cake\Controller\Controller;
 use Cake\Http\Response;
 use Cake\I18n\FrozenTime;
 
 /**
  * @property \Authentication\Controller\Component\AuthenticationComponent $Authentication
  */
-class ApiController extends Controller
+class UsersController extends ApiController
 {
-    /**
-     * @inheritDoc
-     */
-    public function initialize(): void
-    {
-        parent::initialize();
-
-        $this->loadComponent('Authentication.Authentication');
-    }
-
     /**
      * @return \Cake\Http\Response
      */
