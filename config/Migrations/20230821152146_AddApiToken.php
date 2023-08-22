@@ -1,11 +1,8 @@
 <?php
 declare(strict_types=1);
 
-use App\Model\Entity\User;
 use Cake\ORM\Locator\LocatorAwareTrait;
 use Migrations\AbstractMigration;
-
-use function Sentry\captureException;
 
 class AddApiToken extends AbstractMigration
 {
@@ -42,25 +39,6 @@ class AddApiToken extends AbstractMigration
                 'null' => true,
             ])
             ->create();
-
-        $usersTable = $this->fetchTable('Users');
-        $apiTokensTable = $this->fetchTable('ApiTokens');
-
-        $users = $usersTable->find()
-            ->where([
-                'Users.slack_is_bot' => false,
-                'Users.status' => User::STATUS_ACTIVE,
-                'Users.role !=' => User::ROLE_SERVICE,
-            ])
-            ->all();
-
-        foreach ($users as $user) {
-            try {
-                $apiTokensTable->generateApiToken($user);
-            } catch (Throwable $e) {
-                captureException($e);
-            }
-        }
     }
 
     /**
