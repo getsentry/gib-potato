@@ -4,7 +4,6 @@ declare(strict_types=1);
 namespace App\Identifier;
 
 use App\Model\Entity\User;
-use ArrayAccess;
 use Authentication\Identifier\AbstractIdentifier;
 use Cake\I18n\FrozenTime;
 use Cake\ORM\Locator\LocatorAwareTrait;
