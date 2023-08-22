@@ -3,6 +3,9 @@ declare(strict_types=1);
 
 namespace App\Controller\Api;
 
+use App\Http\SlackClient;
+use Cake\Routing\Router;
+
 /**
  * @property \Authentication\Controller\Component\AuthenticationComponent $Authentication
  */
@@ -92,6 +95,21 @@ class ShopController extends ApiController
             ],
         ]);
         $productsTable->saveOrFail($product);
+
+        if ($presentee !== null) {
+            $message = '<@' . $user->slack_user_id . '> did buy a nice little present for '
+                . '<@' . $presentee->slack_user_id . '> 🎁😊' . PHP_EOL;
+            $message .= PHP_EOL;
+            $message .= 'They added the following message:' . PHP_EOL;
+            $message .= PHP_EOL;
+            $message .= '_"' . $this->request->getData('message') . '"_';
+
+            $slackClient = new SlackClient();
+            $slackClient->postMessage(
+                channel: env('POTATO_CHANNEL'),
+                text: $message,
+            );
+        }
 
         return $this->response
             ->withStatus(204);

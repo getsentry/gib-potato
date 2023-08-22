@@ -1,5 +1,7 @@
 import { createApp } from 'vue'
 
+import vSelect from 'vue-select'
+
 import * as Sentry from '@sentry/vue'
 
 import App from './App.vue'
@@ -8,6 +10,7 @@ import store from './store'
 import api from './api'
 
 import './assets/main.css'
+import 'vue-select/dist/vue-select.css';
 
 (async () => {
     const app = createApp(App)
@@ -49,5 +52,7 @@ import './assets/main.css'
         .use(router)
         .use(store)
     
+    app.component('v-select', vSelect)
+
     app.mount('#app')
 })()

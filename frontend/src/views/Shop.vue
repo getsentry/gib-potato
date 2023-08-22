@@ -115,15 +115,24 @@
                                     v-if="purchaseMode === 'someone-else'"
                                     class="mt-3 space-y-3"
                                 >
-                                    <input
+                                    <!-- <input
                                         type="email"
                                         class="block w-full rounded-md text-sm p-2 text-zinc-900 border border-zinc-300 ring-offset-zinc-50 dark:ring-offset-zinc-900 focus:border-indigo-500 focus:ring-indigo-500"
                                         placeholder="Search..."
+                                    > -->
+
+                                    <v-select
+                                        v-model="presentee"
+                                        :options="users"
+                                        label="slack_name"
                                     >
+                                    </v-select>
+
                                     <textarea
+                                        v-model="message"
                                         class="block w-full rounded-md text-sm p-2 text-zinc-900 border border-zinc-300 ring-offset-zinc-50 dark:ring-offset-zinc-900 focus:border-indigo-500 focus:ring-indigo-500"
                                         rows="2"
-                                        placeholder="Write a message..."
+                                        placeholder="Write a nice little message..."
                                     />
                                 </div>
                             </div>
@@ -164,7 +173,7 @@
                             :disabled="loading"
                             @click="closeModal"
                         >
-                            All set 🚀
+                            All set ✅
                         </button>
                     </div>
                     <div class="mt-5 text-xs text-center text-zinc-500">
@@ -212,6 +221,8 @@ export default {
         },
         closeModal() {
             this.product = null
+            this.presentee = null
+            this.message = null
             this.modalError = null
             this.modalOpen = false
             this.purchaseSuccess = false
