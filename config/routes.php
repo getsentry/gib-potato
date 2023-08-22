@@ -38,7 +38,12 @@ return static function (RouteBuilder $routes) {
         'unauthenticatedRedirect' => '/login',
         'queryParam' => 'redirect',
     ]);
+    $webAuthService->loadIdentifier('ApiToken');
     $webAuthService->loadAuthenticator('Authentication.Session');
+    $webAuthService->loadAuthenticator('Authentication.Token', [
+        'header' => 'Authorization',
+        'tokenPrefix' => 'Bearer',
+    ]);
     $routes->registerMiddleware('web-auth', new AuthenticationMiddleware($webAuthService));
 
     $routes->scope('/', function (RouteBuilder $builder) {
@@ -48,8 +53,8 @@ return static function (RouteBuilder $routes) {
         $builder->connect('/login', ['controller' => 'Login', 'action' => 'login']);
         $builder->connect('/logout', ['controller' => 'Login', 'action' => 'logout']);
 
-        $builder->connect('/open-id', ['controller' => 'Login', 'action' => 'openId']);
-        $builder->connect('/start-open-id', ['controller' => 'Login', 'action' => 'startOpenId']);
+        $builder->connect('/open-id/*', ['controller' => 'Login', 'action' => 'openId']);
+        $builder->connect('/start-open-id/*', ['controller' => 'Login', 'action' => 'startOpenId']);
 
         $builder->connect('/', ['controller' => 'Home', 'action' => 'index']);
         $builder->connect('/shop', ['controller' => 'Home', 'action' => 'index']);

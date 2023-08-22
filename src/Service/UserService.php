@@ -5,6 +5,7 @@ namespace App\Service;
 
 use App\Http\SlackClient;
 use App\Model\Entity\User;
+use App\Model\Table\ApiTokensTable;
 use App\Model\Table\UsersTable;
 use Cake\ORM\Locator\LocatorAwareTrait;
 use Exception;
@@ -15,6 +16,7 @@ class UserService
 
     protected SlackClient $slackClient;
     protected UsersTable $Users;
+    protected ApiTokensTable $ApiTokens;
 
     /**
      * Constructor
@@ -23,6 +25,7 @@ class UserService
     {
         $this->slackClient = new SlackClient();
         $this->Users = $this->fetchTable('Users');
+        $this->ApiTokens = $this->fetchTable('ApiTokens');
     }
 
     /**
@@ -65,6 +68,8 @@ class UserService
         ]);
 
         $user = $this->Users->saveOrFail($user);
+
+        $this->ApiTokens->generateApiToken($user);
 
         $this->sendWelcomeNotification($user);
 
