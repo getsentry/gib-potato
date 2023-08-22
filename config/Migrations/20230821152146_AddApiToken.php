@@ -43,24 +43,24 @@ class AddApiToken extends AbstractMigration
             ])
             ->create();
 
-        // $usersTable = $this->fetchTable('Users');
-        // $apiTokensTable = $this->fetchTable('ApiTokens');
+        $usersTable = $this->fetchTable('Users');
+        $apiTokensTable = $this->fetchTable('ApiTokens');
 
-        // $users = $usersTable->find()
-        //     ->where([
-        //         'Users.slack_is_bot' => false,
-        //         'Users.status' => User::STATUS_ACTIVE,
-        //         'Users.role !=' => User::ROLE_SERVICE,
-        //     ])
-        //     ->all();
+        $users = $usersTable->find()
+            ->where([
+                'Users.slack_is_bot' => false,
+                'Users.status' => User::STATUS_ACTIVE,
+                'Users.role !=' => User::ROLE_SERVICE,
+            ])
+            ->all();
 
-        // foreach ($users as $user) {
-        //     try {
-        //         $apiTokensTable->generateApiToken($user);
-        //     } catch (Throwable $e) {
-        //         captureException($e);
-        //     }
-        // }
+        foreach ($users as $user) {
+            try {
+                $apiTokensTable->generateApiToken($user);
+            } catch (Throwable $e) {
+                captureException($e);
+            }
+        }
     }
 
     /**
