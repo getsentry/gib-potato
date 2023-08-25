@@ -62,11 +62,11 @@ export default {
     methods: {
         updateRangeFilter(range) {
             this.$store.dispatch('setRangeFilter', range)
-            this.$store.dispatch('getUsers')
+            this.$store.dispatch('getLeaderboard')
         },
         updateOrderFilter(order) {
             this.$store.dispatch('setOrderFilter', order)
-            this.$store.dispatch('getUsers')
+            this.$store.dispatch('getLeaderboard')
         },
     }
 };

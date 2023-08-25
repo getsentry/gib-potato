@@ -17,85 +17,75 @@ class LeaderboardController extends ApiController
      */
     public function get(): Response
     {
-        $messagesTable = $this->fetchTable('Messages');
-        $sentCountQuery = $messagesTable->find()
-            ->select([
-                'amount' => $messagesTable->find()->func()->sum('amount'),
-            ])
-            ->where([
-                'sender_user_id = Users.id',
-            ]);
-
-        $reivedCountQuery = $messagesTable->find()
-            ->select([
-                'amount' => $messagesTable->find()->func()->sum('amount'),
-            ])
-            ->where([
-                'receiver_user_id = Users.id',
-            ]);
-
+        $rangeTimeObject = null;
         $range = $this->request->getQuery('range');
-        if (!empty($range)) {
-            switch ($range) {
-                case 'week':
-                    $sentCountQuery->where([
-                        'created >=' => new FrozenTime('1 week ago'),
-                    ]);
-                    $reivedCountQuery->where([
-                        'created >=' => new FrozenTime('1 week ago'),
-                    ]);
-                    break;
-                case 'month':
-                    $sentCountQuery->where([
-                        'created >=' => new FrozenTime('1 month ago'),
-                    ]);
-                    $reivedCountQuery->where([
-                        'created >=' => new FrozenTime('1 month ago'),
-                    ]);
-                    break;
-                case 'year':
-                    $sentCountQuery->where([
-                        'created >=' => new FrozenTime('1 year ago'),
-                    ]);
-                    $reivedCountQuery->where([
-                        'created >=' => new FrozenTime('1 year ago'),
-                    ]);
-                    break;
-            }
+        switch ($range) {
+            case 'week':
+                $rangeTimeObject = new FrozenTime('1 week ago');
+                break;
+            case 'month':
+                $rangeTimeObject = new FrozenTime('1 month ago');
+                break;
+            case 'year':
+                $rangeTimeObject = new FrozenTime('1 year ago');
+                break;
+            default:
+                $rangeTimeObject = new FrozenTime('2022-08-24 00:00:00');
         }
 
         $usersTable = $this->fetchTable('Users');
+        $messagesTable = $this->fetchTable('Messages');
 
         $query = $usersTable->find();
         $query
             ->select([
-                'sent_count' => $sentCountQuery,
-                'received_count' => $reivedCountQuery,
+                'sent_count' => 'messages_sent.sent_count',
+                'received_count' => 'messages_received.received_count',
             ])
-            ->leftJoinWith('MessagesSent')
-            ->leftJoinWith('MessagesReceived')
+            ->leftJoin([
+                'messages_sent' => $messagesTable->find()
+                    ->select([
+                        'user_id' => 'sender_user_id',
+                        'sent_count' => $query->func()->sum('amount'),
+                    ])
+                    ->where([
+                        'created >=' => $rangeTimeObject,
+                    ])
+                    ->group('sender_user_id'),
+            ], [
+                'Users.id = messages_sent.user_id',
+            ])
+            ->leftJoin([
+                'messages_received' => $messagesTable->find()
+                    ->select([
+                        'user_id' => 'receiver_user_id',
+                        'received_count' => $query->func()->sum('amount'),
+                    ])
+                    ->where([
+                        'created >=' => $rangeTimeObject,
+                    ])
+                    ->group('receiver_user_id'),
+            ], [
+                'Users.id = messages_received.user_id',
+            ])
             ->where([
                 'Users.slack_is_bot' => false,
                 'Users.status' => User::STATUS_ACTIVE,
                 'Users.role !=' => User::ROLE_SERVICE,
             ])
-            ->group(['Users.id'])
             ->enableAutoFields(true);
 
         $order = $this->request->getQuery('order');
-        if (!empty($order)) {
-            switch ($order) {
-                case 'sent':
-                    $query->order(['sent_count' => 'DESC']);
-                    break;
-                case 'received':
-                    $query->order(['received_count' => 'DESC']);
-                    break;
-            }
+        switch ($order) {
+            case 'sent':
+                $query->order(['sent_count' => $query->newExpr('DESC NULLS LAST')]);
+                break;
+            case 'received':
+                $query->order(['received_count' => $query->newExpr('DESC NULLS LAST')]);
+                break;
         }
 
-        $users = $query
-            ->all();
+        $users = $query->all();
 
         return $this->response
             ->withStatus(200)

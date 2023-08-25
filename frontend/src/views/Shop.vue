@@ -87,23 +87,27 @@
                             <div v-if="purchaseSuccess === false">
                                 <fieldset class="mt-4">
                                     <div class="space-y-2">
-                                        <div class="flex items-center">
+                                        <div
+                                            class="flex items-center"
+                                            @click="purchaseMode = 'myself'"
+                                        >
                                             <input
                                                 type="radio"
                                                 class="h-4 w-4 border-gray-300 text-indigo-600"
                                                 :checked="purchaseMode === 'myself'"
-                                                @click="purchaseMode = 'myself'"
                                             >
                                             <label class="ml-3 block text-sm font-medium text-zinc-500">
                                                 For myself
                                             </label>
                                         </div>
-                                        <div class="flex items-center">
+                                        <div
+                                            class="flex items-center"
+                                            @click="purchaseMode = 'someone-else'"
+                                        >
                                             <input
                                                 type="radio"
                                                 class="h-4 w-4 border-gray-300 text-indigo-600"
                                                 :checked="purchaseMode === 'someone-else'"
-                                                @click="purchaseMode = 'someone-else'"
                                             >
                                             <label class="ml-3 block text-sm font-medium text-zinc-500">
                                                 For someone else
@@ -115,12 +119,6 @@
                                     v-if="purchaseMode === 'someone-else'"
                                     class="mt-3 space-y-3"
                                 >
-                                    <!-- <input
-                                        type="email"
-                                        class="block w-full rounded-md text-sm p-2 text-zinc-900 border border-zinc-300 ring-offset-zinc-50 dark:ring-offset-zinc-900 focus:border-indigo-500 focus:ring-indigo-500"
-                                        placeholder="Search..."
-                                    > -->
-
                                     <v-select
                                         v-model="presentee"
                                         :options="users"
@@ -191,6 +189,8 @@ import { useStore } from 'vuex'
 
 import api from '@/api'
 
+import 'vue-select/dist/vue-select.css';
+
 export default {
     name: 'Shop',
     setup() {
@@ -198,7 +198,7 @@ export default {
 
         return {
             user: computed(() => store.getters.user),
-            users: computed(() => store.getters.users),
+            users: computed(() => store.getters.users.filter((el) => el.id !== store.getters.user.id)),
             products: computed(() => store.getters.products),
         }
     },
@@ -237,11 +237,13 @@ export default {
                     product_id: this.product.id,
                     presentee_id: this.presentee?.id,
                     message: this.message,
+                    purchase_mode: this.purchaseMode,
                 })
                 this.purchaseSuccess = true
 
                 await this.$store.dispatch('getUser')
                 await this.$store.dispatch('getProducts')
+                await this.$store.dispatch('getCollection')
             } catch (error) {
                 console.log(error)
                 this.modalError = error.response.data.error
@@ -251,5 +253,4 @@ export default {
         }
     }
 }
-
 </script>

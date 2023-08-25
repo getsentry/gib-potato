@@ -10,7 +10,6 @@ import store from './store'
 import api from './api'
 
 import './assets/main.css'
-import 'vue-select/dist/vue-select.css';
 
 (async () => {
     const app = createApp(App)
@@ -47,6 +46,7 @@ import 'vue-select/dist/vue-select.css';
     await store.dispatch('getUser')
     await store.dispatch('getUsers')
     await store.dispatch('getProducts')
+    await store.dispatch('getCollection')
 
     app
         .use(router)

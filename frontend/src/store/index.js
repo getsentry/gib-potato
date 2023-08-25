@@ -8,6 +8,7 @@ const store = createStore({
             user: null,
             users: [],
             products: [],
+            collection: [],
             filter: {
                 range: 'all',
                 order: 'received',
@@ -19,6 +20,7 @@ const store = createStore({
         user: state => state.user,
         users: state => state.users,
         products: state => state.products,
+        collection: state => state.collection,
         filter: state => state.filter,
         range: state => state.filter.range,
         order: state => state.filter.order,
@@ -60,6 +62,14 @@ const store = createStore({
                 console.log(error)
             }
         },
+        async getCollection({ commit }) {
+            try {
+                const response = await api.get('collection')
+                commit('SET_COLLECTION', response.data)
+            } catch (error) {
+                console.log(error)
+            }
+        },
         async toggleSentNotifications({ commit, getters }) {
             commit('TOGGLE_SENT_NOTIFICATIONS')
             try {
@@ -95,6 +105,9 @@ const store = createStore({
         },
         SET_PRODUCTS(state, products) {
             state.products = products
+        },
+        SET_COLLECTION(state, collection) {
+            state.collection = collection
         },
         TOGGLE_SENT_NOTIFICATIONS(state) {
             state.user.notifications.sent = !state.user.notifications.sent

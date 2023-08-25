@@ -64,6 +64,24 @@ class ShopController extends ApiController
                     'error' => 'Not enough potato to buy 😥',
                 ]));
         }
+        if ($this->request->getData('purchase_mode') === 'someone-else') {
+            if ($presentee === null) {
+                return $this->response
+                    ->withStatus(400)
+                    ->withType('json')
+                    ->withStringBody(json_encode([
+                        'error' => 'Select someone 🧐',
+                    ]));
+            }
+            if (empty($this->request->getData('message'))) {
+                return $this->response
+                    ->withStatus(400)
+                    ->withType('json')
+                    ->withStringBody(json_encode([
+                        'error' => 'Add a message 🧐',
+                    ]));
+            }
+        }
 
         $purchasesTable = $this->fetchTable('Purchases');
         $purchase = $purchasesTable->newEntity([
@@ -73,7 +91,7 @@ class ShopController extends ApiController
             'description' => $product->description,
             'image_link' => $product->image_link,
             'price' => $product->price,
-            'message' => $this->request->getData('message')
+            'message' => $this->request->getData('message'),
         ], [
             'accessibleFields' => [
                 'user_id' => true,
@@ -100,9 +118,10 @@ class ShopController extends ApiController
             $message = '<@' . $user->slack_user_id . '> did buy a nice little present for '
                 . '<@' . $presentee->slack_user_id . '> 🎁😊' . PHP_EOL;
             $message .= PHP_EOL;
-            $message .= 'They added the following message:' . PHP_EOL;
+            $message .= 'They got them *<' . Router::url(str_replace('.svg', '.png', $product->image_link), true)
+                . '|' . $product->name . '. >* 🚀' . PHP_EOL;
             $message .= PHP_EOL;
-            $message .= '_"' . $this->request->getData('message') . '"_';
+            $message .= '_"' . $this->request->getData('message') . '"_' . PHP_EOL;
 
             $slackClient = new SlackClient();
             $slackClient->postMessage(

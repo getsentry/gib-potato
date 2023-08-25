@@ -76,7 +76,7 @@ return static function (RouteBuilder $routes) {
             $builder->get('/shop/products', ['prefix' => 'Api', 'controller' => 'Shop', 'action' => 'products']);
             $builder->post('/shop/purchase', ['prefix' => 'Api', 'controller' => 'Shop', 'action' => 'purchase']);
 
-            
+            $builder->get('/collection', ['prefix' => 'Api', 'controller' => 'Collection', 'action' => 'get']);
         });
     });
 
