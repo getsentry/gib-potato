@@ -1,5 +1,7 @@
 import { createApp } from 'vue'
 
+import vSelect from 'vue-select'
+
 import * as Sentry from '@sentry/vue'
 
 import App from './App.vue'
@@ -40,12 +42,17 @@ import './assets/main.css'
 
     api.init()
 
-    await store.dispatch('getUsers')
+    await store.dispatch('getLeaderboard')
     await store.dispatch('getUser')
+    await store.dispatch('getUsers')
+    await store.dispatch('getProducts')
+    await store.dispatch('getCollection')
 
     app
         .use(router)
         .use(store)
     
+    app.component('v-select', vSelect)
+
     app.mount('#app')
 })()

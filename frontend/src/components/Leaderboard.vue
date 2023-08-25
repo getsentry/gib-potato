@@ -49,7 +49,7 @@ export default {
     setup() {
         const store = useStore()
         return {
-            users: computed(() => store.getters.users),
+            users: computed(() => store.getters.leaderboard),
         }
     },
 };

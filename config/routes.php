@@ -58,16 +58,25 @@ return static function (RouteBuilder $routes) {
 
         $builder->connect('/', ['controller' => 'Home', 'action' => 'index']);
         $builder->connect('/shop', ['controller' => 'Home', 'action' => 'index']);
+        $builder->connect('/collection', ['controller' => 'Home', 'action' => 'index']);
         $builder->connect('/profile', ['controller' => 'Home', 'action' => 'index']);
         $builder->connect('/settings', ['controller' => 'Home', 'action' => 'index']);
 
+        $builder->connect('/terms', ['controller' => 'Terms', 'action' => 'index']);
+
         $builder->scope('/api', function (RouteBuilder $builder) {    
-            $builder->get('/users', ['controller' => 'Api', 'action' => 'list']);
+            $builder->get('/leaderboard', ['prefix' => 'Api', 'controller' => 'LeaderBoard', 'action' => 'get']);
 
-            $builder->get('/user', ['controller' => 'Api', 'action' => 'get']);
-            $builder->patch('/user', ['controller' => 'Api', 'action' => 'edit']);
+            $builder->get('/users', ['prefix' => 'Api', 'controller' => 'Users', 'action' => 'list']);
+            $builder->get('/user', ['prefix' => 'Api', 'controller' => 'Users', 'action' => 'get']);
+            $builder->patch('/user', ['prefix' => 'Api', 'controller' => 'Users', 'action' => 'edit']);
 
-            $builder->get('/user/profile', ['controller' => 'Api', 'action' => 'profile']);
+            $builder->get('/user/profile', ['prefix' => 'Api', 'controller' => 'Users', 'action' => 'profile']);
+
+            $builder->get('/shop/products', ['prefix' => 'Api', 'controller' => 'Shop', 'action' => 'products']);
+            $builder->post('/shop/purchase', ['prefix' => 'Api', 'controller' => 'Shop', 'action' => 'purchase']);
+
+            $builder->get('/collection', ['prefix' => 'Api', 'controller' => 'Collection', 'action' => 'get']);
         });
     });
 
