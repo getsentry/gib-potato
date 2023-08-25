@@ -42,11 +42,13 @@ import './assets/main.css'
 
     api.init()
 
-    await store.dispatch('getLeaderboard')
-    await store.dispatch('getUser')
-    await store.dispatch('getUsers')
-    await store.dispatch('getProducts')
-    await store.dispatch('getCollection')
+    await Promise.all([
+        store.dispatch('getLeaderboard'),
+        store.dispatch('getUser'),
+        store.dispatch('getUsers'),
+        store.dispatch('getProducts'),
+        store.dispatch('getCollection'),
+    ])
 
     app
         .use(router)
