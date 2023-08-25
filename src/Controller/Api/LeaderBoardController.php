@@ -10,7 +10,7 @@ use Cake\I18n\FrozenTime;
 /**
  * @property \Authentication\Controller\Component\AuthenticationComponent $Authentication
  */
-class LeaderboardController extends ApiController
+class LeaderBoardController extends ApiController
 {
     /**
      * @return \Cake\Http\Response

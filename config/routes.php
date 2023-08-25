@@ -65,7 +65,7 @@ return static function (RouteBuilder $routes) {
         $builder->connect('/terms', ['controller' => 'Terms', 'action' => 'index']);
 
         $builder->scope('/api', function (RouteBuilder $builder) {    
-            $builder->get('/leaderboard', ['prefix' => 'Api', 'controller' => 'Leaderboard', 'action' => 'get']);
+            $builder->get('/leaderboard', ['prefix' => 'Api', 'controller' => 'LeaderBoard', 'action' => 'get']);
 
             $builder->get('/users', ['prefix' => 'Api', 'controller' => 'Users', 'action' => 'list']);
             $builder->get('/user', ['prefix' => 'Api', 'controller' => 'Users', 'action' => 'get']);
