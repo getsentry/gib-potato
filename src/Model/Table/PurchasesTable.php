@@ -68,7 +68,7 @@ class PurchasesTable extends Table
         $validator
             ->uuid('user_id')
             ->notEmptyString('user_id');
-        
+
         $validator
             ->uuid('presentee_id')
             ->allowEmptyString('presentee_id');
@@ -94,7 +94,7 @@ class PurchasesTable extends Table
             ->integer('price')
             ->requirePresence('price', 'create')
             ->notEmptyString('price');
-        
+
         $validator
             ->scalar('message')
             ->maxLength('message', 1024)
