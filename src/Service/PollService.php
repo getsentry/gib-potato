@@ -185,13 +185,17 @@ class PollService
         foreach ($poll->poll_options as $index => $option) {
             $responseCount = count($option->poll_responses);
             if ($responseCount > 0) {
-                $users = [];
-                foreach ($option->poll_responses as $response) {
-                    $users[] = "<@{$response->user->slack_user_id}>";
-                }
-                $users = implode(' ', $users);
+                if ($poll->anonymous === false) {
+                    $users = [];
+                    foreach ($option->poll_responses as $response) {
+                        $users[] = "<@{$response->user->slack_user_id}>";
+                    }
+                    $users = implode(' ', $users);
 
-                $title = "{$option->title} `{$responseCount}`\n{$users}";
+                    $title = "{$option->title} `{$responseCount}`\n{$users}";
+                } else {
+                    $title = "{$option->title} `{$responseCount}`";
+                }
             } else {
                 $title = $option->title;
             }

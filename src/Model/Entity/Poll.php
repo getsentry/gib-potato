@@ -13,6 +13,7 @@ use Cake\ORM\Entity;
  * @property string $title
  * @property string $type
  * @property string $status
+ * @property bool $anonymous
  * @property \Cake\I18n\FrozenTime|null $created
  * @property \Cake\I18n\FrozenTime|null $modified
  *

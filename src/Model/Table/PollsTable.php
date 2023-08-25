@@ -85,6 +85,11 @@ class PollsTable extends Table
             ->requirePresence('status', 'create')
             ->notEmptyString('status');
 
+        $validator
+            ->boolean('anonymous')
+            ->requirePresence('anonymous', 'create')
+            ->notEmptyString('anonymous');
+
         return $validator;
     }
 
