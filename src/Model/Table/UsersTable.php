@@ -54,7 +54,6 @@ class UsersTable extends Table
         ])
             ->setForeignKey('receiver_user_id');
 
-
         $this->hasMany('Polls')
             ->setForeignKey('user_id');
         $this->hasMany('PollResponses')
