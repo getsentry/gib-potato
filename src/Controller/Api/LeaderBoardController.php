@@ -78,10 +78,10 @@ class LeaderBoardController extends ApiController
         $order = $this->request->getQuery('order');
         switch ($order) {
             case 'sent':
-                $query->order(['sent_count' => $query->newExpr('DESC NULLS LAST')]);
+                $query->order(['sent_count' => $query->expr('DESC NULLS LAST')]);
                 break;
             case 'received':
-                $query->order(['received_count' => $query->newExpr('DESC NULLS LAST')]);
+                $query->order(['received_count' => $query->expr('DESC NULLS LAST')]);
                 break;
         }
 
