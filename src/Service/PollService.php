@@ -168,6 +168,16 @@ class PollService
             ];
         }
 
+        if ($poll->anonymous === true) {
+            $blocks[] = [
+                'type' => 'section',
+                'text' => [
+                    'type' => 'mrkdwn',
+                    'text' => '🥷 Anonymous',
+                ],
+            ];
+        }
+
         $blocks[] = [
             'type' => 'section',
             'block_id' => 'poll-actions',
