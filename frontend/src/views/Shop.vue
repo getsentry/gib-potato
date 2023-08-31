@@ -4,7 +4,10 @@
     </div>
 
     <div class="mt-8 grid grid-cols-1 gap-y-12 sm:grid-cols-2 sm:gap-x-6 lg:grid-cols-4 xl:gap-x-8 mb-32">
-        <div v-for="(product, index) in products">
+        <div
+            v-for="(product, index) in products"
+            class="h-full flex flex-col"
+        >
             <div
                 :index="index"
                 class="relative"
@@ -16,30 +19,37 @@
                 <div class="relative mt-4">
                     <h3 class="text-sm font-medium">{{ product.name }}</h3>
                     <p class="mt-1 text-sm text-zinc-500">{{ product.description }}</p>
-                    <p class="mt-3 text-xs text-zinc-500">{{ product.stock }} left in stock</p>
                 </div>
                 <div class="absolute inset-x-0 top-0 flex h-72 items-end justify-end overflow-hidden rounded-lg p-4">
                     <div class="absolute inset-x-0 bottom-0 h-36 bg-gradient-to-t from-black opacity-50"></div>
                     <p class="relative text-lg font-semibold text-white">🥔 {{ product.price }}</p>
                 </div>
             </div>
-            <div class="mt-6">
-                <template v-if="product.stock > 0">
-                    <button
-                        class="relative w-full flex items-center justify-center rounded-md border border-zinc-300 bg-zinc-100 py-2 px-8 text-sm font-medium text-gray-900"
-                        @click="openModal(product)"
-                    >
-                        I want this
-                    </button>
-                </template>
-                <template v-else>
-                    <button
-                        class="relative w-full flex items-center justify-center rounded-md border border-transparent bg-zinc-500 py-2 px-8 text-sm font-medium text-gray-900"
-                        disabled
-                    >
-                        Out of stock
-                    </button>
-                </template>
+            <div class="mt-auto">
+                <p
+                    v-if="product.stock >= 1"
+                    class="mt-6 text-xs text-zinc-500"
+                >
+                    {{ product.stock }} left in stock
+                </p>
+                <div class="mt-3">
+                    <template v-if="product.stock > 0">
+                        <button
+                            class="relative w-full flex items-center justify-center rounded-md border border-zinc-300 bg-zinc-100 py-2 px-8 text-sm font-medium text-gray-900"
+                            @click="openModal(product)"
+                        >
+                            I want this
+                        </button>
+                    </template>
+                    <template v-else>
+                        <button
+                            class="relative w-full flex items-center justify-center rounded-md border border-transparent bg-zinc-500 py-2 px-8 text-sm font-medium text-gray-900"
+                            disabled
+                        >
+                            Out of stock
+                        </button>
+                    </template>
+                </div>
             </div>
         </div>
     </div>
