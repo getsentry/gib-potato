@@ -115,18 +115,55 @@ class ShopController extends ApiController
         $productsTable->saveOrFail($product);
 
         if ($presentee !== null) {
-            $message = '<@' . $user->slack_user_id . '> did buy a nice little present for '
-                . '<@' . $presentee->slack_user_id . '> 🎁😊' . PHP_EOL;
-            $message .= PHP_EOL;
-            $message .= 'They got them *<' . Router::url(str_replace('.svg', '.png', $product->image_link), true)
-                . '|' . $product->name . '. >* 🚀' . PHP_EOL;
-            $message .= PHP_EOL;
-            $message .= '_"' . $this->request->getData('message') . '"_' . PHP_EOL;
+            $blocks = [
+                [
+                    'type' => 'section',
+                    'text' => [
+                        'type' => 'mrkdwn',
+                        'text' => "<@{$user->slack_user_id}> did buy a nice little present for "
+                            . "<@{$presentee->slack_user_id}> 🎁😊",
+                    ],
+                ],
+                [
+                    'type' => 'section',
+                    'text' => [
+                        'type' => 'mrkdwn',
+                        'text' => "They got them *{$product->name}* 🚀",
+                    ],
+                ],
+                [
+                    'type' => 'section',
+                    'text' => [
+                        'type' => 'mrkdwn',
+                        'text' => "_{$this->request->getData('message')}_",
+                    ],
+                ],
+                [
+                    'type' => 'divider',
+                ],
+                [
+                    'type' => 'section',
+                    'text' => [
+                        'type' => 'mrkdwn',
+                        'text' => '<' . Router::url('/shop', true) . '|Gib a present to a fellow Sentaur yourself!>',
+                    ],
+                ],
+                [
+                    'type' => 'image',
+                    'image_url' => Router::url(str_replace('.svg', '.png', $product->image_link), true),
+                    'alt_text' => $product->name,
+                    'title' => [
+                        'type' => 'plain_text',
+                        'text' => $product->name,
+                    ],
+                ],
+
+            ];
 
             $slackClient = new SlackClient();
-            $slackClient->postMessage(
+            $slackClient->postBlocks(
                 channel: env('POTATO_CHANNEL'),
-                text: $message,
+                blocks: json_encode($blocks),
             );
         }
 
