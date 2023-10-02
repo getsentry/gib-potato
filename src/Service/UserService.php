@@ -87,7 +87,7 @@ class UserService
         $welcomeMessage .= '*Welcome to GibPotato!*' . PHP_EOL;
         $welcomeMessage .= PHP_EOL;
         $welcomeMessage .= ' - Every day, you get five 🥔' . PHP_EOL;
-        $welcomeMessage .= ' - You can gib them to people as a token of appreciation.'
+        $welcomeMessage .= ' - You can gib them to people as a token of appreciation. '
             . 'Simply @ mention them and add a 🥔 to your message.' . PHP_EOL;
         $welcomeMessage .= ' - Alternatively, you can also react to a message with a 🥔. '
             . 'They either go to the people mentioned in the message or, '
