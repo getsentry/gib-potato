@@ -10,8 +10,8 @@ use Cake\ORM\Entity;
  *
  * @property string $user_id
  * @property string $token
- * @property \Cake\I18n\FrozenTime|null $last_used
- * @property \Cake\I18n\FrozenTime|null $created
+ * @property \Cake\I18n\DateTime|null $last_used
+ * @property \Cake\I18n\DateTime|null $created
  *
  * @property \App\Model\Entity\User $user
  */
@@ -26,7 +26,7 @@ class ApiToken extends Entity
      *
      * @var array<string, bool>
      */
-    protected $_accessible = [
+    protected array $_accessible = [
         '*' => false,
     ];
 }

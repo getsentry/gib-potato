@@ -43,7 +43,7 @@ class SlackClient
             $json = $response->getJson();
 
             if ($json['ok'] === false) {
-                withScope(function ($scope) use ($json, $channel, $text) {
+                withScope(function ($scope) use ($json, $channel, $text): void {
                     $scope->setExtras([
                         'channel' => $channel,
                         'text' => $text,
@@ -72,7 +72,7 @@ class SlackClient
             $json = $response->getJson();
 
             if ($json['ok'] === false) {
-                withScope(function ($scope) use ($json, $channel, $blocks) {
+                withScope(function ($scope) use ($json, $channel, $blocks): void {
                     $scope->setExtras([
                         'channel' => $channel,
                         'blocks' => $blocks,
@@ -105,7 +105,7 @@ class SlackClient
             $json = $response->getJson();
 
             if ($json['ok'] === false) {
-                withScope(function ($scope) use ($json, $channel, $user, $text, $threadTimestamp) {
+                withScope(function ($scope) use ($json, $channel, $user, $text, $threadTimestamp): void {
                     $scope->setExtras([
                         'channel' => $channel,
                         'user' => $user,
@@ -136,7 +136,7 @@ class SlackClient
             $json = $response->getJson();
 
             if ($json['ok'] === false) {
-                withScope(function ($scope) use ($json, $user, $view) {
+                withScope(function ($scope) use ($json, $user, $view): void {
                     $scope->setExtras([
                         'user_id' => $user,
                         'view' => $view,
@@ -165,7 +165,7 @@ class SlackClient
             $json = $response->getJson();
 
             if ($json['ok'] === false) {
-                withScope(function ($scope) use ($json, $triggerId, $view) {
+                withScope(function ($scope) use ($json, $triggerId, $view): void {
                     $scope->setExtras([
                         'trigger_id' => $triggerId,
                         'view' => $view,
@@ -194,7 +194,7 @@ class SlackClient
             if ($json['ok'] === true) {
                 return $json['user'];
             } else {
-                withScope(function ($scope) use ($json, $user) {
+                withScope(function ($scope) use ($json, $user): void {
                     $scope->setExtras([
                         'user' => $user,
                         'slack_response' => $json,

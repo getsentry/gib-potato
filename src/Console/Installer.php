@@ -20,6 +20,7 @@ if (!defined('STDIN')) {
     define('STDIN', fopen('php://stdin', 'r'));
 }
 
+use Composer\IO\IOInterface;
 use Composer\Script\Event;
 use Exception;
 
@@ -50,7 +51,7 @@ class Installer
      * @throws \Exception Exception raised by validator.
      * @return void
      */
-    public static function postInstall(Event $event)
+    public static function postInstall(Event $event): void
     {
         $io = $event->getIO();
 
@@ -68,7 +69,7 @@ class Installer
      * @param \Composer\IO\IOInterface $io IO interface to write to console.
      * @return void
      */
-    public static function createWritableDirectories($dir, $io)
+    public static function createWritableDirectories(string $dir, IOInterface $io): void
     {
         foreach (static::WRITABLE_DIRS as $path) {
             $path = $dir . '/' . $path;
@@ -88,7 +89,7 @@ class Installer
      * @param \Composer\IO\IOInterface $io IO interface to write to console.
      * @return void
      */
-    public static function setFolderPermissions($dir, $io)
+    public static function setFolderPermissions(string $dir, IOInterface $io): void
     {
         // ask if the permissions should be changed
         if ($io->isInteractive()) {
@@ -111,7 +112,7 @@ class Installer
         }
 
         // Change the permissions on a path and output the results.
-        $changePerms = function ($path) use ($io) {
+        $changePerms = function ($path) use ($io): void {
             $currentPerms = fileperms($path) & 0777;
             $worldWritable = $currentPerms | 0007;
             if ($worldWritable == $currentPerms) {
@@ -126,7 +127,7 @@ class Installer
             }
         };
 
-        $walker = function ($dir) use (&$walker, $changePerms) {
+        $walker = function ($dir) use (&$walker, $changePerms): void {
             $files = array_diff(scandir($dir), ['.', '..']);
             foreach ($files as $file) {
                 $path = $dir . '/' . $file;

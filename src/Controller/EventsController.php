@@ -5,6 +5,7 @@ namespace App\Controller;
 
 use App\Event\EventFactory;
 use Cake\Controller\Controller;
+use Cake\Http\Response;
 
 class EventsController extends Controller
 {
@@ -21,7 +22,7 @@ class EventsController extends Controller
     /**
      * @return \Cake\Http\Response
      */
-    public function index()
+    public function index(): Response
     {
         $this->request->allowMethod('POST');
 

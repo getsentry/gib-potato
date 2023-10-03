@@ -7,6 +7,8 @@ use Cake\Database\Driver\Postgres;
 use Cake\Log\Engine\FileLog;
 use Cake\Mailer\Transport\MailTransport;
 
+use function Cake\Core\env;
+
 return [
     /*
      * Debug Level:
@@ -353,7 +355,7 @@ return [
             'path' => LOGS,
             'file' => 'debug',
             'url' => env('LOG_DEBUG_URL', null),
-            'scopes' => false,
+            'scopes' => null,
             'levels' => ['notice', 'info', 'debug'],
         ],
         'error' => [
@@ -361,7 +363,7 @@ return [
             'path' => LOGS,
             'file' => 'error',
             'url' => env('LOG_ERROR_URL', null),
-            'scopes' => false,
+            'scopes' => null,
             'levels' => ['warning', 'error', 'critical', 'alert', 'emergency'],
         ],
         // To enable this dedicated query log, you need set your datasource's log flag to true
@@ -370,7 +372,7 @@ return [
             'path' => LOGS,
             'file' => 'queries',
             'url' => env('LOG_QUERIES_URL', null),
-            'scopes' => ['queriesLog'],
+            'scopes' => ['cake.database.queries'],
         ],
     ],
 

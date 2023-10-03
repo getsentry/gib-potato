@@ -13,8 +13,8 @@ use Cake\ORM\Entity;
  * @property int $sent_threshold
  * @property int $received_threshold
  * @property string $operator
- * @property \Cake\I18n\FrozenTime|null $created
- * @property \Cake\I18n\FrozenTime|null $modified
+ * @property \Cake\I18n\DateTime|null $created
+ * @property \Cake\I18n\DateTime|null $modified
  */
 class Progression extends Entity
 {
@@ -27,7 +27,7 @@ class Progression extends Entity
      *
      * @var array<string, bool>
      */
-    protected $_accessible = [
+    protected array $_accessible = [
         '*' => false,
     ];
 

@@ -13,21 +13,21 @@ use Sentry\Tracing\Span;
 class SentryHelper extends Helper
 {
     /**
-     * @var string[]
+     * @var array<string>
      */
-    protected $helpers = ['Html'];
+    protected array $helpers = ['Html'];
 
     /**
      * Default configuration.
      *
      * @var array<string, mixed>
      */
-    protected $_defaultConfig = [];
+    protected array $_defaultConfig = [];
 
     /**
      * @var \Sentry\Tracing\Span|null
      */
-    protected Span|null $span;
+    protected ?Span $span;
 
     /**
      * @inheritDoc

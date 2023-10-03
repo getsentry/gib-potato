@@ -6,6 +6,7 @@ namespace App\Controller;
 use App\Model\Entity\User;
 use Cake\Event\EventInterface;
 use Cake\Http\Client;
+use Cake\Http\Response;
 use Lcobucci\JWT\Encoding\JoseEncoder;
 use Lcobucci\JWT\Token\Parser;
 use Throwable;
@@ -43,7 +44,7 @@ class LoginController extends AppController
      * @param string $mode The auth source.
      * @return \Cake\Http\Response|null
      */
-    public function startOpenId(string $mode = 'web')
+    public function startOpenId(string $mode = 'web'): ?Response
     {
         $url = 'https://slack.com/openid/connect/authorize' .
             '?scope=openid,email,profile' .
@@ -58,7 +59,7 @@ class LoginController extends AppController
      * @param string $mode The auth source.
      * @return \Cake\Http\Response|null
      */
-    public function openId(string $mode = 'web')
+    public function openId(string $mode = 'web'): ?Response
     {
         $client = new Client();
         $response = $client->post('https://slack.com/api/openid.connect.token', [
@@ -121,7 +122,7 @@ class LoginController extends AppController
     /**
      * @return \Cake\Http\Response|null
      */
-    public function logout()
+    public function logout(): ?Response
     {
         $this->Authentication->logout();
 

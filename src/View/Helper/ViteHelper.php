@@ -14,21 +14,21 @@ use RuntimeException;
 class ViteHelper extends Helper
 {
     /**
-     * @var string[]
+     * @var array<string>
      */
-    protected $helpers = ['Html'];
+    protected array $helpers = ['Html'];
 
     /**
      * @var array<string, mixed>
      */
-    protected $_defaultConfig = [
+    protected array $_defaultConfig = [
         'manifestFile' => WWW_ROOT . 'manifest.json',
     ];
 
     /**
      * @var array
      */
-    protected $manifest = [];
+    protected array $manifest = [];
 
     /**
      * @inheritDoc

@@ -31,22 +31,46 @@ require __DIR__ . DIRECTORY_SEPARATOR . 'paths.php';
  */
 require CORE_PATH . 'config' . DS . 'bootstrap.php';
 
-require ROOT . DS . 'config' . DS . 'functions.php';
-
 use Cake\Cache\Cache;
 use Cake\Core\Configure;
 use Cake\Core\Configure\Engine\PhpConfig;
-use Cake\Database\Type\StringType;
-use Cake\Database\TypeFactory;
 use Cake\Datasource\ConnectionManager;
 use Cake\Error\ErrorTrap;
 use Cake\Error\ExceptionTrap;
-use Cake\Http\ServerRequest;
 use Cake\Log\Log;
 use Cake\Mailer\Mailer;
 use Cake\Mailer\TransportFactory;
 use Cake\Routing\Router;
 use Cake\Utility\Security;
+
+use function Cake\Core\env;
+
+/**
+ * Load global functions.
+ */
+require CAKE . 'functions.php';
+
+/*
+ * See https://github.com/josegonzalez/php-dotenv for API details.
+ *
+ * Uncomment block of code below if you want to use `.env` file during development.
+ * You should copy `config/.env.example` to `config/.env` and set/modify the
+ * variables as required.
+ *
+ * The purpose of the .env file is to emulate the presence of the environment
+ * variables like they would be present in production.
+ *
+ * If you use .env files, be careful to not commit them to source control to avoid
+ * security risks. See https://github.com/josegonzalez/php-dotenv#general-security-information
+ * for more information for recommended practices.
+*/
+// if (!env('APP_NAME') && file_exists(CONFIG . '.env')) {
+//     $dotenv = new \josegonzalez\Dotenv\Loader([CONFIG . '.env']);
+//     $dotenv->parse()
+//         ->putenv()
+//         ->toEnv()
+//         ->toServer();
+// }
 
 /*
  * Read configuration file and inject configuration into various
@@ -62,6 +86,14 @@ try {
 } catch (\Exception $e) {
     exit($e->getMessage() . "\n");
 }
+
+/*
+ * Load an environment local configuration file to provide overrides to your configuration.
+ * Notice: For security reasons app_local.php **should not** be included in your git repo.
+ */
+// if (file_exists(CONFIG . 'app_local.php')) {
+//     Configure::load('app_local', 'default');
+// }
 
 Sentry\init([
     'dsn' => env('SENTRY_BACKEND_DSN'),
@@ -156,6 +188,22 @@ Log::setConfig(Configure::consume('Log'));
 Security::setSalt(Configure::consume('Security.salt'));
 
 /*
+ * Setup detectors for mobile and tablet.
+ * If you don't use these checks you can safely remove this code
+ * and the mobiledetect package from composer.json.
+ */
+// ServerRequest::addDetector('mobile', function ($request) {
+//     $detector = new \Detection\MobileDetect();
+
+//     return $detector->isMobile();
+// });
+// ServerRequest::addDetector('tablet', function ($request) {
+//     $detector = new \Detection\MobileDetect();
+
+//     return $detector->isTablet();
+// });
+
+/*
  * You can enable default locale format parsing by adding calls
  * to `useLocaleParser()`. This enables the automatic conversion of
  * locale specific date formats. For details see
@@ -178,9 +226,6 @@ Security::setSalt(Configure::consume('Security.salt'));
 // \Cake\Database\TypeFactory::build('timestamptimezone')
 //    ->useLocaleParser();
 
-// There is no time-specific type in Cake
-TypeFactory::map('time', StringType::class);
-
 /*
  * Custom Inflector rules, can be set to correctly pluralize or singularize
  * table, model, controller names or whatever other string is passed to the
@@ -189,3 +234,9 @@ TypeFactory::map('time', StringType::class);
 //Inflector::rules('plural', ['/^(inflect)or$/i' => '\1ables']);
 //Inflector::rules('irregular', ['red' => 'redlings']);
 //Inflector::rules('uninflected', ['dontinflectme']);
+
+// set a custom date and time format
+// see https://book.cakephp.org/4/en/core-libraries/time.html#setting-the-default-locale-and-format-string
+// and https://unicode-org.github.io/icu/userguide/format_parse/datetime/#datetime-format-syntax
+//\Cake\I18n\FrozenDate::setToStringFormat('dd.MM.yyyy');
+//\Cake\I18n\FrozenTime::setToStringFormat('dd.MM.yyyy HH:mm');

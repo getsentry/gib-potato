@@ -5,7 +5,7 @@ namespace App\Controller\Api;
 
 use App\Model\Entity\User;
 use Cake\Http\Response;
-use Cake\I18n\FrozenTime;
+use Cake\I18n\DateTime;
 
 /**
  * @property \Authentication\Controller\Component\AuthenticationComponent $Authentication
@@ -21,16 +21,16 @@ class LeaderBoardController extends ApiController
         $range = $this->request->getQuery('range');
         switch ($range) {
             case 'week':
-                $rangeTimeObject = new FrozenTime('1 week ago');
+                $rangeTimeObject = new DateTime('1 week ago');
                 break;
             case 'month':
-                $rangeTimeObject = new FrozenTime('1 month ago');
+                $rangeTimeObject = new DateTime('1 month ago');
                 break;
             case 'year':
-                $rangeTimeObject = new FrozenTime('1 year ago');
+                $rangeTimeObject = new DateTime('1 year ago');
                 break;
             default:
-                $rangeTimeObject = new FrozenTime('2022-08-24 00:00:00');
+                $rangeTimeObject = new DateTime('2022-08-24 00:00:00');
         }
 
         $usersTable = $this->fetchTable('Users');
@@ -78,10 +78,10 @@ class LeaderBoardController extends ApiController
         $order = $this->request->getQuery('order');
         switch ($order) {
             case 'sent':
-                $query->order(['sent_count' => $query->newExpr('DESC NULLS LAST')]);
+                $query->orderBy(['sent_count' => $query->expr('DESC NULLS LAST')]);
                 break;
             case 'received':
-                $query->order(['received_count' => $query->newExpr('DESC NULLS LAST')]);
+                $query->orderBy(['received_count' => $query->expr('DESC NULLS LAST')]);
                 break;
         }
 

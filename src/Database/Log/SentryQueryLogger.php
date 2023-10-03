@@ -12,14 +12,17 @@ use Stringable;
 
 class SentryQueryLogger extends AbstractLogger
 {
-    private $parentSpanStack = [];
-    private $currentSpanStack = [];
+    private array $parentSpanStack = [];
+    private array $currentSpanStack = [];
 
     /**
      * @inheritDoc
      */
     public function log($level, string|Stringable $message, array $context = []): void
     {
+        // @TODO(michi) Re-enable once it's fixed upstream
+        return;
+
         $parentSpan = SentrySdk::getCurrentHub()->getSpan();
 
         if ($parentSpan === null) {

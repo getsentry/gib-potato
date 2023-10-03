@@ -29,7 +29,7 @@ class CollectionController extends ApiController
                     ],
                 ],
             ])
-            ->order(['created' => 'DESC'])
+            ->orderBy(['created' => 'DESC'])
             ->all();
 
         return $this->response

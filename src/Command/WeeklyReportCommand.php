@@ -9,7 +9,7 @@ use Cake\Command\Command;
 use Cake\Console\Arguments;
 use Cake\Console\ConsoleIo;
 use Cake\Console\ConsoleOptionParser;
-use Cake\I18n\FrozenTime;
+use Cake\I18n\DateTime;
 use Sentry\CheckInStatus;
 use Sentry\MonitorConfig;
 use Sentry\MonitorSchedule;
@@ -41,7 +41,7 @@ class WeeklyReportCommand extends Command
     /**
      * @param \Cake\Console\Arguments $args The command arguments.
      * @param \Cake\Console\ConsoleIo $io The console io
-     * @return null|void|int The exit code or null for success
+     * @return int|null|void The exit code or null for success
      */
     public function execute(Arguments $args, ConsoleIo $io)
     {
@@ -71,7 +71,7 @@ class WeeklyReportCommand extends Command
             ])
             ->where([
                 'sender_user_id = Users.id',
-                'created >=' => new FrozenTime('1 week ago'),
+                'created >=' => new DateTime('1 week ago'),
             ]);
 
         $reivedCountQuery = $messagesTable->find()
@@ -80,7 +80,7 @@ class WeeklyReportCommand extends Command
             ])
             ->where([
                 'receiver_user_id = Users.id',
-                'created >=' => new FrozenTime('1 week ago'),
+                'created >=' => new DateTime('1 week ago'),
             ]);
 
         $topSendersQuery = $usersTable->find();
@@ -95,7 +95,7 @@ class WeeklyReportCommand extends Command
                 'Users.role !=' => User::ROLE_SERVICE,
             ])
             ->group(['Users.id'])
-            ->order(['sent_count' => $topSendersQuery->newExpr('DESC NULLS LAST')])
+            ->orderBy(['sent_count' => $topSendersQuery->expr('DESC NULLS LAST')])
             ->limit(5)
             ->enableAutoFields(true);
 
@@ -111,7 +111,7 @@ class WeeklyReportCommand extends Command
                 'Users.role !=' => User::ROLE_SERVICE,
             ])
             ->group(['Users.id'])
-            ->order(['received_count' => $topReceiversQuery->newExpr('DESC NULLS LAST')])
+            ->orderBy(['received_count' => $topReceiversQuery->expr('DESC NULLS LAST')])
             ->limit(5)
             ->enableAutoFields(true);
 

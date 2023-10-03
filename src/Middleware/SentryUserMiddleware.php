@@ -27,7 +27,7 @@ class SentryUserMiddleware implements MiddlewareInterface
         $user = $request->getAttribute('identity');
 
         if ($user) {
-            SentrySdk::getCurrentHub()->configureScope(function (Scope $scope) use ($user) {
+            SentrySdk::getCurrentHub()->configureScope(function (Scope $scope) use ($user): void {
                 $scope->setUser([
                     'id' => $user->id,
                     'username' => $user->slack_name,

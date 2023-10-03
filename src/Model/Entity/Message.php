@@ -13,7 +13,7 @@ use Cake\ORM\Entity;
  * @property string $receiver_user_id
  * @property int $amount
  * @property string $type
- * @property \Cake\I18n\FrozenTime|null $created
+ * @property \Cake\I18n\DateTime|null $created
  *
  * @property \App\Model\Entity\User $user
  */
@@ -28,7 +28,7 @@ class Message extends Entity
      *
      * @var array<string, bool>
      */
-    protected $_accessible = [
+    protected array $_accessible = [
         '*' => false,
     ];
 
