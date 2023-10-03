@@ -11,9 +11,10 @@ class AddSessionsAndMessageType extends AbstractMigration
      *
      * More information on this method is available here:
      * https://book.cakephp.org/phinx/0/en/migrations.html#the-up-method
+     *
      * @return void
      */
-    public function up()
+    public function up(): void
     {
         $this->table('sessions', ['id' => false, 'primary_key' => ['id']])
             ->addColumn('id', 'char', [
@@ -59,9 +60,10 @@ class AddSessionsAndMessageType extends AbstractMigration
      *
      * More information on this method is available here:
      * https://book.cakephp.org/phinx/0/en/migrations.html#the-down-method
+     *
      * @return void
      */
-    public function down()
+    public function down(): void
     {
         $this->table('messages')
             ->removeColumn('type')

@@ -6,6 +6,7 @@ namespace App\Controller\Api;
 use App\Http\SlackClient;
 use Cake\Http\Response;
 use Cake\Routing\Router;
+use function Cake\Core\env;
 
 /**
  * @property \Authentication\Controller\Component\AuthenticationComponent $Authentication

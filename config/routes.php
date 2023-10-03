@@ -64,7 +64,7 @@ return static function (RouteBuilder $routes): void {
 
         $builder->connect('/terms', ['controller' => 'Terms', 'action' => 'index']);
 
-        $builder->scope('/api', function (RouteBuilder $builder) {    
+        $builder->scope('/api', function (RouteBuilder $builder): void {
             $builder->get('/leaderboard', ['prefix' => 'Api', 'controller' => 'LeaderBoard', 'action' => 'get']);
 
             $builder->get('/users', ['prefix' => 'Api', 'controller' => 'Users', 'action' => 'list']);
@@ -86,7 +86,6 @@ return static function (RouteBuilder $routes): void {
     ]);
     $serviceAuthService->loadIdentifier('Potal');
     $routes->registerMiddleware('service-auth', new AuthenticationMiddleware($serviceAuthService));
-
 
     $routes->scope('/', function (RouteBuilder $builder): void {
         $builder->applyMiddleware('service-auth');

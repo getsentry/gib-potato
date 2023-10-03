@@ -38,12 +38,12 @@ class SentryHelper extends Helper
     }
 
     /**
-     * @return string|void
+     * @return string|null
      */
-    public function sentryTracingMeta()
+    public function sentryTracingMeta(): ?string
     {
         if (empty($this->span)) {
-            return;
+            return null;
         }
 
         return $this->Html->meta(
@@ -53,12 +53,12 @@ class SentryHelper extends Helper
     }
 
     /**
-     * @return string|void
+     * @return string|null
      */
-    public function sentryBaggageMeta()
+    public function sentryBaggageMeta(): ?string
     {
         if (empty($this->span)) {
-            return;
+            return null;
         }
 
         return $this->Html->meta(

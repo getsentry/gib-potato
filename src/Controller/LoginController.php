@@ -10,6 +10,7 @@ use Cake\Http\Response;
 use Lcobucci\JWT\Encoding\JoseEncoder;
 use Lcobucci\JWT\Token\Parser;
 use Throwable;
+use function Cake\Core\env;
 
 /**
  * @property \Authentication\Controller\Component\AuthenticationComponent $Authentication

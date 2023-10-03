@@ -9,6 +9,7 @@ use App\Model\Table\ApiTokensTable;
 use App\Model\Table\UsersTable;
 use Cake\ORM\Locator\LocatorAwareTrait;
 use Exception;
+use function Cake\Core\env;
 
 class UserService
 {

@@ -6,7 +6,6 @@ use Cake\Database\Connection;
 use Cake\Database\Driver\Postgres;
 use Cake\Log\Engine\FileLog;
 use Cake\Mailer\Transport\MailTransport;
-
 use function Cake\Core\env;
 
 return [
@@ -172,14 +171,14 @@ return [
      *   The conventional location for custom renderers is in `src/Error`. Your exception renderer needs to
      *   implement the `render()` method and return either a string or Http\Response.
      *   `errorRenderer` - string - The class responsible for rendering PHP errors. The selected
-     *   class will be used for both web and CLI contexts. If you want different classes for each environment 
+     *   class will be used for both web and CLI contexts. If you want different classes for each environment
      *   you'll need to write that conditional logic as well. Error renderers need to
      *   to implement the `Cake\Error\ErrorRendererInterface`.
      * - `skipLog` - array - List of exceptions to skip for logging. Exceptions that
      *   extend one of the listed exceptions will also be skipped for logging.
      *   E.g.:
      *   `'skipLog' => ['Cake\Http\Exception\NotFoundException', 'Cake\Http\Exception\UnauthorizedException']`
-     * - `extraFatalErrorMemory` - int - The number of megabytes to increase the memory limit by 
+     * - `extraFatalErrorMemory` - int - The number of megabytes to increase the memory limit by
      *   when a fatal error is encountered. This allows
      *   breathing room to complete logging or error handling.
      * - `ignoredDeprecationPaths` - array - A list of glob compatible file paths that deprecations

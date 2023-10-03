@@ -6,6 +6,7 @@ namespace App\Identifier;
 use ArrayAccess;
 use Authentication\Identifier\AbstractIdentifier;
 use Cake\ORM\Locator\LocatorAwareTrait;
+use function Cake\Core\env;
 
 class PotalIdentifier extends AbstractIdentifier
 {

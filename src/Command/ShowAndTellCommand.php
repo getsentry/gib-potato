@@ -10,6 +10,7 @@ use Cake\Command\Command;
 use Cake\Console\Arguments;
 use Cake\Console\ConsoleIo;
 use Cake\Console\ConsoleOptionParser;
+use function Cake\Core\env;
 
 /**
  * ShowAndTell command.

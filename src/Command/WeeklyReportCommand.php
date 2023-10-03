@@ -13,6 +13,7 @@ use Cake\I18n\DateTime;
 use Sentry\CheckInStatus;
 use Sentry\MonitorConfig;
 use Sentry\MonitorSchedule;
+use function Cake\Core\env;
 use function Sentry\captureCheckIn;
 
 /**

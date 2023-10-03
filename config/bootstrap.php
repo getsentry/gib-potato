@@ -42,8 +42,8 @@ use Cake\Mailer\Mailer;
 use Cake\Mailer\TransportFactory;
 use Cake\Routing\Router;
 use Cake\Utility\Security;
-
 use function Cake\Core\env;
+use function Sentry\init;
 
 /**
  * Load global functions.
@@ -83,7 +83,7 @@ require CAKE . 'functions.php';
 try {
     Configure::config('default', new PhpConfig());
     Configure::load('app', 'default', false);
-} catch (\Exception $e) {
+} catch (Exception $e) {
     exit($e->getMessage() . "\n");
 }
 
@@ -95,7 +95,7 @@ try {
 //     Configure::load('app_local', 'default');
 // }
 
-Sentry\init([
+init([
     'dsn' => env('SENTRY_BACKEND_DSN'),
     'traces_sample_rate' => 1.0,
     'profiles_sample_rate' => 1.0,
