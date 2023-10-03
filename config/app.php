@@ -132,20 +132,6 @@ return [
             'duration' => '+1 years',
             'url' => env('CACHE_CAKEMODEL_URL', null),
         ],
-
-        /*
-         * Configure the cache for routes. The cached routes collection is built the
-         * first time the routes are processed through `config/routes.php`.
-         * Duration will be set to '+2 seconds' in bootstrap.php when debug = true
-         */
-        '_cake_routes_' => [
-            'className' => FileEngine::class,
-            'prefix' => 'myapp_cake_routes_',
-            'path' => CACHE,
-            'serialize' => true,
-            'duration' => '+1 years',
-            'url' => env('CACHE_CAKEROUTES_URL', null),
-        ],
     ],
 
     /*
@@ -162,11 +148,11 @@ return [
      * Options:
      *
      * - `errorLevel` - int - The level of errors you are interested in capturing.
-     * - `trace` - boolean - Whether or not backtraces should be included in
+     * - `trace` - boolean - Whether backtraces should be included in
      *   logged errors/exceptions.
-     * - `log` - boolean - Whether or not you want exceptions logged.
+     * - `log` - boolean - Whether you want exceptions logged.
      * - `exceptionRenderer` - string - The class responsible for rendering uncaught exceptions.
-     *   The chosen class will be used for for both CLI and web environments. If you want different
+     *   The chosen class will be used for both CLI and web environments. If you want different
      *   classes used in CLI and web environments you'll need to write that conditional logic as well.
      *   The conventional location for custom renderers is in `src/Error`. Your exception renderer needs to
      *   implement the `render()` method and return either a string or Http\Response.
@@ -200,7 +186,6 @@ return [
         'log' => true,
         'trace' => true,
         'ignoredDeprecationPaths' => [],
-        'convertStatementToDatabaseException' => true,
     ],
 
     /*
@@ -311,6 +296,11 @@ return [
             'timezone' => 'UTC',
 
             /*
+             * For MariaDB/MySQL the internal default changed from utf8 to utf8mb4, aka full utf-8 support, in CakePHP 3.6
+             */
+            //'encoding' => 'utf8mb4',
+
+            /*
              * If your MySQL server is configured with `skip-character-set-client-handshake`
              * then you MUST use the `flags` config to set your charset encoding.
              * For e.g. `'flags' => [\PDO::MYSQL_ATTR_INIT_COMMAND => 'SET NAMES utf8mb4']`
@@ -343,6 +333,22 @@ return [
             'password' => env('DATABASE_PASSWORD'),
             'database' => env('DATABASE_NAME'),
         ],
+
+        /*
+         * The test connection is used during the test suite.
+         */
+        // 'test' => [
+        //     'className' => Connection::class,
+        //     'driver' => Mysql::class,
+        //     'persistent' => false,
+        //     'timezone' => 'UTC',
+        //     //'encoding' => 'utf8mb4',
+        //     'flags' => [],
+        //     'cacheMetadata' => true,
+        //     'quoteIdentifiers' => false,
+        //     'log' => false,
+        //     //'init' => ['SET GLOBAL innodb_stats_on_metadata = 0'],
+        // ],
     ],
 
     /*
@@ -399,7 +405,7 @@ return [
      *    array with at least the `engine` key, being the name of the Session engine
      *    class to use for managing the session. CakePHP bundles the `CacheSession`
      *    and `DatabaseSession` engines.
-     * - `ini` - An associative array of additional ini values to set.
+     * - `ini` - An associative array of additional 'session.*` ini values to set.
      *
      * The built-in `defaults` options are:
      *
@@ -408,7 +414,7 @@ return [
      * - 'database' - Uses CakePHP's database sessions.
      * - 'cache' - Use the Cache class to save sessions.
      *
-     * To define a custom session handler, save it at src/Network/Session/<name>.php.
+     * To define a custom session handler, save it at src/Http/Session/<name>.php.
      * Make sure the class implements PHP's `SessionHandlerInterface` and set
      * Session.handler to <name>
      *
