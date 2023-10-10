@@ -36,7 +36,7 @@ import './assets/main.css'
         ],
         tracesSampleRate: 1.0,
         profilesSampleRate: 1,
-        replaysSessionSampleRate: 0.0,
+        replaysSessionSampleRate: 1.0,
         replaysOnErrorSampleRate: 1.0,
     })
 
