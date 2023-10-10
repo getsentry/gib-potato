@@ -40,30 +40,32 @@ class LoginController extends AppController
     }
 
     /**
+     * @param string $mode The auth source.
      * @return \Cake\Http\Response|null
      */
-    public function startOpenId()
+    public function startOpenId(string $mode = 'web')
     {
         $url = 'https://slack.com/openid/connect/authorize' .
             '?scope=openid,email,profile' .
             '&response_type=code' .
-            '&redirect_uri=' . env('SLACK_REDIRECT_URI') .
+            '&redirect_uri=' . env('SLACK_REDIRECT_URI') . ($mode === 'mobile' ? '/mobile' : '') .
             '&client_id=' . env('SLACK_CLIENT_ID');
 
         return $this->redirect($url);
     }
 
     /**
+     * @param string $mode The auth source.
      * @return \Cake\Http\Response|null
      */
-    public function openId()
+    public function openId(string $mode = 'web')
     {
         $client = new Client();
         $response = $client->post('https://slack.com/api/openid.connect.token', [
             'client_id' => env('SLACK_CLIENT_ID'),
             'client_secret' => env('SLACK_CLIENT_SECRET'),
             'code' => $this->request->getQuery('code'),
-            'redirect_uri' => env('SLACK_REDIRECT_URI'),
+            'redirect_uri' => env('SLACK_REDIRECT_URI') . ($mode === 'mobile' ? '/mobile' : ''),
         ]);
 
         if ($response->isSuccess()) {
@@ -85,15 +87,24 @@ class LoginController extends AppController
                     ->findBySlackUserId(
                         $jwt->claims()->get('https://slack.com/user_id')
                     )
+                    ->contain('ApiTokens')
                     ->first();
 
                 if (
                     $user instanceof User
                     && env('SLACK_TEAM_ID') === $jwt->claims()->get('https://slack.com/team_id')
                 ) {
-                    $this->Authentication->setIdentity($user);
+                    if ($mode === 'web') {
+                        $this->Authentication->setIdentity($user);
 
-                    return $this->redirect(['controller' => 'Home', 'action' => 'index']);
+                        return $this->redirect(['controller' => 'Home', 'action' => 'index']);
+                    }
+
+                    if ($mode === 'mobile') {
+                        $this->set('token', $user->api_token->token);
+
+                        return $this->render('mobile');
+                    }
                 }
             }
 

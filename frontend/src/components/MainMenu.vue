@@ -24,6 +24,13 @@
                             >
                                 Shop
                             </RouterLink>
+                            <RouterLink
+                                to="/collection"
+                                class="rounded-md px-3 py-2 text-sm font-medium text-zinc-900"
+                                :class="{ '!bg-zinc-900 !text-zinc-50': $route.path === '/collection' }"
+                            >
+                                Collection
+                            </RouterLink>
                         </div>
                     </div>
                 </div>
@@ -79,16 +86,23 @@
                 <RouterLink
                     to="/"
                     class="block rounded-md px-3 py-2 text-base font-medium text-zinc-900"
-                    :class="{ 'bg-zinc-900 text-zinc-50': $route.path === '/' }"
+                    :class="{ '!bg-zinc-900 !text-zinc-50': $route.path === '/' }"
                 >
                     Home
                 </RouterLink>
                 <RouterLink
                     to="/shop"
                     class="block rounded-md px-3 py-2 text-base font-medium text-zinc-900"
-                    :class="{ 'bg-zinc-900 text-zinc-50': $route.path === '/shop' }"
+                    :class="{ '!bg-zinc-900 !text-zinc-50': $route.path === '/shop' }"
                 >
                     Shop
+                </RouterLink>
+                <RouterLink
+                    to="/collection"
+                    class="block rounded-md px-3 py-2 text-base font-medium text-zinc-900"
+                    :class="{ '!bg-zinc-900 text-zinc-50': $route.path === '/collection' }"
+                >
+                    Collection
                 </RouterLink>
             </div>
             <div class="border-t border-zinc-900 pt-4 pb-3">
@@ -103,13 +117,13 @@
                 </div>
                 <div class="mt-3 space-y-1 px-2">
                     <RouterLink to="/profile" class="block rounded-md px-3 py-2 text-base font-medium text-zinc-900"
-                        :class="{ 'bg-zinc-900 text-zinc-50': $route.path === '/profile' }">
+                        :class="{ '!bg-zinc-900 !text-zinc-50': $route.path === '/profile' }">
                         Your Profile
                     </RouterLink>
                     <RouterLink
                         to="/settings"
                         class="block rounded-md px-3 py-2 text-base font-medium text-zinc-900"
-                        :class="{ 'bg-zinc-900 text-zinc-50': $route.path === '/settings' }"
+                        :class="{ '!bg-zinc-900 !text-zinc-50': $route.path === '/settings' }"
                     >
                         Settings
                     </RouterLink>

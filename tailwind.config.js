@@ -7,5 +7,4 @@ module.exports = {
   theme: {
     extend: {},
   },
-  plugons: [],
 };

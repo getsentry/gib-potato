@@ -88,12 +88,14 @@ class SlashCommandEvent extends AbstractEvent
             'title' => $title,
             'type' => Poll::TYPE_MULTIPLE,
             'status' => Poll::STATUS_ACTIVE,
+            'anonymous' => str_contains($this->text, '--anonymous') ? true : false,
         ], [
             'accessibleFields' => [
                 'user_id' => true,
                 'title' => true,
                 'type' => true,
                 'status' => true,
+                'anonymous' => true,
             ],
         ]);
         $pollsTable->saveOrFail($poll);

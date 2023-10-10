@@ -192,4 +192,24 @@ class User extends Entity
 
         return (string)$minutes;
     }
+
+    /**
+     * @return int
+     */
+    public function spendablePotato(): int
+    {
+        $pruchasesTable = $this->fetchTable('Purchases');
+
+        $query = $pruchasesTable->find();
+        $result = $query
+            ->select([
+                'spent' => $query->func()->sum('price'),
+            ])
+            ->where([
+                'user_id' => $this->id,
+            ])
+            ->first();
+
+        return $this->potatoReceived() - (int)$result->spent;
+    }
 }

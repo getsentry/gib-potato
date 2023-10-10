@@ -5,6 +5,7 @@ namespace App\Service;
 
 use App\Http\SlackClient;
 use App\Model\Entity\User;
+use App\Model\Table\ApiTokensTable;
 use App\Model\Table\UsersTable;
 use Cake\ORM\Locator\LocatorAwareTrait;
 use Exception;
@@ -15,6 +16,7 @@ class UserService
 
     protected SlackClient $slackClient;
     protected UsersTable $Users;
+    protected ApiTokensTable $ApiTokens;
 
     /**
      * Constructor
@@ -23,6 +25,7 @@ class UserService
     {
         $this->slackClient = new SlackClient();
         $this->Users = $this->fetchTable('Users');
+        $this->ApiTokens = $this->fetchTable('ApiTokens');
     }
 
     /**
@@ -66,6 +69,8 @@ class UserService
 
         $user = $this->Users->saveOrFail($user);
 
+        $this->ApiTokens->generateApiToken($user);
+
         $this->sendWelcomeNotification($user);
 
         return $user;
@@ -82,7 +87,7 @@ class UserService
         $welcomeMessage .= '*Welcome to GibPotato!*' . PHP_EOL;
         $welcomeMessage .= PHP_EOL;
         $welcomeMessage .= ' - Every day, you get five 🥔' . PHP_EOL;
-        $welcomeMessage .= ' - You can gib them to people as a token of appreciation.'
+        $welcomeMessage .= ' - You can gib them to people as a token of appreciation. '
             . 'Simply @ mention them and add a 🥔 to your message.' . PHP_EOL;
         $welcomeMessage .= ' - Alternatively, you can also react to a message with a 🥔. '
             . 'They either go to the people mentioned in the message or, '

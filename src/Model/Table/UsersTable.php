@@ -63,6 +63,12 @@ class UsersTable extends Table
             'className' => 'Progression',
         ])
             ->setForeignKey('progression_id');
+
+        $this->hasMany('Purchases')
+            ->setForeignKey('user_id');
+
+        $this->hasOne('ApiTokens')
+            ->setForeignKey('user_id');
     }
 
     /**
