@@ -39,5 +39,6 @@ class AppView extends View
     {
         $this->loadHelper('Sentry');
         $this->loadHelper('Vite');
+        $this->loadHelper('Authentication.Identity');
     }
 }
