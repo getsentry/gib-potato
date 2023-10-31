@@ -20,10 +20,11 @@
     <?= $this->fetch('css') ?>
 </head>
 <body
-    class="h-full bg-gray-50 dark:bg-zinc-900 text-zinc-900 dark:text-zinc-50 font-mono"
+    class="h-full bg-zinc-50 dark:bg-zinc-900 text-zinc-900 dark:text-zinc-50 font-mono"
     data-sentry-frontend-dsn="<?= env('SENTRY_FRONTEND_DSN') ?>"
     data-sentry-environment="<?= env('ENVIRONMENT') ?>"
     data-sentry-release="<?= env('RELEASE') ?>"
+    data-username="<?= h($this->Identity->get('slack_name')) ?>"
 >
     <?= $this->fetch('content') ?>
     <?= $this->element('footer') ?>

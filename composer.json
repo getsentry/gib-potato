@@ -13,19 +13,18 @@
     "require": {
         "php": ">=8.1",
         "cakephp/authentication": "^3.0.2",
-        "cakephp/cakephp": "^5.0.1",
+        "cakephp/cakephp": "^5.0.2",
         "cakephp/migrations": "^4.1",
         "cakephp/plugin-installer": "^2.0.1",
-        "lcobucci/jwt": "^5.0",
+        "lcobucci/jwt": "^5.1",
         "paragonie/csp-builder": "^2.9",
-        "sentry/sentry": "^3.21",
-        "symfony/http-client": "^6.3.5"
+        "sentry/sentry": "4.x-dev"
     },
     "require-dev": {
         "cakephp/bake": "^3.0.2",
         "cakephp/cakephp-codesniffer": "^5.1.1",
-        "phpstan/phpstan": "^1.10.37",
-        "phpunit/phpunit": "^10.3.5"
+        "phpstan/phpstan": "^1.10.40",
+        "phpunit/phpunit": "^10.4.2"
     },
     "autoload": {
         "psr-4": {
@@ -56,8 +55,7 @@
         "sort-packages": true,
         "allow-plugins": {
             "cakephp/plugin-installer": true,
-            "dealerdirect/phpcodesniffer-composer-installer": true,
-            "php-http/discovery": true
+            "dealerdirect/phpcodesniffer-composer-installer": true
         }
     }
 }

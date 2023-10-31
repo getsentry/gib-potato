@@ -37,7 +37,8 @@ class AppView extends View
      */
     public function initialize(): void
     {
-        $this->addHelper('Sentry');
-        $this->addHelper('Vite');
+        $this->loadHelper('Sentry');
+        $this->loadHelper('Vite');
+        $this->loadHelper('Authentication.Identity');
     }
 }
