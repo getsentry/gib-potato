@@ -39,7 +39,7 @@ class SentryQueryLogger extends AbstractLogger
             return;
         }
 
-        if ($context['query'] === 'COMMIT') {
+        if ($loggedQueryContext['query'] === 'COMMIT') {
             $span = $this->popSpan();
 
             if ($span !== null) {
