@@ -21,10 +21,11 @@ trait FactoryTrait
 
     protected function usePotalToken(): void
     {
-        $headers = $this->_request['headers'] ?? [];
-        $headers['Authorization'] = env('POTAL_TOKEN');
-
-        $this->configRequest(['headers' => $headers]);
+        $this->configRequest([
+            'headers' => [
+                'Authorization' => env('POTAL_TOKEN'),
+            ],
+        ]);
     }
 
     public function mockSlackClientGetUser(string $userId): void
