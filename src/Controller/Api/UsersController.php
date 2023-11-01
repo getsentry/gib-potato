@@ -5,7 +5,7 @@ namespace App\Controller\Api;
 
 use App\Model\Entity\User;
 use Cake\Http\Response;
-use Cake\I18n\FrozenTime;
+use Cake\I18n\DateTime;
 
 /**
  * @property \Authentication\Controller\Component\AuthenticationComponent $Authentication
@@ -117,11 +117,11 @@ class UsersController extends ApiController
                     'sender_user_id' => $this->Authentication->getIdentityData('id'),
                     'receiver_user_id' => $this->Authentication->getIdentityData('id'),
                 ],
-                'Messages.created >=' => new FrozenTime('30 days ago'),
+                'Messages.created >=' => new DateTime('30 days ago'),
             ])
             ->contain('SentUsers')
             ->contain('ReceivedUsers')
-            ->order(['Messages.created' => 'DESC'])
+            ->orderBy(['Messages.created' => 'DESC'])
             ->all();
 
         return $this->response

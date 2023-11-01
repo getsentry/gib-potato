@@ -4,7 +4,9 @@ declare(strict_types=1);
 namespace App\Controller\Api;
 
 use App\Http\SlackClient;
+use Cake\Http\Response;
 use Cake\Routing\Router;
+use function Cake\Core\env;
 
 /**
  * @property \Authentication\Controller\Component\AuthenticationComponent $Authentication
@@ -14,11 +16,11 @@ class ShopController extends ApiController
     /**
      * @return \Cake\Http\Response
      */
-    public function products()
+    public function products(): Response
     {
         $productsTable = $this->fetchTable('Products');
         $products = $productsTable->find()
-            ->order(['name' => 'ASC'])
+            ->orderBy(['name' => 'ASC'])
             ->all();
 
         return $this->response
@@ -30,7 +32,7 @@ class ShopController extends ApiController
     /**
      * @return \Cake\Http\Response
      */
-    public function purchase()
+    public function purchase(): Response
     {
         $usersTable = $this->fetchTable('Users');
         /** @var \App\Model\Entity\User $user */

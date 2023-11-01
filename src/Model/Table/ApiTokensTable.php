@@ -3,6 +3,7 @@ declare(strict_types=1);
 
 namespace App\Model\Table;
 
+use App\Model\Entity\ApiToken;
 use App\Model\Entity\User;
 use Cake\ORM\RulesChecker;
 use Cake\ORM\Table;
@@ -93,9 +94,9 @@ class ApiTokensTable extends Table
 
     /**
      * @param \App\Model\Entity\User $user User.
-     * @return \App\Model\Table\ApiToken
+     * @return \App\Model\Entity\ApiToken
      */
-    public function generateApiToken(User $user)
+    public function generateApiToken(User $user): ApiToken
     {
         $apiToken = $this->newEntity([
             'user_id' => $user->id,

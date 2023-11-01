@@ -3,4 +3,12 @@
     <config name="installed_paths" value="../../cakephp/cakephp-codesniffer"/>
 
     <rule ref="CakePHP"/>
+    <rule ref="SlevomatCodingStandard.TypeHints.ReturnTypeHint.MissingNativeTypeHint">
+        <exclude-pattern>*/src/Controller/*</exclude-pattern>
+        <exclude-pattern>*/src/Command/*</exclude-pattern>
+    </rule>
+
+    <file>config/</file>
+    <file>src/</file>
+    <file>tests/</file>
 </ruleset>

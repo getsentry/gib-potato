@@ -13,21 +13,21 @@ use Sentry\Tracing\Span;
 class SentryHelper extends Helper
 {
     /**
-     * @var string[]
+     * @var array<string>
      */
-    protected $helpers = ['Html'];
+    protected array $helpers = ['Html'];
 
     /**
      * Default configuration.
      *
      * @var array<string, mixed>
      */
-    protected $_defaultConfig = [];
+    protected array $_defaultConfig = [];
 
     /**
      * @var \Sentry\Tracing\Span|null
      */
-    protected Span|null $span;
+    protected ?Span $span;
 
     /**
      * @inheritDoc
@@ -38,12 +38,12 @@ class SentryHelper extends Helper
     }
 
     /**
-     * @return string|void
+     * @return string|null
      */
-    public function sentryTracingMeta()
+    public function sentryTracingMeta(): ?string
     {
         if (empty($this->span)) {
-            return;
+            return null;
         }
 
         return $this->Html->meta(
@@ -53,12 +53,12 @@ class SentryHelper extends Helper
     }
 
     /**
-     * @return string|void
+     * @return string|null
      */
-    public function sentryBaggageMeta()
+    public function sentryBaggageMeta(): ?string
     {
         if (empty($this->span)) {
-            return;
+            return null;
         }
 
         return $this->Html->meta(

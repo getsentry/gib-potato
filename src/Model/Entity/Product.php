@@ -14,8 +14,8 @@ use Cake\ORM\Entity;
  * @property string|null $image_link
  * @property int $price
  * @property int|null $stock
- * @property \Cake\I18n\FrozenTime|null $created
- * @property \Cake\I18n\FrozenTime|null $modified
+ * @property \Cake\I18n\DateTime|null $created
+ * @property \Cake\I18n\DateTime|null $modified
  */
 class Product extends Entity
 {
@@ -28,7 +28,7 @@ class Product extends Entity
      *
      * @var array<string, bool>
      */
-    protected $_accessible = [
+    protected array $_accessible = [
         '*' => false,
     ];
 }

@@ -46,7 +46,7 @@ class UpdateUsersCommand extends Command
     /**
      * @param \Cake\Console\Arguments $args The command arguments.
      * @param \Cake\Console\ConsoleIo $io The console io
-     * @return null|void|int The exit code or null for success
+     * @return int|null|void The exit code or null for success
      */
     public function execute(Arguments $args, ConsoleIo $io)
     {
@@ -68,8 +68,7 @@ class UpdateUsersCommand extends Command
         $logger = new SentryQueryLogger();
 
         $connection = ConnectionManager::get('default');
-        $connection->enableQueryLogging();
-        $connection->setLogger($logger);
+        $connection->getDriver()->setLogger($logger);
 
         $transactionContext = new TransactionContext();
         $transactionContext->setOp('command');

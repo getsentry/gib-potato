@@ -5,18 +5,28 @@ ENV DEBIAN_FRONTEND=noninteractive
 RUN \
     apt-get update && \
     apt-get install -y --no-install-recommends \
-    ca-certificates \
     software-properties-common \
+    gpg-agent
+
+RUN \
+    # https://launchpad.net/~ondrej/+archive/ubuntu/php
+    # ubuntu:22.04 only ships with PHP 8.1
+    LC_ALL=C.UTF-8 add-apt-repository -y ppa:ondrej/php && \
+    apt-get update
+
+RUN \
+    apt-get install -y --no-install-recommends \
+    ca-certificates \
     supervisor \
     apache2 \
-    php8.1 \
-    php8.1-curl \
-    php8.1-fpm \
-    php8.1-intl \
-    php8.1-mbstring \
-    php8.1-pgsql \
-    php8.1-xml \
-    php8.1-zip \
+    php8.2 \
+    php8.2-curl \
+    php8.2-fpm \
+    php8.2-intl \
+    php8.2-mbstring \
+    php8.2-pgsql \
+    php8.2-xml \
+    php8.2-zip \
     php-excimer && \
     rm -rf /var/lib/apt/lists/*
 
@@ -25,11 +35,14 @@ COPY ./docker/backend/apache/gib-potato.conf /etc/apache2/sites-available/gib-po
 
 RUN \
     a2ensite gib-potato && \
-    a2enconf php8.1-fpm && \
+    a2enconf php8.2-fpm && \
     a2enmod proxy_fcgi && \
     a2enmod rewrite && \
     phpenmod -s fpm excimer && \
-    sed -i "s/;clear_env = no/clear_env = no/g" /etc/php/8.1/fpm/pool.d/www.conf && \
+    # Enable zend.assertions
+    # Development Value: 1
+    sed -i "s/zend.assertions = -1/zend.assertions = 1/g" /etc/php/8.2/fpm/php.ini && \
+    sed -i "s/;clear_env = no/clear_env = no/g" /etc/php/8.2/fpm/pool.d/www.conf && \
     sed -i "s/Listen 80/Listen 8080/g" /etc/apache2/ports.conf
 
 RUN mkdir -p /run/php/
@@ -71,6 +84,10 @@ COPY composer.json composer.lock ./
 RUN composer install --no-dev
 
 FROM php-local as php-prod
+
+# Disable zend.assertions again
+# -1: Do not compile at all
+RUN sed -i "s/zend.assertions = 1/zend.assertions = -1/g" /etc/php/8.2/fpm/php.ini
 
 WORKDIR /var/www/gib-potato
 

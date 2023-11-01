@@ -3,8 +3,10 @@ declare(strict_types=1);
 
 namespace App\Identifier;
 
+use ArrayAccess;
 use Authentication\Identifier\AbstractIdentifier;
 use Cake\ORM\Locator\LocatorAwareTrait;
+use function Cake\Core\env;
 
 class PotalIdentifier extends AbstractIdentifier
 {
@@ -13,7 +15,7 @@ class PotalIdentifier extends AbstractIdentifier
     /**
      * @inheritDoc
      */
-    public function identify(array $credentials)
+    public function identify(array $credentials): ArrayAccess|array|null
     {
         if (!isset($credentials['token'])) {
             return null;

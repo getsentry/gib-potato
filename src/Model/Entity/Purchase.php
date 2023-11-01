@@ -16,7 +16,7 @@ use Cake\ORM\Entity;
  * @property string $image_link
  * @property string $message
  * @property int $price
- * @property \Cake\I18n\FrozenTime|null $created
+ * @property \Cake\I18n\DateTime|null $created
  *
  * @property \App\Model\Entity\User $user
  */
@@ -31,7 +31,7 @@ class Purchase extends Entity
      *
      * @var array<string, bool>
      */
-    protected $_accessible = [
+    protected array $_accessible = [
         '*' => false,
     ];
 }

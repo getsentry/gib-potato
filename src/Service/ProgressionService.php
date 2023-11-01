@@ -63,7 +63,7 @@ class ProgressionService
                 'sent_threshold <=' => $sentCount,
                 'received_threshold <=' => $receivedCount,
             ])
-            ->order(['id' => 'DESC'])
+            ->orderBy(['id' => 'DESC'])
             ->first();
 
         if ($progression === null) {

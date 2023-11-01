@@ -11,8 +11,8 @@ use Cake\ORM\Entity;
  * @property int $id
  * @property int $poll_id
  * @property string $title
- * @property \Cake\I18n\FrozenTime|null $created
- * @property \Cake\I18n\FrozenTime|null $modified
+ * @property \Cake\I18n\DateTime|null $created
+ * @property \Cake\I18n\DateTime|null $modified
  *
  * @property \App\Model\Entity\Poll $poll
  * @property \App\Model\Entity\PollResponse[] $poll_responses
@@ -28,7 +28,7 @@ class PollOption extends Entity
      *
      * @var array<string, bool>
      */
-    protected $_accessible = [
+    protected array $_accessible = [
         '*' => false,
     ];
 }

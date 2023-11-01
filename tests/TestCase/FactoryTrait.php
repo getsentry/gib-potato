@@ -19,25 +19,16 @@ trait FactoryTrait
         ]);
     }
 
-    protected function usePotalToken()
-    {
-        $headers = $this->_request['headers'] ?? [];
-        $headers['Authorization'] = env('POTAL_TOKEN');
-
-        $this->configRequest(['headers' => $headers]);
-    }
-
-    public function requestAsJson(): void
+    protected function usePotalToken(): void
     {
         $this->configRequest([
             'headers' => [
-                'Accept' => 'application/json',
-                'Content-Type' => 'application/json',
+                'Authorization' => env('POTAL_TOKEN'),
             ],
         ]);
     }
 
-    public function mockSlackClientGetUser(string $userId)
+    public function mockSlackClientGetUser(string $userId): void
     {
         $this->mockClientGet(
             'https://slack.com/api/users.info?user=' . $userId,
@@ -56,7 +47,7 @@ trait FactoryTrait
         );
     }
 
-    public function mockSlackClientPostMessage()
+    public function mockSlackClientPostMessage(): void
     {
         $this->mockClientPost(
             'https://slack.com/api/chat.postMessage',
@@ -66,7 +57,7 @@ trait FactoryTrait
         );
     }
 
-    public function mockSlackClientPublishView()
+    public function mockSlackClientPublishView(): void
     {
         $this->mockClientPost(
             'https://slack.com/api/views.publish',

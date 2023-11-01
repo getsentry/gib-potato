@@ -12,8 +12,8 @@ use Stringable;
 
 class SentryQueryLogger extends AbstractLogger
 {
-    private $parentSpanStack = [];
-    private $currentSpanStack = [];
+    private array $parentSpanStack = [];
+    private array $currentSpanStack = [];
 
     /**
      * @inheritDoc
@@ -26,21 +26,20 @@ class SentryQueryLogger extends AbstractLogger
             return;
         }
 
-        $loggedQuery = $context['query'];
-
-        if ($loggedQuery->query === 'BEGIN') {
-            $context = new SpanContext();
-            $context->setOp('db.transaction');
-            $context->setData([
+        $loggedQueryContext = $context['query']->getContext();
+        if ($loggedQueryContext['query'] === 'BEGIN') {
+            $spanContext = new SpanContext();
+            $spanContext->setOp('db.transaction');
+            $spanContext->setData([
                 'db.system' => 'postgresql',
             ]);
 
-            $this->pushSpan($parentSpan->startChild($context));
+            $this->pushSpan($parentSpan->startChild($spanContext));
 
             return;
         }
 
-        if ($loggedQuery->query === 'COMMIT') {
+        if ($loggedQueryContext['query'] === 'COMMIT') {
             $span = $this->popSpan();
 
             if ($span !== null) {
@@ -51,15 +50,15 @@ class SentryQueryLogger extends AbstractLogger
             return;
         }
 
-        $context = new SpanContext();
-        $context->setOp('db.sql.query');
-        $context->setData([
+        $spanContext = new SpanContext();
+        $spanContext->setOp('db.sql.query');
+        $spanContext->setData([
             'db.system' => 'postgresql',
         ]);
-        $context->setDescription($loggedQuery->query);
-        $context->setStartTimestamp(microtime(true) - $loggedQuery->took / 1000);
-        $context->setEndTimestamp($context->getStartTimestamp() + $loggedQuery->took / 1000);
-        $parentSpan->startChild($context);
+        $spanContext->setDescription($loggedQueryContext['query']);
+        $spanContext->setStartTimestamp(microtime(true) - $loggedQueryContext['took'] / 1000);
+        $spanContext->setEndTimestamp($spanContext->getStartTimestamp() + $loggedQueryContext['took'] / 1000);
+        $parentSpan->startChild($spanContext);
     }
 
     /**

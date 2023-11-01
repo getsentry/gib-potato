@@ -3,7 +3,7 @@ declare(strict_types=1);
 
 namespace App\Model\Entity;
 
-use Cake\I18n\FrozenTime;
+use Cake\I18n\DateTime;
 use Cake\ORM\Entity;
 use Cake\ORM\Locator\LocatorAwareTrait;
 
@@ -19,8 +19,8 @@ use Cake\ORM\Locator\LocatorAwareTrait;
  * @property string $slack_picture
  * @property bool $slack_is_bot
  * @property array|null $notifications
- * @property \Cake\I18n\FrozenTime|null $created
- * @property \Cake\I18n\FrozenTime|null $modified
+ * @property \Cake\I18n\DateTime|null $created
+ * @property \Cake\I18n\DateTime|null $modified
  */
 class User extends Entity
 {
@@ -35,7 +35,7 @@ class User extends Entity
      *
      * @var array<string, bool>
      */
-    protected $_accessible = [
+    protected array $_accessible = [
         '*' => false,
     ];
 
@@ -176,7 +176,7 @@ class User extends Entity
      */
     public function potatoResetInHours(): string
     {
-        $time = new FrozenTime();
+        $time = new DateTime();
         $hours = 23 - (int)$time->i18nFormat('HH');
 
         return (string)$hours;
@@ -187,7 +187,7 @@ class User extends Entity
      */
     public function potatoResetInMinutes(): string
     {
-        $time = new FrozenTime();
+        $time = new DateTime();
         $minutes = 59 - (int)$time->i18nFormat('mm');
 
         return (string)$minutes;

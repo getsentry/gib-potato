@@ -27,7 +27,7 @@ use Cake\Http\Middleware\CsrfProtectionMiddleware;
 use Cake\Routing\Route\DashedRoute;
 use Cake\Routing\RouteBuilder;
 
-return static function (RouteBuilder $routes) {
+return static function (RouteBuilder $routes): void {
     $routes->setRouteClass(DashedRoute::class);
 
     // Cross Site Request Forgery (CSRF) Protection Middleware
@@ -46,7 +46,7 @@ return static function (RouteBuilder $routes) {
     ]);
     $routes->registerMiddleware('web-auth', new AuthenticationMiddleware($webAuthService));
 
-    $routes->scope('/', function (RouteBuilder $builder) {
+    $routes->scope('/', function (RouteBuilder $builder): void {
         $builder->applyMiddleware('csrf');
         $builder->applyMiddleware('web-auth');
 
@@ -64,7 +64,7 @@ return static function (RouteBuilder $routes) {
 
         $builder->connect('/terms', ['controller' => 'Terms', 'action' => 'index']);
 
-        $builder->scope('/api', function (RouteBuilder $builder) {    
+        $builder->scope('/api', function (RouteBuilder $builder): void {
             $builder->get('/leaderboard', ['prefix' => 'Api', 'controller' => 'LeaderBoard', 'action' => 'get']);
 
             $builder->get('/users', ['prefix' => 'Api', 'controller' => 'Users', 'action' => 'list']);
@@ -87,8 +87,7 @@ return static function (RouteBuilder $routes) {
     $serviceAuthService->loadIdentifier('Potal');
     $routes->registerMiddleware('service-auth', new AuthenticationMiddleware($serviceAuthService));
 
-
-    $routes->scope('/', function (RouteBuilder $builder) {
+    $routes->scope('/', function (RouteBuilder $builder): void {
         $builder->applyMiddleware('service-auth');
 
         $builder->connect('/events', ['controller' => 'Events', 'action' => 'index']);

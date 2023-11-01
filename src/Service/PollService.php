@@ -59,7 +59,7 @@ class PollService
             $json = $response->getJson();
 
             if ($json['ok'] === false) {
-                withScope(function ($scope) use ($json, $blocks, $responseUrl) {
+                withScope(function ($scope) use ($json, $blocks, $responseUrl): void {
                     $scope->setExtras([
                         'blocks' => $blocks,
                         'slack_response' => $json,
@@ -86,7 +86,7 @@ class PollService
             $json = $response->getJson();
 
             if ($json['ok'] === false) {
-                withScope(function ($scope) use ($json, $responseUrl) {
+                withScope(function ($scope) use ($json, $responseUrl): void {
                     $scope->setExtras([
                         'slack_response' => $json,
                         'response_url' => $responseUrl,

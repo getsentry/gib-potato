@@ -25,7 +25,7 @@ class NotificationService
 
     /**
      * @param \App\Model\Entity\User $fromUser User who did gib the potato
-     * @param \App\Model\Entity\User[] $toUsers Users who will receive the potato
+     * @param array<\App\Model\Entity\User> $toUsers Users who will receive the potato
      * @param \App\Event\MessageEvent|\App\Event\ReactionAddedEvent $event The event.
      * @return void
      */

@@ -13,6 +13,7 @@ use Sentry\SentrySdk;
 use Sentry\Tracing\SpanContext;
 use Sentry\Tracing\TransactionContext;
 use Sentry\Tracing\TransactionSource;
+use function microtime;
 use function Sentry\startTransaction;
 
 /**
@@ -39,7 +40,7 @@ class SentryMiddleware implements MiddlewareInterface
 
         $transactionContext = TransactionContext::fromHeaders($sentryTraceHeader, $baggageHeader);
 
-        $requestStartTime = $request->getServerParams()['REQUEST_TIME_FLOAT'] ?? \microtime(true);
+        $requestStartTime = $request->getServerParams()['REQUEST_TIME_FLOAT'] ?? microtime(true);
 
         $transactionContext->setOp('http.server');
         $transactionContext->setName($request->getMethod() . ' ' . $request->getUri()->getPath());
@@ -83,7 +84,6 @@ class SentryMiddleware implements MiddlewareInterface
         $logger = new SentryQueryLogger();
 
         $connection = ConnectionManager::get('default');
-        $connection->enableQueryLogging();
-        $connection->setLogger($logger);
+        $connection->getDriver()->setLogger($logger);
     }
 }
