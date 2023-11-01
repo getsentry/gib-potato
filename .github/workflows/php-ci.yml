@@ -50,7 +50,7 @@ jobs:
     - name: Run PHPUnit
       run: |
         export CODECOVERAGE=1
-        vendor/bin/phpunit --verbose --colors=always --coverage-clover=coverage.xml
+        vendor/bin/phpunit --colors=always --coverage-clover=coverage.xml
 
     - name: Upload coverage to Codecov
       uses: codecov/codecov-action@v3
