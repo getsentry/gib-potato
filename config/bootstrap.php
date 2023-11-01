@@ -105,6 +105,7 @@ init([
     'in_app_exclude' => [
         ROOT . DS . 'vendor',
     ],
+    'attach_stacktrace' => true,
 ]);
 
 /*
