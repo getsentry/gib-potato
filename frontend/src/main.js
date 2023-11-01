@@ -43,12 +43,20 @@ import './assets/main.css'
                 themeLight: {
                     foreground: '#18181b', // zinc-900
                     background: "#f4f4f5", //zinc-100
-                    backgroundHover: "#e4e4e7", // zinc-200
+                    backgroundHover: '#e4e4e7', // zinc-200
+                    submitBackground: '#fde68a', // amber-200
+                    submitBackgroundHover: '#fcd34d', // amber-300
+                    submitBorder: '#fcd34d', // amber-400
+                    submitForeground: '#18181b', // zinc-900
                 },
                 themeDark: {
                     foreground: '#fafafa', // zinc-50
                     background: "#27272a", // zinc-800
-                    backgroundHover: "#3f3f46", // zinc-700
+                    backgroundHover: '#3f3f46', // zinc-700
+                    submitBackground: '#fde68a', // amber-200
+                    submitBackgroundHover: '#fcd34d', // amber-300
+                    submitBorder: '#fcd34d', // amber-400
+                    submitForeground: '#18181b', // zinc-900
                 },
             }),
         ],
