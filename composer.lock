@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "8ecdaa4a81b793ce1c7c4052953cea11",
+    "content-hash": "7b21b17f4ed2ec3b184a37a138f94427",
     "packages": [
         {
             "name": "cakephp/authentication",
@@ -2647,16 +2647,16 @@
         },
         {
             "name": "cakephp/bake",
-            "version": "3.0.2",
+            "version": "3.0.3",
             "source": {
                 "type": "git",
                 "url": "https://github.com/cakephp/bake.git",
-                "reference": "d0dd499d199b6e0c0adfede2267b6ab8c0589a7d"
+                "reference": "18486ac5fe73d9e7653b23bc784946956d7e8e17"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/cakephp/bake/zipball/d0dd499d199b6e0c0adfede2267b6ab8c0589a7d",
-                "reference": "d0dd499d199b6e0c0adfede2267b6ab8c0589a7d",
+                "url": "https://api.github.com/repos/cakephp/bake/zipball/18486ac5fe73d9e7653b23bc784946956d7e8e17",
+                "reference": "18486ac5fe73d9e7653b23bc784946956d7e8e17",
                 "shasum": ""
             },
             "require": {
@@ -2698,7 +2698,7 @@
                 "issues": "https://github.com/cakephp/bake/issues",
                 "source": "https://github.com/cakephp/bake"
             },
-            "time": "2023-09-17T19:41:49+00:00"
+            "time": "2023-11-01T09:28:07+00:00"
         },
         {
             "name": "cakephp/cakephp-codesniffer",

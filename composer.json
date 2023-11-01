@@ -21,7 +21,7 @@
         "sentry/sentry": "4.x-dev"
     },
     "require-dev": {
-        "cakephp/bake": "^3.0.2",
+        "cakephp/bake": "^3.0.3",
         "cakephp/cakephp-codesniffer": "^5.1.1",
         "phpstan/phpstan": "^1.10.40",
         "phpunit/phpunit": "^10.4.2"
