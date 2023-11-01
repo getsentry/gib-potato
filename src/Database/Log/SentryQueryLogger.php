@@ -6,6 +6,8 @@ namespace App\Database\Log;
 use Psr\Log\AbstractLogger;
 use Sentry\SentrySdk;
 use Sentry\Tracing\Span;
+use Sentry\Tracing\SpanContext;
+use Sentry\Tracing\SpanStatus;
 use Stringable;
 
 class SentryQueryLogger extends AbstractLogger
@@ -18,49 +20,45 @@ class SentryQueryLogger extends AbstractLogger
      */
     public function log($level, string|Stringable $message, array $context = []): void
     {
-        return;
+        $parentSpan = SentrySdk::getCurrentHub()->getSpan();
 
-        // @TODO(michi) Re-enable once it's fixed upstream
-        // $parentSpan = SentrySdk::getCurrentHub()->getSpan();
+        if ($parentSpan === null) {
+            return;
+        }
 
-        // if ($parentSpan === null) {
-        //     return;
-        // }
+        $loggedQueryContext = $context['query']->getContext();
+        if ($loggedQueryContext['query'] === 'BEGIN') {
+            $spanContext = new SpanContext();
+            $spanContext->setOp('db.transaction');
+            $spanContext->setData([
+                'db.system' => 'postgresql',
+            ]);
 
-        // $loggedQuery = $context['query'];
+            $this->pushSpan($parentSpan->startChild($spanContext));
 
-        // if ($loggedQuery->query === 'BEGIN') {
-        //     $context = new SpanContext();
-        //     $context->setOp('db.transaction');
-        //     $context->setData([
-        //         'db.system' => 'postgresql',
-        //     ]);
+            return;
+        }
 
-        //     $this->pushSpan($parentSpan->startChild($context));
+        if ($context['query'] === 'COMMIT') {
+            $span = $this->popSpan();
 
-        //     return;
-        // }
+            if ($span !== null) {
+                $span->finish();
+                $span->setStatus(SpanStatus::ok());
+            }
 
-        // if ($loggedQuery->query === 'COMMIT') {
-        //     $span = $this->popSpan();
+            return;
+        }
 
-        //     if ($span !== null) {
-        //         $span->finish();
-        //         $span->setStatus(SpanStatus::ok());
-        //     }
-
-        //     return;
-        // }
-
-        // $context = new SpanContext();
-        // $context->setOp('db.sql.query');
-        // $context->setData([
-        //     'db.system' => 'postgresql',
-        // ]);
-        // $context->setDescription($loggedQuery->query);
-        // $context->setStartTimestamp(microtime(true) - $loggedQuery->took / 1000);
-        // $context->setEndTimestamp($context->getStartTimestamp() + $loggedQuery->took / 1000);
-        // $parentSpan->startChild($context);
+        $spanContext = new SpanContext();
+        $spanContext->setOp('db.sql.query');
+        $spanContext->setData([
+            'db.system' => 'postgresql',
+        ]);
+        $spanContext->setDescription($loggedQueryContext['query']);
+        $spanContext->setStartTimestamp(microtime(true) - $loggedQueryContext['took'] / 1000);
+        $spanContext->setEndTimestamp($spanContext->getStartTimestamp() + $loggedQueryContext['took'] / 1000);
+        $parentSpan->startChild($spanContext);
     }
 
     /**
