@@ -4,6 +4,7 @@ declare(strict_types=1);
 namespace App\Controller\Api;
 
 use App\Model\Entity\User;
+use App\Utils\SentryTime;
 use Cake\Http\Response;
 use Cake\I18n\DateTime;
 
@@ -25,6 +26,9 @@ class LeaderBoardController extends ApiController
                 break;
             case 'month':
                 $rangeTimeObject = new DateTime('1 month ago');
+                break;
+            case 'quarter':
+                $rangeTimeObject = SentryTime::getStartOfCurrentQuarter();
                 break;
             case 'year':
                 $rangeTimeObject = new DateTime('1 year ago');
