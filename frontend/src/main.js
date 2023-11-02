@@ -40,6 +40,7 @@ import './assets/main.css'
                 formTitle: 'Gib Feedback 🥔',
                 messagePlaceholder: 'What\'s not working? 😢',
                 showEmail: false,
+                showBranding: false,
                 themeLight: {
                     foreground: '#18181b', // zinc-900
                     background: "#f4f4f5", //zinc-100
@@ -48,6 +49,7 @@ import './assets/main.css'
                     submitBackgroundHover: '#fcd34d', // amber-300
                     submitBorder: '#fcd34d', // amber-400
                     submitForeground: '#18181b', // zinc-900
+                    inputBorderFocus: '#fcd34d', // amber-400
                 },
                 themeDark: {
                     foreground: '#fafafa', // zinc-50
@@ -57,6 +59,7 @@ import './assets/main.css'
                     submitBackgroundHover: '#fcd34d', // amber-300
                     submitBorder: '#fcd34d', // amber-400
                     submitForeground: '#18181b', // zinc-900
+                    inputBorderFocus: '#fcd34d', // amber-400
                 },
             }),
         ],
