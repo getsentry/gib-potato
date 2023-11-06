@@ -1,5 +1,6 @@
 import { createStore } from 'vuex'
 import api from '@/api'
+import helper from '@/helper'
 
 const store = createStore({
     state () {
@@ -10,8 +11,8 @@ const store = createStore({
             products: [],
             collection: [],
             filter: {
-                range: 'all',
-                order: 'received',
+                range: helper.getRangeFilter(),
+                order: helper.getOrderFilter(),
             },
         }
     },
@@ -117,9 +118,11 @@ const store = createStore({
         },
         SET_RANGE_FILTER(state, range) {
             state.filter.range = range
+            localStorage.setItem('filter.range', state.filter.range)
         },
         SET_ORDER_FILTER(state, order) {
             state.filter.order = order
+            localStorage.setItem('filter.order', state.filter.order)
         },
     },
 })
