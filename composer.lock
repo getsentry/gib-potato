@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "7b21b17f4ed2ec3b184a37a138f94427",
+    "content-hash": "d46fa8df71418f50561ae7c15964adfa",
     "packages": [
         {
             "name": "cakephp/authentication",
@@ -1653,12 +1653,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/getsentry/sentry-php.git",
-                "reference": "fe6a68b706bde00da1fcc448568acde5ff6149e5"
+                "reference": "4839e3bc4331df60e3b912827a95295884136ab5"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/getsentry/sentry-php/zipball/fe6a68b706bde00da1fcc448568acde5ff6149e5",
-                "reference": "fe6a68b706bde00da1fcc448568acde5ff6149e5",
+                "url": "https://api.github.com/repos/getsentry/sentry-php/zipball/4839e3bc4331df60e3b912827a95295884136ab5",
+                "reference": "4839e3bc4331df60e3b912827a95295884136ab5",
                 "shasum": ""
             },
             "require": {
@@ -1732,7 +1732,7 @@
                     "type": "custom"
                 }
             ],
-            "time": "2023-10-31T13:32:05+00:00"
+            "time": "2023-11-06T08:02:00+00:00"
         },
         {
             "name": "symfony/config",
@@ -2647,16 +2647,16 @@
         },
         {
             "name": "cakephp/bake",
-            "version": "3.0.3",
+            "version": "3.0.4",
             "source": {
                 "type": "git",
                 "url": "https://github.com/cakephp/bake.git",
-                "reference": "18486ac5fe73d9e7653b23bc784946956d7e8e17"
+                "reference": "369cfb1b8bc65a015409ec12a62f95d8f75c3d92"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/cakephp/bake/zipball/18486ac5fe73d9e7653b23bc784946956d7e8e17",
-                "reference": "18486ac5fe73d9e7653b23bc784946956d7e8e17",
+                "url": "https://api.github.com/repos/cakephp/bake/zipball/369cfb1b8bc65a015409ec12a62f95d8f75c3d92",
+                "reference": "369cfb1b8bc65a015409ec12a62f95d8f75c3d92",
                 "shasum": ""
             },
             "require": {
@@ -2698,7 +2698,7 @@
                 "issues": "https://github.com/cakephp/bake/issues",
                 "source": "https://github.com/cakephp/bake"
             },
-            "time": "2023-11-01T09:28:07+00:00"
+            "time": "2023-11-02T15:55:09+00:00"
         },
         {
             "name": "cakephp/cakephp-codesniffer",
@@ -3232,16 +3232,16 @@
         },
         {
             "name": "phpstan/phpstan",
-            "version": "1.10.40",
+            "version": "1.10.41",
             "source": {
                 "type": "git",
                 "url": "https://github.com/phpstan/phpstan.git",
-                "reference": "93c84b5bf7669920d823631e39904d69b9c7dc5d"
+                "reference": "c6174523c2a69231df55bdc65b61655e72876d76"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/phpstan/phpstan/zipball/93c84b5bf7669920d823631e39904d69b9c7dc5d",
-                "reference": "93c84b5bf7669920d823631e39904d69b9c7dc5d",
+                "url": "https://api.github.com/repos/phpstan/phpstan/zipball/c6174523c2a69231df55bdc65b61655e72876d76",
+                "reference": "c6174523c2a69231df55bdc65b61655e72876d76",
                 "shasum": ""
             },
             "require": {
@@ -3290,7 +3290,7 @@
                     "type": "tidelift"
                 }
             ],
-            "time": "2023-10-30T14:48:31+00:00"
+            "time": "2023-11-05T12:57:57+00:00"
         },
         {
             "name": "phpunit/php-code-coverage",
