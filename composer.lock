@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "d46fa8df71418f50561ae7c15964adfa",
+    "content-hash": "c7cc56469f3d537555ab5529ecfb6062",
     "packages": [
         {
             "name": "cakephp/authentication",
@@ -1649,16 +1649,16 @@
         },
         {
             "name": "sentry/sentry",
-            "version": "4.x-dev",
+            "version": "4.0.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/getsentry/sentry-php.git",
-                "reference": "4839e3bc4331df60e3b912827a95295884136ab5"
+                "reference": "7e10bf3fd0bee2f2eee6981e509522ab0c523d5e"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/getsentry/sentry-php/zipball/4839e3bc4331df60e3b912827a95295884136ab5",
-                "reference": "4839e3bc4331df60e3b912827a95295884136ab5",
+                "url": "https://api.github.com/repos/getsentry/sentry-php/zipball/7e10bf3fd0bee2f2eee6981e509522ab0c523d5e",
+                "reference": "7e10bf3fd0bee2f2eee6981e509522ab0c523d5e",
                 "shasum": ""
             },
             "require": {
@@ -1720,7 +1720,7 @@
             ],
             "support": {
                 "issues": "https://github.com/getsentry/sentry-php/issues",
-                "source": "https://github.com/getsentry/sentry-php/tree/4.x"
+                "source": "https://github.com/getsentry/sentry-php/tree/4.0.0"
             },
             "funding": [
                 {
@@ -1732,7 +1732,7 @@
                     "type": "custom"
                 }
             ],
-            "time": "2023-11-06T08:02:00+00:00"
+            "time": "2023-11-06T10:16:08+00:00"
         },
         {
             "name": "symfony/config",
@@ -4943,9 +4943,7 @@
     ],
     "aliases": [],
     "minimum-stability": "stable",
-    "stability-flags": {
-        "sentry/sentry": 20
-    },
+    "stability-flags": [],
     "prefer-stable": true,
     "prefer-lowest": false,
     "platform": {
