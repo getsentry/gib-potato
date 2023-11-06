@@ -118,7 +118,7 @@ class WeeklyReportCommand extends Command
 
         $channelMessage = '🥔 *Weekly Potato Report* 🥔';
         $channelMessage .= PHP_EOL . PHP_EOL;
-        $channelMessage .= 'This weeks top taters are';
+        $channelMessage .= 'This week\'s top taters are';
         $channelMessage .= PHP_EOL . PHP_EOL;
 
         foreach ($topSenders as $index => $user) {
