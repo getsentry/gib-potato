@@ -68,7 +68,7 @@ artifacts:
     location: gs://gib-potato-assets/
     paths: 
     - 'webroot/assets/*'
-    - 'webroot/manifest.json'
+    - 'webroot/.vite/manifest.json'
 availableSecrets:
   secretManager:
   - versionName: projects/841923001753/secrets/sentry_auth_token/versions/1
