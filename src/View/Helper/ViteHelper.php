@@ -22,7 +22,7 @@ class ViteHelper extends Helper
      * @var array<string, mixed>
      */
     protected array $_defaultConfig = [
-        'manifestFile' => WWW_ROOT . 'manifest.json',
+        'manifestFile' => WWW_ROOT . '.vite' . DS . 'manifest.json',
     ];
 
     /**
