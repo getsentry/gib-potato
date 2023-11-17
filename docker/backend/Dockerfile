@@ -98,7 +98,7 @@ COPY ./src src
 COPY ./templates templates
 COPY ./webroot webroot
 COPY --from=js-build /app/webroot/assets webroot/assets
-COPY --from=js-build /app/webroot/manifest.json webroot/manifest.json
+COPY --from=js-build /app/webroot/.vite/manifest.json webroot/.vite/manifest.json
 COPY --from=php-build /app/vendor vendor
 COPY ./composer.json composer.json
 COPY ./composer.lock composer.lock
