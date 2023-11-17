@@ -1,4 +1,4 @@
-module.exports = {
+export default {
   content: [
     './frontend/**/*.{js,vue}',
     './config/**/*.php',
