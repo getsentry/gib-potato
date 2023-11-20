@@ -33,7 +33,10 @@ import './assets/main.css'
                 },
             }),
             new Sentry.BrowserProfilingIntegration(),
-            new Sentry.Replay(),
+            new Sentry.Replay({
+                maskAllText: false,
+                blockAllMedia: false,
+            }),
             new Feedback({
                 buttonLabel: 'Gib Feedback',
                 submitButtonLabel: 'Send Feedback',
