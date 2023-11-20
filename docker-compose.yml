@@ -76,12 +76,13 @@ services:
           - db.gib-potato.test
 
   relay:
-    image: getsentry/relay
+    image: getsentry/relay:nightly
     restart: always
     environment:
       - RELAY_SECRET_KEY
       - RELAY_PUBLIC_KEY
       - RELAY_ID
+      - RELAY_LOG_LEVEL
     ports:
       - 3001:3000
     networks:
