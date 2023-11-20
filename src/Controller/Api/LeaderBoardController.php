@@ -55,7 +55,7 @@ class LeaderBoardController extends ApiController
                     ->where([
                         'created >=' => $rangeTimeObject,
                     ])
-                    ->group('sender_user_id'),
+                    ->groupBy('sender_user_id'),
             ], [
                 'Users.id = messages_sent.user_id',
             ])
@@ -68,7 +68,7 @@ class LeaderBoardController extends ApiController
                     ->where([
                         'created >=' => $rangeTimeObject,
                     ])
-                    ->group('receiver_user_id'),
+                    ->groupBy('receiver_user_id'),
             ], [
                 'Users.id = messages_received.user_id',
             ])
