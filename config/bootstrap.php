@@ -42,6 +42,8 @@ use Cake\Mailer\Mailer;
 use Cake\Mailer\TransportFactory;
 use Cake\Routing\Router;
 use Cake\Utility\Security;
+use Sentry\Logger\DebugStdOutLogger;
+
 use function Cake\Core\env;
 use function Sentry\init;
 
@@ -106,6 +108,7 @@ init([
         ROOT . DS . 'vendor',
     ],
     'attach_stacktrace' => true,
+    'logger' => new DebugStdOutLogger(),
 ]);
 
 /*
