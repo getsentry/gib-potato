@@ -13,17 +13,17 @@
     "require": {
         "php": ">=8.1",
         "cakephp/authentication": "^3.0.2",
-        "cakephp/cakephp": "^5.0.2",
-        "cakephp/migrations": "^4.1",
+        "cakephp/cakephp": "5.x-dev as 5.0.2",
+        "cakephp/migrations": "^4.1.1",
         "cakephp/plugin-installer": "^2.0.1",
         "lcobucci/jwt": "^5.1",
         "paragonie/csp-builder": "^2.9",
-        "sentry/sentry": "^4.0"
+        "sentry/sentry": "^4.0.1"
     },
     "require-dev": {
         "cakephp/bake": "^3.0.4",
         "cakephp/cakephp-codesniffer": "^5.1.1",
-        "phpstan/phpstan": "^1.10.41",
+        "phpstan/phpstan": "^1.10.43",
         "phpunit/phpunit": "^10.4.2"
     },
     "autoload": {
