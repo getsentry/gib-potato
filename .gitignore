@@ -10,7 +10,7 @@
 
 # Assets #
 ##########
-/webroot/manifest.json
+/webroot/.vite/manifest.json
 /webroot/assets/*
 
 # OS generated files #
