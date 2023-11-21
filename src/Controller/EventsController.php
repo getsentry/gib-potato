@@ -6,6 +6,8 @@ namespace App\Controller;
 use App\Event\EventFactory;
 use Cake\Controller\Controller;
 use Cake\Http\Response;
+use Sentry\Metrics\MetricsUnit;
+use function Sentry\metrics;
 
 class EventsController extends Controller
 {
@@ -28,6 +30,17 @@ class EventsController extends Controller
 
         $event = EventFactory::createEvent($this->request->getData());
         $event->process();
+
+        metrics()->distribution(
+            name: 'gibpotato.potatoes.event_size',
+            value: [
+                mb_strlen(serialize($this->request->getData()), '8bit'),
+            ],
+            tags: [
+                'event_type' => $event->getType(),
+            ],
+            unit: MetricsUnit::byte(),
+        );
 
         return $this->response
             ->withType('json')

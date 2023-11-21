@@ -7,6 +7,7 @@ use App\Event\MessageEvent;
 use App\Event\ReactionAddedEvent;
 use App\Model\Entity\User;
 use Cake\ORM\Locator\LocatorAwareTrait;
+use function Sentry\metrics;
 
 class AwardService
 {
@@ -59,5 +60,11 @@ class AwardService
             ],
         ]);
         $messagesTable->saveOrFail($message);
+
+        metrics()->incr(
+            name: 'gibpotato.potatoes.given_out',
+            value: $event->amount,
+            tags: [],
+        );
     }
 }

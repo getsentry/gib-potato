@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "bae45c002b9e3501c75a2800ba2ac9fc",
+    "content-hash": "f412e12579e8b281d358aeafc79f26a8",
     "packages": [
         {
             "name": "cakephp/authentication",
@@ -76,16 +76,16 @@
         },
         {
             "name": "cakephp/cakephp",
-            "version": "5.x-dev",
+            "version": "5.0.2",
             "source": {
                 "type": "git",
                 "url": "https://github.com/cakephp/cakephp.git",
-                "reference": "2e17bc7fe5ecccbe05f167784f637af8f8440b95"
+                "reference": "c458d478fefeccdc11ec24dcef99c80b32b924af"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/cakephp/cakephp/zipball/2e17bc7fe5ecccbe05f167784f637af8f8440b95",
-                "reference": "2e17bc7fe5ecccbe05f167784f637af8f8440b95",
+                "url": "https://api.github.com/repos/cakephp/cakephp/zipball/c458d478fefeccdc11ec24dcef99c80b32b924af",
+                "reference": "c458d478fefeccdc11ec24dcef99c80b32b924af",
                 "shasum": ""
             },
             "require": {
@@ -146,7 +146,6 @@
                 "lib-ICU": "To use locale-aware features in the I18n and Database packages",
                 "paragonie/csp-builder": "CSP builder, to use the CSP Middleware"
             },
-            "default-branch": true,
             "type": "library",
             "autoload": {
                 "files": [
@@ -191,7 +190,7 @@
                 "issues": "https://github.com/cakephp/cakephp/issues",
                 "source": "https://github.com/cakephp/cakephp"
             },
-            "time": "2023-11-20T02:35:15+00:00"
+            "time": "2023-10-29T02:23:57+00:00"
         },
         {
             "name": "cakephp/chronos",
@@ -762,21 +761,19 @@
         },
         {
             "name": "lcobucci/jwt",
-            "version": "5.1.0",
+            "version": "5.2.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/lcobucci/jwt.git",
-                "reference": "f0031c07b96db6a0ca649206e7eacddb7e9d5908"
+                "reference": "0ba88aed12c04bd2ed9924f500673f32b67a6211"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/lcobucci/jwt/zipball/f0031c07b96db6a0ca649206e7eacddb7e9d5908",
-                "reference": "f0031c07b96db6a0ca649206e7eacddb7e9d5908",
+                "url": "https://api.github.com/repos/lcobucci/jwt/zipball/0ba88aed12c04bd2ed9924f500673f32b67a6211",
+                "reference": "0ba88aed12c04bd2ed9924f500673f32b67a6211",
                 "shasum": ""
             },
             "require": {
-                "ext-hash": "*",
-                "ext-json": "*",
                 "ext-openssl": "*",
                 "ext-sodium": "*",
                 "php": "~8.1.0 || ~8.2.0 || ~8.3.0",
@@ -821,7 +818,7 @@
             ],
             "support": {
                 "issues": "https://github.com/lcobucci/jwt/issues",
-                "source": "https://github.com/lcobucci/jwt/tree/5.1.0"
+                "source": "https://github.com/lcobucci/jwt/tree/5.2.0"
             },
             "funding": [
                 {
@@ -833,7 +830,7 @@
                     "type": "patreon"
                 }
             ],
-            "time": "2023-10-31T06:41:47+00:00"
+            "time": "2023-11-20T21:17:42+00:00"
         },
         {
             "name": "league/container",
@@ -1650,16 +1647,16 @@
         },
         {
             "name": "sentry/sentry",
-            "version": "4.0.1",
+            "version": "dev-metrics",
             "source": {
                 "type": "git",
                 "url": "https://github.com/getsentry/sentry-php.git",
-                "reference": "fa41522f1fe5ff77a33a9db749c0ca7ec332f50a"
+                "reference": "5287c2ac96d1290fc4bdd034bad7a0c8ac7152aa"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/getsentry/sentry-php/zipball/fa41522f1fe5ff77a33a9db749c0ca7ec332f50a",
-                "reference": "fa41522f1fe5ff77a33a9db749c0ca7ec332f50a",
+                "url": "https://api.github.com/repos/getsentry/sentry-php/zipball/5287c2ac96d1290fc4bdd034bad7a0c8ac7152aa",
+                "reference": "5287c2ac96d1290fc4bdd034bad7a0c8ac7152aa",
                 "shasum": ""
             },
             "require": {
@@ -1692,7 +1689,8 @@
             "type": "library",
             "autoload": {
                 "files": [
-                    "src/functions.php"
+                    "src/functions.php",
+                    "src/functions_experimental.php"
                 ],
                 "psr-4": {
                     "Sentry\\": "src/"
@@ -1708,7 +1706,7 @@
                     "email": "accounts@sentry.io"
                 }
             ],
-            "description": "A PHP SDK for Sentry (http://sentry.io)",
+            "description": "PHP SDK for Sentry (http://sentry.io)",
             "homepage": "http://sentry.io",
             "keywords": [
                 "crash-reporting",
@@ -1717,11 +1715,13 @@
                 "error-monitoring",
                 "log",
                 "logging",
-                "sentry"
+                "profiling",
+                "sentry",
+                "tracing"
             ],
             "support": {
                 "issues": "https://github.com/getsentry/sentry-php/issues",
-                "source": "https://github.com/getsentry/sentry-php/tree/4.0.1"
+                "source": "https://github.com/getsentry/sentry-php/tree/metrics"
             },
             "funding": [
                 {
@@ -1733,7 +1733,7 @@
                     "type": "custom"
                 }
             ],
-            "time": "2023-11-13T13:00:41+00:00"
+            "time": "2023-11-20T23:51:28+00:00"
         },
         {
             "name": "symfony/config",
@@ -4942,17 +4942,10 @@
             "time": "2023-08-28T11:09:02+00:00"
         }
     ],
-    "aliases": [
-        {
-            "package": "cakephp/cakephp",
-            "version": "5.9999999.9999999.9999999-dev",
-            "alias": "5.0.2",
-            "alias_normalized": "5.0.2.0"
-        }
-    ],
+    "aliases": [],
     "minimum-stability": "stable",
     "stability-flags": {
-        "cakephp/cakephp": 20
+        "sentry/sentry": 20
     },
     "prefer-stable": true,
     "prefer-lowest": false,
