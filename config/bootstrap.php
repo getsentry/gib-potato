@@ -106,6 +106,13 @@ init([
         ROOT . DS . 'vendor',
     ],
     'attach_stacktrace' => true,
+    'before_send_transaction' => function (\Sentry\Event $event): ?\Sentry\Event {
+        $request = $event->getRequest();
+        unset($request["data"]);
+        unset($request["query_string"]);
+        $event->setRequest($request);
+        return $event;
+    },
 ]);
 
 /*
