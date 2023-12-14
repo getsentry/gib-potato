@@ -103,6 +103,7 @@ COPY --from=php-build /app/vendor vendor
 COPY ./composer.json composer.json
 COPY ./composer.lock composer.lock
 COPY index.php index.php
+COPY --from=getsentry/relay:nightly /bin/relay /bin/relay
 
 RUN \
     mkdir logs && \
