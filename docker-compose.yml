@@ -1,4 +1,5 @@
 version: '3.1'
+
 services:
   backend:
     build:
@@ -29,6 +30,10 @@ services:
         - POTAL_TOKEN
         - POTATO_CHANNEL
         - POTATO_SLACK_USER_ID
+        - RELAY_SECRET_KEY
+        - RELAY_PUBLIC_KEY
+        - RELAY_ID
+        - RELAY_LOG_LEVEL
     depends_on:
       - db
       - potal
@@ -74,21 +79,6 @@ services:
       gib-potato:
         aliases:
           - db.gib-potato.test
-
-  relay:
-    image: getsentry/relay:nightly
-    restart: always
-    environment:
-      - RELAY_SECRET_KEY
-      - RELAY_PUBLIC_KEY
-      - RELAY_ID
-      - RELAY_LOG_LEVEL
-    ports:
-      - 3001:3000
-    networks:
-      gib-potato:
-        aliases:
-          - relay.gib-potato.test
 
 volumes:
   db:
