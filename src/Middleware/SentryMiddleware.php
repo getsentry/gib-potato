@@ -14,6 +14,7 @@ use Sentry\Tracing\SpanContext;
 use Sentry\Tracing\TransactionContext;
 use Sentry\Tracing\TransactionSource;
 use function microtime;
+use function Sentry\metrics;
 use function Sentry\startTransaction;
 
 /**
@@ -72,6 +73,8 @@ class SentryMiddleware implements MiddlewareInterface
 
         $transaction->setHttpStatus($response->getStatusCode());
         $transaction->finish();
+
+        register_shutdown_function(static fn () => metrics()->flush());
 
         return $response;
     }
