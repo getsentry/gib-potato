@@ -8,7 +8,6 @@ use App\Event\ReactionAddedEvent;
 use App\Model\Entity\User;
 use Cake\ORM\Locator\LocatorAwareTrait;
 use Sentry\Metrics\MetricsUnit;
-
 use function Sentry\metrics;
 
 class AwardService
