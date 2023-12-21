@@ -32,14 +32,12 @@ class EventsController extends Controller
         $event->process();
 
         metrics()->distribution(
-            name: 'gibpotato.potatoes.event_size',
-            value: [
-                mb_strlen(serialize($this->request->getData()), '8bit'),
-            ],
+            key: 'gibpotato.potatoes.event_size',
+            value: mb_strlen(serialize($this->request->getData()), '8bit'),
+            unit: MetricsUnit::byte(),
             tags: [
                 'event_type' => $event->getType(),
             ],
-            unit: MetricsUnit::byte(),
         );
 
         return $this->response

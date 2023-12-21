@@ -12,7 +12,7 @@
     ],
     "require": {
         "php": ">=8.1",
-        "cakephp/authentication": "^3.0.2",
+        "cakephp/authentication": "^3.0.3",
         "cakephp/cakephp": "^5.0.3",
         "cakephp/migrations": "^4.1.1",
         "cakephp/plugin-installer": "^2.0.1",
@@ -23,8 +23,8 @@
     "require-dev": {
         "cakephp/bake": "^3.0.4",
         "cakephp/cakephp-codesniffer": "^5.1.1",
-        "phpstan/phpstan": "^1.10.45",
-        "phpunit/phpunit": "^10.4.2"
+        "phpstan/phpstan": "^1.10.50",
+        "phpunit/phpunit": "^10.5.3"
     },
     "autoload": {
         "psr-4": {

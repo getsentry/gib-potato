@@ -106,6 +106,7 @@ init([
         ROOT . DS . 'vendor',
     ],
     'attach_stacktrace' => true,
+    'attach_metric_code_locations' => true,
 ]);
 
 /*
