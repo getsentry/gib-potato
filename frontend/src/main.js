@@ -3,7 +3,6 @@ import { createApp } from 'vue'
 import vSelect from 'vue-select'
 
 import * as Sentry from '@sentry/vue'
-import { Feedback } from '@sentry-internal/feedback'
 
 import App from './App.vue'
 import router from './router'
@@ -37,7 +36,7 @@ import './assets/main.css'
                 maskAllText: false,
                 blockAllMedia: false,
             }),
-            new Feedback({
+            new Sentry.Feedback({
                 buttonLabel: 'Gib Feedback',
                 submitButtonLabel: 'Send Feedback',
                 formTitle: 'Gib Feedback 🥔',
