@@ -26,8 +26,7 @@ func ProcessAppMentionEvent(ctx context.Context, e *slackevents.AppMentionEvent)
 	hub := sentry.GetHubFromContext(ctx)
 	txn := sentry.TransactionFromContext(ctx)
 
-	span := txn.StartChild("event.process")
-	span.Description = "Process AppMention Event"
+	span := txn.StartChild("event.process", sentry.WithDescription("Process AppMention Event")))
 	defer span.Finish()
 
 	appMentionEvent := AppMentionEvent{

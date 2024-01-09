@@ -35,8 +35,7 @@ func ProcessReactionEvent(ctx context.Context, e *slackevents.ReactionAddedEvent
 	hub := sentry.GetHubFromContext(ctx)
 	txn := sentry.TransactionFromContext(ctx)
 
-	span := txn.StartChild("event.process")
-	span.Description = "Process ReactionAdded Event"
+	span := txn.StartChild("event.process", sentry.WithDescription("Process ReactionAdded Event"))
 	defer span.Finish()
 
 	reactionEvent := ReactionAddedEvent{

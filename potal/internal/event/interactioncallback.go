@@ -26,8 +26,7 @@ func ProcessInteractionCallbackEvent(ctx context.Context, e slack.InteractionCal
 	hub := sentry.GetHubFromContext(ctx)
 	txn := sentry.TransactionFromContext(ctx)
 
-	span := txn.StartChild("event.process")
-	span.Description = "Process InteractionCallback Event"
+	span := txn.StartChild("event.process", sentry.WithDescription("Process InteractionCallback Event"))
 	defer span.Finish()
 
 	if ok := e.ActionCallback.BlockActions[0].ActionID; ok == "" {

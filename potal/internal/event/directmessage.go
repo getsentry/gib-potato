@@ -27,8 +27,7 @@ func ProcessDirectMessageEvent(ctx context.Context, e *slackevents.MessageEvent)
 	hub := sentry.GetHubFromContext(ctx)
 	txn := sentry.TransactionFromContext(ctx)
 
-	span := txn.StartChild("event.process")
-	span.Description = "Process Direct Message Event"
+	span := txn.StartChild("event.process", sentry.WithDescription("Process Direct Message Event"))
 	defer span.Finish()
 
 	directMessageEvent := DirectEvent{

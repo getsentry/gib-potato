@@ -23,8 +23,7 @@ func ProcessSlashCommand(ctx context.Context, e slack.SlashCommand) *SlashComman
 	hub := sentry.GetHubFromContext(ctx)
 	txn := sentry.TransactionFromContext(ctx)
 
-	span := txn.StartChild("event.process")
-	span.Description = "Process SlashCommand Event"
+	span := txn.StartChild("event.process", sentry.WithDescription("Process SlashCommand Event"))
 	defer span.Finish()
 
 	slashCommandEvent := SlashCommandEvent{

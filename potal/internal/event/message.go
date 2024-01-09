@@ -39,8 +39,7 @@ func ProcessMessageEvent(ctx context.Context, e *slackevents.MessageEvent, sc *s
 	hub := sentry.GetHubFromContext(ctx)
 	txn := sentry.TransactionFromContext(ctx)
 
-	span := txn.StartChild("event.process")
-	span.Description = "Process Message Event"
+	span := txn.StartChild("event.process", sentry.WithDescription("Process Message Event"))
 	defer span.Finish()
 
 	messageEvent := MessageEvent{

@@ -23,8 +23,7 @@ func ProcessAppHomeOpenedEvent(ctx context.Context, e *slackevents.AppHomeOpened
 	hub := sentry.GetHubFromContext(ctx)
 	txn := sentry.TransactionFromContext(ctx)
 
-	span := txn.StartChild("event.process")
-	span.Description = "Process AppHomeOpened Event"
+	span := txn.StartChild("event.process", sentry.WithDescription("Process AppHomeOpened Event"))
 	defer span.Finish()
 
 	appHomeOpenedEvent := AppHomeOpenedEvent{

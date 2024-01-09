@@ -19,8 +19,7 @@ func SendRequest(ctx context.Context, e event.PotalEvent) error {
 	hub := sentry.GetHubFromContext(ctx)
 	txn := sentry.TransactionFromContext(ctx)
 
-	span := txn.StartChild("http.client")
-	span.Description = fmt.Sprintf("POST %s", url)
+	span := txn.StartChild("http.client", sentry.WithDescription(fmt.Sprintf("POST %s", url)))
 	defer span.Finish()
 
 	body, jsonErr := json.Marshal(e)
