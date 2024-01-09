@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "04c2e9b533dd9e8b29d038b1c0a30726",
+    "content-hash": "f016ce2d41e829882a64e965889d297c",
     "packages": [
         {
             "name": "cakephp/authentication",
@@ -1647,16 +1647,16 @@
         },
         {
             "name": "sentry/sentry",
-            "version": "dev-metrics",
+            "version": "dev-master",
             "source": {
                 "type": "git",
                 "url": "https://github.com/getsentry/sentry-php.git",
-                "reference": "c25e310eaa312592f5e2502c372ef14891ce36dd"
+                "reference": "65d9ff384a3677724cdb2ea0cb82f732f3274cb6"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/getsentry/sentry-php/zipball/c25e310eaa312592f5e2502c372ef14891ce36dd",
-                "reference": "c25e310eaa312592f5e2502c372ef14891ce36dd",
+                "url": "https://api.github.com/repos/getsentry/sentry-php/zipball/65d9ff384a3677724cdb2ea0cb82f732f3274cb6",
+                "reference": "65d9ff384a3677724cdb2ea0cb82f732f3274cb6",
                 "shasum": ""
             },
             "require": {
@@ -1686,6 +1686,7 @@
             "suggest": {
                 "monolog/monolog": "Allow sending log messages to Sentry by using the included Monolog handler."
             },
+            "default-branch": true,
             "type": "library",
             "autoload": {
                 "files": [
@@ -1720,7 +1721,7 @@
             ],
             "support": {
                 "issues": "https://github.com/getsentry/sentry-php/issues",
-                "source": "https://github.com/getsentry/sentry-php/tree/metrics"
+                "source": "https://github.com/getsentry/sentry-php/tree/master"
             },
             "funding": [
                 {
@@ -1732,7 +1733,7 @@
                     "type": "custom"
                 }
             ],
-            "time": "2023-12-21T15:02:10+00:00"
+            "time": "2024-01-09T14:38:57+00:00"
         },
         {
             "name": "symfony/config",
