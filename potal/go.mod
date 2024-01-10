@@ -3,7 +3,7 @@ module github.com/getsentry/gib-potato
 go 1.21
 
 require (
-	github.com/getsentry/sentry-go v0.25.1-0.20240108211304-d302d89316ac
+	github.com/getsentry/sentry-go v0.26.0
 	github.com/google/go-cmp v0.5.9
 	github.com/julienschmidt/httprouter v1.3.0
 	github.com/slack-go/slack v0.12.3
