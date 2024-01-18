@@ -80,10 +80,10 @@ class UpdateUsersCommand extends Command
         $connection = ConnectionManager::get('default');
         $connection->getDriver()->setLogger($logger);
 
-        $transactionContext = new TransactionContext();
-        $transactionContext->setOp('command');
-        $transactionContext->setName('COMMAND update_users');
-        $transactionContext->setSource(TransactionSource::task());
+        $transactionContext = (new TransactionContext())
+            ->setOp('command')
+            ->setName('COMMAND update_users')
+            ->setSource(TransactionSource::task());
 
         $transaction = startTransaction($transactionContext);
 
@@ -101,9 +101,9 @@ class UpdateUsersCommand extends Command
         ]);
 
         foreach ($users as $user) {
-            $spanContext = new SpanContext();
-            $spanContext->setOp('command');
-            $spanContext->setDescription('Update user');
+            $spanContext = (new SpanContext())
+                ->setOp('command')
+                ->setDescription('Update user');
             $span = $transaction->startChild($spanContext);
 
             SentrySdk::getCurrentHub()->setSpan($span);
