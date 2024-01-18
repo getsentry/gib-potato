@@ -28,8 +28,18 @@ class EventsController extends Controller
     {
         $this->request->allowMethod('POST');
 
+        $startTimestamp = microtime(true);
         $event = EventFactory::createEvent($this->request->getData());
         $event->process();
+
+        metrics()->distribution(
+            key: 'gibpotato.potatoes.event_processing_time',
+            value: microtime(true) - $startTimestamp,
+            unit: MetricsUnit::second(),
+            tags: [
+                'event_type' => $event->getType(),
+            ],
+        );
 
         metrics()->distribution(
             key: 'gibpotato.potatoes.event_size',
