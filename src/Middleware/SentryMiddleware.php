@@ -5,6 +5,8 @@ namespace App\Middleware;
 
 use App\Database\Log\SentryQueryLogger;
 use Cake\Datasource\ConnectionManager;
+use Cake\Event\Event;
+use Cake\Event\EventManager;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Server\MiddlewareInterface;
@@ -74,7 +76,10 @@ class SentryMiddleware implements MiddlewareInterface
         $transaction->setHttpStatus($response->getStatusCode());
         $transaction->finish();
 
-        register_shutdown_function(static fn () => metrics()->flush());
+        EventManager::instance()->on(
+            'Server.terminate',
+            static fn (Event $event) => metrics()->flush(),
+        );
 
         return $response;
     }

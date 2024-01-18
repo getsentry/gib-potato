@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "f016ce2d41e829882a64e965889d297c",
+    "content-hash": "4d3b680833b682203bf44eced4744ec0",
     "packages": [
         {
             "name": "cakephp/authentication",
@@ -76,16 +76,16 @@
         },
         {
             "name": "cakephp/cakephp",
-            "version": "5.0.4",
+            "version": "dev-5.next",
             "source": {
                 "type": "git",
                 "url": "https://github.com/cakephp/cakephp.git",
-                "reference": "ac9cda35fc15b59fa1e44436de56fd8f08ca8a21"
+                "reference": "b54352e2a53d6869b700848ecd3fc7a1824fa951"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/cakephp/cakephp/zipball/ac9cda35fc15b59fa1e44436de56fd8f08ca8a21",
-                "reference": "ac9cda35fc15b59fa1e44436de56fd8f08ca8a21",
+                "url": "https://api.github.com/repos/cakephp/cakephp/zipball/b54352e2a53d6869b700848ecd3fc7a1824fa951",
+                "reference": "b54352e2a53d6869b700848ecd3fc7a1824fa951",
                 "shasum": ""
             },
             "require": {
@@ -138,7 +138,10 @@
                 "mikey179/vfsstream": "^1.6.10",
                 "mockery/mockery": "^1.6",
                 "paragonie/csp-builder": "^2.3 || ^3.0",
-                "phpunit/phpunit": "^10.1.0"
+                "phpstan/extension-installer": "^1.3",
+                "phpstan/phpstan": "^1.10.30",
+                "phpunit/phpunit": "^10.5.5",
+                "symplify/phpstan-rules": "^12.4"
             },
             "suggest": {
                 "ext-curl": "To enable more efficient network calls in Http\\Client.",
@@ -190,7 +193,7 @@
                 "issues": "https://github.com/cakephp/cakephp/issues",
                 "source": "https://github.com/cakephp/cakephp"
             },
-            "time": "2023-12-28T00:00:09+00:00"
+            "time": "2024-01-17T03:35:04+00:00"
         },
         {
             "name": "cakephp/chronos",
@@ -1647,16 +1650,16 @@
         },
         {
             "name": "sentry/sentry",
-            "version": "dev-master",
+            "version": "dev-metrics-summary",
             "source": {
                 "type": "git",
                 "url": "https://github.com/getsentry/sentry-php.git",
-                "reference": "65d9ff384a3677724cdb2ea0cb82f732f3274cb6"
+                "reference": "88470684f0095444c30bbfa92c77e86424a59a0b"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/getsentry/sentry-php/zipball/65d9ff384a3677724cdb2ea0cb82f732f3274cb6",
-                "reference": "65d9ff384a3677724cdb2ea0cb82f732f3274cb6",
+                "url": "https://api.github.com/repos/getsentry/sentry-php/zipball/88470684f0095444c30bbfa92c77e86424a59a0b",
+                "reference": "88470684f0095444c30bbfa92c77e86424a59a0b",
                 "shasum": ""
             },
             "require": {
@@ -1686,7 +1689,6 @@
             "suggest": {
                 "monolog/monolog": "Allow sending log messages to Sentry by using the included Monolog handler."
             },
-            "default-branch": true,
             "type": "library",
             "autoload": {
                 "files": [
@@ -1721,7 +1723,7 @@
             ],
             "support": {
                 "issues": "https://github.com/getsentry/sentry-php/issues",
-                "source": "https://github.com/getsentry/sentry-php/tree/master"
+                "source": "https://github.com/getsentry/sentry-php/tree/metrics-summary"
             },
             "funding": [
                 {
@@ -1733,7 +1735,7 @@
                     "type": "custom"
                 }
             ],
-            "time": "2024-01-09T14:38:57+00:00"
+            "time": "2024-01-18T10:48:14+00:00"
         },
         {
             "name": "symfony/config",
@@ -3236,16 +3238,16 @@
         },
         {
             "name": "phpstan/phpstan",
-            "version": "1.10.55",
+            "version": "1.10.56",
             "source": {
                 "type": "git",
                 "url": "https://github.com/phpstan/phpstan.git",
-                "reference": "9a88f9d18ddf4cf54c922fbeac16c4cb164c5949"
+                "reference": "27816a01aea996191ee14d010f325434c0ee76fa"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/phpstan/phpstan/zipball/9a88f9d18ddf4cf54c922fbeac16c4cb164c5949",
-                "reference": "9a88f9d18ddf4cf54c922fbeac16c4cb164c5949",
+                "url": "https://api.github.com/repos/phpstan/phpstan/zipball/27816a01aea996191ee14d010f325434c0ee76fa",
+                "reference": "27816a01aea996191ee14d010f325434c0ee76fa",
                 "shasum": ""
             },
             "require": {
@@ -3294,7 +3296,7 @@
                     "type": "tidelift"
                 }
             ],
-            "time": "2024-01-08T12:32:40+00:00"
+            "time": "2024-01-15T10:43:00+00:00"
         },
         {
             "name": "phpunit/php-code-coverage",
@@ -3619,16 +3621,16 @@
         },
         {
             "name": "phpunit/phpunit",
-            "version": "10.5.5",
+            "version": "10.5.7",
             "source": {
                 "type": "git",
                 "url": "https://github.com/sebastianbergmann/phpunit.git",
-                "reference": "ed21115d505b4b4f7dc7b5651464e19a2c7f7856"
+                "reference": "e5c5b397a95cb0db013270a985726fcae93e61b8"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/sebastianbergmann/phpunit/zipball/ed21115d505b4b4f7dc7b5651464e19a2c7f7856",
-                "reference": "ed21115d505b4b4f7dc7b5651464e19a2c7f7856",
+                "url": "https://api.github.com/repos/sebastianbergmann/phpunit/zipball/e5c5b397a95cb0db013270a985726fcae93e61b8",
+                "reference": "e5c5b397a95cb0db013270a985726fcae93e61b8",
                 "shasum": ""
             },
             "require": {
@@ -3700,7 +3702,7 @@
             "support": {
                 "issues": "https://github.com/sebastianbergmann/phpunit/issues",
                 "security": "https://github.com/sebastianbergmann/phpunit/security/policy",
-                "source": "https://github.com/sebastianbergmann/phpunit/tree/10.5.5"
+                "source": "https://github.com/sebastianbergmann/phpunit/tree/10.5.7"
             },
             "funding": [
                 {
@@ -3716,7 +3718,7 @@
                     "type": "tidelift"
                 }
             ],
-            "time": "2023-12-27T15:13:52+00:00"
+            "time": "2024-01-14T16:40:30+00:00"
         },
         {
             "name": "sebastian/cli-parser",
@@ -4700,16 +4702,16 @@
         },
         {
             "name": "squizlabs/php_codesniffer",
-            "version": "3.8.0",
+            "version": "3.8.1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/PHPCSStandards/PHP_CodeSniffer.git",
-                "reference": "5805f7a4e4958dbb5e944ef1e6edae0a303765e7"
+                "reference": "14f5fff1e64118595db5408e946f3a22c75807f7"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/PHPCSStandards/PHP_CodeSniffer/zipball/5805f7a4e4958dbb5e944ef1e6edae0a303765e7",
-                "reference": "5805f7a4e4958dbb5e944ef1e6edae0a303765e7",
+                "url": "https://api.github.com/repos/PHPCSStandards/PHP_CodeSniffer/zipball/14f5fff1e64118595db5408e946f3a22c75807f7",
+                "reference": "14f5fff1e64118595db5408e946f3a22c75807f7",
                 "shasum": ""
             },
             "require": {
@@ -4719,11 +4721,11 @@
                 "php": ">=5.4.0"
             },
             "require-dev": {
-                "phpunit/phpunit": "^4.0 || ^5.0 || ^6.0 || ^7.0 || ^8.0 || ^9.0"
+                "phpunit/phpunit": "^4.0 || ^5.0 || ^6.0 || ^7.0 || ^8.0 || ^9.3.4"
             },
             "bin": [
-                "bin/phpcs",
-                "bin/phpcbf"
+                "bin/phpcbf",
+                "bin/phpcs"
             ],
             "type": "library",
             "extra": {
@@ -4776,7 +4778,7 @@
                     "type": "open_collective"
                 }
             ],
-            "time": "2023-12-08T12:32:31+00:00"
+            "time": "2024-01-11T20:47:48+00:00"
         },
         {
             "name": "symfony/polyfill-php80",
@@ -5052,9 +5054,17 @@
             "time": "2023-11-21T18:54:41+00:00"
         }
     ],
-    "aliases": [],
+    "aliases": [
+        {
+            "package": "cakephp/cakephp",
+            "version": "dev-5.next",
+            "alias": "5.0.4",
+            "alias_normalized": "5.0.4.0"
+        }
+    ],
     "minimum-stability": "stable",
     "stability-flags": {
+        "cakephp/cakephp": 20,
         "sentry/sentry": 20
     },
     "prefer-stable": true,
