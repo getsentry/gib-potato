@@ -10,11 +10,10 @@ use Cake\Console\Arguments;
 use Cake\Console\ConsoleIo;
 use Cake\Console\ConsoleOptionParser;
 use Cake\I18n\DateTime;
-use Sentry\CheckInStatus;
 use Sentry\MonitorConfig;
 use Sentry\MonitorSchedule;
 use function Cake\Core\env;
-use function Sentry\captureCheckIn;
+use function Sentry\withMonitor;
 
 /**
  * WeeklyReport command.
@@ -46,18 +45,29 @@ class WeeklyReportCommand extends Command
      */
     public function execute(Arguments $args, ConsoleIo $io)
     {
-        $io->out('Sending out Weekly Report');
-
-        $checkInId = captureCheckIn(
+        withMonitor(
             slug: 'weekly-report',
-            status: CheckInStatus::inProgress(),
+            callback: fn () => $this->_execute($args, $io),
             monitorConfig: new MonitorConfig(
-                schedule: MonitorSchedule::crontab('15 23 * * 5'),
-                checkinMargin: 60,
-                maxRuntime: 320,
+                schedule: new MonitorSchedule(
+                    type: MonitorSchedule::TYPE_CRONTAB,
+                    value: '15 23 * * 5',
+                ),
+                checkinMargin: 5,
+                maxRuntime: 10,
                 timezone: 'UTC',
             ),
         );
+    }
+
+    /**
+     * @param \Cake\Console\Arguments $args The command arguments.
+     * @param \Cake\Console\ConsoleIo $io The console io
+     * @return int|null|void The exit code or null for success
+     */
+    protected function _execute(Arguments $args, ConsoleIo $io)
+    {
+        $io->out('Sending out Weekly Report');
 
         $channel = $args->getArgument('channel') ?? env('POTATO_CHANNEL');
 
@@ -95,7 +105,7 @@ class WeeklyReportCommand extends Command
                 'Users.status' => User::STATUS_ACTIVE,
                 'Users.role !=' => User::ROLE_SERVICE,
             ])
-            ->group(['Users.id'])
+            ->groupBy(['Users.id'])
             ->orderBy(['sent_count' => $topSendersQuery->expr('DESC NULLS LAST')])
             ->limit(5)
             ->enableAutoFields(true);
@@ -111,7 +121,7 @@ class WeeklyReportCommand extends Command
                 'Users.status' => User::STATUS_ACTIVE,
                 'Users.role !=' => User::ROLE_SERVICE,
             ])
-            ->group(['Users.id'])
+            ->groupBy(['Users.id'])
             ->orderBy(['received_count' => $topReceiversQuery->expr('DESC NULLS LAST')])
             ->limit(5)
             ->enableAutoFields(true);
@@ -141,12 +151,6 @@ class WeeklyReportCommand extends Command
         $slackClient->postMessage(
             channel: $channel,
             text: $channelMessage,
-        );
-
-        captureCheckIn(
-            slug: 'weekly-report',
-            status: CheckInStatus::ok(),
-            checkInId: $checkInId,
         );
 
         $io->success("\n[DONE]");

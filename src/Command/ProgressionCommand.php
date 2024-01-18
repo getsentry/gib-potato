@@ -9,6 +9,9 @@ use Cake\Command\Command;
 use Cake\Console\Arguments;
 use Cake\Console\ConsoleIo;
 use Cake\Console\ConsoleOptionParser;
+use Sentry\MonitorConfig;
+use Sentry\MonitorSchedule;
+use function Sentry\withMonitor;
 
 /**
  * Progression command.
@@ -35,6 +38,28 @@ class ProgressionCommand extends Command
      * @return int|null|void The exit code or null for success
      */
     public function execute(Arguments $args, ConsoleIo $io)
+    {
+        withMonitor(
+            slug: 'progression',
+            callback: fn () => $this->_execute($args, $io),
+            monitorConfig: new MonitorConfig(
+                schedule: new MonitorSchedule(
+                    type: MonitorSchedule::TYPE_CRONTAB,
+                    value: '13 * * * *',
+                ),
+                checkinMargin: 5,
+                maxRuntime: 10,
+                timezone: 'UTC',
+            ),
+        );
+    }
+
+    /**
+     * @param \Cake\Console\Arguments $args The command arguments.
+     * @param \Cake\Console\ConsoleIo $io The console io
+     * @return int|null|void The exit code or null for success
+     */
+    protected function _execute(Arguments $args, ConsoleIo $io)
     {
         $io->out('Updating progression for all users');
 

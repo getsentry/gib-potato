@@ -11,7 +11,6 @@ use Cake\Console\Arguments;
 use Cake\Console\ConsoleIo;
 use Cake\Console\ConsoleOptionParser;
 use Cake\Datasource\ConnectionManager;
-use Sentry\CheckInStatus;
 use Sentry\MonitorConfig;
 use Sentry\MonitorSchedule;
 use Sentry\SentrySdk;
@@ -20,9 +19,9 @@ use Sentry\Tracing\SpanStatus;
 use Sentry\Tracing\TransactionContext;
 use Sentry\Tracing\TransactionSource;
 use Throwable;
-use function Sentry\captureCheckIn;
 use function Sentry\captureException;
 use function Sentry\startTransaction;
+use function Sentry\withMonitor;
 
 /**
  * UpdateUsers command.
@@ -50,18 +49,29 @@ class UpdateUsersCommand extends Command
      */
     public function execute(Arguments $args, ConsoleIo $io)
     {
-        $io->out('Updating all users from Slack');
-
-        $checkInId = captureCheckIn(
+        withMonitor(
             slug: 'update-users',
-            status: CheckInStatus::inProgress(),
+            callback: fn () => $this->_execute($args, $io),
             monitorConfig: new MonitorConfig(
-                schedule: MonitorSchedule::crontab('0 0 * * *'),
-                checkinMargin: 60,
-                maxRuntime: 320,
+                schedule: new MonitorSchedule(
+                    type: MonitorSchedule::TYPE_CRONTAB,
+                    value: '0 0 * * *',
+                ),
+                checkinMargin: 5,
+                maxRuntime: 10,
                 timezone: 'UTC',
             ),
         );
+    }
+
+    /**
+     * @param \Cake\Console\Arguments $args The command arguments.
+     * @param \Cake\Console\ConsoleIo $io The console io
+     * @return int|null|void The exit code or null for success
+     */
+    protected function _execute(Arguments $args, ConsoleIo $io)
+    {
+        $io->out('Updating all users from Slack');
 
         $slackClient = new SlackClient();
 
@@ -151,12 +161,6 @@ class UpdateUsersCommand extends Command
 
         $transaction->setStatus(SpanStatus::ok());
         $transaction->finish();
-
-        captureCheckIn(
-            slug: 'update-users',
-            status: CheckInStatus::ok(),
-            checkInId: $checkInId,
-        );
 
         $io->success("\n[DONE]");
     }
