@@ -1654,12 +1654,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/getsentry/sentry-php.git",
-                "reference": "d3e4483faa0ae48841f0e44d8678f2c2dd77b1bc"
+                "reference": "14da7dc32205dd2fc735d59d2ab9da5c85f81302"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/getsentry/sentry-php/zipball/d3e4483faa0ae48841f0e44d8678f2c2dd77b1bc",
-                "reference": "d3e4483faa0ae48841f0e44d8678f2c2dd77b1bc",
+                "url": "https://api.github.com/repos/getsentry/sentry-php/zipball/14da7dc32205dd2fc735d59d2ab9da5c85f81302",
+                "reference": "14da7dc32205dd2fc735d59d2ab9da5c85f81302",
                 "shasum": ""
             },
             "require": {
@@ -1735,7 +1735,7 @@
                     "type": "custom"
                 }
             ],
-            "time": "2024-01-18T13:00:18+00:00"
+            "time": "2024-01-18T14:49:59+00:00"
         },
         {
             "name": "symfony/config",

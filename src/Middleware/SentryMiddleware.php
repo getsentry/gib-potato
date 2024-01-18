@@ -39,24 +39,23 @@ class SentryMiddleware implements MiddlewareInterface
             return $handler->handle($request);
         }
 
+        $requestStartTime = $request->getServerParams()['REQUEST_TIME_FLOAT'] ?? microtime(true);
+
         $sentryTraceHeader = $request->getHeaderLine('sentry-trace');
         $baggageHeader = $request->getHeaderLine('baggage');
 
-        $transactionContext = TransactionContext::fromHeaders($sentryTraceHeader, $baggageHeader);
-
-        $requestStartTime = $request->getServerParams()['REQUEST_TIME_FLOAT'] ?? microtime(true);
-
-        $transactionContext->setOp('http.server');
-        $transactionContext->setName($request->getMethod() . ' ' . $request->getUri()->getPath());
-        $transactionContext->setSource(TransactionSource::route());
-        $transactionContext->setStartTimestamp($requestStartTime);
+        $transactionContext = TransactionContext::fromHeaders($sentryTraceHeader, $baggageHeader)
+            ->setOp('http.server')
+            ->setName($request->getMethod() . ' ' . $request->getUri()->getPath())
+            ->setSource(TransactionSource::route())
+            ->setStartTimestamp($requestStartTime);
 
         $transaction = startTransaction($transactionContext);
 
         SentrySdk::getCurrentHub()->setSpan($transaction);
 
-        $spanContext = new SpanContext();
-        $spanContext->setOp('middleware.handle');
+        $spanContext = SpanContext::make()
+            ->setOp('middleware.handle');
         $span = $transaction->startChild($spanContext);
 
         SentrySdk::getCurrentHub()->setSpan($span);
@@ -69,8 +68,8 @@ class SentryMiddleware implements MiddlewareInterface
             $transaction->setSampled(false);
         }
 
-        $span->setHttpStatus($response->getStatusCode());
-        $span->finish();
+        $span->setHttpStatus($response->getStatusCode())
+            ->finish();
 
         SentrySdk::getCurrentHub()->setSpan($transaction);
 
