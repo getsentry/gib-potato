@@ -23,8 +23,8 @@
     "require-dev": {
         "cakephp/bake": "^3.0.5",
         "cakephp/cakephp-codesniffer": "^5.1.1",
-        "phpstan/phpstan": "^1.10.56",
-        "phpunit/phpunit": "^10.5.7"
+        "phpstan/phpstan": "^1.10.57",
+        "phpunit/phpunit": "^10.5.9"
     },
     "autoload": {
         "psr-4": {
