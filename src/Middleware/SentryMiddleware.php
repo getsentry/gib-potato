@@ -81,11 +81,12 @@ class SentryMiddleware implements MiddlewareInterface
             unit: MetricsUnit::byte(),
         );
 
-        $transaction->finish();
-
         EventManager::instance()->on(
             'Server.terminate',
-            static fn (Event $event) => metrics()->flush(),
+            function (Event $event) use ($transaction): void{
+                $transaction->finish();
+                metrics()->flush();
+            },
         );
 
         return $response;
