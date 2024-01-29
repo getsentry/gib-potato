@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "48dd50ea12f3d768b902c8a6b5ae1dd1",
+    "content-hash": "6f1eaedfef17707483e5b8c78179fa38",
     "packages": [
         {
             "name": "cakephp/authentication",
@@ -1650,16 +1650,16 @@
         },
         {
             "name": "sentry/sentry",
-            "version": "dev-metrics-summary",
+            "version": "4.5.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/getsentry/sentry-php.git",
-                "reference": "67fb4fb40efc023cb7808ec135169511391483af"
+                "reference": "a6e06f0b7a17e7f68e11297427da76bfe01a3ca3"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/getsentry/sentry-php/zipball/67fb4fb40efc023cb7808ec135169511391483af",
-                "reference": "67fb4fb40efc023cb7808ec135169511391483af",
+                "url": "https://api.github.com/repos/getsentry/sentry-php/zipball/a6e06f0b7a17e7f68e11297427da76bfe01a3ca3",
+                "reference": "a6e06f0b7a17e7f68e11297427da76bfe01a3ca3",
                 "shasum": ""
             },
             "require": {
@@ -1723,7 +1723,7 @@
             ],
             "support": {
                 "issues": "https://github.com/getsentry/sentry-php/issues",
-                "source": "https://github.com/getsentry/sentry-php/tree/metrics-summary"
+                "source": "https://github.com/getsentry/sentry-php/tree/4.5.0"
             },
             "funding": [
                 {
@@ -1735,7 +1735,7 @@
                     "type": "custom"
                 }
             ],
-            "time": "2024-01-26T14:00:10+00:00"
+            "time": "2024-01-29T16:16:10+00:00"
         },
         {
             "name": "symfony/config",
@@ -2653,16 +2653,16 @@
         },
         {
             "name": "cakephp/bake",
-            "version": "3.0.5",
+            "version": "3.0.6",
             "source": {
                 "type": "git",
                 "url": "https://github.com/cakephp/bake.git",
-                "reference": "41b243c8d5309c3f4ddb13c82c14ae7aaa41da94"
+                "reference": "3fe0de83b2bf2ebbe95b67c7eed221c74044d81e"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/cakephp/bake/zipball/41b243c8d5309c3f4ddb13c82c14ae7aaa41da94",
-                "reference": "41b243c8d5309c3f4ddb13c82c14ae7aaa41da94",
+                "url": "https://api.github.com/repos/cakephp/bake/zipball/3fe0de83b2bf2ebbe95b67c7eed221c74044d81e",
+                "reference": "3fe0de83b2bf2ebbe95b67c7eed221c74044d81e",
                 "shasum": ""
             },
             "require": {
@@ -2704,7 +2704,7 @@
                 "issues": "https://github.com/cakephp/bake/issues",
                 "source": "https://github.com/cakephp/bake"
             },
-            "time": "2023-12-24T05:47:12+00:00"
+            "time": "2024-01-21T15:24:58+00:00"
         },
         {
             "name": "cakephp/cakephp-codesniffer",
@@ -5064,8 +5064,7 @@
     ],
     "minimum-stability": "stable",
     "stability-flags": {
-        "cakephp/cakephp": 20,
-        "sentry/sentry": 20
+        "cakephp/cakephp": 20
     },
     "prefer-stable": true,
     "prefer-lowest": false,
