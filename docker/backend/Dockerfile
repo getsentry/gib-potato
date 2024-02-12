@@ -19,14 +19,14 @@ RUN \
     ca-certificates \
     supervisor \
     apache2 \
-    php8.2 \
-    php8.2-curl \
-    php8.2-fpm \
-    php8.2-intl \
-    php8.2-mbstring \
-    php8.2-pgsql \
-    php8.2-xml \
-    php8.2-zip \
+    php8.3 \
+    php8.3-curl \
+    php8.3-fpm \
+    php8.3-intl \
+    php8.3-mbstring \
+    php8.3-pgsql \
+    php8.3-xml \
+    php8.3-zip \
     php-excimer && \
     rm -rf /var/lib/apt/lists/*
 
@@ -35,14 +35,14 @@ COPY ./docker/backend/apache/gib-potato.conf /etc/apache2/sites-available/gib-po
 
 RUN \
     a2ensite gib-potato && \
-    a2enconf php8.2-fpm && \
+    a2enconf php8.3-fpm && \
     a2enmod proxy_fcgi && \
     a2enmod rewrite && \
     phpenmod -s fpm excimer && \
     # Enable zend.assertions
     # Development Value: 1
-    sed -i "s/zend.assertions = -1/zend.assertions = 1/g" /etc/php/8.2/fpm/php.ini && \
-    sed -i "s/;clear_env = no/clear_env = no/g" /etc/php/8.2/fpm/pool.d/www.conf && \
+    sed -i "s/zend.assertions = -1/zend.assertions = 1/g" /etc/php/8.3/fpm/php.ini && \
+    sed -i "s/;clear_env = no/clear_env = no/g" /etc/php/8.3/fpm/pool.d/www.conf && \
     sed -i "s/Listen 80/Listen 8080/g" /etc/apache2/ports.conf
 
 RUN mkdir -p /run/php/
@@ -87,7 +87,7 @@ FROM php-local as php-prod
 
 # Disable zend.assertions again
 # -1: Do not compile at all
-RUN sed -i "s/zend.assertions = 1/zend.assertions = -1/g" /etc/php/8.2/fpm/php.ini
+RUN sed -i "s/zend.assertions = 1/zend.assertions = -1/g" /etc/php/8.3/fpm/php.ini
 
 WORKDIR /var/www/gib-potato
 
