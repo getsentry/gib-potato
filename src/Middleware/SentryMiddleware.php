@@ -83,7 +83,7 @@ class SentryMiddleware implements MiddlewareInterface
 
         EventManager::instance()->on(
             'Server.terminate',
-            function (Event $event) use ($transaction): void{
+            function (Event $event) use ($transaction): void {
                 $transaction->finish();
                 metrics()->flush();
             },
