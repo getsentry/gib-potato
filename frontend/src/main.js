@@ -22,7 +22,7 @@ import './assets/main.css'
         environment: dataSet.sentryEnvironment,
         release: dataSet.sentryRelease,
         integrations: [
-            new Sentry.BrowserTracing({
+            Sentry.browserTracingIntegration({
                 routingInstrumentation: Sentry.vueRouterInstrumentation(router),
                 tracePropagationTargets: ["localhost", "gibpotato.app", /^\//],
                 _experiments: {
@@ -31,12 +31,12 @@ import './assets/main.css'
                     onStartRouteTransaction: Sentry.onProfilingStartRouteTransaction,
                 },
             }),
-            new Sentry.BrowserProfilingIntegration(),
-            new Sentry.Replay({
+            Sentry.browserProfilingIntegration(),
+            Sentry.replayIntegration({
                 maskAllText: false,
                 blockAllMedia: false,
             }),
-            new Sentry.Feedback({
+            Sentry.feedbackIntegration({
                 buttonLabel: 'Gib Feedback',
                 submitButtonLabel: 'Send Feedback',
                 formTitle: 'Gib Feedback 🥔',
