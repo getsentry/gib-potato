@@ -9,24 +9,24 @@
     "preview": "vite preview"
   },
   "dependencies": {
-    "@sentry/vite-plugin": "^2.10.2",
-    "@sentry/vue": "^7.92.0",
-    "axios": "^1.6.5",
-    "vue": "^3.4.7",
+    "@sentry/vite-plugin": "^2.14.0",
+    "@sentry/vue": "^7.100.1",
+    "axios": "^1.6.7",
+    "vue": "^3.4.18",
     "vue-router": "^4.2.5",
     "vue-select": "^4.0.0-beta.6",
     "vuex": "^4.1.0"
   },
   "devDependencies": {
-    "@rushstack/eslint-patch": "^1.6.1",
-    "@vitejs/plugin-vue": "^5.0.2",
+    "@rushstack/eslint-patch": "^1.7.2",
+    "@vitejs/plugin-vue": "^5.0.4",
     "@vue/eslint-config-prettier": "^9.0.0",
-    "autoprefixer": "^10.4.16",
+    "autoprefixer": "^10.4.17",
     "eslint": "^8.56.0",
-    "eslint-plugin-vue": "^9.19.2",
-    "postcss": "^8.4.33",
-    "prettier": "^3.1.1",
+    "eslint-plugin-vue": "^9.21.1",
+    "postcss": "^8.4.35",
+    "prettier": "^3.2.5",
     "tailwindcss": "^3.4.1",
-    "vite": "^5.0.12"
+    "vite": "^5.1.1"
   }
 }
