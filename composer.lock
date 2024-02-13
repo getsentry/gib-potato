@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "bfc5a015fad50e3b41d024bdc002653b",
+    "content-hash": "37a5b5a8e0d73b02f986598fb26a6097",
     "packages": [
         {
             "name": "cakephp/authentication",
@@ -1841,16 +1841,16 @@
         },
         {
             "name": "sentry/sentry",
-            "version": "dev-metrics-summary-transactions",
+            "version": "4.6.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/getsentry/sentry-php.git",
-                "reference": "1d3effcdf137567f85af0559c3be97e796843d81"
+                "reference": "30d98a460ab10f7b7032d76c62da5b1ce6c0765d"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/getsentry/sentry-php/zipball/1d3effcdf137567f85af0559c3be97e796843d81",
-                "reference": "1d3effcdf137567f85af0559c3be97e796843d81",
+                "url": "https://api.github.com/repos/getsentry/sentry-php/zipball/30d98a460ab10f7b7032d76c62da5b1ce6c0765d",
+                "reference": "30d98a460ab10f7b7032d76c62da5b1ce6c0765d",
                 "shasum": ""
             },
             "require": {
@@ -1914,7 +1914,7 @@
             ],
             "support": {
                 "issues": "https://github.com/getsentry/sentry-php/issues",
-                "source": "https://github.com/getsentry/sentry-php/tree/metrics-summary-transactions"
+                "source": "https://github.com/getsentry/sentry-php/tree/4.6.0"
             },
             "funding": [
                 {
@@ -1926,7 +1926,7 @@
                     "type": "custom"
                 }
             ],
-            "time": "2024-02-13T00:17:25+00:00"
+            "time": "2024-02-13T11:32:56+00:00"
         },
         {
             "name": "symfony/config",
@@ -5240,8 +5240,7 @@
     ],
     "minimum-stability": "stable",
     "stability-flags": {
-        "cakephp/cakephp": 20,
-        "sentry/sentry": 20
+        "cakephp/cakephp": 20
     },
     "prefer-stable": true,
     "prefer-lowest": false,
