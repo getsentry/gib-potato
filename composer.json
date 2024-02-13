@@ -18,7 +18,7 @@
         "cakephp/plugin-installer": "^2.0.1",
         "lcobucci/jwt": "^5.2",
         "paragonie/csp-builder": "^2.9",
-        "sentry/sentry": "^4.5.0"
+        "sentry/sentry": "dev-metrics-summary-transactions"
     },
     "require-dev": {
         "cakephp/bake": "^3.1",
