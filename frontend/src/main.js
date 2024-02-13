@@ -23,7 +23,8 @@ import './assets/main.css'
         release: dataSet.sentryRelease,
         integrations: [
             Sentry.browserTracingIntegration({
-                routingInstrumentation: Sentry.vueRouterInstrumentation(router),
+                router: router,
+                routeLabel: 'path',
                 tracePropagationTargets: ["localhost", "gibpotato.app", /^\//],
                 _experiments: {
                     enableInteractions: true,
