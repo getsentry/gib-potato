@@ -11,7 +11,6 @@
             <div
                 :index="index"
                 class="relative"
-                :class="{ 'blur-[2px]': product.stock === 0 }"
             >
                 <div class="relative h-72 w-full overflow-hidden rounded-lg">
                     <img class="h-full w-full object-cover object-center" :src="product.image_link">
