@@ -31,6 +31,13 @@
                             >
                                 Collection
                             </RouterLink>
+                            <RouterLink
+                                to="/quickwins"
+                                class="rounded-md px-3 py-2 text-sm font-medium text-zinc-900"
+                                :class="{ '!bg-zinc-900 !text-zinc-50': $route.path === '/quickwins' }"
+                            >
+                                #QuickWins
+                            </RouterLink>
                         </div>
                     </div>
                 </div>
@@ -101,6 +108,13 @@
                     to="/collection"
                     class="block rounded-md px-3 py-2 text-base font-medium text-zinc-900"
                     :class="{ '!bg-zinc-900 text-zinc-50': $route.path === '/collection' }"
+                >
+                    Collection
+                </RouterLink>
+                <RouterLink
+                    to="/quickwins"
+                    class="block rounded-md px-3 py-2 text-base font-medium text-zinc-900"
+                    :class="{ '!bg-zinc-900 text-zinc-50': $route.path === '/quickwins' }"
                 >
                     Collection
                 </RouterLink>

@@ -37,6 +37,7 @@ class MessageEvent extends AbstractEvent
         $this->receivers = $event['receivers'];
         $this->channel = $event['channel'];
         $this->text = $event['text'];
+        // TODO: create reaction service
         $this->reaction = $event['reaction'];
         $this->timestamp = $event['timestamp'];
         $this->eventTimestamp = $event['event_timestamp'];
@@ -87,6 +88,7 @@ class MessageEvent extends AbstractEvent
             toUsers: $toUsers,
             event: $this,
         );
+        // TODO: create tag service
         $notificationService->notifyUsers(
             fromUser: $fromUser,
             toUsers: $toUsers,

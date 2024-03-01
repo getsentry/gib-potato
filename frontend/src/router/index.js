@@ -20,6 +20,11 @@ const router = createRouter({
       component: () => import('@/views/Collection.vue')
     },
     {
+      path: '/quickwins',
+      name: 'quickwins',
+      component: () => import('@/views/Quickwins.vue')
+    },
+    {
       path: '/profile',
       name: 'profile',
       component: () => import('@/views/Profile.vue')

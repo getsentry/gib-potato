@@ -42,7 +42,7 @@ class MessagesTable extends Table
         $this->setTable('messages');
         $this->setDisplayField('id');
         $this->setPrimaryKey('id');
-
+        
         $this->addBehavior('Timestamp');
 
         $this->belongsTo('Users', [
