@@ -10,9 +10,11 @@ use Cake\ORM\Entity;
  *
  * @property string $id
  * @property \Cake\I18n\DateTime $created
+ * @property string|null $message
  * @property string|null $sender_user_id
+ * @property string $permalink
  *
- * @property \App\Model\Entity\Message $message
+ * @property \App\Model\Entity\User $user
  */
 class TaggedMessage extends Entity
 {
@@ -29,6 +31,8 @@ class TaggedMessage extends Entity
         'created' => true,
         'message' => true,
         'sender_user_id' => true,
+        'permalink' => true,
+        'user' => true,
     ];
 
     public const TAG = '#quickwin';

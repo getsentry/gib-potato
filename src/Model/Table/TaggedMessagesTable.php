@@ -68,6 +68,12 @@ class TaggedMessagesTable extends Table
             ->uuid('sender_user_id')
             ->notEmptyString('sender_user_id');
 
+        $validator
+            ->scalar('permalink')
+            ->maxLength('permalink', 255)
+            ->requirePresence('permalink', 'create')
+            ->notEmptyString('permalink');
+
         return $validator;
     }
 

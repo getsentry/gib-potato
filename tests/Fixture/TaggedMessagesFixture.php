@@ -19,10 +19,11 @@ class TaggedMessagesFixture extends TestFixture
     {
         $this->records = [
             [
-                'id' => 'c19d0b39-840e-47db-aaaa-f5e132b8a35c',
-                'created' => 1709324293,
+                'id' => 'a428fd32-6965-4fc8-8495-42da264c86d8',
+                'created' => 1709364434,
                 'message' => 'Lorem ipsum dolor sit amet, aliquet feugiat. Convallis morbi fringilla gravida, phasellus feugiat dapibus velit nunc, pulvinar eget sollicitudin venenatis cum nullam, vivamus ut a sed, mollitia lectus. Nulla vestibulum massa neque ut et, id hendrerit sit, feugiat in taciti enim proin nibh, tempor dignissim, rhoncus duis vestibulum nunc mattis convallis.',
-                'sender_user_id' => '4a1ecef4-effc-4784-bf76-5feb9a2b741a',
+                'sender_user_id' => '9c7fb3a8-8d6f-4e50-b927-9944a39e0841',
+                'permalink' => 'Lorem ipsum dolor sit amet',
             ],
         ];
         parent::init();
