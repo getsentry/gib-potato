@@ -7,8 +7,8 @@ use App\Event\Validation\Exception\PotatoException;
 use App\Event\Validation\Validation;
 use App\Service\AwardService;
 use App\Service\NotificationService;
-use App\Service\UserService;
 use App\Service\TaggedMessageService;
+use App\Service\UserService;
 
 class MessageEvent extends AbstractEvent
 {
@@ -96,7 +96,7 @@ class MessageEvent extends AbstractEvent
         if ($quickwinId !== false) {
             $notificationService->notifyChannelNewQuickwin(
                 fromUser: $fromUser,
-                taggedMessageId: $quickwinId, 
+                taggedMessageId: $quickwinId,
                 event: $this
             );
         }

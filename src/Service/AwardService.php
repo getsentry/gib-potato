@@ -63,7 +63,7 @@ class AwardService
             ],
         ]);
         $messagesTable->saveOrFail($message);
-         
+
         metrics()->increment(
             key: 'gibpotato.potatoes.given_out',
             value: $event->amount,

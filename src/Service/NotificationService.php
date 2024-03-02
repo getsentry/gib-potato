@@ -98,7 +98,7 @@ class NotificationService
                 'type' => 'section',
                 'text' => [
                     'type' => 'mrkdwn',
-                    'text' => "<@{$fromUser->slack_user_id}> posted a new <" . $event->permalink . "|#quickwin>!",
+                    'text' => "<@{$fromUser->slack_user_id}> posted a new <" . $event->permalink . '|#quickwin>!',
                 ],
             ],
             [
@@ -111,7 +111,7 @@ class NotificationService
                     'text' => '<' . Router::url('/quickwins', true) . '?id=' . $taggedMessageId . '|Visit Hall of Fame>',
                 ],
             ],
-            
+
         ];
 
         $this->slackClient->postBlocks(

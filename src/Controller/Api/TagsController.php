@@ -17,10 +17,10 @@ class TagsController extends ApiController
     {
         $taggedMessagesTable = $this->fetchTable('TaggedMessages');
         $messages = $this->fetchTable('Messages');
-        
+
         $collection = $taggedMessagesTable->find();
         $collection->contain(['Users']);
-        
+
         $collection->orderBy(['TaggedMessages.created' => 'DESC'])
             ->enableAutoFields(true)
             ->all();
@@ -52,7 +52,7 @@ class TagsController extends ApiController
                 );
             }
         }
-        
+
         return $this->response
             ->withStatus(200)
             ->withType('json')
