@@ -19,9 +19,7 @@
             </div>
             <div class="mt-auto">
                 <p class="mt-3 text-xs text-zinc-500">
-                    
                     Posted {{ new Date(item.created).toLocaleDateString('en-us', { year:"numeric", month:"short", day:"numeric"}) }}
-                    
                 </p>
             </div>
         </div>
@@ -46,7 +44,6 @@ export default {
         const store = useStore()
 
         return {
-            user: computed(() => store.getters.user),
             taggedMessages: computed(() => store.getters.taggedMessages),
         }
     },

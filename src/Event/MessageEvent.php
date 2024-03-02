@@ -8,6 +8,7 @@ use App\Event\Validation\Validation;
 use App\Service\AwardService;
 use App\Service\NotificationService;
 use App\Service\UserService;
+use App\Service\TaggedMessageService;
 
 class MessageEvent extends AbstractEvent
 {
@@ -37,7 +38,6 @@ class MessageEvent extends AbstractEvent
         $this->receivers = $event['receivers'];
         $this->channel = $event['channel'];
         $this->text = $event['text'];
-        // TODO: create reaction service
         $this->reaction = $event['reaction'];
         $this->timestamp = $event['timestamp'];
         $this->eventTimestamp = $event['event_timestamp'];
@@ -54,6 +54,7 @@ class MessageEvent extends AbstractEvent
         $userService = new UserService();
         $awardService = new AwardService();
         $notificationService = new NotificationService();
+        $taggedMessagesService = new TaggedMessageService();
 
         $fromUser = $userService->getOrCreateUser($this->sender);
         $validator = new Validation(
@@ -88,7 +89,10 @@ class MessageEvent extends AbstractEvent
             toUsers: $toUsers,
             event: $this,
         );
-        // TODO: create tag service
+        $taggedMessagesService->storeMessageIfTagged(
+            fromUser: $fromUser,
+            event: $this,
+        );
         $notificationService->notifyUsers(
             fromUser: $fromUser,
             toUsers: $toUsers,

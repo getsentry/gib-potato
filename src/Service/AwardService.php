@@ -38,7 +38,7 @@ class AwardService
      * @param \App\Model\Entity\User $fromUser User who did gib the potato.
      * @param \App\Model\Entity\User $toUser User who will receive the potato.
      * @param \App\Event\MessageEvent|\App\Event\ReactionAddedEvent $event The event.
-     * @return void
+     * @return string created message id
      */
     private function gibToUser(
         User $fromUser,
@@ -61,11 +61,13 @@ class AwardService
             ],
         ]);
         $messagesTable->saveOrFail($message);
-
+         
         metrics()->increment(
             key: 'gibpotato.potatoes.given_out',
             value: $event->amount,
             unit: MetricsUnit::custom('potato'),
         );
+
+        return $message->id;
     }
 }

@@ -9,12 +9,10 @@ use Cake\ORM\Entity;
  * TaggedMessage Entity
  *
  * @property string $id
- * @property string $tag_id
- * @property string $message_id
  * @property \Cake\I18n\DateTime $created
+ * @property string|null $sender_user_id
  *
  * @property \App\Model\Entity\Message $message
- * @property \App\Model\Entity\Tag $tag
  */
 class TaggedMessage extends Entity
 {
@@ -28,10 +26,10 @@ class TaggedMessage extends Entity
      * @var array<string, bool>
      */
     protected array $_accessible = [
-        'tag_id' => true,
-        'message_id' => true,
         'created' => true,
         'message' => true,
-        'tag' => true,
+        'sender_user_id' => true,
     ];
+
+    public const TAG = '#quickwin';
 }

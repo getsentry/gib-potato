@@ -11,9 +11,6 @@ use Cake\Validation\Validator;
 /**
  * TaggedMessages Model
  *
- * @property \App\Model\Table\TagsTable&\Cake\ORM\Association\BelongsTo $Tags
- * @property \App\Model\Table\MessagesTable&\Cake\ORM\Association\BelongsTo $Messages
- *
  * @method \App\Model\Entity\TaggedMessage newEmptyEntity()
  * @method \App\Model\Entity\TaggedMessage newEntity(array $data, array $options = [])
  * @method array<\App\Model\Entity\TaggedMessage> newEntities(array $data, array $options = [])
@@ -48,12 +45,9 @@ class TaggedMessagesTable extends Table
 
         $this->addBehavior('Timestamp');
 
-        $this->belongsTo('Tags', [
-            'foreignKey' => 'tag_id',
-            'joinType' => 'INNER',
-        ]);
-        $this->belongsTo('Messages', [
-            'foreignKey' => 'message_id',
+        $this->belongsTo('Users', [
+            'className' => 'Users',
+            'foreignKey' => 'sender_user_id',
             'joinType' => 'INNER',
         ]);
     }
@@ -67,16 +61,12 @@ class TaggedMessagesTable extends Table
     public function validationDefault(Validator $validator): Validator
     {
         $validator
-            ->uuid('tag_id')
-            ->notEmptyString('tag_id');
-
-        $validator
-            ->uuid('message_id')
-            ->notEmptyString('message_id');
-
-        $validator
             ->scalar('message')
             ->allowEmptyString('message');
+
+        $validator
+            ->uuid('sender_user_id')
+            ->notEmptyString('sender_user_id');
 
         return $validator;
     }
@@ -90,8 +80,7 @@ class TaggedMessagesTable extends Table
      */
     public function buildRules(RulesChecker $rules): RulesChecker
     {
-        $rules->add($rules->existsIn(['tag_id'], 'Tags'), ['errorField' => 'tag_id']);
-        $rules->add($rules->existsIn(['message_id'], 'Messages'), ['errorField' => 'message_id']);
+        $rules->add($rules->existsIn(['sender_user_id'], 'Users'), ['errorField' => 'sender_user_id']);
 
         return $rules;
     }
