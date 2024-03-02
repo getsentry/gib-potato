@@ -89,10 +89,17 @@ class MessageEvent extends AbstractEvent
             toUsers: $toUsers,
             event: $this,
         );
-        $taggedMessagesService->storeMessageIfTagged(
+        $quickwinId = $taggedMessagesService->storeMessageIfTagged(
             fromUser: $fromUser,
             event: $this,
         );
+        if ($quickwinId !== false) {
+            $notificationService->notifyChannelNewQuickwin(
+                fromUser: $fromUser,
+                taggedMessageId: $quickwinId, 
+                event: $this
+            );
+        }
         $notificationService->notifyUsers(
             fromUser: $fromUser,
             toUsers: $toUsers,

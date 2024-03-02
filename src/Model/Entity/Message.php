@@ -13,6 +13,7 @@ use Cake\ORM\Entity;
  * @property string $receiver_user_id
  * @property int $amount
  * @property string $type
+ * @property string $permalink
  * @property \Cake\I18n\DateTime|null $created
  *
  * @property \App\Model\Entity\User $user
@@ -33,5 +34,5 @@ class Message extends Entity
     ];
 
     public const TYPE_POTATO = 'potato';
-    public const MAX_AMOUNT = 5;
+    public const MAX_AMOUNT = 50;
 }

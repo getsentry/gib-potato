@@ -8,6 +8,7 @@ use App\Event\ReactionAddedEvent;
 use App\Http\SlackClient;
 use App\Model\Entity\User;
 use Cake\ORM\Locator\LocatorAwareTrait;
+use Cake\Routing\Router;
 
 class NotificationService
 {
@@ -79,5 +80,43 @@ class NotificationService
                 text: $gibMessage,
             );
         }
+    }
+
+    /**
+     * @param \App\Model\Entity\User $fromUser User who did gib the potato
+     * @param string $taggedMessageId id of the tagged message
+     * @param \App\Event\MessageEvent $event The event.
+     * @return void
+     */
+    public function notifyChannelNewQuickwin(
+        User $fromUser,
+        string $taggedMessageId,
+        MessageEvent $event,
+    ): void {
+        $blocks = [
+            [
+                'type' => 'section',
+                'text' => [
+                    'type' => 'mrkdwn',
+                    'text' => "<@{$fromUser->slack_user_id}> posted a new <" . $event->permalink . "|#quickwin>!",
+                ],
+            ],
+            [
+                'type' => 'divider',
+            ],
+            [
+                'type' => 'section',
+                'text' => [
+                    'type' => 'mrkdwn',
+                    'text' => '<' . Router::url('/quickwins', true) . '?id=' . $taggedMessageId . '|Visit Hall of Fame>',
+                ],
+            ],
+            
+        ];
+
+        $this->slackClient->postBlocks(
+            channel: env('POTATO_CHANNEL'),
+            blocks: json_encode($blocks),
+        );
     }
 }
