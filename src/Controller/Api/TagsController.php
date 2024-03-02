@@ -16,10 +16,22 @@ class TagsController extends ApiController
     public function get(): Response
     {
         $taggedMessagesTable = $this->fetchTable('TaggedMessages');
-        $collection = $taggedMessagesTable->find()
-            ->orderBy(['created' => 'DESC'])
+        $messages = $this->fetchTable('Messages');
+        
+        $collection = $taggedMessagesTable->find();
+        $collection->contain(['Users']);
+        
+        $collection->orderBy(['TaggedMessages.created' => 'DESC'])
+            ->enableAutoFields(true)
             ->all();
 
+        foreach ($collection as $taggedMessage) {
+            $reactionCount = $messages->find()
+                ->where(['permalink' => $taggedMessage->permalink])
+                ->count();
+            $taggedMessage->reaction_count = $reactionCount;
+        }
+        
         return $this->response
             ->withStatus(200)
             ->withType('json')
