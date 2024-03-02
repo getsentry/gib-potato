@@ -11,6 +11,9 @@
                 :index="index"
                 class="relative"
             >
+                <div class="flex rounded-full text-sm">
+                    <img class="h-8 w-8 rounded-full" :src="item.user.slack_picture">
+                </div>
                 <div class="relative mt-4">
                     
                     <p class="mt-1 text-sm text-zinc-500">{{ item.message }}</p>
