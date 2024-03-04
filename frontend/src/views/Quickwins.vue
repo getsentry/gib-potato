@@ -40,6 +40,33 @@
             No #quickwins recorded yet
         </h1>
     </div>
+    <div v-if="modalOpen === true" class="relative z-10">
+        <div class="fixed inset-0 bg-zinc-700 bg-opacity-75"></div>
+
+        <div class="fixed inset-0 z-20 overflow-y-auto">
+            <div class="flex min-h-full items-end justify-center p-4 text-center sm:items-center sm:p-0">
+                <div class="relative transform overflow-hidden rounded-lg bg-zinc-50 dark:bg-zinc-900 px-4 pt-5 pb-4 text-left shadow-xl transition-all sm:my-8 sm:w-full sm:max-w-sm sm:p-6">
+                    <div class="relative">
+                        <div class="relative mt-4">
+                            <div class="flex items-center space-x-2 rtl:space-x-reverse">
+                                <span class="text-sm font-semibold text-gray-900 dark:text-white">{{modelData.user.slack_name}}</span>
+                                <span class="text-sm font-normal text-gray-500 dark:text-gray-400">{{ new Date(modelData.created).toLocaleDateString('en-us', { year:"numeric", month:"short", day:"numeric"}) }}</span>
+                            </div>
+                            <FormattedMessage :message="modelData.message" />
+                            <button
+                                class="mt-2 cursor-pointer inline-flex w-full justify-center rounded-md border border-zinc-300 bg-zinc-100 px-4 py-2 text-base font-medium text-zinc-900 sm:mt-0 sm:text-sm"
+                                @click="closeModal"
+                            >
+                            Close
+                            </button>
+                        </div>
+                        
+                    </div>
+                </div>
+            </div>
+           
+        </div>
+    </div>
 </template>
 
 <script>
@@ -52,11 +79,47 @@ export default {
     components: {
         FormattedMessage,
     },
+    created() {
+        let that = this;
+
+        document.addEventListener('keyup', function (evt) {
+            if (evt.keyCode === 27) {
+                that.closeModal();
+            }
+        });
+    },
+    data() {
+        let modelData = null
+        let modalOpen = false
+        
+        this.taggedMessages.forEach((message) => {
+            if (message.id === this.$route.query?.id) {
+                modelData = message
+                modalOpen = true
+            }
+        });
+
+        return {
+            modalOpen,
+            modelData, 
+        }
+    },
+    methods: {
+        openModal() {
+            this.modalOpen = true
+        },
+        closeModal() {
+            this.modalOpen = false
+            this.$router.replace({'query': null})
+        },
+    },
+
     setup() {
         const store = useStore()
 
+        const taggedMessages = computed(() => store.getters.taggedMessages);
         return {
-            taggedMessages: computed(() => store.getters.taggedMessages),
+            taggedMessages,
         }
     },
 }
