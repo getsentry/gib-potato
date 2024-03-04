@@ -1,8 +1,13 @@
 <template>
+    <div class="bg-gray-700 mb-8 mx-20 border-t border-b text-white px-4 py-3" role="alert">
+        <p class="font-bold">How to?</p>
+        <p class="text-sm">Write a message in Slack - if it contains <span class="bg-blue-700 p-0.5 px-1 rounded-lg">#quickwin</span> and a 🥔 emoji it will be captured here.</p>
+    </div>
     <div
         v-if="taggedMessages.length"
         class="grid grid-cols-1 gap-y-12 sm:grid-cols-2 sm:gap-x-6 lg:grid-cols-4 xl:gap-x-8 mb-32"
     >
+        
         <div
             v-for="(item, index) in taggedMessages"
             class="h-full flex flex-col"
