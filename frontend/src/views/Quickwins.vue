@@ -72,7 +72,8 @@
 <script>
 import { computed } from 'vue'
 import { useStore } from 'vuex'
-import FormattedMessage from '../components/FormattedMessage.vue';
+import FormattedMessage from '../components/FormattedMessage.vue'
+import JSConfetti from 'js-confetti'
 
 export default {
     name: 'Quickwins',
@@ -87,6 +88,21 @@ export default {
                 that.closeModal();
             }
         });
+        if (this.modalOpen === true) {
+            const jsConfetti = new JSConfetti()
+            const startTime = Date.now();
+            let intervalId = setInterval(() => {
+                jsConfetti.addConfetti({
+                    emojis: ['🥔'],
+                });
+
+                // Stop after 10 seconds
+                if (Date.now() - startTime > 3000) {
+                    clearInterval(intervalId);
+                }
+            }, 300)
+        }
+        
     },
     data() {
         let modelData = null
