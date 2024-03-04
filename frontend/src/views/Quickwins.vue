@@ -95,8 +95,6 @@ export default {
                 jsConfetti.addConfetti({
                     emojis: ['🥔'],
                 });
-
-                // Stop after 10 seconds
                 if (Date.now() - startTime > 3000) {
                     clearInterval(intervalId);
                 }
