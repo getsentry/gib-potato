@@ -24,6 +24,7 @@ class SlackClient
             'headers' => [
                 'Authorization' => 'Bearer ' . env('SLACK_BOT_USER_OAUTH_TOKEN'),
             ],
+            'timeout' => 5,
         ]);
     }
 

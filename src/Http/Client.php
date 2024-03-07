@@ -38,11 +38,13 @@ class Client extends CakeClient
             $span = $parentSpan->startChild($context);
         }
 
-        $response = parent::_sendRequest($request, $options);
-
-        if ($span !== null) {
-            $span->setHttpStatus($response->getStatusCode());
-            $span->finish();
+        try {
+            $response = parent::_sendRequest($request, $options);
+        } finally {
+            if ($span !== null) {
+                $span->setHttpStatus($response->getStatusCode());
+                $span->finish();
+            }
         }
 
         return $response;
