@@ -27,6 +27,7 @@ import './assets/main.css'
         replaysOnErrorSampleRate: 1.0,
         integrations: [
             Sentry.browserTracingIntegration({
+                enableInp: true,
                 router: router,
                 routeLabel: 'path',
                 _experiments: {
