@@ -75,7 +75,7 @@ const store = createStore({
         },
         async getTaggedMessages({ commit }) {
             try {
-                const response = await api.get('taggedMessages')
+                const response = await api.get('tagged-messages')
                 commit('SET_TAGGEDMESSAGES', response.data)
             } catch (error) {
                 console.log(error)
