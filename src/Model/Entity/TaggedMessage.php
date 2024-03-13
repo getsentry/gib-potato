@@ -28,11 +28,7 @@ class TaggedMessage extends Entity
      * @var array<string, bool>
      */
     protected array $_accessible = [
-        'created' => true,
-        'message' => true,
-        'sender_user_id' => true,
-        'permalink' => true,
-        'user' => true,
+        '*' => false,
     ];
 
     public const TAG = '#quickwin';
