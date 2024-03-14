@@ -21,15 +21,17 @@ import './assets/main.css'
         dsn: dataSet.sentryFrontendDsn,
         environment: dataSet.sentryEnvironment,
         release: dataSet.sentryRelease,
+        tracesSampleRate: 1.0,
+        profilesSampleRate: 1,
+        replaysSessionSampleRate: 1.0,
+        replaysOnErrorSampleRate: 1.0,
         integrations: [
             Sentry.browserTracingIntegration({
+                enableInp: true,
                 router: router,
                 routeLabel: 'path',
-                tracePropagationTargets: ["localhost", "gibpotato.app", /^\//],
                 _experiments: {
                     enableInteractions: true,
-                    // If you want automatic route transactions in react or similar
-                    onStartRouteTransaction: Sentry.onProfilingStartRouteTransaction,
                 },
             }),
             Sentry.browserProfilingIntegration(),
@@ -66,10 +68,6 @@ import './assets/main.css'
                 },
             }),
         ],
-        tracesSampleRate: 1.0,
-        profilesSampleRate: 1,
-        replaysSessionSampleRate: 1.0,
-        replaysOnErrorSampleRate: 1.0,
     })
 
     Sentry.setUser({

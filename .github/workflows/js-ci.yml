@@ -1,0 +1,27 @@
+name: "JS CI"
+
+on:
+  push:
+    branches:
+      - 'main'
+  pull_request:
+    branches:
+      - '*'
+
+permissions:
+  contents: read
+
+jobs:
+  js-ci:
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v4
+    
+    - name: Run npm install
+      run: npm install
+    
+    - name: Run npm build
+      run: npm run build
+      env:
+        CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
