@@ -38,7 +38,7 @@ class AwardService
      * @param \App\Model\Entity\User $fromUser User who did gib the potato.
      * @param \App\Model\Entity\User $toUser User who will receive the potato.
      * @param \App\Event\MessageEvent|\App\Event\ReactionAddedEvent $event The event.
-     * @return void
+     * @return string created message id
      */
     private function gibToUser(
         User $fromUser,
