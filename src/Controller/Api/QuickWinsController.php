@@ -26,7 +26,7 @@ class QuickWinsController extends ApiController
         foreach ($quickWins as $quickWin) {
             // extract all user ids from message: "<@U042CECCR7A> has tagged you in a message"
             preg_match_all('/<@([A-Z0-9]+)>/', $quickWin->message, $matches);
-            foreach($matches[1] as $match) {
+            foreach ($matches[1] as $match) {
                 $collectedUsersInMessages[] = $match;
             }
         }
