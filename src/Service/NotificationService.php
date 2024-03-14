@@ -108,7 +108,7 @@ class NotificationService
                 'type' => 'section',
                 'text' => [
                     'type' => 'mrkdwn',
-                    'text' => '<' . Router::url('/quickwins', true) . '|Visit Hall of Fame>',
+                    'text' => '<' . Router::url('/quick-wins', true) . '|Visit Hall of Fame>',
                 ],
             ],
 
