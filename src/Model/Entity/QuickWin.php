@@ -6,17 +6,17 @@ namespace App\Model\Entity;
 use Cake\ORM\Entity;
 
 /**
- * TaggedMessage Entity
+ * QuickWin Entity
  *
  * @property string $id
- * @property \Cake\I18n\DateTime $created
- * @property string|null $message
  * @property string|null $sender_user_id
+ * @property string|null $message
  * @property string $permalink
+ * @property \Cake\I18n\DateTime $created
  *
  * @property \App\Model\Entity\User $user
  */
-class TaggedMessage extends Entity
+class QuickWin extends Entity
 {
     /**
      * Fields that can be mass assigned using newEntity() or patchEntity().
@@ -31,5 +31,5 @@ class TaggedMessage extends Entity
         '*' => false,
     ];
 
-    public const TAG = '#quickwin';
+    public const QUICK_WIN_TAG = '#quickwin';
 }

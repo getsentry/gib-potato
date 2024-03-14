@@ -13,7 +13,6 @@ use Cake\ORM\Entity;
  * @property string $receiver_user_id
  * @property int $amount
  * @property string $type
- * @property string $permalink
  * @property \Cake\I18n\DateTime|null $created
  *
  * @property \App\Model\Entity\User $user

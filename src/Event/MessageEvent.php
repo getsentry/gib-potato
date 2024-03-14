@@ -7,7 +7,7 @@ use App\Event\Validation\Exception\PotatoException;
 use App\Event\Validation\Validation;
 use App\Service\AwardService;
 use App\Service\NotificationService;
-use App\Service\TaggedMessageService;
+use App\Service\QuickWinService;
 use App\Service\UserService;
 
 class MessageEvent extends AbstractEvent
@@ -54,7 +54,7 @@ class MessageEvent extends AbstractEvent
         $userService = new UserService();
         $awardService = new AwardService();
         $notificationService = new NotificationService();
-        $taggedMessagesService = new TaggedMessageService();
+        $quickWinService = new QuickWinService();
 
         $fromUser = $userService->getOrCreateUser($this->sender);
         $validator = new Validation(
@@ -89,21 +89,23 @@ class MessageEvent extends AbstractEvent
             toUsers: $toUsers,
             event: $this,
         );
-        $quickwinId = $taggedMessagesService->storeMessageIfTagged(
-            fromUser: $fromUser,
-            event: $this,
-        );
-        if ($quickwinId !== false) {
-            $notificationService->notifyChannelNewQuickwin(
-                fromUser: $fromUser,
-                taggedMessageId: $quickwinId,
-                event: $this
-            );
-        }
+
         $notificationService->notifyUsers(
             fromUser: $fromUser,
             toUsers: $toUsers,
             event: $this,
         );
+
+        $stored = $quickWinService->store(
+            fromUser: $fromUser,
+            event: $this,
+        );
+
+        if ($stored === true) {
+            $notificationService->notifyChannelNewQuickwin(
+                fromUser: $fromUser,
+                event: $this
+            );
+        }
     }
 }

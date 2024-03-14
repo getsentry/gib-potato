@@ -15,6 +15,7 @@
         <env name="APP_NAME" value="gib_potato"/>
         <env name="POTAL_TOKEN" value="something-secret"/>
         <env name="SECURITY_SALT" value="a-random-value-that-you-cannot-guess"/>
+        <env name="POTATO_CHANNEL" value="some-channel"/>
 
         <env name="CACHE_DEFAULT_URL" value="array://"/>
         <env name="CACHE_CAKECORE_URL" value="array://"/>

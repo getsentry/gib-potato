@@ -6,9 +6,9 @@ namespace App\Test\Fixture;
 use Cake\TestSuite\Fixture\TestFixture;
 
 /**
- * TagsFixture
+ * QuickWinsFixture
  */
-class TagsFixture extends TestFixture
+class QuickWinsFixture extends TestFixture
 {
     /**
      * Init method
@@ -17,12 +17,7 @@ class TagsFixture extends TestFixture
      */
     public function init(): void
     {
-        $this->records = [
-            [
-                'id' => '92d4083d-718f-4dd5-907e-5503bc1cac1b',
-                'name' => '#quickwin',
-            ],
-        ];
+        $this->records = [];
         parent::init();
     }
 }

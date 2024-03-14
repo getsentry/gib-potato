@@ -52,14 +52,12 @@ class AwardService
             'receiver_user_id' => $toUser->id,
             'amount' => $event->amount,
             'type' => str_replace(':', '', $event->reaction),
-            'permalink' => $event->permalink,
         ], [
             'accessibleFields' => [
                 'sender_user_id' => true,
                 'receiver_user_id' => true,
                 'amount' => true,
                 'type' => true,
-                'permalink' => true,
             ],
         ]);
         $messagesTable->saveOrFail($message);

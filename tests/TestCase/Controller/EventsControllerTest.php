@@ -24,6 +24,7 @@ class EventsControllerTest extends TestCase
      */
     protected array $fixtures = [
         'app.Messages',
+        'app.QuickWins',
         'app.Users',
     ];
 
@@ -65,6 +66,47 @@ class EventsControllerTest extends TestCase
         $this->assertSame('00000000-0000-0000-0000-000000000001', $messages->first()->sender_user_id);
         $this->assertSame('00000000-0000-0000-0000-000000000002', $messages->first()->receiver_user_id);
         $this->assertSame(1, $messages->first()->amount);
+    }
+
+    public function testTypeMessageQuickWin(): void
+    {
+        $this->mockSlackClientPostMessage();
+
+        $this->post('/events', json_encode([
+            'type' => 'message',
+            'amount' => 1,
+            'sender' => 'U1111',
+            'receivers' => [
+                'U2222',
+            ],
+            'channel' => 'C1111',
+            'text' => '<@U2222> :potato: #quickwin',
+            'reaction' => 'potato',
+            'timestamp' => '1672531200',
+            'event_timestamp' => '1672531200',
+            'permalink' => 'https://example.com/permalink',
+        ]));
+
+        $this->assertResponseOk();
+        $this->assertHeader('Content-Type', 'application/json');
+
+        $messages = $this->fetchTable('Messages')
+            ->find()
+            ->all();
+
+        $quickWins = $this->fetchTable('QuickWins')
+            ->find()
+            ->all();
+
+        $this->assertSame(1, $messages->count());
+        $this->assertSame('00000000-0000-0000-0000-000000000001', $messages->first()->sender_user_id);
+        $this->assertSame('00000000-0000-0000-0000-000000000002', $messages->first()->receiver_user_id);
+        $this->assertSame(1, $messages->first()->amount);
+
+        $this->assertSame(1, $quickWins->count());
+        $this->assertSame('00000000-0000-0000-0000-000000000001', $quickWins->first()->sender_user_id);
+        $this->assertSame('<@U2222> :potato: #quickwin', $quickWins->first()->message);
+        $this->assertSame('https://example.com/permalink', $quickWins->first()->permalink);
     }
 
     public function testTypeDirectMessage(): void

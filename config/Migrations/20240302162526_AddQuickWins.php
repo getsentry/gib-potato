@@ -3,7 +3,7 @@ declare(strict_types=1);
 
 use Migrations\AbstractMigration;
 
-class TaggedMessages extends AbstractMigration
+class AddQuickWins extends AbstractMigration
 {
     /**
      * Up Method.
@@ -15,8 +15,13 @@ class TaggedMessages extends AbstractMigration
      */
     public function up(): void
     {
-        $this->table('tagged_messages', ['id' => false, 'primary_key' => ['id']])
+        $this->table('quick_wins', ['id' => false, 'primary_key' => ['id']])
             ->addColumn('id', 'uuid', [
+                'default' => null,
+                'limit' => null,
+                'null' => false,
+            ])
+            ->addColumn('sender_user_id', 'uuid', [
                 'default' => null,
                 'limit' => null,
                 'null' => false,
@@ -31,11 +36,6 @@ class TaggedMessages extends AbstractMigration
                 'limit' => 255,
                 'null' => false,
             ])
-            ->addColumn('sender_user_id', 'uuid', [
-                'default' => null,
-                'limit' => null,
-                'null' => false,
-            ])
             ->addColumn('created', 'datetime', [
                 'default' => null,
                 'limit' => null,
@@ -46,27 +46,16 @@ class TaggedMessages extends AbstractMigration
                     'sender_user_id',
                 ]
             )
-            ->addIndex(
-                [
-                    'receiver_user_id',
-                ]
-            )
-            ->addIndex(
-                [
-                    'permalink',
-                ]
-            )
             ->create();
 
-        $this->table('messages')
-            ->addColumn('permalink', 'string', [
-                'default' => null,
-                'limit' => 255,
-                'null' => false,
-            ])
-            ->addIndex(
+        $this->table('quick_wins')
+            ->addForeignKey(
+                'sender_user_id',
+                'users',
+                'id',
                 [
-                    'permalink',
+                    'update' => 'NO_ACTION',
+                    'delete' => 'NO_ACTION',
                 ]
             )
             ->update();
@@ -82,11 +71,11 @@ class TaggedMessages extends AbstractMigration
      */
     public function down(): void
     {
-        $this->table('tagged_messages')->drop()->save();
+        $this->table('quick_wins')
+            ->dropForeignKey(
+                'sender_user_id'
+            )->save();
 
-        $this->table('messages')
-            ->removeIndexByName('permalink')
-            ->removeColumn('permalink')
-            ->update();
+        $this->table('quick_wins')->drop()->save();
     }
 }

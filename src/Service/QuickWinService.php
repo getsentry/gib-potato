@@ -4,33 +4,32 @@ declare(strict_types=1);
 namespace App\Service;
 
 use App\Event\MessageEvent;
-use App\Model\Entity\TaggedMessage;
+use App\Model\Entity\QuickWin;
 use App\Model\Entity\User;
 use Cake\ORM\Locator\LocatorAwareTrait;
 use Sentry\Metrics\MetricsUnit;
 use function Sentry\metrics;
 
-class TaggedMessageService
+class QuickWinService
 {
     use LocatorAwareTrait;
 
     /**
-     * @param \App\Model\Entity\User $fromUser User who did gib the potato.
-     * @param array<\App\Model\Entity\User> $toUsers Users who will receive the potato.
+     * @param \App\Model\Entity\User $fromUser User who tagged #quickwin.
      * @param \App\Event\MessageEvent $event The event.
-     * @return string|bool false if not tagged, tagged_message_id if tagged
+     * @return bool
      */
-    public function storeMessageIfTagged(
+    public function store(
         User $fromUser,
         MessageEvent $event,
-    ): bool|string {
-        if (!str_contains($event->text, TaggedMessage::TAG)) {
+    ): bool {
+        if (!str_contains($event->text, QuickWin::QUICK_WIN_TAG)) {
             return false;
         }
 
-        $taggedMessagesTable = $this->fetchTable('TaggedMessages');
+        $quickWinsTable = $this->fetchTable('QuickWins');
 
-        $taggedMessage = $taggedMessagesTable->newEntity([
+        $quickWin = $quickWinsTable->newEntity([
             'sender_user_id' => $fromUser->id,
             'message' => $event->text,
             'permalink' => $event->permalink,
@@ -41,14 +40,14 @@ class TaggedMessageService
                 'permalink' => true,
             ],
         ]);
-        $taggedMessagesTable->saveOrFail($taggedMessage);
+        $quickWinsTable->saveOrFail($quickWin);
 
         metrics()->increment(
-            key: 'gibpotato.message.tagged',
+            key: 'gibpotato.message.quick_win',
             value: 1,
             unit: MetricsUnit::custom('tags'),
         );
 
-        return $taggedMessage->id;
+        return true;
     }
 }
