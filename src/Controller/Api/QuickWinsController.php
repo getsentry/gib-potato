@@ -18,17 +18,17 @@ class QuickWinsController extends ApiController
         $quickWinsTable = $this->fetchTable('QuickWins');
 
         $quickWins = $quickWinsTable->find()
-            ->contain(['Users'])
+            ->contain('Users')
             ->orderBy(['QuickWins.created' => 'DESC'])
-            ->enableAutoFields(true)
             ->all();
 
         $collectedUsersInMessages = [];
         foreach ($quickWins as $quickWin) {
             // extract all user ids from message: "<@U042CECCR7A> has tagged you in a message"
             preg_match_all('/<@([A-Z0-9]+)>/', $quickWin->message, $matches);
-            $collectedUsersInMessages += $matches[1];
-            $quickWin->tagged_users = $matches[1];
+            foreach($matches[1] as $match) {
+                $collectedUsersInMessages[] = $match;
+            }
         }
 
         $collectedUsersInMessages = array_unique($collectedUsersInMessages);
@@ -36,7 +36,7 @@ class QuickWinsController extends ApiController
         $usersTable = $this->fetchTable('Users');
         $users = $usersTable->find()
             ->where([
-                'Users.slack_user_id IN' => !empty($collectedUsersInMessages) ?
+                'slack_user_id IN' => !empty($collectedUsersInMessages) ?
                     $collectedUsersInMessages : [null],
             ])
             ->all();
