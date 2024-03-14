@@ -126,7 +126,7 @@ class Application extends BaseApplication
             'form-action' => ['self' => true],
             'frame-ancestors' => [],
             'img-src' => ['self' => true, 'allow' => ['*.gravatar.com', '*.wp.com', '*.slack-edge.com']],
-            'script-src' => ['self' => true, 'allow' => $allow],
+            //'script-src' => ['self' => true, 'allow' => $allow],
             'style-src' => ['self' => true, 'unsafe-inline' => true, 'allow' => $allow],
             'object-src' => [],
             'plugin-types' => [],

@@ -60,6 +60,7 @@ return static function (RouteBuilder $routes): void {
         $builder->connect('/shop', ['controller' => 'Home', 'action' => 'index']);
         $builder->connect('/collection', ['controller' => 'Home', 'action' => 'index']);
         $builder->connect('/quick-wins', ['controller' => 'Home', 'action' => 'index']);
+        $builder->connect('/quick-wins/*', ['controller' => 'QuickWins', 'action' => 'view']);
         $builder->connect('/profile', ['controller' => 'Home', 'action' => 'index']);
         $builder->connect('/settings', ['controller' => 'Home', 'action' => 'index']);
 
