@@ -45,6 +45,7 @@ import './assets/main.css'
                 formTitle: 'Gib Feedback 🥔',
                 messagePlaceholder: 'What\'s not working? 😢',
                 showEmail: false,
+                showScreenshot: true,
                 showBranding: false,
                 themeLight: {
                     foreground: '#18181b', // zinc-900
