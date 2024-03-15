@@ -3,6 +3,7 @@ import { createApp } from 'vue'
 import vSelect from 'vue-select'
 
 import * as Sentry from '@sentry/vue'
+import { feedbackIntegration, feedbackModalIntegration, feedbackScreenshotIntegration } from '@sentry-internal/feedback'
 
 import App from './App.vue'
 import router from './router'
@@ -39,12 +40,13 @@ import './assets/main.css'
                 maskAllText: false,
                 blockAllMedia: false,
             }),
-            Sentry.feedbackIntegration({
+            feedbackIntegration({
                 buttonLabel: 'Gib Feedback',
                 submitButtonLabel: 'Send Feedback',
                 formTitle: 'Gib Feedback 🥔',
                 messagePlaceholder: 'What\'s not working? 😢',
                 showEmail: false,
+                showScreenshot: true,
                 showBranding: false,
                 themeLight: {
                     foreground: '#18181b', // zinc-900
@@ -67,6 +69,8 @@ import './assets/main.css'
                     inputBorderFocus: '#fcd34d', // amber-400
                 },
             }),
+            feedbackModalIntegration(),
+            feedbackScreenshotIntegration(),
         ],
     })
 
