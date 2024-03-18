@@ -18,7 +18,7 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
       - name: Build Potal Docker image
-        uses: docker/build-push-action@831ca179d3cf91cf0c90ca465a408fa61e2129a2
+        uses: docker/build-push-action@090ca155fc9b214cbcac536c450455a0e96f52c6
         with:
           context: .
           file: ./docker/potal/Dockerfile
@@ -33,7 +33,7 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
       - name: Build Backend Docker image
-        uses: docker/build-push-action@831ca179d3cf91cf0c90ca465a408fa61e2129a2
+        uses: docker/build-push-action@090ca155fc9b214cbcac536c450455a0e96f52c6
         with:
           context: .
           file: ./docker/backend/Dockerfile
