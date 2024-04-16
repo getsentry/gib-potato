@@ -9,12 +9,11 @@ import (
 	"github.com/getsentry/gib-potato/internal/event"
 	"github.com/getsentry/gib-potato/internal/potalhttp"
 	"github.com/getsentry/sentry-go"
-	"github.com/julienschmidt/httprouter"
 	"github.com/slack-go/slack"
 	"github.com/slack-go/slack/slackevents"
 )
 
-func DefaultHandler(w http.ResponseWriter, r *http.Request, _ httprouter.Params) {
+func DefaultHandler(w http.ResponseWriter, r *http.Request) {
 	// Overwrite transaction source with something usefull
 	ctx := r.Context()
 	transaction := sentry.TransactionFromContext(ctx)
@@ -33,7 +32,7 @@ func DefaultHandler(w http.ResponseWriter, r *http.Request, _ httprouter.Params)
 	transaction.Status = sentry.SpanStatusOK
 }
 
-func ErrorHandler(w http.ResponseWriter, r *http.Request, _ httprouter.Params) {
+func ErrorHandler(w http.ResponseWriter, r *http.Request) {
 	// Overwrite transaction source with something usefull
 	ctx := r.Context()
 	transaction := sentry.TransactionFromContext(ctx)
@@ -45,7 +44,7 @@ func ErrorHandler(w http.ResponseWriter, r *http.Request, _ httprouter.Params) {
 	w.WriteHeader(http.StatusInternalServerError)
 }
 
-func EventsHandler(w http.ResponseWriter, r *http.Request, _ httprouter.Params) {
+func EventsHandler(w http.ResponseWriter, r *http.Request) {
 	// Overwrite transaction source with something usefull
 	ctx := r.Context()
 	transaction := sentry.TransactionFromContext(ctx)
@@ -232,7 +231,7 @@ func EventsHandler(w http.ResponseWriter, r *http.Request, _ httprouter.Params) 
 	w.WriteHeader(http.StatusOK)
 }
 
-func SlashHandler(w http.ResponseWriter, r *http.Request, _ httprouter.Params) {
+func SlashHandler(w http.ResponseWriter, r *http.Request) {
 	// Overwrite transaction source with something usefull
 	ctx := r.Context()
 	transaction := sentry.TransactionFromContext(ctx)
@@ -282,7 +281,7 @@ func SlashHandler(w http.ResponseWriter, r *http.Request, _ httprouter.Params) {
 	w.WriteHeader(http.StatusOK)
 }
 
-func InteractionsHandler(w http.ResponseWriter, r *http.Request, _ httprouter.Params) {
+func InteractionsHandler(w http.ResponseWriter, r *http.Request) {
 	// Overwrite transaction source with something usefull
 	ctx := r.Context()
 	transaction := sentry.TransactionFromContext(ctx)

@@ -6,12 +6,11 @@ import (
 	"net/http"
 	"os"
 
-	"github.com/julienschmidt/httprouter"
 	"github.com/slack-go/slack"
 )
 
-func slackVerification(h httprouter.Handle) httprouter.Handle {
-	return func(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {
+func slackVerification(h http.Handler) http.Handler {
+	return func(w http.ResponseWriter, r *http.Request) {
 		// Verify the Slack request
 		// see https://github.com/slack-go/slack/blob/master/examples/workflow_step/middleware.go
 		body, err := io.ReadAll(r.Body)
@@ -38,6 +37,6 @@ func slackVerification(h httprouter.Handle) httprouter.Handle {
 			return
 		}
 
-		h(w, r, ps)
+		h(w, r)
 	}
 }

@@ -8,7 +8,6 @@ import (
 
 	"github.com/getsentry/sentry-go"
 	sentryhttp "github.com/getsentry/sentry-go/http"
-	"github.com/julienschmidt/httprouter"
 	"github.com/slack-go/slack"
 )
 
@@ -38,16 +37,28 @@ func main() {
 
 	slackClient = slack.New(os.Getenv("SLACK_BOT_USER_OAUTH_TOKEN"))
 
-	router := httprouter.New()
-	router.GET("/", DefaultHandler)
-	router.GET("/error", ErrorHandler)
-	router.POST("/events", slackVerification(EventsHandler))
-	router.POST("/slash", slackVerification(SlashHandler))
-	router.POST("/interactions", slackVerification(InteractionsHandler))
+	// router := httprouter.New()
+	// router.GET("/", DefaultHandler)
+	// router.GET("/error", ErrorHandler)
+	// router.POST("/events", slackVerification(EventsHandler))
+	// router.POST("/slash", slackVerification(SlashHandler))
+	// router.POST("/interactions", slackVerification(InteractionsHandler))
 
-	httpErr := http.ListenAndServe(":3000", sentryHandler.Handle(router))
-	if httpErr != nil {
-		sentry.CaptureException(httpErr)
-		log.Fatalf("An Error Occured: %v", httpErr)
+	router := http.NewServeMux()
+	router.HandleFunc("GET /", DefaultHandler)
+	router.HandleFunc("GET /error", ErrorHandler)
+	router.Handle("POST /events", slackVerification(EventsHandler))
+	router.Handle("POST /slash", slackVerification(SlashHandler))
+	router.Handle("POST /interactions", slackVerification(InteractionsHandler))
+
+	server := http.Server{
+		Addr:    ":3000",
+		Handler: sentryHandler.Handle(router),
+	}
+
+	serverErr := server.ListenAndServe()
+	if serverErr != nil {
+		sentry.CaptureException(serverErr)
+		log.Fatalf("An Error Occured: %v", serverErr)
 	}
 }
