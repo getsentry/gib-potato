@@ -16,15 +16,15 @@
         "cakephp/cakephp": "dev-5.next as 5.0.4",
         "cakephp/migrations": "^4.2.0",
         "cakephp/plugin-installer": "^2.0.1",
-        "lcobucci/jwt": "^5.2",
+        "lcobucci/jwt": "^5.3",
         "paragonie/csp-builder": "^3.0",
-        "sentry/sentry": "^4.6.1"
+        "sentry/sentry": "^4.7.0"
     },
     "require-dev": {
-        "cakephp/bake": "^3.1",
+        "cakephp/bake": "^3.1.1",
         "cakephp/cakephp-codesniffer": "^5.1.1",
-        "phpstan/phpstan": "^1.10.60",
-        "phpunit/phpunit": "^10.5.11"
+        "phpstan/phpstan": "^1.10.66",
+        "phpunit/phpunit": "^10.5.18"
     },
     "autoload": {
         "psr-4": {
