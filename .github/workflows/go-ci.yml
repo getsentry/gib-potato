@@ -32,7 +32,7 @@ jobs:
       run: go vet .
     
     - name: Run lint
-      uses: golangci/golangci-lint-action@v4
+      uses: golangci/golangci-lint-action@v5
       with:
         working-directory: ./potal
     
