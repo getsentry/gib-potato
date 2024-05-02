@@ -60,7 +60,7 @@ class SentryMiddleware implements MiddlewareInterface
 
         $span->finish();
         $segmentSpan
-            ->setAttribiute('http.response.status_code', $response->getStatusCode())
+            ->setAttribiute('http.response.status_code', (string) $response->getStatusCode())
             ->finish();
 
         metrics()->distribution(
