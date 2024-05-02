@@ -12,13 +12,9 @@ use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Server\MiddlewareInterface;
 use Psr\Http\Server\RequestHandlerInterface;
 use Sentry\Metrics\MetricsUnit;
-use Sentry\SentrySdk;
-use Sentry\Tracing\SpanContext;
-use Sentry\Tracing\TransactionContext;
-use Sentry\Tracing\TransactionSource;
+use Sentry\Tracing\Spans\Span;
 use function microtime;
 use function Sentry\metrics;
-use function Sentry\startTransaction;
 
 /**
  * Sentry middleware
@@ -44,36 +40,28 @@ class SentryMiddleware implements MiddlewareInterface
         $sentryTraceHeader = $request->getHeaderLine('sentry-trace');
         $baggageHeader = $request->getHeaderLine('baggage');
 
-        $transactionContext = TransactionContext::fromHeaders($sentryTraceHeader, $baggageHeader)
-            ->setOp('http.server')
+        $segmentSpan = Span::makeFromTrace($sentryTraceHeader, $baggageHeader)
+            ->setAttribiute('sentry.op', 'http.server')
             ->setName($request->getMethod() . ' ' . $request->getUri()->getPath())
-            ->setSource(TransactionSource::route())
-            ->setStartTimestamp($requestStartTime);
+            ->setStartTimeUnixNanosetStartTime($requestStartTime)
+            ->start();
 
-        $transaction = startTransaction($transactionContext);
-
-        SentrySdk::getCurrentHub()->setSpan($transaction);
-
-        $spanContext = SpanContext::make()
-            ->setOp('middleware.handle');
-        $span = $transaction->startChild($spanContext);
-
-        SentrySdk::getCurrentHub()->setSpan($span);
+        $span = Span::make()
+            ->setAttribiute('sentry.op', 'middleware.handle')
+            ->start();
 
         $this->setupQueryLogging();
 
         $response = $handler->handle($request);
         // We don't want to trace 404 responses as they are not relevant for performance monitoring.
-        if ($response->getStatusCode() === 404) {
-            $transaction->setSampled(false);
-        }
+        // if ($response->getStatusCode() === 404) {
+        //     $transaction->setSampled(false);
+        // }
 
-        $span->setHttpStatus($response->getStatusCode())
+        $span->finish();
+        $segmentSpan
+            ->setAttribiute('http.response.status_code', (string)$response->getStatusCode())
             ->finish();
-
-        SentrySdk::getCurrentHub()->setSpan($transaction);
-
-        $transaction->setHttpStatus($response->getStatusCode());
 
         metrics()->distribution(
             key: 'gibpotato.gcp.mem_peak_usage',
@@ -83,8 +71,7 @@ class SentryMiddleware implements MiddlewareInterface
 
         EventManager::instance()->on(
             'Server.terminate',
-            function (Event $event) use ($transaction): void {
-                $transaction->finish();
+            function (Event $event): void {
                 metrics()->flush();
             },
         );
