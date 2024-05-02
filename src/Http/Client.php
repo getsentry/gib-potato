@@ -48,7 +48,7 @@ class Client extends CakeClient
 
         if ($span !== null) {
             $span
-                ->setAttribiute('http.response.status_code', (string) $response->getStatusCode())
+                ->setAttribiute('http.response.status_code', (string)$response->getStatusCode())
                 ->finish();
         }
 
