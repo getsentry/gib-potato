@@ -24,8 +24,8 @@ class EventFactory
         SentrySdk::getCurrentHub()->configureScope(function ($scope) use ($eventType): void {
             $scope->setTag('event_type', $eventType);
         });
-        SentrySdk::getCurrentHub()->getTransaction()->setName(
-            SentrySdk::getCurrentHub()->getTransaction()->getName() . ' - ' . $eventType
+        SentrySdk::getCurrentHub()->getSpan()->segmentSpan->setName(
+            SentrySdk::getCurrentHub()->getSpan()->segmentSpan->name . ' - ' . $eventType
         );
 
         switch ($eventType) {

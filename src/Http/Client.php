@@ -7,7 +7,8 @@ use Cake\Http\Client as CakeClient;
 use Cake\Http\Client\Response;
 use Psr\Http\Message\RequestInterface;
 use Sentry\SentrySdk;
-use Sentry\Tracing\SpanContext;
+use Sentry\Tracing\Spans\Span;
+use Throwable;
 
 class Client extends CakeClient
 {
@@ -20,29 +21,35 @@ class Client extends CakeClient
         $span = null;
 
         if ($parentSpan !== null) {
-            $context = new SpanContext();
-            $context->setOp('http.client');
-            $context->setDescription(
-                sprintf(
-                    '%s %s://%s%s',
-                    strtoupper($request->getMethod()),
-                    $request->getUri()->getScheme(),
-                    $request->getUri()->getHost(),
-                    $request->getUri()->getPath()
+            $span = Span::make()
+                ->setName(
+                    sprintf(
+                        '%s %s://%s%s',
+                        strtoupper($request->getMethod()),
+                        $request->getUri()->getScheme(),
+                        $request->getUri()->getHost(),
+                        $request->getUri()->getPath()
+                    )
                 )
-            );
-            $context->setData([
-                'http.query' => $request->getUri()->getQuery(),
-                'http.fragment' => $request->getUri()->getFragment(),
-            ]);
-            $span = $parentSpan->startChild($context);
+                ->setAttribiute('sentry.op', 'http.client')
+                ->setAttribiute('http.query', $request->getUri()->getQuery())
+                ->setAttribiute('http.fragment', $request->getUri()->getFragment())
+                ->start();
         }
 
-        $response = parent::_sendRequest($request, $options);
+        try {
+            $response = parent::_sendRequest($request, $options);
+        } catch (Throwable $e) {
+            if ($span !== null) {
+                $span->finish();
+            }
+            throw $e;
+        }
 
         if ($span !== null) {
-            $span->setHttpStatus($response->getStatusCode());
-            $span->finish();
+            $span
+                ->setAttribiute('http.response.status_code', $response->getStatusCode())
+                ->finish();
         }
 
         return $response;
