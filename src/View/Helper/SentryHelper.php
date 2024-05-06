@@ -5,7 +5,7 @@ namespace App\View\Helper;
 
 use Cake\View\Helper;
 use Sentry\SentrySdk;
-use Sentry\Tracing\Spans\Span;
+use Sentry\Tracing\Span;
 
 /**
  * @property \Cake\View\Helper\HtmlHelper $Html
@@ -25,7 +25,7 @@ class SentryHelper extends Helper
     protected array $_defaultConfig = [];
 
     /**
-     * @var \Sentry\Tracing\Spans\Span|null
+     * @var \Sentry\Tracing\Span|null
      */
     protected ?Span $span;
 
@@ -52,18 +52,18 @@ class SentryHelper extends Helper
         );
     }
 
-    // /**
-    //  * @return string|null
-    //  */
-    // public function sentryBaggageMeta(): ?string
-    // {
-    //     if (empty($this->span)) {
-    //         return null;
-    //     }
+    /**
+     * @return string|null
+     */
+    public function sentryBaggageMeta(): ?string
+    {
+        if (empty($this->span)) {
+            return null;
+        }
 
-    //     return $this->Html->meta(
-    //         'baggage',
-    //         $this->span->toBaggage()
-    //     );
-    // }
+        return $this->Html->meta(
+            'baggage',
+            $this->span->toBaggage()
+        );
+    }
 }

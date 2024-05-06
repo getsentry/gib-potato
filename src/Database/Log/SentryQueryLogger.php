@@ -5,13 +5,15 @@ namespace App\Database\Log;
 
 use Psr\Log\AbstractLogger;
 use Sentry\SentrySdk;
-use Sentry\Tracing\Spans\Span;
+use Sentry\Tracing\Span;
+use Sentry\Tracing\SpanContext;
+use Sentry\Tracing\SpanStatus;
 use Stringable;
 
 class SentryQueryLogger extends AbstractLogger
 {
-    // private array $parentSpanStack = [];
-    // private array $currentSpanStack = [];
+    private array $parentSpanStack = [];
+    private array $currentSpanStack = [];
 
     /**
      * @inheritDoc
@@ -24,64 +26,69 @@ class SentryQueryLogger extends AbstractLogger
             return;
         }
 
-        $dbTransactionSpan = null;
         $loggedQueryContext = $context['query']->getContext();
         if ($loggedQueryContext['query'] === 'BEGIN') {
-            $dbTransactionSpan = Span::make()
-                ->setAttribiute('sentry.op', 'db.transaction')
-                ->setAttribiute('db.system', 'postgresql');
+            $spanContext = new SpanContext();
+            $spanContext->setOp('db.transaction');
+            $spanContext->setData([
+                'db.system' => 'postgresql',
+            ]);
+
+            $this->pushSpan($parentSpan->startChild($spanContext));
 
             return;
         }
 
         if ($loggedQueryContext['query'] === 'COMMIT') {
-            if ($dbTransactionSpan !== null) {
-                $dbTransactionSpan->finish();
+            $span = $this->popSpan();
+
+            if ($span !== null) {
+                $span->finish();
+                $span->setStatus(SpanStatus::ok());
             }
 
             return;
         }
 
-        $startTime = microtime(true) - $loggedQueryContext['took'] / 1_000;
-        $endTime = $startTime + $loggedQueryContext['took'] / 1_000;
-
-        Span::make()
-            ->setName($loggedQueryContext['query'])
-            ->setAttribiute('sentry.op', 'db.sql.query')
-            ->setAttribiute('db.system', 'postgresql')
-            ->setStartTimeUnixNanosetStartTime($startTime)
-            ->setEndTimeUnixNanosetStartTime($endTime)
-            ->finish();
+        $spanContext = new SpanContext();
+        $spanContext->setOp('db.sql.query');
+        $spanContext->setData([
+            'db.system' => 'postgresql',
+        ]);
+        $spanContext->setDescription($loggedQueryContext['query']);
+        $spanContext->setStartTimestamp(microtime(true) - $loggedQueryContext['took'] / 1000);
+        $spanContext->setEndTimestamp($spanContext->getStartTimestamp() + $loggedQueryContext['took'] / 1000);
+        $parentSpan->startChild($spanContext);
     }
 
-    // /**
-    //  * @param \Sentry\Tracing\Span $span The span.
-    //  * @return void
-    //  */
-    // private function pushSpan(Span $span): void
-    // {
-    //     $hub = SentrySdk::getCurrentHub();
+    /**
+     * @param \Sentry\Tracing\Span $span The span.
+     * @return void
+     */
+    private function pushSpan(Span $span): void
+    {
+        $hub = SentrySdk::getCurrentHub();
 
-    //     $this->parentSpanStack[] = $hub->getSpan();
+        $this->parentSpanStack[] = $hub->getSpan();
 
-    //     $hub->setSpan($span);
+        $hub->setSpan($span);
 
-    //     $this->currentSpanStack[] = $span;
-    // }
+        $this->currentSpanStack[] = $span;
+    }
 
-    // /**
-    //  * @return \Sentry\Tracing\Span|null
-    //  */
-    // private function popSpan(): ?Span
-    // {
-    //     if (count($this->currentSpanStack) === 0) {
-    //         return null;
-    //     }
+    /**
+     * @return \Sentry\Tracing\Span|null
+     */
+    private function popSpan(): ?Span
+    {
+        if (count($this->currentSpanStack) === 0) {
+            return null;
+        }
 
-    //     $parent = array_pop($this->parentSpanStack);
+        $parent = array_pop($this->parentSpanStack);
 
-    //     SentrySdk::getCurrentHub()->setSpan($parent);
+        SentrySdk::getCurrentHub()->setSpan($parent);
 
-    //     return array_pop($this->currentSpanStack);
-    // }
+        return array_pop($this->currentSpanStack);
+    }
 }
