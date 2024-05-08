@@ -9,7 +9,7 @@
     <?= $this->Html->charset() ?>
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <?= $this->Sentry->sentryTracingMeta() ?>
-    <?php // $this->Sentry->sentryBaggageMeta() ?>
+    <?= $this->Sentry->sentryBaggageMeta() ?>
     <?= $this->fetch('meta') ?>
     <?= $this->Html->meta('icon') ?>
     <title>
