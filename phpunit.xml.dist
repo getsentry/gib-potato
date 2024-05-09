@@ -10,7 +10,7 @@
         <ini name="memory_limit" value="-1"/>
         <ini name="apc.enable_cli" value="1"/>
 
-        <env name="DATABASE_TEST_URL" value="postgres://root@localhost/gib_potato_test"/>
+        <env name="DATABASE_TEST_URL" value="postgres://gib_potato:password@localhost/gib_potato_test"/>
 
         <env name="APP_NAME" value="gib_potato"/>
         <env name="POTAL_TOKEN" value="something-secret"/>
