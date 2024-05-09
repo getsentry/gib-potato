@@ -45,16 +45,6 @@ class MessagesTable extends Table
 
         $this->addBehavior('Timestamp');
 
-        $this->belongsTo('Users', [
-            'className' => 'Users',
-            'foreignKey' => 'sender_user_id',
-            'joinType' => 'INNER',
-        ]);
-        $this->belongsTo('Users', [
-            'className' => 'Users',
-            'foreignKey' => 'receiver_user_id',
-            'joinType' => 'INNER',
-        ]);
         $this->belongsTo('SentUsers', [
             'className' => 'Users',
             'foreignKey' => 'sender_user_id',
@@ -106,8 +96,8 @@ class MessagesTable extends Table
      */
     public function buildRules(RulesChecker $rules): RulesChecker
     {
-        $rules->add($rules->existsIn('sender_user_id', 'Users'), ['errorField' => 'sender_user_id']);
-        $rules->add($rules->existsIn('receiver_user_id', 'Users'), ['errorField' => 'receiver_user_id']);
+        $rules->add($rules->existsIn('sender_user_id', 'SentUsers'), ['errorField' => 'sender_user_id']);
+        $rules->add($rules->existsIn('receiver_user_id', 'ReceivedUsers'), ['errorField' => 'receiver_user_id']);
 
         return $rules;
     }
