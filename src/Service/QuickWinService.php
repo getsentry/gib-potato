@@ -8,6 +8,7 @@ use App\Model\Entity\QuickWin;
 use App\Model\Entity\User;
 use Cake\ORM\Locator\LocatorAwareTrait;
 use Sentry\Metrics\MetricsUnit;
+use Sentry\SentrySdk;
 use function Sentry\metrics;
 
 class QuickWinService
@@ -47,6 +48,13 @@ class QuickWinService
             value: 1,
             unit: MetricsUnit::custom('tags'),
         );
+
+        $span = SentrySdk::getCurrentHub()->getSpan();
+        if ($span !== null) {
+            $span->setData([
+                'gibpotato.message.quick_win' => 1,
+            ]);
+        }
 
         return true;
     }
