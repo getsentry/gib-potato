@@ -73,7 +73,11 @@ class SentryMiddleware implements MiddlewareInterface
 
         SentrySdk::getCurrentHub()->setSpan($transaction);
 
-        $transaction->setHttpStatus($response->getStatusCode());
+        $transaction
+            ->setHttpStatus($response->getStatusCode())
+            ->setData([
+                'gibpotato.gcp.mem_peak_usage' => memory_get_peak_usage(false),
+            ]);
 
         metrics()->distribution(
             key: 'gibpotato.gcp.mem_peak_usage',

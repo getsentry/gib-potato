@@ -7,8 +7,10 @@ use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Server\MiddlewareInterface;
 use Psr\Http\Server\RequestHandlerInterface;
+use Sentry\Metrics\MetricsUnit;
 use Sentry\SentrySdk;
 use Sentry\State\Scope;
+use function Sentry\metrics;
 
 /**
  * SentryUser middleware
@@ -32,6 +34,19 @@ class SentryUserMiddleware implements MiddlewareInterface
                     'id' => $user->id,
                     'username' => $user->slack_name,
                 ]);
+
+                metrics()->set(
+                    key: 'gibpotato.users.web_ui',
+                    value: $user->id,
+                    unit: MetricsUnit::custom('user_id'),
+                );
+
+                $span = $scope->getSpan();
+                if ($span !== null) {
+                    $span->setData([
+                        'gibpotato.users.web_ui' => $user->id,
+                    ]);
+                }
             });
         }
 
