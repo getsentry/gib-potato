@@ -97,6 +97,14 @@ const store = createStore({
                 console.log(error)
             }
         },
+        async toggleTooGoodToGoNotifications({ commit, getters }) {
+            commit('TOGGLE_TOO_GOOD_TO_GO_NOTIFICATIONS')
+            try {
+                const response = await api.patch('user', getters.user)
+            } catch (error) {
+                console.log(error)
+            }
+        },
         setRangeFilter({ commit }, range) {
             commit('SET_RANGE_FILTER', range)
         },
@@ -128,6 +136,9 @@ const store = createStore({
         },
         TOGGLE_RECEIVED_NOTIFICATIONS(state) {
             state.user.notifications.received = !state.user.notifications.received
+        },
+        TOGGLE_TOO_GOOD_TO_GO_NOTIFICATIONS(state) {
+            state.user.notifications.too_good_to_go = !state.user.notifications.too_good_to_go
         },
         SET_RANGE_FILTER(state, range) {
             state.filter.range = range

@@ -93,6 +93,7 @@ class UsersController extends ApiController
             'notifications' => [
                 'sent' => (bool)$this->request->getData('notifications.sent'),
                 'received' => (bool)$this->request->getData('notifications.received'),
+                'too_good_to_go' => (bool)$this->request->getData('notifications.too_good_to_go'),
             ],
         ], [
             'accessibleFields' => [

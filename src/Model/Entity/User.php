@@ -17,6 +17,7 @@ use Cake\ORM\Locator\LocatorAwareTrait;
  * @property string $slack_user_id
  * @property string $slack_name
  * @property string $slack_picture
+ * @property string $slack_time_zone
  * @property bool $slack_is_bot
  * @property array|null $notifications
  * @property \Cake\I18n\DateTime|null $created
@@ -57,6 +58,7 @@ class User extends Entity
             return [
                 'sent' => true,
                 'received' => true,
+                'too_good_to_go' => false,
             ];
         }
 

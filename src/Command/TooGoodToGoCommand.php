@@ -5,12 +5,13 @@ namespace App\Command;
 
 use App\Database\Log\SentryQueryLogger;
 use App\Http\SlackClient;
-use App\Model\Entity\User;
+use Cake\Chronos\Chronos;
 use Cake\Command\Command;
 use Cake\Console\Arguments;
 use Cake\Console\ConsoleIo;
 use Cake\Console\ConsoleOptionParser;
 use Cake\Datasource\ConnectionManager;
+use DateTimeZone;
 use Sentry\MonitorConfig;
 use Sentry\MonitorSchedule;
 use Sentry\SentrySdk;
@@ -24,10 +25,12 @@ use function Sentry\startTransaction;
 use function Sentry\withMonitor;
 
 /**
- * UpdateUsers command.
+ * TooGoodToGo command.
  */
-class UpdateUsersCommand extends Command
+class TooGoodToGoCommand extends Command
 {
+    private const int TARGET_HOUR = 17;
+
     /**
      * Hook method for defining this command's option parser.
      *
@@ -50,12 +53,12 @@ class UpdateUsersCommand extends Command
     public function execute(Arguments $args, ConsoleIo $io)
     {
         withMonitor(
-            slug: 'update-users',
+            slug: 'too-good-to-go',
             callback: fn () => $this->_execute($args, $io),
             monitorConfig: new MonitorConfig(
                 schedule: new MonitorSchedule(
                     type: MonitorSchedule::TYPE_CRONTAB,
-                    value: '0 0 * * *',
+                    value: '*/30 * * * 1-5',
                 ),
                 checkinMargin: 5,
                 maxRuntime: 10,
@@ -71,7 +74,7 @@ class UpdateUsersCommand extends Command
      */
     protected function _execute(Arguments $args, ConsoleIo $io)
     {
-        $io->out('Updating all users from Slack');
+        $io->out('Sending out Too Good To Go notifications');
 
         $slackClient = new SlackClient();
 
@@ -82,7 +85,7 @@ class UpdateUsersCommand extends Command
 
         $transactionContext = TransactionContext::make()
             ->setOp('command')
-            ->setName('COMMAND update_users')
+            ->setName('COMMAND too_good_to_go')
             ->setSource(TransactionSource::task());
 
         $transaction = startTransaction($transactionContext);
@@ -90,63 +93,37 @@ class UpdateUsersCommand extends Command
         SentrySdk::getCurrentHub()->setSpan($transaction);
 
         $usersTable = $this->fetchTable('Users');
-        $users = $usersTable->find()->all();
-
-        $io->comment($users->count() . ' users will be updated');
-
-        /** @var \Cake\Command\Helper\ProgressHelper $progress */
-        $progress = $io->helper('Progress');
-        $progress->init([
-            'total' => $users->count(),
-        ]);
+        $users = $usersTable->find()
+            ->where([
+                'slack_time_zone IN' => $this->_getApplicableTimeZones(),
+            ])
+            ->all();
 
         foreach ($users as $user) {
+            if (
+                $user->notifications['too_good_to_go'] !== true
+                || $user->potatoLeftToday() <= 0
+            ) {
+                continue;
+            }
+
             $spanContext = SpanContext::make()
                 ->setOp('command')
-                ->setDescription('Update user');
+                ->setDescription('Send notification');
             $span = $transaction->startChild($spanContext);
 
             SentrySdk::getCurrentHub()->setSpan($span);
 
-            $slackUser = $slackClient->getUser($user->slack_user_id);
-
-            // Once a user is deleted, the data structure is different
-            if ($slackUser['deleted'] === false) {
-                $user = $usersTable->patchEntity($user, [
-                    'status' => User::STATUS_ACTIVE,
-                    'slack_user_id' => $slackUser['id'],
-                    'slack_name' => $slackUser['real_name'],
-                    'slack_picture' => $slackUser['profile']['image_72'],
-                    'slack_time_zone' => $slackUser['tz'],
-                    'slack_is_bot' => $slackUser['is_bot'] ?? false,
-                ], [
-                    'accessibleFields' => [
-                        'status' => true,
-                        'slack_user_id' => true,
-                        'slack_name' => true,
-                        'slack_picture' => true,
-                        'slack_time_zone' => true,
-                        'slack_is_bot' => true,
-                    ],
-                ]);
-            } else {
-                $user = $usersTable->patchEntity($user, [
-                    'status' => User::STATUS_DELETED,
-                    // Demote deleted users to regular users
-                    'role' => User::ROLE_USER,
-                ], [
-                    'accessibleFields' => [
-                        'status' => true,
-                        'role' => true,
-                    ],
-                ]);
-            }
-
             try {
-                $usersTable->saveOrFail($user);
+                $message = 'Hallo, just letting you know that you have *' . $user->potatoLeftToday()
+                    . '* 🥔 left to gib today 🌱' . PHP_EOL;
+                $message .= 'Would be a bummer if they go to waste 😢' . PHP_EOL;
+                $message .= 'If someone did something nice today, gib them 🥔😊!';
 
-                $progress->increment(1);
-                $progress->draw();
+                $slackClient->postMessage(
+                    channel: $user->slack_user_id,
+                    text: $message,
+                );
 
                 $span->setStatus(SpanStatus::ok());
             } catch (Throwable $e) {
@@ -154,9 +131,6 @@ class UpdateUsersCommand extends Command
                 $span->setStatus(SpanStatus::internalError());
             } finally {
                 $span->finish();
-
-                // Avoid getting rate limited by Slack
-                usleep(200 * 1000); // 200ms
             }
         }
         SentrySdk::getCurrentHub()->setSpan($transaction);
@@ -165,5 +139,23 @@ class UpdateUsersCommand extends Command
             ->finish();
 
         $io->success("\n[DONE]");
+    }
+
+    /**
+     * @return array
+     */
+    protected function _getApplicableTimeZones(): array
+    {
+        $timeZones = DateTimeZone::listIdentifiers();
+        $applicableTimeZones = [];
+
+        foreach ($timeZones as $timezone) {
+            $localNow = new Chronos(timezone: $timezone);
+            if ($localNow->hour === self::TARGET_HOUR) {
+                $applicableTimeZones[] = $timezone;
+            }
+        }
+
+        return $applicableTimeZones;
     }
 }
