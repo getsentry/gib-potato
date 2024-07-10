@@ -63,27 +63,28 @@ class SentryMiddleware implements MiddlewareInterface
         $this->setupQueryLogging();
 
         $response = $handler->handle($request);
-        // We don't want to trace 404 responses as they are not relevant for performance monitoring.
-        if ($response->getStatusCode() === 404) {
-            $transaction->setSampled(false);
-        }
 
         $span->setHttpStatus($response->getStatusCode())
             ->finish();
 
         SentrySdk::getCurrentHub()->setSpan($transaction);
 
-        $transaction
-            ->setHttpStatus($response->getStatusCode())
-            ->setData([
-                'gibpotato.gcp.mem_peak_usage' => memory_get_peak_usage(false),
-            ]);
+        // We don't want to trace 404 responses as they are not relevant.
+        if ($response->getStatusCode() === 404) {
+            $transaction->setSampled(false);
+        } else {
+            $transaction
+                ->setHttpStatus($response->getStatusCode())
+                ->setData([
+                    'gibpotato.gcp.mem_peak_usage' => memory_get_peak_usage(false),
+                ]);
 
-        metrics()->distribution(
-            key: 'gibpotato.gcp.mem_peak_usage',
-            value: memory_get_peak_usage(false),
-            unit: MetricsUnit::byte(),
-        );
+            metrics()->distribution(
+                key: 'gibpotato.gcp.mem_peak_usage',
+                value: memory_get_peak_usage(false),
+                unit: MetricsUnit::byte(),
+            );
+        }
 
         EventManager::instance()->on(
             'Server.terminate',
