@@ -44,7 +44,7 @@ class Client extends CakeClient
             $span
                 ->setHttpStatus($response->getStatusCode())
                 ->setData([
-                    'http.response.status_code' => $response->getStatusCode()
+                    'http.response.status_code' => $response->getStatusCode(),
                 ])
                 ->finish();
         }
