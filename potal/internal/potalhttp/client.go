@@ -52,6 +52,10 @@ func SendRequest(ctx context.Context, e event.PotalEvent) error {
 	}
 	defer res.Body.Close()
 
+	span.Data = map[string]interface{}{
+		"http.response.status_code": res.StatusCode,
+	}
+
 	switch res.StatusCode {
 	case http.StatusOK:
 		span.Status = sentry.SpanStatusOK
