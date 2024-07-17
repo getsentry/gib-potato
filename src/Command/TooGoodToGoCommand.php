@@ -58,7 +58,7 @@ class TooGoodToGoCommand extends Command
             monitorConfig: new MonitorConfig(
                 schedule: new MonitorSchedule(
                     type: MonitorSchedule::TYPE_CRONTAB,
-                    value: '*/30 * * * 1-5',
+                    value: '30 * * * 1-5',
                 ),
                 checkinMargin: 5,
                 maxRuntime: 10,
@@ -101,7 +101,10 @@ class TooGoodToGoCommand extends Command
 
         foreach ($users as $user) {
             if (
-                $user->notifications['too_good_to_go'] !== true
+                (
+                    !isset($user->notifications['too_good_to_go'])
+                    || $user->notifications['too_good_to_go'] !== true
+                )
                 || $user->potatoLeftToday() <= 0
             ) {
                 continue;
