@@ -70,6 +70,10 @@ class UsersController extends ApiController
 
         /** @var \App\Model\Entity\User $user */
         $user->spendable_count = $user->spendablePotato();
+        $user->potato_sent_today = $user->potatoSentToday();
+        $user->potato_left_today = $user->potatoLeftToday();
+        $user->potato_reset_in_hours = $user->potatoResetInHours();
+        $user->potato_reset_in_minutes = $user->potatoResetInMinutes();
 
         return $this->response
             ->withStatus(200)
@@ -93,6 +97,7 @@ class UsersController extends ApiController
             'notifications' => [
                 'sent' => (bool)$this->request->getData('notifications.sent'),
                 'received' => (bool)$this->request->getData('notifications.received'),
+                'too_good_to_go' => (bool)$this->request->getData('notifications.too_good_to_go'),
             ],
         ], [
             'accessibleFields' => [

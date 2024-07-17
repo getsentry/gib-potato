@@ -7,7 +7,17 @@
 
     <div class="mt-2 mb-32">
         <div class="py-4">
+            <h2 class="text-lg font-medium leading-6">Your Account Info</h2>
+            <p class="mt-1 text-sm text-zinc-500">
+                Time zone is set to <strong>{{ user.slack_time_zone }}</strong>.
+            </p>
+        </div>
+        <div class="py-4">
             <h2 class="text-lg font-medium leading-6">Your Potato Stats</h2>
+            <p class="mt-1 text-sm text-zinc-500">
+                You have <strong>{{ user.potato_left_today }}</strong> 🥔 left to gib today.
+                Your potato do reset in <strong>{{ user.potato_reset_in_hours }}</strong> hours and <strong>{{ user.potato_reset_in_minutes }}</strong> minutes.
+            </p>
             <p class="mt-1 text-sm text-zinc-500">
                 You did gib <strong>{{ user.sent_count ?? 0 }}</strong> 🥔 and did receive <strong>{{ user.received_count ?? 0 }}</strong> 🥔 since you started potatoing
                 <strong>{{ new Date(user.created).toLocaleDateString('en-us', { year:"numeric", month:"short", day:"numeric"}) }}.</strong>
