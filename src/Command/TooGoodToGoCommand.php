@@ -11,7 +11,7 @@ use Cake\Console\Arguments;
 use Cake\Console\ConsoleIo;
 use Cake\Console\ConsoleOptionParser;
 use Cake\Datasource\ConnectionManager;
-use Cake\I18n\DateTime;
+use DateTimeZone;
 use Sentry\MonitorConfig;
 use Sentry\MonitorSchedule;
 use Sentry\SentrySdk;
@@ -146,7 +146,7 @@ class TooGoodToGoCommand extends Command
      */
     protected function _getApplicableTimeZones(): array
     {
-        $timeZones = DateTime::listTimezones();
+        $timeZones = DateTimeZone::listIdentifiers();
         $applicableTimeZones = [];
 
         foreach ($timeZones as $timezone) {
