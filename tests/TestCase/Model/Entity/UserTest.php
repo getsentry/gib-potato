@@ -17,7 +17,6 @@ class UserTest extends TestCase
      * @var array<string>
      */
     protected array $fixtures = [
-        'app.Messages',
         'app.Users',
     ];
 
@@ -50,24 +49,6 @@ class UserTest extends TestCase
         $this->UserEurope = $usersTable->get('00000000-0000-0000-0000-000000000001');
         $this->UserCanada = $usersTable->get('00000000-0000-0000-0000-000000000002');
         $this->UserUS = $usersTable->get('00000000-0000-0000-0000-000000000003');
-
-        Chronos::setTestNow(new Chronos('2024-07-17 12:00:00', 'UTC'));
-
-        $messagesTable = $this->fetchTable('Messages');
-        $message = $messagesTable->newEntity([
-            'sender_user_id' => $this->UserEurope->id,
-            'receiver_user_id' => $this->UserCanada->id,
-            'amount' => 5,
-            'type' => 'potato',
-        ], [
-            'accessibleFields' => [
-                'sender_user_id' => true,
-                'receiver_user_id' => true,
-                'amount' => true,
-                'type' => true,
-            ],
-        ]);
-        $messagesTable->saveOrFail($message);
     }
 
     /**
@@ -87,42 +68,45 @@ class UserTest extends TestCase
     }
 
     /**
-     * Test potatoSentToday method
+     * Test getStartOfDay method
      *
      * @return void
-     * @uses \App\Model\Entity\User::potatoSentToday()
+     * @uses \App\Model\Entity\User::getStartOfDay()
      */
-    public function testPotatoSentToday(): void
+    public function testGetStartOfDay(): void
     {
-        $this->assertSame(5, $this->UserEurope->potatoSentToday());
-        $this->assertSame(0, $this->UserCanada->potatoSentToday());
-        $this->assertSame(0, $this->UserUS->potatoSentToday());
+        Chronos::setTestNow(new Chronos('2024-07-17 12:00:00', 'UTC'));
+
+        $startOfDay = $this->UserEurope->getStartOfDay();
+        $this->assertSame('2024-07-16 22:00:00', $startOfDay->toDateTimeString());
+
+        $startOfDay = $this->UserCanada->getStartOfDay();
+        $this->assertSame('2024-07-17 04:00:00', $startOfDay->toDateTimeString());
+
+        $startOfDay = $this->UserUS->getStartOfDay();
+        $this->assertSame('2024-07-17 07:00:00', $startOfDay->toDateTimeString());
+        
     }
 
     /**
-     * Test potatoReceivedToday method
+     * Test getEndOfDay method
      *
      * @return void
-     * @uses \App\Model\Entity\User::potatoReceivedToday()
+     * @uses \App\Model\Entity\User::getEndOfDay()
      */
-    public function testPotatoReceivedToday(): void
+    public function testGetEndOfDay(): void
     {
-        $this->assertSame(0, $this->UserEurope->potatoReceivedToday());
-        $this->assertSame(5, $this->UserCanada->potatoReceivedToday());
-        $this->assertSame(0, $this->UserUS->potatoReceivedToday());
-    }
+        Chronos::setTestNow(new Chronos('2024-07-17 12:00:00', 'UTC'));
 
-    /**
-     * Test potatoLeftToday method
-     *
-     * @return void
-     * @uses \App\Model\Entity\User::potatoLeftToday()
-     */
-    public function testPotatoLeftToday(): void
-    {
-        $this->assertSame(0, $this->UserEurope->potatoLeftToday());
-        $this->assertSame(5, $this->UserCanada->potatoLeftToday());
-        $this->assertSame(5, $this->UserUS->potatoLeftToday());
+        $endOfDay = $this->UserEurope->getEndOfDay();
+        $this->assertSame('2024-07-17 21:59:59', $endOfDay->toDateTimeString());
+
+        $endOfDay = $this->UserCanada->getEndOfDay();
+        $this->assertSame('2024-07-18 03:59:59', $endOfDay->toDateTimeString());
+
+        $endOfDay = $this->UserUS->getEndOfDay();
+        $this->assertSame('2024-07-18 06:59:59', $endOfDay->toDateTimeString());
+        
     }
 
     /**
@@ -133,6 +117,8 @@ class UserTest extends TestCase
      */
     public function testPotatoResetInHours(): void
     {
+        Chronos::setTestNow(new Chronos('2024-07-17 12:00:00', 'UTC'));
+
         $this->assertSame('9', $this->UserEurope->potatoResetInHours());
         $this->assertSame('15', $this->UserCanada->potatoResetInHours());
         $this->assertSame('18', $this->UserUS->potatoResetInHours());

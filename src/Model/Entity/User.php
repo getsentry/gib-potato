@@ -227,7 +227,7 @@ class User extends Entity
     /**
      * @return \Cake\I18n\DateTime
      */
-    private function getStartOfDay(): DateTime
+    public function getStartOfDay(): DateTime
     {
         $userTime = DateTime::now($this->slack_time_zone);
         $utcTime = DateTime::now('UTC');
@@ -242,7 +242,7 @@ class User extends Entity
     /**
      * @return \Cake\I18n\DateTime
      */
-    private function getEndOfDay(): DateTime
+    public function getEndOfDay(): DateTime
     {
         $userTime = DateTime::now($this->slack_time_zone);
         $utcTime = DateTime::now('UTC');
