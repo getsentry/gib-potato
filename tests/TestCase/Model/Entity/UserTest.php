@@ -85,7 +85,6 @@ class UserTest extends TestCase
 
         $startOfDay = $this->UserUS->getStartOfDay();
         $this->assertSame('2024-07-17 07:00:00', $startOfDay->toDateTimeString());
-        
     }
 
     /**
@@ -106,7 +105,6 @@ class UserTest extends TestCase
 
         $endOfDay = $this->UserUS->getEndOfDay();
         $this->assertSame('2024-07-18 06:59:59', $endOfDay->toDateTimeString());
-        
     }
 
     /**
