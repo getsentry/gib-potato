@@ -66,6 +66,15 @@ class User extends Entity
     }
 
     /**
+     * @param string|null $slackTimeZone
+     * @return string
+     */
+    protected function _getSlackTimeZone(?string $slackTimeZone): string
+    {
+        return $slackTimeZone ?? 'UTC';
+    }
+
+    /**
      * @return int
      */
     public function potatoSent(): int
@@ -122,7 +131,7 @@ class User extends Entity
             ->where([
                 'sender_user_id' => $this->id,
                 'type' => Message::TYPE_POTATO,
-                'DATE(created)' => $query->func()->now('date'),
+                'created >=' => $this->getStartOfDay(),
             ])
             ->first();
 
@@ -144,7 +153,7 @@ class User extends Entity
             ->where([
                 'receiver_user_id' => $this->id,
                 'type' => Message::TYPE_POTATO,
-                'DATE(created)' => $query->func()->now('date'),
+                'created >=' => $this->getStartOfDay(),
             ])
             ->first();
 
@@ -166,7 +175,7 @@ class User extends Entity
             ->where([
                 'sender_user_id' => $this->id,
                 'type' => Message::TYPE_POTATO,
-                'DATE(created)' => $query->func()->now('date'),
+                'created >=' => $this->getStartOfDay(),
             ])
             ->first();
 
@@ -178,10 +187,10 @@ class User extends Entity
      */
     public function potatoResetInHours(): string
     {
-        $time = new DateTime();
-        $hours = 23 - (int)$time->i18nFormat('HH');
+        $userTime = DateTime::now($this->slack_time_zone);
+        $userEndOfDay = $userTime->endOfDay();
 
-        return (string)$hours;
+        return (string)$userTime->diff($userEndOfDay)->h;
     }
 
     /**
@@ -189,10 +198,10 @@ class User extends Entity
      */
     public function potatoResetInMinutes(): string
     {
-        $time = new DateTime();
-        $minutes = 59 - (int)$time->i18nFormat('mm');
+        $userTime = DateTime::now($this->slack_time_zone);
+        $userEndOfDay = $userTime->endOfDay();
 
-        return (string)$minutes;
+        return (string)$userTime->diff($userEndOfDay)->i;
     }
 
     /**
@@ -213,5 +222,35 @@ class User extends Entity
             ->first();
 
         return $this->potatoReceived() - (int)$result->spent;
+    }
+
+    /**
+     * @return \Cake\I18n\DateTime
+     */
+    private function getStartOfDay(): DateTime
+    {
+        $userTime = DateTime::now($this->slack_time_zone);
+        $utcTime = DateTime::now('UTC');
+
+        $utcOffset = $userTime->getOffset($utcTime) / 60 / 60;
+
+        $startOfDayUser = $userTime->startOfDay()->subHours($utcOffset);
+
+        return $startOfDayUser;
+    }
+
+    /**
+     * @return \Cake\I18n\DateTime
+     */
+    private function getEndOfDay(): DateTime
+    {
+        $userTime = DateTime::now($this->slack_time_zone);
+        $utcTime = DateTime::now('UTC');
+
+        $utcOffset = $userTime->getOffset($utcTime) / 60 / 60;
+
+        $endOfDayUser = $userTime->endOfDay()->subHours($utcOffset);
+
+        return $endOfDayUser;
     }
 }

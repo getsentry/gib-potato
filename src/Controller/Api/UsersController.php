@@ -70,6 +70,7 @@ class UsersController extends ApiController
 
         /** @var \App\Model\Entity\User $user */
         $user->spendable_count = $user->spendablePotato();
+        $user->potato_sent_today = $user->potatoSentToday();
         $user->potato_left_today = $user->potatoLeftToday();
         $user->potato_reset_in_hours = $user->potatoResetInHours();
         $user->potato_reset_in_minutes = $user->potatoResetInMinutes();
