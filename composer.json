@@ -18,13 +18,13 @@
         "cakephp/plugin-installer": "^2.0.1",
         "lcobucci/jwt": "^5.3",
         "paragonie/csp-builder": "^3.0.1",
-        "sentry/sentry": "^4.8.0"
+        "sentry/sentry": "^4.8.1"
     },
     "require-dev": {
         "cakephp/bake": "^3.1.1",
         "cakephp/cakephp-codesniffer": "^5.1.1",
-        "phpstan/phpstan": "^1.11.6",
-        "phpunit/phpunit": "^10.5.25"
+        "phpstan/phpstan": "^1.11.7",
+        "phpunit/phpunit": "^10.5.28"
     },
     "autoload": {
         "psr-4": {
