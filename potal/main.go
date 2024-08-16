@@ -27,8 +27,6 @@ func main() {
 	if sentryErr != nil {
 		log.Fatalf("An Error Occured: %v", sentryErr)
 	}
-	// Flush buffered events before the program terminates.
-	// Set the timeout to the maximum duration the program can afford to wait.
 	defer sentry.Flush(2 * time.Second)
 
 	sentryHandler := sentryhttp.New(sentryhttp.Options{
@@ -37,19 +35,12 @@ func main() {
 
 	slackClient = slack.New(os.Getenv("SLACK_BOT_USER_OAUTH_TOKEN"))
 
-	// router := httprouter.New()
-	// router.GET("/", DefaultHandler)
-	// router.GET("/error", ErrorHandler)
-	// router.POST("/events", slackVerification(EventsHandler))
-	// router.POST("/slash", slackVerification(SlashHandler))
-	// router.POST("/interactions", slackVerification(InteractionsHandler))
-
 	router := http.NewServeMux()
 	router.HandleFunc("GET /", DefaultHandler)
 	router.HandleFunc("GET /error", ErrorHandler)
-	router.Handle("POST /events", slackVerification(EventsHandler))
-	router.Handle("POST /slash", slackVerification(SlashHandler))
-	router.Handle("POST /interactions", slackVerification(InteractionsHandler))
+	router.Handle("POST /events", slackVerification(http.HandlerFunc(EventsHandler)))
+	router.Handle("POST /slash", slackVerification(http.HandlerFunc(SlashHandler)))
+	router.Handle("POST /interactions", slackVerification(http.HandlerFunc(InteractionsHandler)))
 
 	server := http.Server{
 		Addr:    ":3000",

@@ -10,7 +10,7 @@ import (
 )
 
 func slackVerification(h http.Handler) http.Handler {
-	return func(w http.ResponseWriter, r *http.Request) {
+	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		// Verify the Slack request
 		// see https://github.com/slack-go/slack/blob/master/examples/workflow_step/middleware.go
 		body, err := io.ReadAll(r.Body)
@@ -37,6 +37,6 @@ func slackVerification(h http.Handler) http.Handler {
 			return
 		}
 
-		h(w, r)
-	}
+		h.ServeHTTP(w, r)
+	})
 }
