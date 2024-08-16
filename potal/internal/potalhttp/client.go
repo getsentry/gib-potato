@@ -77,5 +77,5 @@ func SendRequest(ctx context.Context, e event.PotalEvent) error {
 	})
 	hub.CaptureMessage(msg)
 
-	return fmt.Errorf(msg)
+	return fmt.Errorf("%s", msg)
 }
