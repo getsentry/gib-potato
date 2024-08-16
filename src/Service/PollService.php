@@ -87,7 +87,7 @@ class PollService
 
             if ($json['ok'] === false) {
                 withScope(function ($scope) use ($json, $responseUrl): void {
-                    $scope->setContext('Slack API metadata', [
+                    $scope->setContext('Slack API', [
                         'slack_response' => $json,
                         'response_url' => $responseUrl,
                     ]);
