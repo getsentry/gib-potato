@@ -9,6 +9,10 @@ use App\Model\Table\PollResponsesTable;
 use App\Model\Table\PollsTable;
 use App\Service\PollService;
 use App\Service\UserService;
+use Sentry\State\Scope;
+
+use function Sentry\captureMessage;
+use function Sentry\withScope;
 
 class InteractionsCallbackEvent extends AbstractEvent
 {
@@ -18,6 +22,8 @@ class InteractionsCallbackEvent extends AbstractEvent
     protected string $triggerId;
     protected ?string $value;
     protected ?string $selectOptionValue;
+    protected ?array $responseUrls;
+    protected ?array $view;
 
     protected UserService $userService;
     protected PollService $pollService;
@@ -43,6 +49,8 @@ class InteractionsCallbackEvent extends AbstractEvent
 
         $this->value = $event['value'] ?? null;
         $this->selectOptionValue = $event['select_option_value'] ?? null;
+        $this->responseUrls = $event['response_urls'] ?? null;
+        $this->view = $event['view'] ?? null;
 
         $this->userService = new UserService();
         $this->pollService = new PollService();
@@ -57,6 +65,12 @@ class InteractionsCallbackEvent extends AbstractEvent
      */
     public function process(): void
     {
+        if ($this->view !== null) {
+            $this->create();
+
+            return;
+        }
+
         if ($this->value === 'poll-vote') {
             $this->vote();
 
@@ -80,6 +94,63 @@ class InteractionsCallbackEvent extends AbstractEvent
 
             return;
         }
+    }
+
+    protected function create(): void
+    {
+        $title = $this->view['state']['values']['poll-title']['poll-title-input']['value'];
+        $channel = $this->responseUrls[0]['channel_id'];
+
+        $options = [];
+        foreach ($this->view['state']['values'] as $key => $value) {
+            if (str_starts_with($key, 'option-')) {
+                $options[] = $value['option-input']['value'];
+            }
+        }
+
+        $poll = $this->pollsTable->newEntity([
+            'user_id' => $this->userService->getOrCreateUser($this->user)->id,
+            'title' => $title,
+            'type' => Poll::TYPE_MULTIPLE,
+            'status' => Poll::STATUS_ACTIVE,
+            'anonymous' => false,
+        ], [
+            'accessibleFields' => [
+                'user_id' => true,
+                'title' => true,
+                'type' => true,
+                'status' => true,
+                'anonymous' => true,
+            ],
+        ]);
+        $this->pollsTable->saveOrFail($poll);
+
+        foreach ($options as $option) {
+            $pollOption = $this->pollOptionsTable->newEntity([
+                'poll_id' => $poll->id,
+                'title' => $option,
+            ], [
+                'accessibleFields' => [
+                    'poll_id' => true,
+                    'title' => true,
+                ],
+            ]);
+            $this->pollOptionsTable->saveOrFail($pollOption);
+        }
+
+        $poll = $this->pollsTable->find()
+            ->where(['Polls.id' => $poll->id])
+            ->contain([
+                'PollOptions' => [
+                    'PollResponses' => [
+                        'Users',
+                    ],
+                ],
+                'Users',
+            ])
+            ->firstOrFail();
+
+        $this->pollService->createPoll($poll, $channel);
     }
 
     /**

@@ -8,11 +8,12 @@ import (
 )
 
 type SlashCommandEvent struct {
-	Type    PotalEventType `json:"type"`
-	Command string         `json:"command"`
-	User    string         `json:"user"`
-	Channel string         `json:"channel"`
-	Text    string         `json:"text"`
+	Type      PotalEventType `json:"type"`
+	Command   string         `json:"command"`
+	User      string         `json:"user"`
+	Channel   string         `json:"channel"`
+	Text      string         `json:"text"`
+	TriggerID string         `json:"trigger_id,omitempty"`
 }
 
 func (e SlashCommandEvent) isValid() bool {
@@ -27,11 +28,12 @@ func ProcessSlashCommand(ctx context.Context, e slack.SlashCommand) *SlashComman
 	defer span.Finish()
 
 	slashCommandEvent := SlashCommandEvent{
-		Type:    slashCommand,
-		Command: e.Command,
-		User:    e.UserID,
-		Channel: e.ChannelID,
-		Text:    e.Text,
+		Type:      slashCommand,
+		Command:   e.Command,
+		User:      e.UserID,
+		Channel:   e.ChannelID,
+		Text:      e.Text,
+		TriggerID: e.TriggerID,
 	}
 
 	if !slashCommandEvent.isValid() {

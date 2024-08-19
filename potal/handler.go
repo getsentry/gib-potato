@@ -310,7 +310,33 @@ func InteractionsHandler(w http.ResponseWriter, r *http.Request, _ httprouter.Pa
 			txn := sentry.StartTransaction(ctx, "INTERACTION block", options...)
 			defer txn.Finish()
 
-			processedEvent := event.ProcessInteractionCallbackEvent(txn.Context(), payload)
+			processedEvent := event.ProcessBlockInteractionCallbackEvent(txn.Context(), payload)
+			if processedEvent == nil {
+				txn.Status = sentry.SpanStatusInternalError
+				return
+			}
+			err := potalhttp.SendRequest(txn.Context(), processedEvent)
+			if err != nil {
+				txn.Status = sentry.SpanStatusInternalError
+				return
+			}
+
+			txn.Status = sentry.SpanStatusOK
+		}()
+	case slack.InteractionTypeViewSubmission:
+		go func() {
+			hub := sentry.CurrentHub().Clone()
+			ctx := sentry.SetHubOnContext(context.Background(), hub)
+
+			options := []sentry.SpanOption{
+				sentry.WithOpName("interaction.handler"),
+				sentry.WithTransactionSource(sentry.SourceTask),
+				sentry.ContinueFromHeaders(transaction.ToSentryTrace(), transaction.ToBaggage()),
+			}
+			txn := sentry.StartTransaction(ctx, "INTERACTION view", options...)
+			defer txn.Finish()
+
+			processedEvent := event.ProcessViewInteractionCallbackEvent(txn.Context(), payload)
 			if processedEvent == nil {
 				txn.Status = sentry.SpanStatusInternalError
 				return

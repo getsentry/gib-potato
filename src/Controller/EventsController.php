@@ -8,7 +8,11 @@ use Cake\Controller\Controller;
 use Cake\Http\Response;
 use Sentry\Metrics\MetricsUnit;
 use Sentry\SentrySdk;
+use Sentry\State\Scope;
+
+use function Sentry\captureMessage;
 use function Sentry\metrics;
+use function Sentry\withScope;
 
 class EventsController extends Controller
 {
@@ -32,6 +36,11 @@ class EventsController extends Controller
         $startTimestamp = microtime(true);
         $event = EventFactory::createEvent($this->request->getData());
         $event->process();
+
+        withScope(function(Scope $scope) {
+            $scope->setContext('request_payload', $this->request->getData());
+            captureMessage('Event Payload');
+        });
 
         metrics()->distribution(
             key: 'gibpotato.potatoes.event_processing_time',
