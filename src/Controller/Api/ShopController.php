@@ -20,7 +20,7 @@ class ShopController extends ApiController
     {
         $productsTable = $this->fetchTable('Products');
         $products = $productsTable->find()
-            ->orderBy(['name' => 'ASC'])
+            ->orderBy(['id' => 'ASC'])
             ->all();
 
         return $this->response

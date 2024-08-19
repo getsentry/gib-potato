@@ -31,6 +31,12 @@
                 >
                     {{ product.stock }} left in stock
                 </p>
+                <p
+                    v-if="product.stock === -1"
+                    class="mt-6 text-xs text-zinc-500"
+                >
+                    ♾️ left in stock
+                </p>
                 <div class="mt-3">
                     <template v-if="product.stock > 0">
                         <button

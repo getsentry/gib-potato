@@ -15,6 +15,11 @@ const router = createRouter({
       component: () => import('@/views/Shop.vue')
     },
     {
+      path: '/skill-tree',
+      name: 'SkillTree',
+      component: () => import('@/views/SkillTree.vue')
+    },
+    {
       path: '/collection',
       name: 'collection',
       component: () => import('@/views/Collection.vue')

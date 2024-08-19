@@ -58,6 +58,7 @@ return static function (RouteBuilder $routes): void {
 
         $builder->connect('/', ['controller' => 'Home', 'action' => 'index']);
         $builder->connect('/shop', ['controller' => 'Home', 'action' => 'index']);
+        $builder->connect('/skill-tree', ['controller' => 'Home', 'action' => 'index']);
         $builder->connect('/collection', ['controller' => 'Home', 'action' => 'index']);
         $builder->connect('/quick-wins', ['controller' => 'Home', 'action' => 'index']);
         $builder->connect('/profile', ['controller' => 'Home', 'action' => 'index']);
