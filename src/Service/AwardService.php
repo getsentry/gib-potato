@@ -48,10 +48,16 @@ class AwardService
     ): void {
         $messagesTable = $this->fetchTable('Messages');
 
+        $amount = $event->amount;
+        if (str_contains($toUser->slack_name, '1')) {
+            // Give V1P users 1 extra potato on each transaction.
+            $amount += 1;
+        }
+
         $message = $messagesTable->newEntity([
             'sender_user_id' => $fromUser->id,
             'receiver_user_id' => $toUser->id,
-            'amount' => $event->amount,
+            'amount' => $amount,
             'type' => str_replace(':', '', $event->reaction),
         ], [
             'accessibleFields' => [
