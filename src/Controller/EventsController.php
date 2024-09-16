@@ -8,6 +8,7 @@ use Cake\Controller\Controller;
 use Cake\Http\Response;
 use Sentry\Metrics\MetricsUnit;
 use Sentry\SentrySdk;
+use Sentry\Severity;
 use Sentry\State\Scope;
 
 use function Sentry\captureMessage;
@@ -37,9 +38,12 @@ class EventsController extends Controller
         $event = EventFactory::createEvent($this->request->getData());
         $event->process();
 
-        withScope(function(Scope $scope) {
-            $scope->setContext('request_payload', $this->request->getData());
-            captureMessage('Event Payload');
+        withScope(function(Scope $scope) use ($event) {
+            $scope
+                ->setLevel(Severity::debug())
+                ->setContext('request_payload', $this->request->getData());
+
+            captureMessage('Event Payload - ' . $event->type);
         });
 
         metrics()->distribution(

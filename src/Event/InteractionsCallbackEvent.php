@@ -65,8 +65,14 @@ class InteractionsCallbackEvent extends AbstractEvent
      */
     public function process(): void
     {
-        if ($this->view !== null) {
+        if ($this->view !== null && $this->view['state'] !== null) {
             $this->create();
+
+            return;
+        }
+
+        if ($this->actionId === 'poll-add-option') {
+            $this->addOption();
 
             return;
         }
@@ -151,6 +157,14 @@ class InteractionsCallbackEvent extends AbstractEvent
             ->firstOrFail();
 
         $this->pollService->createPoll($poll, $channel);
+    }
+
+    /**
+     * @return void 
+     */
+    protected function addOption(): void
+    {
+        $this->pollService->triggerPollView($this->triggerId);
     }
 
     /**

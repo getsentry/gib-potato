@@ -101,6 +101,20 @@ class PollService
      * @param string $triggerId The trigger ID.
      * @return void
      */
+    public function triggerPollView(string $triggerId, int $optionsCount = 2): void
+    {
+        $view = $this->getPollView($optionsCount);
+
+        $this->slackClient->openView(
+            triggerId: $triggerId,
+            view: $view,
+        );
+    }
+
+    /**
+     * @param string $triggerId The trigger ID.
+     * @return void
+     */
     public function triggerPollModal(string $triggerId): void
     {
         $view = $this->getPollModalView();
@@ -259,9 +273,181 @@ class PollService
     }
 
     /**
+     * @return array 
+     */
+    protected function getPollView(int $optionsCount): array
+    {
+        return [
+            'type' => 'modal',
+            'title' => [
+                'type' => 'plain_text',
+                'text' => 'Create Poll',
+            ],
+            'blocks' => [
+                [
+                    'type' => 'input',
+                    'block_id' => 'poll-channel',
+                    'label' => [
+                        'type' => 'plain_text',
+                        'text' =>  'Send your poll to',
+                    ],
+                    'element' => [
+                        'action_id' => 'poll-channel-input',
+                        'type' => 'conversations_select',
+                        'response_url_enabled' => true,
+                        'default_to_current_conversation' => true,
+                    ],
+                ],
+                [
+                    'type'=> 'input',
+                    'block_id' => 'poll-title',
+                    'label' => [
+                        'type' => 'plain_text',
+                        'text' =>  'Question or Topic',
+                    ],
+                    'element' => [
+                        'type' => 'plain_text_input',
+                        'action_id' => 'poll-title-input',
+                        'placeholder' => [
+                            'type' => 'plain_text',
+                            'text' => 'The meaning of life is?',
+                        ],
+                        'multiline' => false,
+                    ],
+                    'optional' => false,
+                ],
+                // [
+                //     'type'=> 'input',
+                //     'block_id' => 'poll-type',
+                //     'label' => [
+                //         'type' => 'plain_text',
+                //         'text' =>  'How do you want people to respond?',
+                //     ],
+                //     'element' => [
+                //         'type' => 'static_select',
+                //         'action_id' => 'poll-type-input',
+                //         'initial_option' => [
+                //             'text' => [
+                //                 'type' => 'plain_text',
+                //                 'text' =>  'Select multiple options',
+                //             ],
+                //             'value' => 'poll-type-multiple',
+                //         ],
+                //         'options' => [
+                //             [
+                //                 'text' => [
+                //                     'type' => 'plain_text',
+                //                     'text' =>  'Select multiple options',
+                //                 ],
+                //                 'value' => 'poll-type-multiple',
+                //             ],
+                //             [
+                //                 'text' => [
+                //                     'type' => 'plain_text',
+                //                     'text' =>  'Select one option',
+                //                 ],
+                //                 'value' => 'poll-type-single',
+                //             ],
+                //         ],
+                //     ],
+                //     'optional' => false,
+                // ],
+                [
+                    'type'=> 'input',
+                    'block_id' => 'option-1',
+                    'label' => [
+                        'type' => 'plain_text',
+                        'text' =>  'Option 1',
+                    ],
+                    'element' => [
+                        'type' => 'plain_text_input',
+                        'action_id' => 'option-input',
+                        'placeholder' => [
+                            'type' => 'plain_text',
+                            'text' => 'First Option',
+                        ],
+                        'multiline' => false,
+                    ],
+                    'optional' => false,
+                ],
+                [
+                    'type'=> 'input',
+                    'block_id' => 'option-2',
+                    'label' => [
+                        'type' => 'plain_text',
+                        'text' =>  'Option 2',
+                    ],
+                    'element' => [
+                        'type' => 'plain_text_input',
+                        'action_id' => 'option-input',
+                        'placeholder' => [
+                            'type' => 'plain_text',
+                            'text' => 'Another option',
+                        ],
+                        'multiline' => false,
+                    ],
+                    'optional' => true,
+                ],
+                [
+                    'type'=> 'actions',
+                    'elements' => [
+                        [
+                            'type' => 'button',
+                            'text' => [
+                                'type' => 'plain_text',
+                                'text' => 'Add another option',
+                            ],
+                            'action_id' => 'poll-add-option'
+                        ],
+                    ],
+                ],
+                [
+                    'type' => 'divider',
+                ],
+                [
+                    'type' => 'section',
+                    'block_id' => 'poll-settings',
+                    'text' => [
+                        'type' => 'mrkdwn',
+                        'text' => '*Settings* (optional)',
+                    ],
+                    'accessory' => [
+                        'type' => 'checkboxes',
+                        'action_id' => 'poll-settings-input',
+                        'options' => [
+                            [
+                                'text' => [
+                                    'type' => 'mrkdwn',
+                                    'text' => '*Make responses anonymous*',
+                                ],
+                                'value' => 'poll-settings-anonymous',
+                            ],
+                            // [
+                            //     'text' => [
+                            //         'type' => 'mrkdwn',
+                            //         'text' => '*Allow others to add options*',
+                            //     ],
+                            //     'value' => 'poll-settings-allow-new-options',
+                            // ],
+                        ],
+                    ],
+                ]
+            ],
+            'close' => [
+                'type' => 'plain_text',
+                'text' => 'Cancel',
+            ],
+            'submit' => [
+                'type' => 'plain_text',
+                'text' => 'Publish Poll',
+            ],
+        ];
+    }
+
+    /**
      * @return array
      */
-    public function getPollModalView(): array
+    protected function getPollModalView(): array
     {
         return [
             'type' => 'modal',

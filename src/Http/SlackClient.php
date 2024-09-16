@@ -179,6 +179,35 @@ class SlackClient
     }
 
     /**
+     * @param string $viewId The view ID of the to be updated view.
+     * @param array $view The view to update.
+     * @return void
+     * @see https://api.slack.com/methods/views.update
+     */
+    public function updateView(string $viewId, array $view): void
+    {
+        $response = $this->client->post('views.update', [
+            'trigger_id' => $viewId,
+            'view' => json_encode($view),
+        ]);
+
+        if ($response->isSuccess()) {
+            $json = $response->getJson();
+
+            if ($json['ok'] === false) {
+                withScope(function ($scope) use ($json, $viewId, $view): void {
+                    $scope->setExtras([
+                        'view_id' => $viewId,
+                        'view' => $view,
+                        'slack_response' => $json,
+                    ]);
+                    captureMessage('Slack API error: https://api.slack.com/methods/views.update');
+                });
+            }
+        }
+    }
+
+    /**
      * @param string $user The Slack user ID.
      * @return array
      * @see https://api.slack.com/methods/users.info
