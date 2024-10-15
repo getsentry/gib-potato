@@ -27,7 +27,7 @@ RUN \
     php8.3-pgsql \
     php8.3-xml \
     php8.3-zip \
-    php-excimer && \
+    php8.3-excimer && \
     rm -rf /var/lib/apt/lists/*
 
 RUN rm /etc/apache2/sites-available/*.conf
