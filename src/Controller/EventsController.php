@@ -6,9 +6,7 @@ namespace App\Controller;
 use App\Event\EventFactory;
 use Cake\Controller\Controller;
 use Cake\Http\Response;
-use Sentry\Metrics\MetricsUnit;
 use Sentry\SentrySdk;
-use function Sentry\metrics;
 
 class EventsController extends Controller
 {
@@ -32,24 +30,6 @@ class EventsController extends Controller
         $startTimestamp = microtime(true);
         $event = EventFactory::createEvent($this->request->getData());
         $event->process();
-
-        metrics()->distribution(
-            key: 'gibpotato.potatoes.event_processing_time',
-            value: microtime(true) - $startTimestamp,
-            unit: MetricsUnit::second(),
-            tags: [
-                'event_type' => $event->getType(),
-            ],
-        );
-
-        metrics()->distribution(
-            key: 'gibpotato.potatoes.event_size',
-            value: mb_strlen(serialize($this->request->getData()), '8bit'),
-            unit: MetricsUnit::byte(),
-            tags: [
-                'event_type' => $event->getType(),
-            ],
-        );
 
         $span = SentrySdk::getCurrentHub()->getSpan();
         if ($span !== null) {

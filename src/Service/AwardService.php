@@ -7,9 +7,7 @@ use App\Event\MessageEvent;
 use App\Event\ReactionAddedEvent;
 use App\Model\Entity\User;
 use Cake\ORM\Locator\LocatorAwareTrait;
-use Sentry\Metrics\MetricsUnit;
 use Sentry\SentrySdk;
-use function Sentry\metrics;
 
 class AwardService
 {
@@ -62,12 +60,6 @@ class AwardService
             ],
         ]);
         $messagesTable->saveOrFail($message);
-
-        metrics()->increment(
-            key: 'gibpotato.potatoes.given_out',
-            value: $event->amount,
-            unit: MetricsUnit::custom('potato'),
-        );
 
         $span = SentrySdk::getCurrentHub()->getSpan();
         if ($span !== null) {
