@@ -11,13 +11,11 @@ use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Server\MiddlewareInterface;
 use Psr\Http\Server\RequestHandlerInterface;
-use Sentry\Metrics\MetricsUnit;
 use Sentry\SentrySdk;
 use Sentry\Tracing\SpanContext;
 use Sentry\Tracing\TransactionContext;
 use Sentry\Tracing\TransactionSource;
 use function microtime;
-use function Sentry\metrics;
 use function Sentry\startTransaction;
 
 /**
@@ -78,19 +76,12 @@ class SentryMiddleware implements MiddlewareInterface
                 ->setData([
                     'gibpotato.gcp.mem_peak_usage' => memory_get_peak_usage(false),
                 ]);
-
-            metrics()->distribution(
-                key: 'gibpotato.gcp.mem_peak_usage',
-                value: memory_get_peak_usage(false),
-                unit: MetricsUnit::byte(),
-            );
         }
 
         EventManager::instance()->on(
             'Server.terminate',
             function (Event $event) use ($transaction): void {
                 $transaction->finish();
-                metrics()->flush();
             },
         );
 
