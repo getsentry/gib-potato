@@ -3,8 +3,8 @@ declare(strict_types=1);
 
 namespace App\Event;
 
-use App\Http\SlackClient;
 use App\Http\DiscordClient;
+use App\Http\SlackClient;
 use Cake\ORM\Locator\LocatorAwareTrait;
 
 abstract class AbstractEvent

@@ -30,7 +30,7 @@ class DiscordClient
 
     /**
      * Get a message from a channel
-     * 
+     *
      * @param string $channelId The channel ID
      * @param string $messageId The message ID
      * @return string The message content
@@ -41,6 +41,7 @@ class DiscordClient
 
         if ($response->isSuccess()) {
             $json = $response->getJson();
+
             return $json['content'] ?? '';
         }
 

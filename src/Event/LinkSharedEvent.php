@@ -3,8 +3,6 @@ declare(strict_types=1);
 
 namespace App\Event;
 
-use RestCord\DiscordClient;
-
 class LinkSharedEvent extends AbstractEvent
 {
     public string $user;
@@ -69,9 +67,9 @@ class LinkSharedEvent extends AbstractEvent
         $parts = explode('/', $url);
         $channelId = $parts[5];
         $messageId = $parts[6];
-        
+
         $message = $this->discordClient->getMessage($channelId, $messageId);
+
         return $message;
     }
-
 }
