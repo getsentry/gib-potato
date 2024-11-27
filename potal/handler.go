@@ -225,6 +225,32 @@ func EventsHandler(w http.ResponseWriter, r *http.Request, _ httprouter.Params) 
 
 				txn.Status = sentry.SpanStatusOK
 			}()
+		case *slackevents.LinkSharedEvent:
+			go event.ProcessLinkSharedEvent(r.Context(), ev)
+			go func() {
+				hub := sentry.CurrentHub().Clone()
+				ctx := sentry.SetHubOnContext(context.Background(), hub)
+
+				options := []sentry.SpanOption{
+					sentry.WithOpName("event.handler"),
+					sentry.WithTransactionSource(sentry.SourceTask),
+					sentry.ContinueFromHeaders(transaction.ToSentryTrace(), transaction.ToBaggage()),
+				}
+				txn := sentry.StartTransaction(ctx, "EVENT link_shared", options...)
+				defer txn.Finish()
+
+				processedEvent := event.ProcessLinkSharedEvent(txn.Context(), ev)
+				if processedEvent == nil {
+					return
+				}
+				err := potalhttp.SendRequest(txn.Context(), processedEvent)
+				if err != nil {
+					txn.Status = sentry.SpanStatusInternalError
+					return
+				}
+
+				txn.Status = sentry.SpanStatusOK
+			}()
 		}
 	}
 
