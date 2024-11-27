@@ -73,7 +73,7 @@ class LinkSharedEvent extends AbstractEvent
         if (!preg_match('#^https://discord\.com/channels/\d+/\d+/\d+$#', $url)) {
             return $url;
         }
-        
+
         $parts = explode('/', $url);
         $channelId = $parts[5];
         $messageId = $parts[6];
