@@ -43,6 +43,8 @@ class EventFactory
                 return new SlashCommandEvent($data);
             case AbstractEvent::TYPE_INTERACTIONS_CALLBACK:
                 return new InteractionsCallbackEvent($data);
+            case AbstractEvent::TYPE_LINK_SHARED:
+                return new LinkSharedEvent($data);
             default:
                 throw new Exception('Unknown event type');
         }

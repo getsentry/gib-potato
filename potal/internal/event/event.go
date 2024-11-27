@@ -14,6 +14,7 @@ const (
 	appHomeOpened       PotalEventType = "app_home_opened"
 	slashCommand        PotalEventType = "slash_command"
 	interactionCallback PotalEventType = "interaction_callback"
+	linkShared          PotalEventType = "link_shared"
 )
 
 func (e PotalEventType) String() string {
