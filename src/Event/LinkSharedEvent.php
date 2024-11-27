@@ -3,6 +3,8 @@ declare(strict_types=1);
 
 namespace App\Event;
 
+use RestCord\DiscordClient;
+
 class LinkSharedEvent extends AbstractEvent
 {
     public string $user;
@@ -38,23 +40,38 @@ class LinkSharedEvent extends AbstractEvent
     public function process(): void
     {
         foreach ($this->links as $link) {
-            $this->slackClient->unfurl(
-                channel: $this->channel,
-                timestamp: $this->messageTimeStamp,
-                unfurls: [
-                    $link['url'] => [
-                        'blocks' => [
-                            [
-                                'type' => 'section',
-                                'text' => [
-                                    'type' => 'mrkdwn',
-                                    'text' => 'asdasdasd',
+            // if Discord link, unfurl and fetch the message and return it
+            if (str_starts_with($link['url'], 'https://discord.com/')) {
+                $message = $this->fetchDiscordMessage($link['url']);
+                $this->slackClient->unfurl(
+                    channel: $this->channel,
+                    timestamp: $this->messageTimeStamp,
+                    unfurls: [
+                        $link['url'] => [
+                            'blocks' => [
+                                [
+                                    'type' => 'section',
+                                    'text' => [
+                                        'type' => 'mrkdwn',
+                                        'text' => $message,
+                                    ],
                                 ],
                             ],
                         ],
                     ],
-                ],
-            );
+                );
+            }
         }
     }
+
+    private function fetchDiscordMessage(string $url): string
+    {
+        $parts = explode('/', $url);
+        $channelId = $parts[5];
+        $messageId = $parts[6];
+        
+        $message = $this->discordClient->getMessage($channelId, $messageId);
+        return $message;
+    }
+
 }
