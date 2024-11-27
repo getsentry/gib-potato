@@ -62,8 +62,18 @@ class LinkSharedEvent extends AbstractEvent
         }
     }
 
+    /**
+     * Fetch a Discord message
+     *
+     * @param string $url The Discord message URL
+     * @return string The message content
+     */
     private function fetchDiscordMessage(string $url): string
     {
+        if (!preg_match('#^https://discord\.com/channels/\d+/\d+/\d+$#', $url)) {
+            return $url;
+        }
+        
         $parts = explode('/', $url);
         $channelId = $parts[5];
         $messageId = $parts[6];
