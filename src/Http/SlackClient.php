@@ -222,6 +222,7 @@ class SlackClient
             'ts' => $timestamp,
             'unfurls' => json_encode($unfurls),
         ]);
+
         if ($response->isSuccess()) {
             $json = $response->getJson();
             if ($json['ok'] === false) {

@@ -28,25 +28,16 @@ class EventFactory
             SentrySdk::getCurrentHub()->getTransaction()->getName() . ' - ' . $eventType
         );
 
-        switch ($eventType) {
-            case AbstractEvent::TYPE_MESSAGE:
-                return new MessageEvent($data);
-            case AbstractEvent::TYPE_DIRECT_MESSAGE:
-                return new DirectMessageEvent($data);
-            case AbstractEvent::TYPE_REACTION_ADDED:
-                return new ReactionAddedEvent($data);
-            case AbstractEvent::TYPE_APP_MENTION:
-                return new AppMentionEvent($data);
-            case AbstractEvent::TYPE_APP_HOME_OPENED:
-                return new AppHomeOpenedEvent($data);
-            case AbstractEvent::TYPE_SLASH_COMMAND:
-                return new SlashCommandEvent($data);
-            case AbstractEvent::TYPE_INTERACTIONS_CALLBACK:
-                return new InteractionsCallbackEvent($data);
-            case AbstractEvent::TYPE_LINK_SHARED:
-                return new LinkSharedEvent($data);
-            default:
-                throw new Exception('Unknown event type');
-        }
+        return match ($eventType) {
+            AbstractEvent::TYPE_MESSAGE => new MessageEvent($data),
+            AbstractEvent::TYPE_DIRECT_MESSAGE => new DirectMessageEvent($data),
+            AbstractEvent::TYPE_REACTION_ADDED => new ReactionAddedEvent($data),
+            AbstractEvent::TYPE_APP_MENTION => new AppMentionEvent($data),
+            AbstractEvent::TYPE_APP_HOME_OPENED => new AppHomeOpenedEvent($data),
+            AbstractEvent::TYPE_SLASH_COMMAND => new SlashCommandEvent($data),
+            AbstractEvent::TYPE_INTERACTIONS_CALLBACK => new InteractionsCallbackEvent($data),
+            AbstractEvent::TYPE_LINK_SHARED => new LinkSharedEvent($data),
+            default => throw new Exception('Unknown event type'),
+        };
     }
 }

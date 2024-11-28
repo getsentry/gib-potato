@@ -29,11 +29,10 @@ class DiscordClient
     }
 
     /**
-     * Get a message from a channel
-     *
      * @param string $channelId The channel ID
      * @param string $messageId The message ID
      * @return string The message content
+     * @see https://discord.com/developers/docs/resources/message#get-channel-message
      */
     public function getMessage(string $channelId, string $messageId): string
     {

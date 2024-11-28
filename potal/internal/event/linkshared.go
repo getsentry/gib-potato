@@ -8,14 +8,14 @@ import (
 )
 
 type LinkSharedEvent struct {
-	Type           PotalEventType `json:"type"`
-	User           string         `json:"user"`
-	TimeStamp      string         `json:"ts"`
-	Channel        string         `json:"channel"`
-	MessageTimeStamp string        `json:"message_ts"`
-	ThreadTimeStamp  string        `json:"thread_ts"`
-	Links            []Link `json:"links"`
-	EventTimestamp   string        `json:"event_ts"`
+	Type             PotalEventType `json:"type"`
+	User             string         `json:"user"`
+	TimeStamp        string         `json:"ts"`
+	Channel          string         `json:"channel"`
+	MessageTimeStamp string         `json:"message_ts"`
+	ThreadTimeStamp  string         `json:"thread_ts"`
+	Links            []Link         `json:"links"`
+	EventTimestamp   string         `json:"event_ts"`
 }
 
 type Link struct {
@@ -24,6 +24,8 @@ type Link struct {
 }
 
 func (e LinkSharedEvent) isValid() bool {
+	// App unfurl domains are configured in the Slack's app settings,
+	// so we don't need validate the domain here.
 	return len(e.Links) > 0
 }
 
@@ -43,10 +45,10 @@ func ProcessLinkSharedEvent(ctx context.Context, e *slackevents.LinkSharedEvent)
 	}
 
 	linkSharedEvent := LinkSharedEvent{
-		Type:           linkShared,
-		User:           e.User,
-		TimeStamp:      e.TimeStamp,
-		Channel:        e.Channel,
+		Type:             linkShared,
+		User:             e.User,
+		TimeStamp:        e.TimeStamp,
+		Channel:          e.Channel,
 		MessageTimeStamp: e.MessageTimeStamp,
 		ThreadTimeStamp:  e.ThreadTimeStamp,
 		Links:            links,
