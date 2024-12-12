@@ -1,4 +1,4 @@
-FROM ubuntu:22.04 as php-local
+FROM ubuntu:22.04 AS php-local
 
 ENV DEBIAN_FRONTEND=noninteractive
 
@@ -58,7 +58,7 @@ EXPOSE 8080
 
 CMD [ "/bin/bash", "/run.sh" ]
 
-FROM node:18-bullseye as js-build
+FROM node:18-bullseye AS js-build
 
 WORKDIR /app
 
