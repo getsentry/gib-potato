@@ -38,9 +38,8 @@ class LinkSharedEvent extends AbstractEvent
     public function process(): void
     {
         foreach ($this->links as $link) {
-            // if Discord link, unfurl and fetch the message and return it
-            if (str_starts_with($link['url'], 'https://discord.com/')) {
-                $message = $this->fetchDiscordMessage($link['url']);
+            $message = $this->fetchDiscordMessage($link['url']);
+            if ($message !== null) {
                 $this->slackClient->unfurl(
                     channel: $this->channel,
                     timestamp: $this->messageTimeStamp,
@@ -63,15 +62,13 @@ class LinkSharedEvent extends AbstractEvent
     }
 
     /**
-     * Fetch a Discord message
-     *
      * @param string $url The Discord message URL
-     * @return string The message content
+     * @return string|null The message content
      */
-    private function fetchDiscordMessage(string $url): string
+    private function fetchDiscordMessage(string $url): ?string
     {
         if (!preg_match('#^https://discord\.com/channels/\d+/\d+/\d+$#', $url)) {
-            return $url;
+            return null;
         }
 
         $parts = explode('/', $url);

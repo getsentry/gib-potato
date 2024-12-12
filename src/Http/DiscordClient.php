@@ -31,17 +31,17 @@ class DiscordClient
     /**
      * @param string $channelId The channel ID
      * @param string $messageId The message ID
-     * @return string The message content
+     * @return string|null The message content
      * @see https://discord.com/developers/docs/resources/message#get-channel-message
      */
-    public function getMessage(string $channelId, string $messageId): string
+    public function getMessage(string $channelId, string $messageId): ?string
     {
         $response = $this->client->get("channels/{$channelId}/messages/{$messageId}");
 
         if ($response->isSuccess()) {
             $json = $response->getJson();
 
-            return $json['content'] ?? '';
+            return $json['content'] ?? null;
         }
 
         withScope(function ($scope) use ($response, $channelId, $messageId): void {
@@ -53,6 +53,6 @@ class DiscordClient
             captureMessage('Discord API error: Failed to fetch message');
         });
 
-        return '';
+        return null;
     }
 }
