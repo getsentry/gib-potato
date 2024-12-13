@@ -22,6 +22,7 @@ services:
         - SLACK_TEAM_ID
         - SLACK_REDIRECT_URI
         - SLACK_BOT_USER_OAUTH_TOKEN
+        - DISCORD_BOT_TOKEN
         - SENTRY_BACKEND_DSN
         - SENTRY_FRONTEND_DSN
         - SENTRY_AUTH_TOKEN

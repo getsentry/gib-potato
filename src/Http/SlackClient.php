@@ -207,4 +207,35 @@ class SlackClient
 
         return [];
     }
+
+    /**
+     * @param string $channel The channel to unfurl the links in.
+     * @param string $timestamp The timestamp of the message to unfurl the links in.
+     * @param array $unfurls The unfurls to send.
+     * @return void
+     * @see https://api.slack.com/methods/chat.unfurl
+     */
+    public function unfurl(string $channel, string $timestamp, array $unfurls): void
+    {
+        $response = $this->client->post('chat.unfurl', [
+            'channel' => $channel,
+            'ts' => $timestamp,
+            'unfurls' => json_encode($unfurls),
+        ]);
+
+        if ($response->isSuccess()) {
+            $json = $response->getJson();
+            if ($json['ok'] === false) {
+                withScope(function ($scope) use ($json, $channel, $timestamp, $unfurls): void {
+                    $scope->setContext('Slack API', [
+                        'channel' => $channel,
+                        'timestamp' => $timestamp,
+                        'unfurls' => $unfurls,
+                        'slack_response' => $json,
+                    ]);
+                    captureMessage('Slack API error: https://api.slack.com/methods/chat.unfurl');
+                });
+            }
+        }
+    }
 }
