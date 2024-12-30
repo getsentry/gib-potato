@@ -108,7 +108,9 @@ COPY --from=getsentry/relay:nightly /bin/relay /bin/relay
 
 RUN \
     mkdir logs && \
-    mkdir tmp
+    mkdir tmp && \
+    chown -R www-data:www-data /var/www/gib-potato/logs && \
+    chown -R www-data:www-data /var/www/gib-potato/tmp
 
 COPY ./docker/backend/run.sh /run.sh
 RUN chmod +x /run.sh
