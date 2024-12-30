@@ -108,7 +108,9 @@ COPY --from=getsentry/relay:nightly /bin/relay /bin/relay
 
 RUN \
     mkdir logs && \
-    mkdir tmp && \
+    mkdir -p tmp/cache/models && \
+    mkdir -p tmp/cache/persistent && \
+    mkdir -p tmp/cache/views && \
     chown -R www-data:www-data /var/www/gib-potato/logs && \
     chown -R www-data:www-data /var/www/gib-potato/tmp
 
