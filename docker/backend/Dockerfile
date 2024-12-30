@@ -110,9 +110,7 @@ RUN \
     mkdir logs && \
     mkdir -p tmp/cache/models && \
     mkdir -p tmp/cache/persistent && \
-    mkdir -p tmp/cache/views && \
-    chown -R www-data:www-data /var/www/gib-potato/logs && \
-    chown -R www-data:www-data /var/www/gib-potato/tmp
+    mkdir -p tmp/cache/views
 
 COPY ./docker/backend/run.sh /run.sh
 RUN chmod +x /run.sh
