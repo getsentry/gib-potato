@@ -232,9 +232,9 @@ class User extends Entity
         $userTime = DateTime::now($this->slack_time_zone);
         $utcTime = DateTime::now('UTC');
 
-        $utcOffset = $userTime->getOffset($utcTime) / 60 / 60;
+        $utcOffset = $userTime->getOffset($utcTime);
 
-        $startOfDayUser = $userTime->startOfDay()->subHours($utcOffset);
+        $startOfDayUser = $userTime->startOfDay()->subSeconds($utcOffset);
 
         return $startOfDayUser;
     }
@@ -247,9 +247,9 @@ class User extends Entity
         $userTime = DateTime::now($this->slack_time_zone);
         $utcTime = DateTime::now('UTC');
 
-        $utcOffset = $userTime->getOffset($utcTime) / 60 / 60;
+        $utcOffset = $userTime->getOffset($utcTime);
 
-        $endOfDayUser = $userTime->endOfDay()->subHours($utcOffset);
+        $endOfDayUser = $userTime->endOfDay()->subSeconds($utcOffset);
 
         return $endOfDayUser;
     }
