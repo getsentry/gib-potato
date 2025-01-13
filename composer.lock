@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "ca6b8fd89f14fb93a1021438c5bfec57",
+    "content-hash": "853ac627ff1639058b985f1325ea991e",
     "packages": [
         {
             "name": "cakephp/authentication",
@@ -363,16 +363,16 @@
         },
         {
             "name": "composer/ca-bundle",
-            "version": "1.5.4",
+            "version": "1.5.5",
             "source": {
                 "type": "git",
                 "url": "https://github.com/composer/ca-bundle.git",
-                "reference": "bc0593537a463e55cadf45fd938d23b75095b7e1"
+                "reference": "08c50d5ec4c6ced7d0271d2862dec8c1033283e6"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/composer/ca-bundle/zipball/bc0593537a463e55cadf45fd938d23b75095b7e1",
-                "reference": "bc0593537a463e55cadf45fd938d23b75095b7e1",
+                "url": "https://api.github.com/repos/composer/ca-bundle/zipball/08c50d5ec4c6ced7d0271d2862dec8c1033283e6",
+                "reference": "08c50d5ec4c6ced7d0271d2862dec8c1033283e6",
                 "shasum": ""
             },
             "require": {
@@ -419,7 +419,7 @@
             "support": {
                 "irc": "irc://irc.freenode.org/composer",
                 "issues": "https://github.com/composer/ca-bundle/issues",
-                "source": "https://github.com/composer/ca-bundle/tree/1.5.4"
+                "source": "https://github.com/composer/ca-bundle/tree/1.5.5"
             },
             "funding": [
                 {
@@ -435,7 +435,7 @@
                     "type": "tidelift"
                 }
             ],
-            "time": "2024-11-27T15:35:25+00:00"
+            "time": "2025-01-08T16:17:16+00:00"
         },
         {
             "name": "guzzlehttp/psr7",
@@ -924,16 +924,16 @@
         },
         {
             "name": "opis/json-schema",
-            "version": "2.4.0",
+            "version": "2.4.1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/opis/json-schema.git",
-                "reference": "ddf937c77e40409fa53e4c795b3c1943e47e71f7"
+                "reference": "712827751c62b465daae6e725bf0cf5ffbf965e1"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/opis/json-schema/zipball/ddf937c77e40409fa53e4c795b3c1943e47e71f7",
-                "reference": "ddf937c77e40409fa53e4c795b3c1943e47e71f7",
+                "url": "https://api.github.com/repos/opis/json-schema/zipball/712827751c62b465daae6e725bf0cf5ffbf965e1",
+                "reference": "712827751c62b465daae6e725bf0cf5ffbf965e1",
                 "shasum": ""
             },
             "require": {
@@ -983,22 +983,22 @@
             ],
             "support": {
                 "issues": "https://github.com/opis/json-schema/issues",
-                "source": "https://github.com/opis/json-schema/tree/2.4.0"
+                "source": "https://github.com/opis/json-schema/tree/2.4.1"
             },
-            "time": "2024-12-29T23:16:50+00:00"
+            "time": "2024-12-30T20:20:21+00:00"
         },
         {
             "name": "opis/string",
-            "version": "2.0.1",
+            "version": "2.0.2",
             "source": {
                 "type": "git",
                 "url": "https://github.com/opis/string.git",
-                "reference": "9ebf1a1f873f502f6859d11210b25a4bf5d141e7"
+                "reference": "ba0b9607b9809462b0e28a11e4881a8d77431feb"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/opis/string/zipball/9ebf1a1f873f502f6859d11210b25a4bf5d141e7",
-                "reference": "9ebf1a1f873f502f6859d11210b25a4bf5d141e7",
+                "url": "https://api.github.com/repos/opis/string/zipball/ba0b9607b9809462b0e28a11e4881a8d77431feb",
+                "reference": "ba0b9607b9809462b0e28a11e4881a8d77431feb",
                 "shasum": ""
             },
             "require": {
@@ -1045,9 +1045,9 @@
             ],
             "support": {
                 "issues": "https://github.com/opis/string/issues",
-                "source": "https://github.com/opis/string/tree/2.0.1"
+                "source": "https://github.com/opis/string/tree/2.0.2"
             },
-            "time": "2022-01-14T15:42:23+00:00"
+            "time": "2024-12-30T21:43:22+00:00"
         },
         {
             "name": "opis/uri",
@@ -1114,24 +1114,24 @@
         },
         {
             "name": "paragonie/constant_time_encoding",
-            "version": "v2.7.0",
+            "version": "v3.0.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/paragonie/constant_time_encoding.git",
-                "reference": "52a0d99e69f56b9ec27ace92ba56897fe6993105"
+                "reference": "df1e7fde177501eee2037dd159cf04f5f301a512"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/paragonie/constant_time_encoding/zipball/52a0d99e69f56b9ec27ace92ba56897fe6993105",
-                "reference": "52a0d99e69f56b9ec27ace92ba56897fe6993105",
+                "url": "https://api.github.com/repos/paragonie/constant_time_encoding/zipball/df1e7fde177501eee2037dd159cf04f5f301a512",
+                "reference": "df1e7fde177501eee2037dd159cf04f5f301a512",
                 "shasum": ""
             },
             "require": {
-                "php": "^7|^8"
+                "php": "^8"
             },
             "require-dev": {
-                "phpunit/phpunit": "^6|^7|^8|^9",
-                "vimeo/psalm": "^1|^2|^3|^4"
+                "phpunit/phpunit": "^9",
+                "vimeo/psalm": "^4|^5"
             },
             "type": "library",
             "autoload": {
@@ -1177,26 +1177,26 @@
                 "issues": "https://github.com/paragonie/constant_time_encoding/issues",
                 "source": "https://github.com/paragonie/constant_time_encoding"
             },
-            "time": "2024-05-08T12:18:48+00:00"
+            "time": "2024-05-08T12:36:18+00:00"
         },
         {
             "name": "paragonie/csp-builder",
-            "version": "v3.0.1",
+            "version": "v3.0.2",
             "source": {
                 "type": "git",
                 "url": "https://github.com/paragonie/csp-builder.git",
-                "reference": "e2f9f177dd33311b7c16ea206488e0b10d1ea4d3"
+                "reference": "54318fc99e13540f2c0375f746b3789f3d7f3221"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/paragonie/csp-builder/zipball/e2f9f177dd33311b7c16ea206488e0b10d1ea4d3",
-                "reference": "e2f9f177dd33311b7c16ea206488e0b10d1ea4d3",
+                "url": "https://api.github.com/repos/paragonie/csp-builder/zipball/54318fc99e13540f2c0375f746b3789f3d7f3221",
+                "reference": "54318fc99e13540f2c0375f746b3789f3d7f3221",
                 "shasum": ""
             },
             "require": {
                 "ext-json": "*",
                 "opis/json-schema": "^2.3",
-                "paragonie/constant_time_encoding": "^2",
+                "paragonie/constant_time_encoding": "^2|^3",
                 "php": "^7.4|^8",
                 "psr/http-message": "^1|^2"
             },
@@ -1237,7 +1237,7 @@
                 "issues": "https://github.com/paragonie/csp-builder/issues",
                 "source": "https://github.com/paragonie/csp-builder"
             },
-            "time": "2024-05-08T13:05:32+00:00"
+            "time": "2025-01-03T21:01:42+00:00"
         },
         {
             "name": "psr/clock",
@@ -2843,16 +2843,16 @@
         },
         {
             "name": "cakephp/bake",
-            "version": "3.2.0",
+            "version": "3.2.1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/cakephp/bake.git",
-                "reference": "d9bbe8e359e3405485ac4df5589c7b2b909f2503"
+                "reference": "e94334bbd5b46ffe0ea8f9388988380d833a5fa1"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/cakephp/bake/zipball/d9bbe8e359e3405485ac4df5589c7b2b909f2503",
-                "reference": "d9bbe8e359e3405485ac4df5589c7b2b909f2503",
+                "url": "https://api.github.com/repos/cakephp/bake/zipball/e94334bbd5b46ffe0ea8f9388988380d833a5fa1",
+                "reference": "e94334bbd5b46ffe0ea8f9388988380d833a5fa1",
                 "shasum": ""
             },
             "require": {
@@ -2894,7 +2894,7 @@
                 "issues": "https://github.com/cakephp/bake/issues",
                 "source": "https://github.com/cakephp/bake"
             },
-            "time": "2024-09-14T02:59:21+00:00"
+            "time": "2024-12-24T10:08:51+00:00"
         },
         {
             "name": "cakephp/cakephp-codesniffer",
@@ -3439,16 +3439,16 @@
         },
         {
             "name": "phpstan/phpstan",
-            "version": "1.12.13",
+            "version": "1.12.15",
             "source": {
                 "type": "git",
                 "url": "https://github.com/phpstan/phpstan.git",
-                "reference": "9b469068840cfa031e1deaf2fa1886d00e20680f"
+                "reference": "c91d4e8bc056f46cf653656e6f71004b254574d1"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/phpstan/phpstan/zipball/9b469068840cfa031e1deaf2fa1886d00e20680f",
-                "reference": "9b469068840cfa031e1deaf2fa1886d00e20680f",
+                "url": "https://api.github.com/repos/phpstan/phpstan/zipball/c91d4e8bc056f46cf653656e6f71004b254574d1",
+                "reference": "c91d4e8bc056f46cf653656e6f71004b254574d1",
                 "shasum": ""
             },
             "require": {
@@ -3493,7 +3493,7 @@
                     "type": "github"
                 }
             ],
-            "time": "2024-12-17T17:00:20+00:00"
+            "time": "2025-01-05T16:40:22+00:00"
         },
         {
             "name": "phpunit/php-code-coverage",
@@ -3818,16 +3818,16 @@
         },
         {
             "name": "phpunit/phpunit",
-            "version": "10.5.40",
+            "version": "10.5.41",
             "source": {
                 "type": "git",
                 "url": "https://github.com/sebastianbergmann/phpunit.git",
-                "reference": "e6ddda95af52f69c1e0c7b4f977cccb58048798c"
+                "reference": "e76586fa3d49714f230221734b44892e384109d7"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/sebastianbergmann/phpunit/zipball/e6ddda95af52f69c1e0c7b4f977cccb58048798c",
-                "reference": "e6ddda95af52f69c1e0c7b4f977cccb58048798c",
+                "url": "https://api.github.com/repos/sebastianbergmann/phpunit/zipball/e76586fa3d49714f230221734b44892e384109d7",
+                "reference": "e76586fa3d49714f230221734b44892e384109d7",
                 "shasum": ""
             },
             "require": {
@@ -3899,7 +3899,7 @@
             "support": {
                 "issues": "https://github.com/sebastianbergmann/phpunit/issues",
                 "security": "https://github.com/sebastianbergmann/phpunit/security/policy",
-                "source": "https://github.com/sebastianbergmann/phpunit/tree/10.5.40"
+                "source": "https://github.com/sebastianbergmann/phpunit/tree/10.5.41"
             },
             "funding": [
                 {
@@ -3915,7 +3915,7 @@
                     "type": "tidelift"
                 }
             ],
-            "time": "2024-12-21T05:49:06+00:00"
+            "time": "2025-01-13T09:33:05+00:00"
         },
         {
             "name": "sebastian/cli-parser",
