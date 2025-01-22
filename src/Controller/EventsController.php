@@ -36,6 +36,7 @@ class EventsController extends Controller
             $span->setData([
                 'gibpotato.potatoes.event_processing_time' => microtime(true) - $startTimestamp,
                 'gibpotato.potatoes.event_size' => mb_strlen(serialize($this->request->getData()), '8bit'),
+                'gibpotato.event_type' => $event->type,
             ]);
         }
 

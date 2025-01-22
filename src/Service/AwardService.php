@@ -65,6 +65,7 @@ class AwardService
         if ($span !== null) {
             $span->setData([
                 'gibpotato.potatoes.given_out' => $event->amount,
+                'gibpotato.event_type' => $event->type,
             ]);
         }
     }
