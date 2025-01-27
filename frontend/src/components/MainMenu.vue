@@ -3,7 +3,7 @@
         <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
             <div class="flex h-16 items-center justify-between">
                 <div class="flex items-center">
-                    <div class="flex-shrink-0 font-bold text-zinc-900">
+                    <div class="shrink-0 font-bold text-zinc-900">
                         <a href="/">
                             GibPotato
                         </a>
@@ -13,28 +13,28 @@
                             <RouterLink
                                 to="/"
                                 class="rounded-md px-3 py-2 text-sm font-medium text-zinc-900"
-                                :class="{ '!bg-zinc-900 !text-zinc-50': $route.path === '/' }"
+                                :class="{ 'bg-zinc-900! text-zinc-50!': $route.path === '/' }"
                             >
                                 Home
                             </RouterLink>
                             <RouterLink
                                 to="/shop"
                                 class="rounded-md px-3 py-2 text-sm font-medium text-zinc-900"
-                                :class="{ '!bg-zinc-900 !text-zinc-50': $route.path === '/shop' }"
+                                :class="{ 'bg-zinc-900! text-zinc-50!': $route.path === '/shop' }"
                             >
                                 Shop
                             </RouterLink>
                             <RouterLink
                                 to="/collection"
                                 class="rounded-md px-3 py-2 text-sm font-medium text-zinc-900"
-                                :class="{ '!bg-zinc-900 !text-zinc-50': $route.path === '/collection' }"
+                                :class="{ 'bg-zinc-900! text-zinc-50!': $route.path === '/collection' }"
                             >
                                 Collection
                             </RouterLink>
                             <RouterLink
                                 to="/quick-wins"
                                 class="rounded-md px-3 py-2 text-sm font-medium text-zinc-900"
-                                :class="{ '!bg-zinc-900 !text-zinc-50': $route.path === '/quick-wins' }"
+                                :class="{ 'bg-zinc-900! text-zinc-50!': $route.path === '/quick-wins' }"
                             >
                                 Quick Wins
                             </RouterLink>
@@ -53,7 +53,7 @@
                                 </button>
                             </div>
                             <div v-show="menuOpen === true"
-                                class="absolute right-0 z-10 mt-2 w-48 origin-top-right rounded-md bg-zinc-50 dark:bg-zinc-800 py-1 shadow-lg ring-1 ring-zinc-900 ring-opacity-5 focus:outline-none">
+                                class="absolute right-0 z-10 mt-2 w-48 origin-top-right rounded-md bg-zinc-50 dark:bg-zinc-800 py-1 shadow-lg ring-1 ring-zinc-900 ring-opacity-5 focus:outline-hidden">
                                 <RouterLink to="/profile" class="block px-4 py-2 text-sm"
                                     :class="{ 'bg-zinc-200 dark:bg-zinc-900': $route.path === '/profile' }">
                                     Your Profile
@@ -93,35 +93,35 @@
                 <RouterLink
                     to="/"
                     class="block rounded-md px-3 py-2 text-base font-medium text-zinc-900"
-                    :class="{ '!bg-zinc-900 !text-zinc-50': $route.path === '/' }"
+                    :class="{ 'bg-zinc-900! text-zinc-50!': $route.path === '/' }"
                 >
                     Home
                 </RouterLink>
                 <RouterLink
                     to="/shop"
                     class="block rounded-md px-3 py-2 text-base font-medium text-zinc-900"
-                    :class="{ '!bg-zinc-900 !text-zinc-50': $route.path === '/shop' }"
+                    :class="{ 'bg-zinc-900! text-zinc-50!': $route.path === '/shop' }"
                 >
                     Shop
                 </RouterLink>
                 <RouterLink
                     to="/collection"
                     class="block rounded-md px-3 py-2 text-base font-medium text-zinc-900"
-                    :class="{ '!bg-zinc-900 !text-zinc-50': $route.path === '/collection' }"
+                    :class="{ 'bg-zinc-900! text-zinc-50!': $route.path === '/collection' }"
                 >
                     Collection
                 </RouterLink>
                 <RouterLink
                     to="/quick-wins"
                     class="block rounded-md px-3 py-2 text-base font-medium text-zinc-900"
-                    :class="{ '!bg-zinc-900 !text-zinc-50': $route.path === '/quick-wins' }"
+                    :class="{ 'bg-zinc-900! text-zinc-50!': $route.path === '/quick-wins' }"
                 >
                     Quick Wins
                 </RouterLink>
             </div>
             <div class="border-t border-zinc-900 pt-4 pb-3">
                 <div class="flex items-center px-5">
-                    <div class="flex-shrink-0">
+                    <div class="shrink-0">
                         <img class="h-10 w-10 rounded-full" :src="user.slack_picture">
                     </div>
                     <div class="ml-3">
@@ -131,13 +131,13 @@
                 </div>
                 <div class="mt-3 space-y-1 px-2">
                     <RouterLink to="/profile" class="block rounded-md px-3 py-2 text-base font-medium text-zinc-900"
-                        :class="{ '!bg-zinc-900 !text-zinc-50': $route.path === '/profile' }">
+                        :class="{ 'bg-zinc-900! text-zinc-50!': $route.path === '/profile' }">
                         Your Profile
                     </RouterLink>
                     <RouterLink
                         to="/settings"
                         class="block rounded-md px-3 py-2 text-base font-medium text-zinc-900"
-                        :class="{ '!bg-zinc-900 !text-zinc-50': $route.path === '/settings' }"
+                        :class="{ 'bg-zinc-900! text-zinc-50!': $route.path === '/settings' }"
                     >
                         Settings
                     </RouterLink>
