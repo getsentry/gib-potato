@@ -2,7 +2,6 @@ import { fileURLToPath, URL } from 'node:url';
 
 import { defineConfig, loadEnv } from "vite";
 import vue from '@vitejs/plugin-vue';
-import tailwindcss from "@tailwindcss/vite";
 import { sentryVitePlugin } from '@sentry/vite-plugin';
 import { codecovVitePlugin } from "@codecov/vite-plugin";
 
@@ -15,7 +14,6 @@ export default defineConfig(({ mode }) => {
   return {
     plugins: [
       vue(),
-      tailwindcss(),
       sentryVitePlugin({
         org: "sentry",
         project: "gibpotato-frontend",
