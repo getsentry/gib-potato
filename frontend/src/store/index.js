@@ -1,4 +1,5 @@
 import { createStore } from 'vuex'
+import * as Sentry from '@sentry/vue'
 import api from '@/api'
 import helper from '@/helper'
 
@@ -39,6 +40,7 @@ const store = createStore({
                 commit('SET_LEADERBOARD', response.data)
             } catch (error) {
                 console.log(error)
+                Sentry._experiment_log.error`${error}`;
             }
         },
         async getUser({ commit }) {
@@ -47,6 +49,7 @@ const store = createStore({
                 commit('SET_USER', response.data)
             } catch (error) {
                 console.log(error)
+                Sentry._experiment_log.error`${error}`;
             }
         },
         async getUsers({ commit }) {
@@ -55,6 +58,7 @@ const store = createStore({
                 commit('SET_USERS', response.data)
             } catch (error) {
                 console.log(error)
+                Sentry._experiment_log.error`${error}`;
             }
         },
         async getProducts({ commit }) {
@@ -63,6 +67,7 @@ const store = createStore({
                 commit('SET_PRODUCTS', response.data)
             } catch (error) {
                 console.log(error)
+                Sentry._experiment_log.error`${error}`;
             }
         },
         async getCollection({ commit }) {
@@ -71,6 +76,7 @@ const store = createStore({
                 commit('SET_COLLECTION', response.data)
             } catch (error) {
                 console.log(error)
+                Sentry._experiment_log.error`${error}`;
             }
         },
         async getQuickWins({ commit }) {
@@ -79,6 +85,7 @@ const store = createStore({
                 commit('SET_QUICK_WINS', response.data)
             } catch (error) {
                 console.log(error)
+                Sentry._experiment_log.error`${error}`;
             }
         },
         async toggleSentNotifications({ commit, getters }) {
@@ -87,6 +94,7 @@ const store = createStore({
                 const response = await api.patch('user', getters.user)
             } catch (error) {
                 console.log(error)
+                Sentry._experiment_log.error`${error}`;
             }
         },
         async toggleReceivedNotifications({ commit, getters }) {
@@ -95,6 +103,7 @@ const store = createStore({
                 const response = await api.patch('user', getters.user)
             } catch (error) {
                 console.log(error)
+                Sentry._experiment_log.error`${error}`;
             }
         },
         async toggleTooGoodToGoNotifications({ commit, getters }) {
@@ -103,6 +112,7 @@ const store = createStore({
                 const response = await api.patch('user', getters.user)
             } catch (error) {
                 console.log(error)
+                Sentry._experiment_log.error`${error}`;
             }
         },
         setRangeFilter({ commit }, range) {
