@@ -71,7 +71,7 @@ import './assets/main.css'
     Sentry.setUser({
         username: document.querySelector('body').dataset.username,
     });
-    Sentry._experiment_log.info('Hello, world!');
+    Sentry._experiment_log.info`Hello, world`;
 
     api.init()
 
