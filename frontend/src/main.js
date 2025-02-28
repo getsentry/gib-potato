@@ -22,9 +22,13 @@ import './assets/main.css'
         environment: dataSet.sentryEnvironment,
         release: dataSet.sentryRelease,
         tracesSampleRate: 1.0,
-        profilesSampleRate: 1,
+        profilesSampleRate: 1.0,
         replaysSessionSampleRate: 1.0,
         replaysOnErrorSampleRate: 1.0,
+        debug: true,
+        _experiments: {
+            enableLogs: true,
+        },
         integrations: [
             Sentry.browserTracingIntegration({
                 enableInp: true,
@@ -67,6 +71,7 @@ import './assets/main.css'
     Sentry.setUser({
         username: document.querySelector('body').dataset.username,
     });
+    Sentry._experiment_log.info('Hello, world!');
 
     api.init()
 
