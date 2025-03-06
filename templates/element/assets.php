@@ -12,4 +12,5 @@ if (Configure::read('debug')) {
 } else {
     echo $this->Vite->css('frontend/src/main.js');
     echo $this->Vite->script('frontend/src/main.js');
+    echo '<script defer data-domain="gibpotato.app" src="https://plausible.io/js/script.js"></script>';
 }
