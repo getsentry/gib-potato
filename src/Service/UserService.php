@@ -50,11 +50,17 @@ class UserService
             throw new Exception('Slack API: User not found');
         }
 
+        $slackName = $slackUser['real_name'] 
+            ?? $slackUser['profile']['real_name'] 
+            ?? $slackUser['profile']['display_name'] 
+            ?? $slackUser['name'] 
+            ?? 'User ' . $slackUser['id'];
+
         $user = $this->Users->newEntity([
             'status' => User::STATUS_ACTIVE,
             'role' => User::ROLE_USER,
             'slack_user_id' => $slackUser['id'],
-            'slack_name' => $slackUser['real_name'],
+            'slack_name' => $slackName,
             'slack_picture' => $slackUser['profile']['image_72'],
             'slack_is_bot' => $slackUser['is_bot'] ?? false,
         ], [
