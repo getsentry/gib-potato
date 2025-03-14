@@ -43,28 +43,6 @@ class SendMessageCommand extends Command
      */
     public function execute(Arguments $args, ConsoleIo $io)
     {
-        withMonitor(
-            slug: 'send-tater-tuesday-message',
-            callback: fn () => $this->_execute($args, $io),
-            monitorConfig: new MonitorConfig(
-                schedule: new MonitorSchedule(
-                    type: MonitorSchedule::TYPE_CRONTAB,
-                    value: '0 18 * * 2',
-                ),
-                checkinMargin: 5,
-                maxRuntime: 10,
-                timezone: 'UTC',
-            ),
-        );
-    }
-
-    /**
-     * @param \Cake\Console\Arguments $args The command arguments.
-     * @param \Cake\Console\ConsoleIo $io The console io
-     * @return int|null|void The exit code or null for success
-     */
-    protected function _execute(Arguments $args, ConsoleIo $io)
-    {
         $message = $args->getArgument('message');
         $channel = $args->getArgument('channel');
 

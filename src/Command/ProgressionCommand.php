@@ -47,8 +47,8 @@ class ProgressionCommand extends Command
                     type: MonitorSchedule::TYPE_CRONTAB,
                     value: '13 * * * *',
                 ),
-                checkinMargin: 5,
-                maxRuntime: 10,
+                checkinMargin: 10,
+                maxRuntime: 15,
                 timezone: 'UTC',
             ),
         );
