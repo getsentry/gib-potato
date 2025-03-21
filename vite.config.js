@@ -39,6 +39,9 @@ export default defineConfig(({ mode }) => {
         input: './frontend/src/main.js',
       },
     },
+    server: {
+      cors: true,
+    },
     envDir: './frontend/config',
     resolve: {
       alias: {

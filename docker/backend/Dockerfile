@@ -58,7 +58,7 @@ EXPOSE 8080
 
 CMD [ "/bin/bash", "/run.sh" ]
 
-FROM node:18-bullseye AS js-build
+FROM node:22-bullseye AS js-build
 
 WORKDIR /app
 
