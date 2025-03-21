@@ -60,8 +60,8 @@ class TooGoodToGoCommand extends Command
                     type: MonitorSchedule::TYPE_CRONTAB,
                     value: '30 * * * 1-5',
                 ),
-                checkinMargin: 5,
-                maxRuntime: 10,
+                checkinMargin: 10,
+                maxRuntime: 15,
                 timezone: 'UTC',
             ),
         );
