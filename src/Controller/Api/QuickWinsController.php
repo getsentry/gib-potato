@@ -47,7 +47,7 @@ class QuickWinsController extends ApiController
                 $quickWin->message = str_replace(
                     "<@{$user->slack_user_id}>",
                     "<@{$user->slack_name}>",
-                    $quickWin->message
+                    $quickWin->message,
                 );
             }
         }

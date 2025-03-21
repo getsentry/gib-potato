@@ -84,7 +84,7 @@ class ShowAndTellCommand extends Command
             }
         }
 
-        $users = array_map(fn ($user) => '<@' . $user . '>', $users);
+        $users = array_map(fn($user) => '<@' . $user . '>', $users);
 
         $channelMessage = '🚨 *Show & Tell* potato awards are happening 🚨';
         $channelMessage .= PHP_EOL . PHP_EOL;

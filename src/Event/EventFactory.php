@@ -25,7 +25,7 @@ class EventFactory
             $scope->setTag('event_type', $eventType);
         });
         SentrySdk::getCurrentHub()->getTransaction()->setName(
-            SentrySdk::getCurrentHub()->getTransaction()->getName() . ' - ' . $eventType
+            SentrySdk::getCurrentHub()->getTransaction()->getName() . ' - ' . $eventType,
         );
 
         return match ($eventType) {

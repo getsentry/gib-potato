@@ -48,7 +48,7 @@ class SentryHelper extends Helper
 
         return $this->Html->meta(
             'sentry-trace',
-            $this->span->toTraceparent()
+            $this->span->toTraceparent(),
         );
     }
 
@@ -63,7 +63,7 @@ class SentryHelper extends Helper
 
         return $this->Html->meta(
             'baggage',
-            $this->span->toBaggage()
+            $this->span->toBaggage(),
         );
     }
 }

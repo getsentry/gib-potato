@@ -39,7 +39,7 @@ class AddPolls extends AbstractMigration
             ->addIndex(
                 [
                     'poll_id',
-                ]
+                ],
             )
             ->create();
 
@@ -62,12 +62,12 @@ class AddPolls extends AbstractMigration
             ->addIndex(
                 [
                     'poll_option_id',
-                ]
+                ],
             )
             ->addIndex(
                 [
                     'user_id',
-                ]
+                ],
             )
             ->create();
 
@@ -105,7 +105,7 @@ class AddPolls extends AbstractMigration
             ->addIndex(
                 [
                     'user_id',
-                ]
+                ],
             )
             ->create();
 
@@ -117,7 +117,7 @@ class AddPolls extends AbstractMigration
                 [
                     'update' => 'NO_ACTION',
                     'delete' => 'NO_ACTION',
-                ]
+                ],
             )
             ->update();
 
@@ -129,7 +129,7 @@ class AddPolls extends AbstractMigration
                 [
                     'update' => 'NO_ACTION',
                     'delete' => 'NO_ACTION',
-                ]
+                ],
             )
             ->addForeignKey(
                 'user_id',
@@ -138,7 +138,7 @@ class AddPolls extends AbstractMigration
                 [
                     'update' => 'NO_ACTION',
                     'delete' => 'NO_ACTION',
-                ]
+                ],
             )
             ->update();
 
@@ -150,7 +150,7 @@ class AddPolls extends AbstractMigration
                 [
                     'update' => 'NO_ACTION',
                     'delete' => 'NO_ACTION',
-                ]
+                ],
             )
             ->update();
     }
@@ -167,20 +167,20 @@ class AddPolls extends AbstractMigration
     {
         $this->table('poll_options')
             ->dropForeignKey(
-                'poll_id'
+                'poll_id',
             )->save();
 
         $this->table('poll_responses')
             ->dropForeignKey(
-                'poll_option_id'
+                'poll_option_id',
             )
             ->dropForeignKey(
-                'user_id'
+                'user_id',
             )->save();
 
         $this->table('polls')
             ->dropForeignKey(
-                'user_id'
+                'user_id',
             )->save();
 
         $this->table('poll_options')->drop()->save();

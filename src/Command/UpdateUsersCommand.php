@@ -51,7 +51,7 @@ class UpdateUsersCommand extends Command
     {
         withMonitor(
             slug: 'update-users',
-            callback: fn () => $this->_execute($args, $io),
+            callback: fn() => $this->_execute($args, $io),
             monitorConfig: new MonitorConfig(
                 schedule: new MonitorSchedule(
                     type: MonitorSchedule::TYPE_CRONTAB,

@@ -104,7 +104,7 @@ class MessageEvent extends AbstractEvent
         if ($stored === true) {
             $notificationService->notifyChannelNewQuickwin(
                 fromUser: $fromUser,
-                event: $this
+                event: $this,
             );
         }
     }

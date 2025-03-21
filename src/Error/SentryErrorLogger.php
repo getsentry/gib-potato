@@ -35,7 +35,7 @@ class SentryErrorLogger extends ErrorLogger
     public function logException(
         Throwable $exception,
         ?ServerRequestInterface $request = null,
-        bool $includeTrace = false
+        bool $includeTrace = false,
     ): void {
         $hint = EventHint::fromArray([
             'exception' => $exception,

@@ -87,7 +87,7 @@ class AddProductsAndPurchases extends AbstractMigration
             ->addIndex(
                 [
                     'user_id',
-                ]
+                ],
             )
             ->create();
 
@@ -99,7 +99,7 @@ class AddProductsAndPurchases extends AbstractMigration
                 [
                     'update' => 'NO_ACTION',
                     'delete' => 'NO_ACTION',
-                ]
+                ],
             )
             ->update();
     }
@@ -116,7 +116,7 @@ class AddProductsAndPurchases extends AbstractMigration
     {
         $this->table('purchases')
             ->dropForeignKey(
-                'user_id'
+                'user_id',
             )->save();
 
         $this->table('products')->drop()->save();

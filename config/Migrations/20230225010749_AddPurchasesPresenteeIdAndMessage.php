@@ -34,7 +34,7 @@ class AddPurchasesPresenteeIdAndMessage extends AbstractMigration
                 ],
                 [
                     'name' => 'presentee_id',
-                ]
+                ],
             )
             ->update();
 
@@ -46,7 +46,7 @@ class AddPurchasesPresenteeIdAndMessage extends AbstractMigration
                 [
                     'update' => 'NO_ACTION',
                     'delete' => 'NO_ACTION',
-                ]
+                ],
             )
             ->update();
     }
@@ -63,7 +63,7 @@ class AddPurchasesPresenteeIdAndMessage extends AbstractMigration
     {
         $this->table('purchases')
             ->dropForeignKey(
-                'presentee_id'
+                'presentee_id',
             )->save();
 
         $this->table('purchases')

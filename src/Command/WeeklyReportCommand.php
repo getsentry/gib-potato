@@ -47,7 +47,7 @@ class WeeklyReportCommand extends Command
     {
         withMonitor(
             slug: 'weekly-report',
-            callback: fn () => $this->_execute($args, $io),
+            callback: fn() => $this->_execute($args, $io),
             monitorConfig: new MonitorConfig(
                 schedule: new MonitorSchedule(
                     type: MonitorSchedule::TYPE_CRONTAB,

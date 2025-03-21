@@ -28,8 +28,8 @@ class Client extends CakeClient
                     strtoupper($request->getMethod()),
                     $request->getUri()->getScheme(),
                     $request->getUri()->getHost(),
-                    $request->getUri()->getPath()
-                )
+                    $request->getUri()->getPath(),
+                ),
             );
             $context->setData([
                 'http.query' => $request->getUri()->getQuery(),
