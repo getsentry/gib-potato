@@ -25,7 +25,6 @@ import './assets/main.css'
         profilesSampleRate: 1.0,
         replaysSessionSampleRate: 1.0,
         replaysOnErrorSampleRate: 1.0,
-        debug: true,
         _experiments: {
             enableLogs: true,
         },
