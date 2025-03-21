@@ -44,7 +44,7 @@ class AddQuickWins extends AbstractMigration
             ->addIndex(
                 [
                     'sender_user_id',
-                ]
+                ],
             )
             ->create();
 
@@ -56,7 +56,7 @@ class AddQuickWins extends AbstractMigration
                 [
                     'update' => 'NO_ACTION',
                     'delete' => 'NO_ACTION',
-                ]
+                ],
             )
             ->update();
     }
@@ -73,7 +73,7 @@ class AddQuickWins extends AbstractMigration
     {
         $this->table('quick_wins')
             ->dropForeignKey(
-                'sender_user_id'
+                'sender_user_id',
             )->save();
 
         $this->table('quick_wins')->drop()->save();

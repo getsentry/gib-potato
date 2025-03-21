@@ -54,7 +54,7 @@ class TooGoodToGoCommand extends Command
     {
         withMonitor(
             slug: 'too-good-to-go',
-            callback: fn () => $this->_execute($args, $io),
+            callback: fn() => $this->_execute($args, $io),
             monitorConfig: new MonitorConfig(
                 schedule: new MonitorSchedule(
                     type: MonitorSchedule::TYPE_CRONTAB,

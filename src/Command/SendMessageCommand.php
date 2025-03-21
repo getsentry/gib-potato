@@ -45,7 +45,7 @@ class SendMessageCommand extends Command
     {
         withMonitor(
             slug: 'send-tater-tuesday-message',
-            callback: fn () => $this->_execute($args, $io),
+            callback: fn() => $this->_execute($args, $io),
             monitorConfig: new MonitorConfig(
                 schedule: new MonitorSchedule(
                     type: MonitorSchedule::TYPE_CRONTAB,

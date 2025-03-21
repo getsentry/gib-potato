@@ -44,12 +44,12 @@ class Initial extends AbstractMigration
             ->addIndex(
                 [
                     'sender_user_id',
-                ]
+                ],
             )
             ->addIndex(
                 [
                     'receiver_user_id',
-                ]
+                ],
             )
             ->create();
 
@@ -88,7 +88,7 @@ class Initial extends AbstractMigration
                 [
                     'slack_user_id',
                 ],
-                ['unique' => true]
+                ['unique' => true],
             )
             ->create();
 
@@ -100,7 +100,7 @@ class Initial extends AbstractMigration
                 [
                     'update' => 'NO_ACTION',
                     'delete' => 'NO_ACTION',
-                ]
+                ],
             )
             ->addForeignKey(
                 'receiver_user_id',
@@ -109,7 +109,7 @@ class Initial extends AbstractMigration
                 [
                     'update' => 'NO_ACTION',
                     'delete' => 'NO_ACTION',
-                ]
+                ],
             )
             ->update();
     }
@@ -126,10 +126,10 @@ class Initial extends AbstractMigration
     {
         $this->table('messages')
             ->dropForeignKey(
-                'sender_user_id'
+                'sender_user_id',
             )
             ->dropForeignKey(
-                'receiver_user_id'
+                'receiver_user_id',
             )->save();
 
         $this->table('messages')->drop()->save();

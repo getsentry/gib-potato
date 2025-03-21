@@ -64,7 +64,7 @@ class AddProgression extends AbstractMigration
                 [
                     'update' => 'NO_ACTION',
                     'delete' => 'NO_ACTION',
-                ]
+                ],
             )
             ->update();
     }
@@ -81,7 +81,7 @@ class AddProgression extends AbstractMigration
     {
         $this->table('users')
             ->dropForeignKey(
-                'progression_id'
+                'progression_id',
             )->save();
 
         $this->table('progression')->drop()->save();

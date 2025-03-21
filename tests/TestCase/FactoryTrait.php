@@ -43,7 +43,7 @@ trait FactoryTrait
                     ],
                     'is_bot' => false,
                 ],
-            ]))
+            ])),
         );
     }
 
@@ -53,7 +53,7 @@ trait FactoryTrait
             'https://slack.com/api/chat.postMessage',
             $this->newClientResponse(200, [], json_encode([
                 'ok' => true,
-            ]))
+            ])),
         );
     }
 
@@ -63,7 +63,7 @@ trait FactoryTrait
             'https://slack.com/api/views.publish',
             $this->newClientResponse(200, [], json_encode([
                 'ok' => true,
-            ]))
+            ])),
         );
     }
 }

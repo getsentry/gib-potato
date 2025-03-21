@@ -41,7 +41,7 @@ class Validation
         if ($this->event->amount * $recieversCount > Message::MAX_AMOUNT) {
             throw new PotatoException(
                 'Each :potato: is multiplied by the number of people you @ mention. ' .
-                'You can only gib out *5* potato a day 😢'
+                'You can only gib out *5* potato a day 😢',
             );
         }
 

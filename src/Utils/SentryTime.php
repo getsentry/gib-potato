@@ -26,7 +26,7 @@ class SentryTime
         $startOfQuarter = DateTime::create(
             year: $oneMonthAgo->year,
             month: $startOfQuarterMonth,
-            day: 1
+            day: 1,
         )->startOfDay();
 
         return $startOfQuarter;
