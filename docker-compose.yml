@@ -29,10 +29,6 @@ services:
         - POTAL_TOKEN
         - POTATO_CHANNEL
         - POTATO_SLACK_USER_ID
-        - RELAY_SECRET_KEY
-        - RELAY_PUBLIC_KEY
-        - RELAY_ID
-        - RELAY_LOG_LEVEL
     depends_on:
       - db
       - potal
