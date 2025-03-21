@@ -42,6 +42,8 @@ use Cake\Mailer\Mailer;
 use Cake\Mailer\TransportFactory;
 use Cake\Routing\Router;
 use Cake\Utility\Security;
+use Sentry\Agent\Transport\AgentClient;
+
 use function Cake\Core\env;
 use function Sentry\init;
 
@@ -97,6 +99,7 @@ try {
 
 init([
     'dsn' => env('SENTRY_BACKEND_DSN'),
+    'http_client' => new AgentClient(),
     'traces_sample_rate' => 1.0,
     'profiles_sample_rate' => 1.0,
     'environment' => env('ENVIRONMENT'),
@@ -106,7 +109,6 @@ init([
         ROOT . DS . 'vendor',
     ],
     'attach_stacktrace' => true,
-    'attach_metric_code_locations' => true,
 ]);
 
 /*
