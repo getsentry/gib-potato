@@ -4,6 +4,7 @@ import api from '@/api'
 import helper from '@/helper'
 
 const store = createStore({
+    // Update the initial state to have a fallback for user
     state () {
         return {
             leaderboard: [],
