@@ -43,7 +43,6 @@ use Cake\Mailer\TransportFactory;
 use Cake\Routing\Router;
 use Cake\Utility\Security;
 use Sentry\Agent\Transport\AgentClient;
-
 use function Cake\Core\env;
 use function Sentry\init;
 
