@@ -30,6 +30,10 @@ use function Sentry\withMonitor;
 class TooGoodToGoCommand extends Command
 {
     private const int TARGET_HOUR = 16;
+    // Monday (1) - Friday (5)
+    private const array TARGET_DAYS = [
+        1, 2, 3, 4, 5,
+    ];
 
     /**
      * Hook method for defining this command's option parser.
@@ -58,7 +62,7 @@ class TooGoodToGoCommand extends Command
             monitorConfig: new MonitorConfig(
                 schedule: new MonitorSchedule(
                     type: MonitorSchedule::TYPE_CRONTAB,
-                    value: '30 * * * 1-5',
+                    value: '30 * * *',
                 ),
                 checkinMargin: 10,
                 maxRuntime: 15,
@@ -154,7 +158,10 @@ class TooGoodToGoCommand extends Command
 
         foreach ($timeZones as $timezone) {
             $localNow = new Chronos(timezone: $timezone);
-            if ($localNow->hour === self::TARGET_HOUR) {
+            if (
+                $localNow->hour === self::TARGET_HOUR &&
+                in_array($localNow->dayOfWeek, self::TARGET_DAYS)
+            ) {
                 $applicableTimeZones[] = $timezone;
             }
         }
