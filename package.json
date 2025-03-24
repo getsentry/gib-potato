@@ -9,7 +9,7 @@
     "preview": "vite preview"
   },
   "dependencies": {
-    "@sentry/vue": "9.7.0-alpha.0",
+    "@sentry/vue": "9.6.0-alpha.0",
     "@sentry/vite-plugin": "^3.2.2",
     "axios": "^1.8.4",
     "vue": "^3.5.13",
