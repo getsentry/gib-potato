@@ -93,6 +93,7 @@ RUN sed -i "s/zend.assertions = 1/zend.assertions = -1/g" /etc/php/8.4/fpm/php.i
 WORKDIR /var/www/gib-potato
 
 COPY ./bin bin
+COPY ./docker/backend/cli.sh docker/backend/cli.sh
 COPY ./config config
 COPY ./resources resources
 COPY ./src src
