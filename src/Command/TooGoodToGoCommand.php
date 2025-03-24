@@ -62,7 +62,7 @@ class TooGoodToGoCommand extends Command
             monitorConfig: new MonitorConfig(
                 schedule: new MonitorSchedule(
                     type: MonitorSchedule::TYPE_CRONTAB,
-                    value: '30 * * *',
+                    value: '30 * * * *',
                 ),
                 checkinMargin: 10,
                 maxRuntime: 15,
