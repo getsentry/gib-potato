@@ -115,6 +115,7 @@ class Application extends BaseApplication
     protected function getCspPolicy(): CSPBuilder
     {
         $allow = [
+            'plausible.io',
             '*.plausible.io',
         ];
         if (Configure::read('debug')) {
