@@ -43,17 +43,17 @@
 </template>
 
 <script>
-import { computed } from 'vue'
-import { useStore } from 'vuex'
+import { useUser, useCollection } from '../queries'
 
 export default {
     name: 'Collection',
     setup() {
-        const store = useStore()
+        const { data: user } = useUser()
+        const { data: collection } = useCollection()
 
         return {
-            user: computed(() => store.getters.user),
-            collection: computed(() => store.getters.collection),
+            user,
+            collection,
         }
     },
 }

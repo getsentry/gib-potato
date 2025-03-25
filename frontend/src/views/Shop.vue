@@ -152,7 +152,7 @@
                         <button
                             v-if="user.spendable_count >= product.price"
                             class="inline-flex w-full justify-center rounded-md border border-transparent bg-amber-200 text-zinc-900 px-4 py-2 text-base font-medium sm:col-start-2 sm:text-sm"
-                            @click="purchase(product, presentee)"
+                            @click="handlePurchase"
                         >
                             Pay {{ product.price }} <span class="ml-2" :class="{ 'animate-spin': loading }">🥔</span>
                         </button>
@@ -195,12 +195,14 @@
 <script>
 import { computed } from 'vue'
 import { useUser, useUsers, useProducts } from '../queries'
+import { useQueryClient } from '@tanstack/vue-query'
 import api from '@/api'
 import 'vue-select/dist/vue-select.css'
 
 export default {
     name: 'Shop',
     setup() {
+        const queryClient = useQueryClient()
         const { data: user } = useUser()
         const { data: users } = useUsers()
         const { data: products } = useProducts()
@@ -209,10 +211,34 @@ export default {
             users.value?.filter(el => el.id !== user.value?.id) || []
         )
 
+        const purchase = async (product, presentee) => {
+            try {
+                await api.post('shop/purchase', {
+                    product_id: product.id,
+                    presentee_id: presentee?.id,
+                    message: presentee?.message,
+                    purchase_mode: presentee ? 'someone-else' : 'myself',
+                })
+
+                // Invalidate queries to refresh data
+                await Promise.all([
+                    queryClient.invalidateQueries({ queryKey: ['user'] }),
+                    queryClient.invalidateQueries({ queryKey: ['products'] }),
+                    queryClient.invalidateQueries({ queryKey: ['collection'] })
+                ])
+
+                return true
+            } catch (error) {
+                console.log(error)
+                throw error.response.data.error
+            }
+        }
+
         return {
             user,
             users: filteredUsers,
             products,
+            purchase,
         }
     },
     data() {
@@ -241,25 +267,18 @@ export default {
             this.purchaseSuccess = false
             this.purchaseMode = 'myself'
         },
-        async purchase() {
+        async handlePurchase() {
             this.loading = true
             this.modalError = null
 
             try {
-                await api.post('shop/purchase', {
-                    product_id: this.product.id,
-                    presentee_id: this.presentee?.id,
-                    message: this.message,
-                    purchase_mode: this.purchaseMode,
-                })
+                await this.purchase(this.product, this.purchaseMode === 'someone-else' ? {
+                    id: this.presentee?.id,
+                    message: this.message
+                } : null)
                 this.purchaseSuccess = true
-
-                await this.$store.dispatch('getUser')
-                await this.$store.dispatch('getProducts')
-                await this.$store.dispatch('getCollection')
             } catch (error) {
-                console.log(error)
-                this.modalError = error.response.data.error
+                this.modalError = error
             } finally {
                 this.loading = false
             }
