@@ -194,21 +194,25 @@
 
 <script>
 import { computed } from 'vue'
-import { useStore } from 'vuex'
-
+import { useUser, useUsers, useProducts } from '../queries'
 import api from '@/api'
-
-import 'vue-select/dist/vue-select.css';
+import 'vue-select/dist/vue-select.css'
 
 export default {
     name: 'Shop',
     setup() {
-        const store = useStore()
+        const { data: user } = useUser()
+        const { data: users } = useUsers()
+        const { data: products } = useProducts()
+
+        const filteredUsers = computed(() => 
+            users.value?.filter(el => el.id !== user.value?.id) || []
+        )
 
         return {
-            user: computed(() => store.getters.user),
-            users: computed(() => store.getters.users.filter((el) => el.id !== store.getters.user.id)),
-            products: computed(() => store.getters.products),
+            user,
+            users: filteredUsers,
+            products,
         }
     },
     data() {

@@ -91,37 +91,26 @@
 </template>
 
 <script>
-import { computed } from 'vue'
-import { useStore } from 'vuex'
-
+import { useUser } from '../queries'
+import { useQuery } from '@tanstack/vue-query'
 import api from '@/api'
 
 export default {
     name: 'Profile',
     setup() {
-        const store = useStore()
+        const { data: user } = useUser()
+        const { data: messages } = useQuery({
+            queryKey: ['profile-messages'],
+            queryFn: async () => {
+                const response = await api.get('user/profile')
+                return response.data
+            }
+        })
 
         return {
-            user: computed(() => store.getters.user),
-        };
-    },
-    data() {
-        return {
-            messages: []
+            user,
+            messages
         }
-    },
-    mounted() {
-        this.fetchMessages()
-    },
-    methods: {
-        async fetchMessages() {
-            try {
-                const response = await api.get('user/profile')
-                this.messages = response.data
-            } catch (error) {
-                console.log(error)
-            }
-        },
     }
 }
 </script>

@@ -47,8 +47,7 @@
 </template>
 
 <script>
-import { computed } from 'vue'
-import { useStore } from 'vuex'
+import { useQuickWins } from '../queries'
 import FormattedMessage from '../components/FormattedMessage.vue'
 
 export default {
@@ -57,11 +56,8 @@ export default {
         FormattedMessage,
     },
     setup() {
-        const store = useStore()
-
-        return {
-            quickWins: computed(() => store.getters.quickWins),
-        }
+        const { data: quickWins } = useQuickWins()
+        return { quickWins }
     },
 }
 

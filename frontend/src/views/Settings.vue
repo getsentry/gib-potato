@@ -74,28 +74,56 @@
 </template>
 
 <script>
-import { computed } from 'vue'
-import { useStore } from 'vuex'
+import { useUser, useUpdateUserNotifications } from '../queries'
 
 export default {
     name: 'Settings',
     setup() {
-        const store = useStore()
+        const { data: user } = useUser()
+        const updateNotifications = useUpdateUserNotifications()
+
+        const toggleSentNotifications = () => {
+            if (!user.value) return
+            const updatedUser = {
+                ...user.value,
+                notifications: {
+                    ...user.value.notifications,
+                    sent: !user.value.notifications.sent
+                }
+            }
+            updateNotifications.mutate(updatedUser)
+        }
+
+        const toggleReceivedNotifications = () => {
+            if (!user.value) return
+            const updatedUser = {
+                ...user.value,
+                notifications: {
+                    ...user.value.notifications,
+                    received: !user.value.notifications.received
+                }
+            }
+            updateNotifications.mutate(updatedUser)
+        }
+
+        const toggleTooGoodToGoNotifications = () => {
+            if (!user.value) return
+            const updatedUser = {
+                ...user.value,
+                notifications: {
+                    ...user.value.notifications,
+                    too_good_to_go: !user.value.notifications.too_good_to_go
+                }
+            }
+            updateNotifications.mutate(updatedUser)
+        }
 
         return {
-            user: computed(() => store.getters.user),
-        };
-    },
-    methods: {
-        toggleSentNotifications() {
-            this.$store.dispatch('toggleSentNotifications')
-        },
-        toggleReceivedNotifications() {
-            this.$store.dispatch('toggleReceivedNotifications')
-        },
-        toggleTooGoodToGoNotifications() {
-            this.$store.dispatch('toggleTooGoodToGoNotifications')
-        },
-    },
+            user,
+            toggleSentNotifications,
+            toggleReceivedNotifications,
+            toggleTooGoodToGoNotifications
+        }
+    }
 }
 </script>
