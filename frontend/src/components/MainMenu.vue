@@ -151,18 +151,17 @@
 </template>
 
 <script>
-import { computed } from 'vue'
-import { useStore } from 'vuex'
 import { RouterLink } from 'vue-router'
+import { useUser } from '../queries'
 
 export default {
     name: 'Menu',
     components: { RouterLink },
     setup() {
-        const store = useStore()
+        const { data: user } = useUser()
 
         return {
-            user: computed(() => store.getters.user),
+            user,
         };
     },
     watch: {

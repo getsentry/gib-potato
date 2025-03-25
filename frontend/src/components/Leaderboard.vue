@@ -41,15 +41,16 @@
 </template>
 
 <script>
-import { computed } from 'vue';
-import { useStore } from 'vuex';
+import { useLeaderboard, useFilter } from '../queries'
 
 export default {
     name: 'Leaderboard',
     setup() {
-        const store = useStore()
+        const { filter } = useFilter()
+        const { data: users } = useLeaderboard(filter)
+
         return {
-            users: computed(() => store.getters.leaderboard),
+            users,
         }
     },
 };

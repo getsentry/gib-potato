@@ -55,26 +55,26 @@
 </template>
 
 <script>
-import { computed } from 'vue';
-import { useStore } from 'vuex';
+import { useFilter } from '../queries'
 
 export default {
     name: 'Filter',
     setup() {
-        const store = useStore()
+        const { filter, setRangeFilter, setOrderFilter } = useFilter()
+
+        const updateRangeFilter = (range) => {
+            setRangeFilter(range)
+        }
+
+        const updateOrderFilter = (order) => {
+            setOrderFilter(order)
+        }
+
         return {
-            filter: computed(() => store.getters.filter)
+            filter,
+            updateRangeFilter,
+            updateOrderFilter,
         }
     },
-    methods: {
-        updateRangeFilter(range) {
-            this.$store.dispatch('setRangeFilter', range)
-            this.$store.dispatch('getLeaderboard')
-        },
-        updateOrderFilter(order) {
-            this.$store.dispatch('setOrderFilter', order)
-            this.$store.dispatch('getLeaderboard')
-        },
-    }
-};
+}
 </script>
