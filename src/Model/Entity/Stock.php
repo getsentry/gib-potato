@@ -10,7 +10,6 @@ use Cake\ORM\Entity;
  *
  * @property int $id
  * @property string $symbol
- * @property int $volatility
  * @property \Cake\I18n\DateTime|null $created
  * @property string|null $description
  *
@@ -30,7 +29,6 @@ class Stock extends Entity
      */
     protected array $_accessible = [
         'symbol' => true,
-        'volatility' => true,
         'created' => true,
         'description' => true,
         'shares' => true,

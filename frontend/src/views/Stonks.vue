@@ -9,7 +9,7 @@
         <button class="ml-4 flex justify-center rounded-md border border-zinc-300 px-3 py-1 text-sm">Gib Credit</button>
     </div>
 
-    <div class="mt-16 grid grid-cols-1 gap-y-12 sm:grid-cols-2 sm:gap-x-6 lg:grid-cols-4 xl:gap-x-8">
+    <div class="mt-16 grid grid-cols-1 gap-y-12 sm:grid-cols-2 sm:gap-x-6 lg:grid-cols-3 xl:gap-x-8">
         <div
             v-for="(stonk, index) in stonks.stonks"
             class="h-full flex flex-col"
@@ -67,10 +67,6 @@
                             <span class="text-zinc-500">Mkt Cap</span>
                             <span class="ml-auto font-semibold">{{ stonk.stock_info.market_cap }}</span>
                         </div>
-                        <div class="flex text-sm">
-                            <span class="text-zinc-500">???</span>
-                            <span class="ml-auto font-semibold">{{ stonk.stock_info.something }}</span>
-                        </div>
                     </div>
                 </div>
                 <div class="mt-8">
@@ -108,7 +104,7 @@
     <h2 class="mt-16 text-lg font-medium leading-6">
         Your order history
     </h2>
-    <table class="w-full table-auto divide-y divide-zinc-300 mt-4">
+    <table class="w-full table-auto divide-y divide-zinc-300 mt-4 mb-36">
         <thead>
             <tr>
                 <th scope="col" class="py-3.5 pr-3 text-left text-sm font-semibold">
@@ -119,6 +115,9 @@
                 </th>
                 <th scope="col" class="py-3.5 px-3 text-left text-sm font-semibold">
                     Status
+                </th>
+                <th scope="col" class="py-3.5 px-3 text-right text-sm font-semibold">
+                    Max/Min Price
                 </th>
                 <th scope="col" class="py-3.5 px-3 text-right text-sm font-semibold">
                     Price
@@ -157,7 +156,28 @@
                         '!text-red-500': trade.type === 'buy',
                     }"
                 >
-                <span v-if="trade.type === 'sell'">+</span><span v-if="trade.type === 'buy'">-</span>{{ trade.price }}
+                    <span
+                        v-if="trade.type === 'sell' && trade.proposed_price"
+                    >+</span>
+                    <span
+                        v-if="trade.type === 'buy' && trade.proposed_price"
+                    >-</span>{{ trade.proposed_price }}
+
+                </td>
+                <td
+                    class="whitespace-nowrap py-4 px-3 text-right text-sm font-bold"
+                    :class="{
+                        '!text-green-500': trade.type === 'sell',
+                        '!text-red-500': trade.type === 'buy',
+                    }"
+                >
+                    <span
+                        v-if="trade.type === 'sell' && trade.price !== null"
+                    >+</span>
+                    <span v-else>-</span>
+                    <span
+                        v-if="trade.type === 'buy' && trade.price !== null"
+                    >-</span>{{ trade.price }}
 
                 </td>
                 <td class="relative whitespace-nowrap py-4 pl-3 pr-4 text-right text-sm">
@@ -172,7 +192,7 @@
 
         <div class="fixed inset-0 z-10 overflow-y-auto">
             <div class="flex min-h-full items-end justify-center p-4 text-center sm:items-center sm:p-0">
-                <div class="relative transform overflow-hidden rounded-lg bg-zinc-50 dark:bg-zinc-900 px-4 pt-5 pb-4 text-left shadow-xl transition-all sm:my-8 sm:w-full sm:max-w-sm sm:p-6">
+                <div class="relative transform overflow-hidden rounded-lg bg-zinc-50 dark:bg-zinc-900 px-4 pt-5 pb-4 text-left shadow-xl transition-all sm:my-8 sm:w-full sm:max-w-md sm:p-6">
                     <div>
                         <div>
                             <div v-if="modalError" class="rounded-md bg-red-50 p-4 mb-4">
@@ -253,9 +273,20 @@
                                 <input
                                     type="number"
                                     min="1"
+                                    max="9999"
+                                    v-model="price"
+                                    class="mt-8 w-full rounded-md text-sm p-2 text-zinc-900 border border-zinc-300 ring-offset-zinc-50 dark:ring-offset-zinc-900 focus:border-indigo-500 focus:ring-indigo-500"
+                                    :placeholder="{
+                                        'Maximum buy price': orderMode === 'buy',
+                                        'Minimum sell price': orderMode === 'sell',
+                                    }"
+                                />
+                                <input
+                                    type="number"
+                                    min="1"
                                     max="100"
                                     v-model="amount"
-                                    class="mt-8 w-full rounded-md text-sm p-2 text-zinc-900 border border-zinc-300 ring-offset-zinc-50 dark:ring-offset-zinc-900 focus:border-indigo-500 focus:ring-indigo-500"
+                                    class="mt-3 w-full rounded-md text-sm p-2 text-zinc-900 border border-zinc-300 ring-offset-zinc-50 dark:ring-offset-zinc-900 focus:border-indigo-500 focus:ring-indigo-500"
                                 />
                             </div>
                         </div>
@@ -270,7 +301,7 @@
                                 class="inline-flex w-full justify-center rounded-md border border-transparent bg-amber-200 text-zinc-900 px-4 py-2 text-base font-medium sm:col-start-2 sm:text-sm"
                                 @click="order()"
                             >
-                                Buy for {{ stonk.share_price * amount }} <span class="ml-2" :class="{ 'animate-spin': loading }">🥔</span>
+                                Place order {{ price * amount }} <span class="ml-2" :class="{ 'animate-spin': loading }">🥔</span>
                             </button>
                             <button
                                 v-else
@@ -286,7 +317,7 @@
                                 class="inline-flex w-full justify-center rounded-md border border-transparent bg-amber-200 text-zinc-900 px-4 py-2 text-base font-medium sm:col-start-2 sm:text-sm"
                                 @click="order()"
                             >
-                                Sell for {{ stonk.share_price * amount }} <span class="ml-2" :class="{ 'animate-spin': loading }">🥔</span>
+                                Place Order {{ price * amount }} <span class="ml-2" :class="{ 'animate-spin': loading }">🥔</span>
                             </button>
                             <button
                                 v-else
@@ -404,6 +435,7 @@ export default {
             orderMode: 'buy',
             orderSuccess: false,
             amount: 1,
+            price: null,
             modalOpen: false,
             modalError: null,
             loading: false,
@@ -420,6 +452,7 @@ export default {
             this.orderMode = 'buy'
             this.orderSuccess = false
             this.amount = 1
+            this.price = null
             this.modalError = null
             this.modalOpen = false
         },
@@ -431,6 +464,7 @@ export default {
                 await api.post('stonks/order', {
                     stock_id: this.stonk.id,
                     amount: this.amount,
+                    proposed_price: this.price,
                     order_mode: this.orderMode,
                 })
                 this.orderSuccess = true

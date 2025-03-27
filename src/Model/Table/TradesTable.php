@@ -55,6 +55,11 @@ class TradesTable extends Table
             'foreignKey' => 'share_id',
             'joinType' => 'INNER',
         ]);
+
+        $this->belongsTo('Stocks', [
+            'foreignKey' => 'stock_id',
+            'joinType' => 'INNER',
+        ]);
     }
 
     /**
@@ -68,15 +73,23 @@ class TradesTable extends Table
         $validator
             ->uuid('user_id')
             ->allowEmptyString('user_id');
+        
+            $validator
+            ->integer('stock_id')
+            ->allowEmptyString('stock_id');
 
         $validator
             ->integer('share_id')
-            ->notEmptyString('share_id');
+            ->allowEmptyString('share_id');
 
         $validator
             ->integer('price')
-            ->requirePresence('price', 'create')
-            ->notEmptyString('price');
+            ->allowEmptyString('price', 'create');
+        
+        $validator
+            ->integer('proposed_price')
+            ->requirePresence('proposed_price', 'create')
+            ->notEmptyString('proposed_price');
 
         $validator
             ->scalar('status')
@@ -103,6 +116,7 @@ class TradesTable extends Table
     public function buildRules(RulesChecker $rules): RulesChecker
     {
         $rules->add($rules->existsIn(['user_id'], 'Users'), ['errorField' => 'user_id']);
+        $rules->add($rules->existsIn(['share_id'], 'Stocks'), ['errorField' => 'stock_id']);
         $rules->add($rules->existsIn(['share_id'], 'Shares'), ['errorField' => 'share_id']);
 
         return $rules;

@@ -228,6 +228,7 @@ class User extends Entity
             ->where([
                 'user_id' => $this->id,
                 'type' => Trade::TYPE_BUY,
+                'status' => Trade::STATUS_DONE,
             ])
             ->first()
             ->price;
@@ -239,6 +240,7 @@ class User extends Entity
             ->where([
                 'user_id' => $this->id,
                 'type' => Trade::TYPE_SELL,
+                'status' => Trade::STATUS_DONE,
             ])
             ->first()
             ->price;
