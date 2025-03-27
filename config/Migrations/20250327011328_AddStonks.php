@@ -80,14 +80,29 @@ class AddStonks extends BaseMigration
             ->create();
 
         $this->table('trades')
-            ->addColumn('user_id', 'integer', [
+            ->addColumn('user_id', 'uuid', [
                 'default' => null,
-                'limit' => 10,
-                'null' => false,
+                'limit' => null,
+                'null' => true,
             ])
             ->addColumn('share_id', 'integer', [
                 'default' => null,
                 'limit' => 10,
+                'null' => false,
+            ])
+            ->addColumn('price', 'integer', [
+                'default' => null,
+                'limit' => 10,
+                'null' => false,
+            ])
+            ->addColumn('status', 'string', [
+                'default' => null,
+                'limit' => 255,
+                'null' => false,
+            ])
+            ->addColumn('type', 'string', [
+                'default' => null,
+                'limit' => 255,
                 'null' => false,
             ])
             ->addColumn('created', 'timestamp', [

@@ -9,14 +9,25 @@ use Cake\ORM\Entity;
  * Trade Entity
  *
  * @property int $id
- * @property int $user_id
+ * @property string|null $user_id
  * @property int $share_id
+ * @property int $price
+ * @property string $status
+ * @property string $type
+ * @property \Cake\I18n\DateTime|null $created
  *
  * @property \App\Model\Entity\User $user
  * @property \App\Model\Entity\Share $share
  */
 class Trade extends Entity
 {
+    public const STATUS_PENDING = 'pending';
+    public const STATUS_EXECUTED = 'executed';
+    public const STATUS_FAILED = 'failed';
+
+    public const TYPE_BUY = 'buy';
+    public const TYPE_SELL = 'sell';
+
     /**
      * Fields that can be mass assigned using newEntity() or patchEntity().
      *
@@ -29,6 +40,10 @@ class Trade extends Entity
     protected array $_accessible = [
         'user_id' => true,
         'share_id' => true,
+        'price' => true,
+        'status' => true,
+        'type' => true,
+        'created' => true,
         'user' => true,
         'share' => true,
     ];

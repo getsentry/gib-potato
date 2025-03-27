@@ -75,8 +75,8 @@ return static function (RouteBuilder $routes): void {
 
             $builder->get('/user/profile', ['prefix' => 'Api', 'controller' => 'Users', 'action' => 'profile']);
 
-            $builder->get('/stonks', ['prefix' => 'Api', 'controller' => 'stonks', 'action' => 'list']);
-            $builder->post('/stonks/order', ['prefix' => 'Api', 'controller' => 'stonks', 'action' => 'order']);
+            $builder->get('/stonks', ['prefix' => 'Api', 'controller' => 'Stonks', 'action' => 'list']);
+            $builder->post('/stonks/order', ['prefix' => 'Api', 'controller' => 'Stonks', 'action' => 'order']);
 
             $builder->get('/shop/products', ['prefix' => 'Api', 'controller' => 'Shop', 'action' => 'products']);
             $builder->post('/shop/purchase', ['prefix' => 'Api', 'controller' => 'Shop', 'action' => 'purchase']);
