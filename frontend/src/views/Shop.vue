@@ -3,7 +3,7 @@
         <h2 class="text-lg font-medium leading-6">You can spend up to {{ user.spendable_count ?? 0 }} 🥔</h2>
     </div>
 
-    <div class="mt-8 grid grid-cols-1 gap-y-12 sm:grid-cols-2 sm:gap-x-6 lg:grid-cols-4 xl:gap-x-8 mb-32">
+    <div class="mt-16 grid grid-cols-1 gap-y-12 sm:grid-cols-2 sm:gap-x-6 lg:grid-cols-4 xl:gap-x-8 mb-32">
         <div
             v-for="(product, index) in products"
             class="h-full flex flex-col"

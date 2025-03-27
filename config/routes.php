@@ -60,6 +60,7 @@ return static function (RouteBuilder $routes): void {
         $builder->connect('/shop', ['controller' => 'Home', 'action' => 'index']);
         $builder->connect('/collection', ['controller' => 'Home', 'action' => 'index']);
         $builder->connect('/quick-wins', ['controller' => 'Home', 'action' => 'index']);
+        $builder->connect('/stonks', ['controller' => 'Home', 'action' => 'index']);
         $builder->connect('/profile', ['controller' => 'Home', 'action' => 'index']);
         $builder->connect('/settings', ['controller' => 'Home', 'action' => 'index']);
 
@@ -73,6 +74,9 @@ return static function (RouteBuilder $routes): void {
             $builder->patch('/user', ['prefix' => 'Api', 'controller' => 'Users', 'action' => 'edit']);
 
             $builder->get('/user/profile', ['prefix' => 'Api', 'controller' => 'Users', 'action' => 'profile']);
+
+            $builder->get('/stonks', ['prefix' => 'Api', 'controller' => 'stonks', 'action' => 'list']);
+            $builder->post('/stonks/order', ['prefix' => 'Api', 'controller' => 'stonks', 'action' => 'order']);
 
             $builder->get('/shop/products', ['prefix' => 'Api', 'controller' => 'Shop', 'action' => 'products']);
             $builder->post('/shop/purchase', ['prefix' => 'Api', 'controller' => 'Shop', 'action' => 'purchase']);
