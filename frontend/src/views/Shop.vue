@@ -228,6 +228,20 @@ export default {
             purchaseSuccess: false,
         }
     },
+    mounted() {
+        window.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape') {
+                this.closeModal()
+            }
+        })
+    },
+    beforeUnmount() {
+        window.removeEventListener('keydown', (e) => {
+            if (e.key === 'Escape') {
+                this.closeModal()
+            }
+        })
+    },
     methods: {
         openModal(product) {
             this.product = product

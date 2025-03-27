@@ -31,15 +31,21 @@
                         <span class="text-xl font-semibold text-white">
                             {{ stonk.share_price }}
                         </span>
-                        <span
-                            class="text-zinc-500 ml-4"
-                            :class="{
-                                '!text-green-500': stonk.stock_info.amount > 0,
-                                '!text-red-500': stonk.stock_info.amount < 0,
-                            }"
-                        >
-                            <span v-if="stonk.stock_info.amount > 0">+</span>{{ stonk.stock_info.amount }}
-                        </span>
+                        <template v-if="stonk.stock_info.amount > 0">
+                            <span class="ml-4 text-green-500">
+                                +{{ stonk.stock_info.amount }}
+                            </span>
+                        </template>
+                        <template v-if="stonk.stock_info.amount < 0">
+                            <span class="ml-4 text-red-500">
+                                {{ stonk.stock_info.amount }}
+                            </span>
+                        </template>
+                        <template v-if="stonk.stock_info.amount === 0">
+                            <span class="ml-4 text-zinc-500">
+                                {{ stonk.stock_info.amount }}
+                            </span>
+                        </template>
                     </span>
                 </div>
                 <div class="mt-4 flex">
@@ -92,6 +98,7 @@
     </h2>
     <div class="mt-4 flex space-x-4">
         <div
+            v-if="stonks.portfilio.length"
             v-for="stock in stonks.portfilio"
             class="flex-1 flex items-center"
         >
@@ -99,12 +106,18 @@
             <span class="ml-2">×{{ stock.count }}</span>
             <span class="ml-auto font-semibold">{{ stock.value }}</span>
         </div>
+        <div v-else>
+            <span class="text-zinc-500">No stocks in portfolio</span>
+        </div>
     </div>
 
     <h2 class="mt-16 text-lg font-medium leading-6">
         Your order history
     </h2>
-    <table class="w-full table-auto divide-y divide-zinc-300 mt-4 mb-36">
+    <table
+        v-if="stonks.trades.length"
+        class="mt-4 mb-36 w-full table-auto divide-y divide-zinc-300"
+    >
         <thead>
             <tr>
                 <th scope="col" class="py-3.5 pr-3 text-left text-sm font-semibold">
@@ -149,36 +162,32 @@
                         {{ trade.status }}
                     </span>
                 </td>
-                <td
-                    class="whitespace-nowrap py-4 px-3 text-right text-sm font-bold"
-                    :class="{
-                        '!text-green-500': trade.type === 'sell',
-                        '!text-red-500': trade.type === 'buy',
-                    }"
-                >
-                    <span
-                        v-if="trade.type === 'sell' && trade.proposed_price"
-                    >+</span>
-                    <span
-                        v-if="trade.type === 'buy' && trade.proposed_price"
-                    >-</span>{{ trade.proposed_price }}
-
+                <td class="whitespace-nowrap py-4 px-3 text-right text-sm font-bold">
+                    <template v-if="trade.type === 'sell' && trade.proposed_price">
+                        <span class="text-green-500">
+                            +{{ trade.proposed_price }}
+                        </span>
+                    </template>
+                    <template v-if="trade.type === 'buy' && trade.proposed_price">
+                        <span class="text-red-500">
+                            -{{ trade.proposed_price }}
+                        </span>
+                    </template>
                 </td>
-                <td
-                    class="whitespace-nowrap py-4 px-3 text-right text-sm font-bold"
-                    :class="{
-                        '!text-green-500': trade.type === 'sell',
-                        '!text-red-500': trade.type === 'buy',
-                    }"
-                >
-                    <span
-                        v-if="trade.type === 'sell' && trade.price !== null"
-                    >+</span>
-                    <span v-else>-</span>
-                    <span
-                        v-if="trade.type === 'buy' && trade.price !== null"
-                    >-</span>{{ trade.price }}
-
+                <td class="whitespace-nowrap py-4 px-3 text-right text-sm font-bold">
+                    <template v-if="trade.type === 'sell' && trade.price">
+                        <span class="text-green-500">
+                            +{{ trade.price }}
+                        </span>
+                    </template>
+                    <template v-if="trade.type === 'buy' && trade.price">
+                        <span class="text-red-500">
+                            -{{ trade.price }}
+                        </span>
+                    </template>
+                    <template v-if="(trade.type === 'sell' || trade.type === 'buy') && !trade.price">
+                        <span class="text-zinc-500">-</span>
+                    </template>
                 </td>
                 <td class="relative whitespace-nowrap py-4 pl-3 pr-4 text-right text-sm">
                     {{ trade.time }}
@@ -186,7 +195,12 @@
             </tr>
         </tbody>
     </table>
-
+    <div
+        v-else
+        class="mt-4 mb-36"
+    >
+        <span class="text-zinc-500">No orders yet</span>
+    </div>
     <div v-if="modalOpen === true" class="relative z-10">
         <div class="fixed inset-0 bg-zinc-700 bg-opacity-75"></div>
 
@@ -227,15 +241,21 @@
                                     <span class="text-xl font-semibold text-white">
                                         {{ stonk.share_price }}
                                     </span>
-                                    <span
-                                        class="text-zinc-500 ml-4"
-                                        :class="{
-                                            '!text-green-500': stonk.stock_info.amount > 0,
-                                            '!text-red-500': stonk.stock_info.amount < 0,
-                                        }"
-                                    >
-                                        <span v-if="stonk.stock_info.amount > 0">+</span>{{ stonk.stock_info.amount }}
-                                    </span>
+                                    <template v-if="stonk.stock_info.amount > 0">
+                                        <span class="ml-4 text-green-500">
+                                            +{{ stonk.stock_info.amount }}
+                                        </span>
+                                    </template>
+                                    <template v-if="stonk.stock_info.amount < 0">
+                                        <span class="ml-4 text-red-500">
+                                            {{ stonk.stock_info.amount }}
+                                        </span>
+                                    </template>
+                                    <template v-if="stonk.stock_info.amount === 0">
+                                        <span class="ml-4 text-zinc-500">
+                                            {{ stonk.stock_info.amount }}
+                                        </span>
+                                    </template>
                                 </span>
                             </div>
                             <div class="mt-4 flex">
@@ -269,24 +289,35 @@
                                     </div>
                                 </div>
                             </div>
-                            <div v-if="orderSuccess === false">
+                            <div
+                                v-if="orderSuccess === false"
+                                class="mt-8"
+                            >
+                                <label class="block text-sm">
+                                    <template v-if="orderMode === 'buy'">
+                                        Maximum buy price
+                                    </template>
+                                    <template v-if="orderMode === 'sell'">
+                                        Minimum sell price
+                                    </template>
+                                </label>
                                 <input
                                     type="number"
                                     min="1"
                                     max="9999"
                                     v-model="price"
-                                    class="mt-8 w-full rounded-md text-sm p-2 text-zinc-900 border border-zinc-300 ring-offset-zinc-50 dark:ring-offset-zinc-900 focus:border-indigo-500 focus:ring-indigo-500"
-                                    :placeholder="{
-                                        'Maximum buy price': orderMode === 'buy',
-                                        'Minimum sell price': orderMode === 'sell',
-                                    }"
+                                    class="mb-3 w-full rounded-md text-sm p-2 text-zinc-900 border border-zinc-300 ring-offset-zinc-50 dark:ring-offset-zinc-900 focus:border-indigo-500 focus:ring-indigo-500"
+                                    placeholder="123"
                                 />
+                                <label class="block text-sm">
+                                    Amount
+                                </label>
                                 <input
                                     type="number"
                                     min="1"
                                     max="100"
                                     v-model="amount"
-                                    class="mt-3 w-full rounded-md text-sm p-2 text-zinc-900 border border-zinc-300 ring-offset-zinc-50 dark:ring-offset-zinc-900 focus:border-indigo-500 focus:ring-indigo-500"
+                                    class="mb-3 w-full rounded-md text-sm p-2 text-zinc-900 border border-zinc-300 ring-offset-zinc-50 dark:ring-offset-zinc-900 focus:border-indigo-500 focus:ring-indigo-500"
                                 />
                             </div>
                         </div>
@@ -297,15 +328,17 @@
                     >
                         <template v-if="orderMode === 'buy'">
                             <button
-                                v-if="user.spendable_count >= stonk.share_price * amount"
+                                v-if="user.spendable_count >= price * amount"
                                 class="inline-flex w-full justify-center rounded-md border border-transparent bg-amber-200 text-zinc-900 px-4 py-2 text-base font-medium sm:col-start-2 sm:text-sm"
+                                :disabled="price === null || amount === null || price <= 0 || amount <= 0"
+                                :class="{ 'opacity-50': price === null || amount === null || price <= 0 || amount <= 0 }"
                                 @click="order()"
                             >
-                                Place order {{ price * amount }} <span class="ml-2" :class="{ 'animate-spin': loading }">🥔</span>
+                                Place order {{ price && amount ? price * amount : '' }} <span class="ml-2" :class="{ 'animate-spin': loading }">🥔</span>
                             </button>
                             <button
                                 v-else
-                                class="inline-flex w-full justify-center rounded-md border border-transparent bg-zinc-500 text-zinc-900 px-4 py-2 text-base font-medium sm:col-start-2 sm:text-sm"
+                                class="opacity-50 inline-flex w-full justify-center rounded-md border border-transparent bg-amber-200 text-zinc-900 px-4 py-2 text-base font-medium sm:col-start-2 sm:text-sm"
                                 disabled
                             >
                                 Not enough 🥔
@@ -313,15 +346,17 @@
                         </template>
                         <template v-if="orderMode === 'sell'">
                             <button
-                                v-if="true"
+                                v-if="stonks.portfilio.find(stock => stock.symbol === stonk.symbol).count >= amount"
                                 class="inline-flex w-full justify-center rounded-md border border-transparent bg-amber-200 text-zinc-900 px-4 py-2 text-base font-medium sm:col-start-2 sm:text-sm"
+                                :disabled="price === null || amount === null || price <= 0 || amount <= 0"
+                                :class="{ 'opacity-50': price === null || amount === null || price <= 0 || amount <= 0 }"
                                 @click="order()"
                             >
                                 Place Order {{ price * amount }} <span class="ml-2" :class="{ 'animate-spin': loading }">🥔</span>
                             </button>
                             <button
                                 v-else
-                                class="inline-flex w-full justify-center rounded-md border border-transparent bg-zinc-500 text-zinc-900 px-4 py-2 text-base font-medium sm:col-start-2 sm:text-sm"
+                                class="opacity-50 inline-flex w-full justify-center rounded-md border border-transparent bg-amber-200 text-zinc-900 px-4 py-2 text-base font-medium sm:col-start-2 sm:text-sm"
                                 disabled
                             >
                                 You don't own this many {{ stonk.symbol }}
@@ -339,12 +374,15 @@
                         v-if="orderSuccess"
                         class="mt-5 sm:mt-6"
                     >
+                        <div class="mb-4 text-center">
+                            Your order was submitted successfully ✅
+                        </div>
                         <button
-                            class="mt-3 inline-flex w-full justify-center rounded-md border border-zinc-300 bg-zinc-100 px-4 py-2 text-base font-medium text-zinc-900 sm:mt-0 sm:text-sm"
+                            class="inline-flex w-full justify-center rounded-md border border-zinc-300 bg-zinc-100 px-4 py-2 text-base font-medium text-zinc-900 sm:mt-0 sm:text-sm"
                             :disabled="loading"
                             @click="closeModal"
                         >
-                            Your order was submitted ✅
+                            Close
                         </button>
                     </div>
                     <div class="mt-5 text-xs text-center text-zinc-500">
@@ -440,6 +478,20 @@ export default {
             modalError: null,
             loading: false,
         }
+    },
+    mounted() {
+        window.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape') {
+                this.closeModal()
+            }
+        })
+    },
+    beforeUnmount() {
+        window.removeEventListener('keydown', (e) => {
+            if (e.key === 'Escape') {
+                this.closeModal()
+            }
+        })
     },
     methods: {
         openModal(stonk, orderMode) {

@@ -83,7 +83,7 @@ class AddStonks extends BaseMigration
             ->addColumn('share_id', 'integer', [
                 'default' => null,
                 'limit' => 10,
-                'null' => false,
+                'null' => true,
             ])
             ->addColumn('stock_id', 'integer', [
                 'default' => null,
@@ -91,6 +91,11 @@ class AddStonks extends BaseMigration
                 'null' => true,
             ])
             ->addColumn('price', 'integer', [
+                'default' => null,
+                'limit' => 10,
+                'null' => true,
+            ])
+            ->addColumn('proposed_price', 'integer', [
                 'default' => null,
                 'limit' => 10,
                 'null' => false,
