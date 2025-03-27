@@ -9,6 +9,7 @@ const store = createStore({
             leaderboard: [],
             user: null,
             users: [],
+            stonks: [],
             products: [],
             collection: [],
             quickWins: [],
@@ -22,6 +23,7 @@ const store = createStore({
         leaderboard: state => state.leaderboard,
         user: state => state.user,
         users: state => state.users,
+        stonks: state => state.stonks,
         products: state => state.products,
         collection: state => state.collection,
         quickWins: state => state.quickWins,
@@ -56,6 +58,15 @@ const store = createStore({
             try {
                 const response = await api.get('users')
                 commit('SET_USERS', response.data)
+            } catch (error) {
+                console.log(error)
+                Sentry._experiment_log.error(error.message, { name: error.name, stack: error.stack });
+            }
+        },
+        async getStonks({ commit }) {
+            try {
+                const response = await api.get('stonks')
+                commit('SET_STONKS', response.data)
             } catch (error) {
                 console.log(error)
                 Sentry._experiment_log.error(error.message, { name: error.name, stack: error.stack });
@@ -131,6 +142,9 @@ const store = createStore({
         },
         SET_USERS(state, users) {
             state.users = users
+        },
+        SET_STONKS(state, stonks) {
+            state.stonks = stonks
         },
         SET_PRODUCTS(state, products) {
             state.products = products

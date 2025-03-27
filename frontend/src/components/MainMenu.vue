@@ -18,6 +18,13 @@
                                 Home
                             </RouterLink>
                             <RouterLink
+                                to="/stonks"
+                                class="rounded-md px-3 py-2 text-sm font-medium text-zinc-900"
+                                :class="{ '!bg-zinc-900 !text-zinc-50': $route.path === '/stonks' }"
+                            >
+                                Stonks
+                            </RouterLink>
+                            <RouterLink
                                 to="/shop"
                                 class="rounded-md px-3 py-2 text-sm font-medium text-zinc-900"
                                 :class="{ '!bg-zinc-900 !text-zinc-50': $route.path === '/shop' }"
@@ -96,6 +103,13 @@
                     :class="{ '!bg-zinc-900 !text-zinc-50': $route.path === '/' }"
                 >
                     Home
+                </RouterLink>
+                <RouterLink
+                    to="/stonks"
+                    class="block rounded-md px-3 py-2 text-base font-medium text-zinc-900"
+                    :class="{ '!bg-zinc-900 !text-zinc-50': $route.path === '/stonks' }"
+                >
+                    Stonks
                 </RouterLink>
                 <RouterLink
                     to="/shop"
