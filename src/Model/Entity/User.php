@@ -210,18 +210,40 @@ class User extends Entity
     public function spendablePotato(): int
     {
         $pruchasesTable = $this->fetchTable('Purchases');
-
-        $query = $pruchasesTable->find();
-        $result = $query
-            ->select([
-                'spent' => $query->func()->sum('price'),
+        $purchases = $pruchasesTable->find();
+        $purchases = $purchases->select([
+                'spent' => $purchases->func()->sum('price'),
             ])
             ->where([
                 'user_id' => $this->id,
             ])
-            ->first();
+            ->first()
+            ->spent;
+        
+        $tradesTable = $this->fetchTable('Trades');
+        $buyTrades = $tradesTable->find();
+        $buyTrades = $buyTrades->select([
+                'price' => $buyTrades->func()->sum('price'),
+            ])
+            ->where([
+                'user_id' => $this->id,
+                'type' => Trade::TYPE_BUY,
+            ])
+            ->first()
+            ->price;
 
-        return $this->potatoReceived() - (int)$result->spent;
+        $sellTrades = $tradesTable->find();
+        $sellTrades = $sellTrades->select([
+                'price' => $sellTrades->func()->sum('price'),
+            ])
+            ->where([
+                'user_id' => $this->id,
+                'type' => Trade::TYPE_SELL,
+            ])
+            ->first()
+            ->price;
+
+        return $this->potatoReceived() - (int) $purchases + (int) $sellTrades - (int) $buyTrades;
     }
 
     /**
