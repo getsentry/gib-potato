@@ -18,12 +18,12 @@ class AddStonks extends BaseMigration
             ->addColumn('stock_id', 'integer', [
                 'default' => null,
                 'limit' => 10,
-                'null' => true,
+                'null' => false,
             ])
             ->addColumn('price', 'integer', [
                 'default' => null,
                 'limit' => 10,
-                'null' => true,
+                'null' => false,
             ])
             ->addColumn('created', 'timestamp', [
                 'default' => null,
@@ -65,11 +65,6 @@ class AddStonks extends BaseMigration
                 'limit' => 255,
                 'null' => true,
             ])
-            ->addColumn('volatility', 'integer', [
-                'default' => null,
-                'limit' => 10,
-                'null' => false,
-            ])
             ->addColumn('created', 'timestamp', [
                 'default' => null,
                 'limit' => null,
@@ -83,12 +78,17 @@ class AddStonks extends BaseMigration
             ->addColumn('user_id', 'uuid', [
                 'default' => null,
                 'limit' => null,
-                'null' => true,
+                'null' => false,
             ])
             ->addColumn('share_id', 'integer', [
                 'default' => null,
                 'limit' => 10,
                 'null' => false,
+            ])
+            ->addColumn('stock_id', 'integer', [
+                'default' => null,
+                'limit' => 10,
+                'null' => true,
             ])
             ->addColumn('price', 'integer', [
                 'default' => null,

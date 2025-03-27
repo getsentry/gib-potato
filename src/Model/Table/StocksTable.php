@@ -54,6 +54,9 @@ class StocksTable extends Table
         $this->hasMany('Shares', [
             'foreignKey' => 'stock_id',
         ]);
+        $this->hasMany('Trades', [
+            'foreignKey' => 'stock_id',
+        ]);
     }
 
     /**
@@ -69,11 +72,6 @@ class StocksTable extends Table
             ->maxLength('symbol', 255)
             ->requirePresence('symbol', 'create')
             ->notEmptyString('symbol');
-
-        $validator
-            ->integer('volatility')
-            ->requirePresence('volatility', 'create')
-            ->notEmptyString('volatility');
 
         $validator
             ->scalar('description')

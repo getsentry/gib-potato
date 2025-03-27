@@ -4,7 +4,6 @@ declare(strict_types=1);
 namespace App\Controller\Api;
 
 use App\Model\Entity\Trade;
-use Cake\Datasource\ConnectionManager;
 use Cake\Http\Response;
 use Cake\I18n\DateTime;
 use Cake\ORM\Query\SelectQuery;
@@ -35,7 +34,7 @@ class StonksController extends ApiController
         $tradesTable = $this->fetchTable('Trades');
         $trades = $tradesTable->find()
             ->where(['Trades.user_id' => $this->Authentication->getIdentity()->getIdentifier()])
-            ->contain(['Shares' => ['Stocks']])
+            ->contain('Stocks')
             ->orderBy(['Trades.created' => 'DESC'])
             ->all();
 
@@ -44,13 +43,14 @@ class StonksController extends ApiController
         $response = [
             'trades' => $trades->map(function ($value) {
                 return [
-                        'id' => $value->id,
-                        'symbol' => $value->share->stock->symbol,
-                        'price' => $value->price,
-                        'status' => $value->status,
-                        'type' => $value->type,
-                        'time' => $value->created->format('H:i'),
-                    ];
+                    'id' => $value->id,
+                    'symbol' => $value->stock->symbol,
+                    'price' => $value->price,
+                    'proposed_price' => $value->proposed_price,
+                    'status' => $value->status,
+                    'type' => $value->type,
+                    'time' => $value->created->format('H:i'),
+                ];
             })->toList(),
             'portfilio' => $sharesTable->find()
                 ->where([
@@ -103,7 +103,6 @@ class StonksController extends ApiController
                     // @TODO This should be based on the trade volume
                     'volume' => $sharesCollection->count(),
                     'market_cap' => $sharesCollection->count() * $sharePrice,
-                    'something' => $stock->volatility,
                 ],
                 'data' => [
                     // 'labels' => $sharePricesCollection->map(function ($value) {
@@ -142,110 +141,48 @@ class StonksController extends ApiController
             ->where(['Users.id' => $this->Authentication->getIdentity()->getIdentifier()])
             ->first();
 
-        $sharePricesTable = $this->fetchTable('Shareprices');
-        $sharePrice = $sharePricesTable->find()
-            ->orderBy(['SharePrices.id' => 'DESC'])
-            ->first()
-            ->price;
-
-        $sharesTable = $this->fetchTable('Shares');
-
         if ($this->request->getData('order_mode') === Trade::TYPE_BUY) {
-            $shares = $sharesTable->find()
-                ->where([
-                    'Shares.stock_id IS' => $this->request->getData('stock_id'),
-                    'Shares.user_id IS' => null,
-                ])
-                ->limit($this->request->getData('amount'));
-
-            if ($shares->count() < $this->request->getData('amount')) {
-                return $this->response
-                    ->withStatus(400)
-                    ->withType('json')
-                    ->withStringBody(json_encode([
-                        'error' => 'Not enough shares available 😥',
-                    ]));
-            }
-            if ($sharePrice * $this->request->getData('amount') > $user->spendablePotato()) {
-                return $this->response
-                    ->withStatus(400)
-                    ->withType('json')
-                    ->withStringBody(json_encode([
-                        'error' => 'Not enough potato to place this order 😥',
-                    ]));
-            }
-
-            foreach ($shares as $share) {
-                $share = $sharesTable->patchEntity($share, [
-                    'user_id' => $user->id,
-                ], [
-                    'accessibleFields' => [
-                        'user_id' => true,
-                    ],
-                ]);
-    
+            for ($i = 0; $i < (int) $this->request->getData('amount'); $i++) {    
                 $tradesTable = $this->fetchTable('Trades');
                 $trade = $tradesTable->newEntity([
                     'user_id' => $user->id,
-                    'share_id' => $share->id,
-                    'price' => $sharePrice,
+                    'stock_id' => $this->request->getData('stock_id'),
+                    'proposed_price' => $this->request->getData('proposed_price'),
                     'status' => Trade::STATUS_PENDING,
                     'type' => Trade::TYPE_BUY,
                 ], [
                     'accessibleFields' => [
                         'user_id' => true,
-                        'share_id' => true,
-                        'price' => true,
+                        'stock_id' => true,
+                        'proposed_price' => true,
                         'status' => true,
                         'type' => true,
                     ],
                 ]);
-    
-                ConnectionManager::get('default')->begin();
-                $sharesTable->saveOrFail($share);
+
                 $tradesTable->saveOrFail($trade);
-                ConnectionManager::get('default')->commit();
             }
         }
 
         if ($this->request->getData('order_mode') === Trade::TYPE_SELL) {
-            $shares = $sharesTable->find()
-                ->where([
-                    'Shares.stock_id IS' => $this->request->getData('stock_id'),
-                    'Shares.user_id IS' => $user->id,
-                ])
-                ->limit($this->request->getData('amount'));
-
-            foreach ($shares as $share) {
-                $share = $sharesTable->patchEntity($share, [
-                    'user_id' => null,
-                ], [
-                    'accessibleFields' => [
-                        'user_id' => true,
-                    ],
-                ]);
-    
+            for ($i = 0; $i < (int) $this->request->getData('amount'); $i++) {  
                 $tradesTable = $this->fetchTable('Trades');
                 $trade = $tradesTable->newEntity([
                     'user_id' => $user->id,
-                    'share_id' => $share->id,
-                    'price' => $sharePrice,
+                    'stock_id' => $this->request->getData('stock_id'),
+                    'proposed_price' => $this->request->getData('proposed_price'),
                     'status' => Trade::STATUS_PENDING,
                     'type' => Trade::TYPE_SELL,
                 ], [
                     'accessibleFields' => [
                         'user_id' => true,
-                        'share_id' => true,
-                        'price' => true,
+                        'stock_id' => true,
+                        'proposed_price' => true,
                         'status' => true,
                         'type' => true,
                     ],
                 ]);
-    
-                ConnectionManager::get('default')->begin();
-                $sharesTable->saveOrFail($share);
                 $tradesTable->saveOrFail($trade);
-                ConnectionManager::get('default')->commit();
             }
         }
 

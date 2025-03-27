@@ -22,7 +22,7 @@ use Cake\ORM\Entity;
 class Trade extends Entity
 {
     public const STATUS_PENDING = 'pending';
-    public const STATUS_EXECUTED = 'executed';
+    public const STATUS_DONE = 'done';
     public const STATUS_FAILED = 'failed';
 
     public const TYPE_BUY = 'buy';
@@ -41,10 +41,9 @@ class Trade extends Entity
         'user_id' => true,
         'share_id' => true,
         'price' => true,
+        'proposed_price' => true,
         'status' => true,
         'type' => true,
         'created' => true,
-        'user' => true,
-        'share' => true,
     ];
 }

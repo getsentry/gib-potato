@@ -8,16 +8,16 @@
     "packages": [
         {
             "name": "cakephp/authentication",
-            "version": "3.2.1",
+            "version": "3.2.2",
             "source": {
                 "type": "git",
                 "url": "https://github.com/cakephp/authentication.git",
-                "reference": "3583745feb37c5069930cd1661bb0723a8f64f99"
+                "reference": "6249660cd014d0df5e61a384833be5197b40caa2"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/cakephp/authentication/zipball/3583745feb37c5069930cd1661bb0723a8f64f99",
-                "reference": "3583745feb37c5069930cd1661bb0723a8f64f99",
+                "url": "https://api.github.com/repos/cakephp/authentication/zipball/6249660cd014d0df5e61a384833be5197b40caa2",
+                "reference": "6249660cd014d0df5e61a384833be5197b40caa2",
                 "shasum": ""
             },
             "require": {
@@ -71,7 +71,7 @@
                 "issues": "https://github.com/cakephp/authentication/issues",
                 "source": "https://github.com/cakephp/authentication"
             },
-            "time": "2024-10-18T15:48:32+00:00"
+            "time": "2025-03-20T18:47:51+00:00"
         },
         {
             "name": "cakephp/cakephp",
@@ -253,16 +253,16 @@
         },
         {
             "name": "cakephp/migrations",
-            "version": "4.6.1",
+            "version": "4.6.2",
             "source": {
                 "type": "git",
                 "url": "https://github.com/cakephp/migrations.git",
-                "reference": "577308b9aa3b2e9cf1570c863fe45e5db11d8428"
+                "reference": "150171472a2ed51f15aee1341fd5f8ffd3bcdc13"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/cakephp/migrations/zipball/577308b9aa3b2e9cf1570c863fe45e5db11d8428",
-                "reference": "577308b9aa3b2e9cf1570c863fe45e5db11d8428",
+                "url": "https://api.github.com/repos/cakephp/migrations/zipball/150171472a2ed51f15aee1341fd5f8ffd3bcdc13",
+                "reference": "150171472a2ed51f15aee1341fd5f8ffd3bcdc13",
                 "shasum": ""
             },
             "require": {
@@ -309,7 +309,7 @@
                 "issues": "https://github.com/cakephp/migrations/issues",
                 "source": "https://github.com/cakephp/migrations"
             },
-            "time": "2025-03-08T16:23:19+00:00"
+            "time": "2025-03-20T02:48:30+00:00"
         },
         {
             "name": "cakephp/plugin-installer",
@@ -2656,12 +2656,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/getsentry/sentry-php-agent.git",
-                "reference": "c2bc218066f35b94f754a633a2010c3e30558454"
+                "reference": "ebffe91bb8bc469dde1d1581f34cb4df16216025"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/getsentry/sentry-php-agent/zipball/c2bc218066f35b94f754a633a2010c3e30558454",
-                "reference": "c2bc218066f35b94f754a633a2010c3e30558454",
+                "url": "https://api.github.com/repos/getsentry/sentry-php-agent/zipball/ebffe91bb8bc469dde1d1581f34cb4df16216025",
+                "reference": "ebffe91bb8bc469dde1d1581f34cb4df16216025",
                 "shasum": ""
             },
             "require": {
@@ -2685,21 +2685,7 @@
                     "Sentry\\Agent\\": "src/"
                 }
             },
-            "scripts": {
-                "check": [
-                    "@cs-check",
-                    "@phpstan"
-                ],
-                "cs-check": [
-                    "vendor/bin/php-cs-fixer fix --verbose --diff --dry-run"
-                ],
-                "cs-fix": [
-                    "vendor/bin/php-cs-fixer fix --verbose --diff"
-                ],
-                "phpstan": [
-                    "vendor/bin/phpstan analyse"
-                ]
-            },
+            "notification-url": "https://packagist.org/downloads/",
             "license": [
                 "MIT"
             ],
@@ -2712,20 +2698,20 @@
             "description": "Sentry Agent for PHP (https://sentry.io)",
             "homepage": "https://sentry.io",
             "support": {
-                "source": "https://github.com/getsentry/sentry-php-agent/tree/main",
-                "issues": "https://github.com/getsentry/sentry-php-agent/issues"
+                "issues": "https://github.com/getsentry/sentry-php-agent/issues",
+                "source": "https://github.com/getsentry/sentry-php-agent/tree/main"
             },
             "funding": [
                 {
-                    "type": "custom",
-                    "url": "https://sentry.io/pricing/"
+                    "url": "https://sentry.io/",
+                    "type": "custom"
                 },
                 {
-                    "type": "custom",
-                    "url": "https://sentry.io/"
+                    "url": "https://sentry.io/pricing/",
+                    "type": "custom"
                 }
             ],
-            "time": "2025-03-21T12:37:53+00:00"
+            "time": "2025-03-26T02:24:38+00:00"
         },
         {
             "name": "symfony/config",
@@ -4232,16 +4218,16 @@
         },
         {
             "name": "phpstan/phpstan",
-            "version": "1.12.21",
+            "version": "1.12.23",
             "source": {
                 "type": "git",
                 "url": "https://github.com/phpstan/phpstan.git",
-                "reference": "14276fdef70575106a3392a4ed553c06a984df28"
+                "reference": "29201e7a743a6ab36f91394eab51889a82631428"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/phpstan/phpstan/zipball/14276fdef70575106a3392a4ed553c06a984df28",
-                "reference": "14276fdef70575106a3392a4ed553c06a984df28",
+                "url": "https://api.github.com/repos/phpstan/phpstan/zipball/29201e7a743a6ab36f91394eab51889a82631428",
+                "reference": "29201e7a743a6ab36f91394eab51889a82631428",
                 "shasum": ""
             },
             "require": {
@@ -4286,7 +4272,7 @@
                     "type": "github"
                 }
             ],
-            "time": "2025-03-09T09:24:50+00:00"
+            "time": "2025-03-23T14:57:32+00:00"
         },
         {
             "name": "phpunit/php-code-coverage",
@@ -5628,16 +5614,16 @@
         },
         {
             "name": "slevomat/coding-standard",
-            "version": "8.16.0",
+            "version": "8.16.1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/slevomat/coding-standard.git",
-                "reference": "7748a4282df19daf966fda1d8c60a8aec803c83a"
+                "reference": "490023f23813483b5f75381c4ee07d26d9edced1"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/slevomat/coding-standard/zipball/7748a4282df19daf966fda1d8c60a8aec803c83a",
-                "reference": "7748a4282df19daf966fda1d8c60a8aec803c83a",
+                "url": "https://api.github.com/repos/slevomat/coding-standard/zipball/490023f23813483b5f75381c4ee07d26d9edced1",
+                "reference": "490023f23813483b5f75381c4ee07d26d9edced1",
                 "shasum": ""
             },
             "require": {
@@ -5677,7 +5663,7 @@
             ],
             "support": {
                 "issues": "https://github.com/slevomat/coding-standard/issues",
-                "source": "https://github.com/slevomat/coding-standard/tree/8.16.0"
+                "source": "https://github.com/slevomat/coding-standard/tree/8.16.1"
             },
             "funding": [
                 {
@@ -5689,7 +5675,7 @@
                     "type": "tidelift"
                 }
             ],
-            "time": "2025-02-23T18:12:49+00:00"
+            "time": "2025-03-23T16:33:42+00:00"
         },
         {
             "name": "squizlabs/php_codesniffer",
