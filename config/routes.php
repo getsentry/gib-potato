@@ -59,7 +59,6 @@ return static function (RouteBuilder $routes): void {
         $builder->connect('/', ['controller' => 'Home', 'action' => 'index']);
         $builder->connect('/shop', ['controller' => 'Home', 'action' => 'index']);
         $builder->connect('/stonks', ['controller' => 'Home', 'action' => 'index']);
-        $builder->connect('/santry-bets', ['controller' => 'Home', 'action' => 'index']);
         $builder->connect('/collection', ['controller' => 'Home', 'action' => 'index']);
         $builder->connect('/quick-wins', ['controller' => 'Home', 'action' => 'index']);
         $builder->connect('/profile', ['controller' => 'Home', 'action' => 'index']);
@@ -76,8 +75,8 @@ return static function (RouteBuilder $routes): void {
 
             $builder->get('/user/profile', ['prefix' => 'Api', 'controller' => 'Users', 'action' => 'profile']);
 
-            $builder->get('/stonks', ['prefix' => 'Api', 'controller' => 'Stonks', 'action' => 'list']);
-            $builder->post('/stonks/order', ['prefix' => 'Api', 'controller' => 'Stonks', 'action' => 'order']);
+            $builder->get('/stocks', ['prefix' => 'Api', 'controller' => 'Stocks', 'action' => 'list']);
+            $builder->post('/stocks/order', ['prefix' => 'Api', 'controller' => 'Stocks', 'action' => 'order']);
 
             $builder->get('/shop/products', ['prefix' => 'Api', 'controller' => 'Shop', 'action' => 'products']);
             $builder->post('/shop/purchase', ['prefix' => 'Api', 'controller' => 'Shop', 'action' => 'purchase']);

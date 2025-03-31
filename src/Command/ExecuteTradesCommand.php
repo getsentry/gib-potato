@@ -79,6 +79,7 @@ class ExecuteTradesCommand extends Command
             ];
         })->toArray();
 
+        $executedTradeIds = [];
         foreach ($sellTrades as $sellTrade) {
             $match = $this->_findMatchingTrade($buyTrades, $sellTrade);
             if ($match) {
@@ -102,12 +103,16 @@ class ExecuteTradesCommand extends Command
                     'user_id' => $buyTradeEntity->user_id,
                 ]);
                 $sharesTable->saveOrFail($shareEntity);
+
+                $executedTradeIds[] = $sellTrade['id'];
+                $executedTradeIds[] = $match['id'];
             };
         }
 
         $doneTrades = $tradesTable->find()
             ->where([
-                'status' => Trade::STATUS_DONE,
+                'trades.id IN' => $executedTradeIds,
+                'trades.status' => Trade::STATUS_DONE,
             ])
             ->contain('Stocks')
             ->orderBy(['trades.id' => 'ASC'])

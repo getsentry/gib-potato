@@ -11,7 +11,7 @@ use Cake\ORM\Query\SelectQuery;
 /**
  * @property \Authentication\Controller\Component\AuthenticationComponent $Authentication
  */
-class StonksController extends ApiController
+class StocksController extends ApiController
 {
     /**
      * @return \Cake\Http\Response
@@ -49,7 +49,7 @@ class StonksController extends ApiController
                     'proposed_price' => $value->proposed_price,
                     'status' => $value->status,
                     'type' => $value->type,
-                    'time' => $value->created->format('H:i'),
+                    'time' => $value->created->setTimezone($this->Authentication->getIdentity()->get('slack_time_zone'))->format('H:i'),
                 ];
             })->toList(),
             'portfilio' => $sharesTable->find()
@@ -73,7 +73,7 @@ class StonksController extends ApiController
                         'value' => $value->count() * collection($value->first()->stock->share_prices)->first()->price,
                     ];
                 })->toList(),
-            'stonks' => [],
+            'stocks' => [],
         ];
         foreach ($stocks as $stock) {
 
@@ -84,13 +84,13 @@ class StonksController extends ApiController
             $sharePrice = $sharePricesCollection->last()->price;
 
             $labels = [];
-            $time = new DateTime('2025-04-01 07:00:00');
-            for ($i = 0; $i < 128; $i++) {
-                $time = $time->modify('+15 minutes');
+            $time = new DateTime('2025-04-01 06:00:00');
+            for ($i = 0; $i < 288; $i++) {
+                $time = $time->modify('+5 minutes')->setTimezone($this->Authentication->getIdentity()->get('slack_time_zone'));
                 $labels[] = $time->format('G');
             }
 
-            $response['stonks'][] = [
+            $response['stocks'][] = [
                 'id' => $stock->id,
                 'symbol' => $stock->symbol,
                 'description' => $stock->description,
@@ -100,14 +100,10 @@ class StonksController extends ApiController
                     'open' => $startingPrice,
                     'high' => $sharePricesCollection->max('price')->price,
                     'low' => $sharePricesCollection->min('price')->price,
-                    // @TODO This should be based on the trade volume
                     'volume' => $sharesCollection->count(),
                     'market_cap' => $sharesCollection->count() * $sharePrice,
                 ],
                 'data' => [
-                    // 'labels' => $sharePricesCollection->map(function ($value) {
-                    //     return $value->created->format('H:i');
-                    // })->toList(),
                     'labels' => $labels,
                     'datasets' => [
                         [
@@ -135,6 +131,9 @@ class StonksController extends ApiController
      */
     public function order(): Response
     {
+        $stocksTable = $this->fetchTable('Stocks');
+        $sharesTable = $this->fetchTable('Shares');
+
         $usersTable = $this->fetchTable('Users');
         /** @var \App\Model\Entity\User $user */
         $user = $usersTable->find()
@@ -142,6 +141,23 @@ class StonksController extends ApiController
             ->first();
 
         if ($this->request->getData('order_mode') === Trade::TYPE_BUY) {
+            $stock = $stocksTable->find()
+                ->contain('SharePrices', function (SelectQuery $query) {
+                    return $query
+                        ->orderBy(['SharePrices.id' => 'DESC']);
+                })
+                ->where(['id' => $this->request->getData('stock_id')])
+                ->first();
+
+            if ($stock->share_prices[0]->price * $this->request->getData('amount') > $user->spendablePotato()) {
+                return $this->response
+                    ->withStatus(400)
+                    ->withType('json')
+                    ->withStringBody(json_encode([
+                        'error' => 'Not enough potato to place this order 😥',
+                    ]));
+            }
+
             for ($i = 0; $i < (int) $this->request->getData('amount'); $i++) {    
                 $tradesTable = $this->fetchTable('Trades');
                 $trade = $tradesTable->newEntity([
@@ -165,10 +181,27 @@ class StonksController extends ApiController
         }
 
         if ($this->request->getData('order_mode') === Trade::TYPE_SELL) {
+            $shares = $sharesTable->find()
+                ->where([
+                    'stock_id' => $this->request->getData('stock_id'),
+                    'user_id IS' => $this->Authentication->getIdentity()->getIdentifier(),
+                ]);
+
+            if ($shares->count() < $this->request->getData('amount')) {
+                return $this->response
+                    ->withStatus(400)
+                    ->withType('json')
+                    ->withStringBody(json_encode([
+                        'error' => "You don't own enough shares to place this order 😥",
+                    ]));
+            }
+
+            $ownedShares = $shares->toArray();
             for ($i = 0; $i < (int) $this->request->getData('amount'); $i++) {  
                 $tradesTable = $this->fetchTable('Trades');
                 $trade = $tradesTable->newEntity([
                     'user_id' => $user->id,
+                    'share_id' => $ownedShares[$i]->id,
                     'stock_id' => $this->request->getData('stock_id'),
                     'proposed_price' => $this->request->getData('proposed_price'),
                     'status' => Trade::STATUS_PENDING,
@@ -185,59 +218,6 @@ class StonksController extends ApiController
                 $tradesTable->saveOrFail($trade);
             }
         }
-
-        // if ($presentee !== null) {
-        //     $blocks = [
-        //         [
-        //             'type' => 'section',
-        //             'text' => [
-        //                 'type' => 'mrkdwn',
-        //                 'text' => "<@{$user->slack_user_id}> did buy a nice little present for "
-        //                     . "<@{$presentee->slack_user_id}> 🎁😊",
-        //             ],
-        //         ],
-        //         [
-        //             'type' => 'section',
-        //             'text' => [
-        //                 'type' => 'mrkdwn',
-        //                 'text' => "They got them *{$product->name}* 🚀",
-        //             ],
-        //         ],
-        //         [
-        //             'type' => 'section',
-        //             'text' => [
-        //                 'type' => 'mrkdwn',
-        //                 'text' => "_{$this->request->getData('message')}_",
-        //             ],
-        //         ],
-        //         [
-        //             'type' => 'divider',
-        //         ],
-        //         [
-        //             'type' => 'section',
-        //             'text' => [
-        //                 'type' => 'mrkdwn',
-        //                 'text' => '<' . Router::url('/shop', true) . '|Gib a present to a fellow Sentaur yourself!>',
-        //             ],
-        //         ],
-        //         [
-        //             'type' => 'image',
-        //             'image_url' => Router::url(str_replace('.svg', '.png', $product->image_link), true),
-        //             'alt_text' => $product->name,
-        //             'title' => [
-        //                 'type' => 'plain_text',
-        //                 'text' => $product->name,
-        //             ],
-        //         ],
-
-        //     ];
-
-            // $slackClient = new SlackClient();
-            // $slackClient->postBlocks(
-            //     channel: env('POTATO_CHANNEL'),
-            //     blocks: json_encode($blocks),
-            // );
-        // }
 
         return $this->response
             ->withStatus(204);

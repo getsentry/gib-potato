@@ -11,39 +11,39 @@
 
     <div class="mt-16 grid grid-cols-1 gap-y-12 sm:grid-cols-2 sm:gap-x-6 lg:grid-cols-3 xl:gap-x-8">
         <div
-            v-for="(stonk, index) in stonks.stonks"
+            v-for="(stock, index) in stocks.stocks"
             class="h-full flex flex-col"
         >
             <div
                 :index="index"
             >
                 <div>
-                    <Line :data="stonk.data" :options="chartOptions" />
+                    <Line :data="stock.data" :options="chartOptions" />
                 </div>
                 <div class="mt-4 flex items-center">
                     <div>
-                        <h3 class="text-sm font-medium">{{ stonk.symbol }}</h3>
+                        <h3 class="text-sm font-medium">{{ stock.symbol }}</h3>
                         <p class="mt-1 text-sm text-zinc-500">
-                            {{ stonk.description }}
+                            {{ stock.description }}
                         </p>
                     </div>
                     <span class="ml-auto">
-                        <span class="text-xl font-semibold text-white">
-                            {{ stonk.share_price }}
+                        <span class="text-xl font-semibold">
+                            {{ stock.share_price }}
                         </span>
-                        <template v-if="stonk.stock_info.amount > 0">
+                        <template v-if="stock.stock_info.amount > 0">
                             <span class="ml-4 text-green-500">
-                                +{{ stonk.stock_info.amount }}
+                                +{{ stock.stock_info.amount }}
                             </span>
                         </template>
-                        <template v-if="stonk.stock_info.amount < 0">
+                        <template v-if="stock.stock_info.amount < 0">
                             <span class="ml-4 text-red-500">
-                                {{ stonk.stock_info.amount }}
+                                {{ stock.stock_info.amount }}
                             </span>
                         </template>
-                        <template v-if="stonk.stock_info.amount === 0">
+                        <template v-if="stock.stock_info.amount === 0">
                             <span class="ml-4 text-zinc-500">
-                                {{ stonk.stock_info.amount }}
+                                {{ stock.stock_info.amount }}
                             </span>
                         </template>
                     </span>
@@ -52,39 +52,39 @@
                     <div class="flex-1">
                         <div class="flex text-sm">
                             <span class="text-zinc-500">Open</span>
-                            <span class="ml-auto font-semibold">{{ stonk.stock_info.open }}</span>
+                            <span class="ml-auto font-semibold">{{ stock.stock_info.open }}</span>
                         </div>
                         <div class="flex text-sm">
                             <span class="text-zinc-500">High</span>
-                            <span class="ml-auto font-semibold">{{ stonk.stock_info.high }}</span>
+                            <span class="ml-auto font-semibold">{{ stock.stock_info.high }}</span>
                         </div>
                         <div class="flex text-sm">
                             <span class="text-zinc-500">Low</span>
-                            <span class="ml-auto font-semibold">{{ stonk.stock_info.low }}</span>
+                            <span class="ml-auto font-semibold">{{ stock.stock_info.low }}</span>
                         </div>
                     </div>
                     <hr class="mx-2">
                     <div class="flex-1">
                         <div class="flex text-sm">
                             <span class="text-zinc-500">Vol</span>
-                            <span class="ml-auto font-semibold">{{ stonk.stock_info.volume }}</span>
+                            <span class="ml-auto font-semibold">{{ stock.stock_info.volume }}</span>
                         </div>
                         <div class="flex text-sm">
                             <span class="text-zinc-500">Mkt Cap</span>
-                            <span class="ml-auto font-semibold">{{ stonk.stock_info.market_cap }}</span>
+                            <span class="ml-auto font-semibold">{{ stock.stock_info.market_cap }}</span>
                         </div>
                     </div>
                 </div>
                 <div class="mt-8">
                     <button
                         class="inline-flex w-full justify-center rounded-md border border-transparent bg-amber-200 text-zinc-900 px-4 py-2 text-md"
-                        @click="openModal(stonk, 'buy')"
+                        @click="openModal(stock, 'buy')"
                     >
                         Buy
                     </button>
                     <button
                         class="mt-2 inline-flex w-full justify-center rounded-md border border-zinc-300 px-4 py-2 text-md"
-                        @click="openModal(stonk, 'sell')"
+                        @click="openModal(stock, 'sell')"
                     >
                         Sell
                     </button>
@@ -98,16 +98,22 @@
     </h2>
     <div class="mt-4 flex space-x-4">
         <div
-            v-if="stonks.portfilio.length"
-            v-for="stock in stonks.portfilio"
+            v-if="stocks.portfilio.length"
+            v-for="stock in stocks.portfilio"
             class="flex-1 flex items-center"
         >
-            <h3 class="font-medium">{{ stock.symbol }}</h3>
-            <span class="ml-2">×{{ stock.count }}</span>
-            <span class="ml-auto font-semibold">{{ stock.value }}</span>
+            <div>
+                <h3 class="flex items-center font-medium">
+                    {{ stock.symbol }}
+                    <small class="ml-1.5">×{{ stock.count }}</small>
+                </h3>
+                <div>
+                    current value <span class="font-semibold">{{ stock.value }}</span> 🥔
+                </div>
+            </div>
         </div>
         <div v-else>
-            <span class="text-zinc-500">No stocks in portfolio</span>
+            <span class="text-zinc-500">No stocks in your portfolio</span>
         </div>
     </div>
 
@@ -115,7 +121,7 @@
         Your order history
     </h2>
     <table
-        v-if="stonks.trades.length"
+        v-if="stocks.trades.length"
         class="mt-4 mb-36 w-full table-auto divide-y divide-zinc-300"
     >
         <thead>
@@ -141,12 +147,21 @@
             </tr>
         </thead>
         <tbody class="divide-y divide-gray-200">
-            <tr v-for="trade in stonks.trades" :key="trade.id">
+            <tr v-for="trade in stocks.trades" :key="trade.id">
                 <td class="whitespace-nowrap py-4 pl-4 pr-3 text-sm font-bold">
                     {{ trade.symbol }}
                 </td>
                 <td class="whitespace-nowrap py-4 px-3 text-sm">
-                    <span class="text-sm font-medium ml-auto px-2.5 py-0.5 rounded">
+                    <span
+                        v-if="trade.type === 'buy'"
+                        class="text-sm font-medium ml-auto px-2.5 py-0.5 rounded bg-orange-100 text-orange-800 dark:bg-orange-900 dark:text-orange-300"
+                    >
+                        {{ trade.type }} order
+                    </span>
+                    <span
+                        v-if="trade.type === 'sell'"
+                        class="text-sm font-medium ml-auto px-2.5 py-0.5 rounded bg-teal-100 text-teal-800 dark:bg-teal-900 dark:text-teal-300"
+                    >
                         {{ trade.type }} order
                     </span>
                 </td>
@@ -228,32 +243,32 @@
                                 </div>
                             </div>
                             <div>
-                                <Line :data="stonk.data" :options="chartOptions" />
+                                <Line :data="stock.data" :options="chartOptions" />
                             </div>
                             <div class="mt-4 flex items-center">
                                 <div>
-                                    <h3 class="text-sm font-medium">{{ stonk.symbol }}</h3>
+                                    <h3 class="text-sm font-medium">{{ stock.symbol }}</h3>
                                     <p class="mt-1 text-sm text-zinc-500">
-                                        {{ stonk.description }}
+                                        {{ stock.description }}
                                     </p>
                                 </div>
                                 <span class="ml-auto">
-                                    <span class="text-xl font-semibold text-white">
-                                        {{ stonk.share_price }}
+                                    <span class="text-xl font-semibold">
+                                        {{ stock.share_price }}
                                     </span>
-                                    <template v-if="stonk.stock_info.amount > 0">
+                                    <template v-if="stock.stock_info.amount > 0">
                                         <span class="ml-4 text-green-500">
-                                            +{{ stonk.stock_info.amount }}
+                                            +{{ stock.stock_info.amount }}
                                         </span>
                                     </template>
-                                    <template v-if="stonk.stock_info.amount < 0">
+                                    <template v-if="stock.stock_info.amount < 0">
                                         <span class="ml-4 text-red-500">
-                                            {{ stonk.stock_info.amount }}
+                                            {{ stock.stock_info.amount }}
                                         </span>
                                     </template>
-                                    <template v-if="stonk.stock_info.amount === 0">
+                                    <template v-if="stock.stock_info.amount === 0">
                                         <span class="ml-4 text-zinc-500">
-                                            {{ stonk.stock_info.amount }}
+                                            {{ stock.stock_info.amount }}
                                         </span>
                                     </template>
                                 </span>
@@ -262,26 +277,26 @@
                                 <div class="flex-1">
                                     <div class="flex text-sm">
                                         <span class="text-zinc-500">Open</span>
-                                        <span class="ml-auto font-semibold">{{ stonk.stock_info.open }}</span>
+                                        <span class="ml-auto font-semibold">{{ stock.stock_info.open }}</span>
                                     </div>
                                     <div class="flex text-sm">
                                         <span class="text-zinc-500">High</span>
-                                        <span class="ml-auto font-semibold">{{ stonk.stock_info.high }}</span>
+                                        <span class="ml-auto font-semibold">{{ stock.stock_info.high }}</span>
                                     </div>
                                     <div class="flex text-sm">
                                         <span class="text-zinc-500">Low</span>
-                                        <span class="ml-auto font-semibold">{{ stonk.stock_info.low }}</span>
+                                        <span class="ml-auto font-semibold">{{ stock.stock_info.low }}</span>
                                     </div>
                                 </div>
                                 <hr class="mx-2">
                                 <div class="flex-1">
                                     <div class="flex text-sm">
                                         <span class="text-zinc-500">Vol</span>
-                                        <span class="ml-auto font-semibold">{{ stonk.stock_info.volume }}</span>
+                                        <span class="ml-auto font-semibold">{{ stock.stock_info.volume }}</span>
                                     </div>
                                     <div class="flex text-sm">
                                         <span class="text-zinc-500">Mkt Cap</span>
-                                        <span class="ml-auto font-semibold">{{ stonk.stock_info.market_cap }}</span>
+                                        <span class="ml-auto font-semibold">{{ stock.stock_info.market_cap }}</span>
                                     </div>
                                 </div>
                             </div>
@@ -330,7 +345,7 @@
                                 :class="{ 'opacity-50': price === null || amount === null || price <= 0 || amount <= 0 }"
                                 @click="order()"
                             >
-                                Place order {{ price && amount ? price * amount : '' }} <span class="ml-2" :class="{ 'animate-spin': loading }">🥔</span>
+                                Buy for {{ price && amount ? price * amount : '' }} <span class="ml-2" :class="{ 'animate-spin': loading }">🥔</span>
                             </button>
                             <button
                                 v-else
@@ -342,20 +357,20 @@
                         </template>
                         <template v-if="orderMode === 'sell'">
                             <button
-                                v-if="stonks.portfilio.find(stock => stock.symbol === stonk.symbol).count >= amount"
+                                v-if="stocks.portfilio.length && stocks.portfilio.find(stck => stck.symbol === stock.symbol).count >= amount"
                                 class="inline-flex w-full justify-center rounded-md border border-transparent bg-amber-200 text-zinc-900 px-4 py-2 text-base font-medium sm:col-start-2 sm:text-sm"
                                 :disabled="price === null || amount === null || price <= 0 || amount <= 0"
                                 :class="{ 'opacity-50': price === null || amount === null || price <= 0 || amount <= 0 }"
                                 @click="order()"
                             >
-                                Place Order {{ price * amount }} <span class="ml-2" :class="{ 'animate-spin': loading }">🥔</span>
+                                Sell for {{ price * amount }} <span class="ml-2" :class="{ 'animate-spin': loading }">🥔</span>
                             </button>
                             <button
                                 v-else
                                 class="opacity-50 inline-flex w-full justify-center rounded-md border border-transparent bg-amber-200 text-zinc-900 px-4 py-2 text-base font-medium sm:col-start-2 sm:text-sm"
                                 disabled
                             >
-                                You don't own this many {{ stonk.symbol }}
+                                Not enough {{ stock.symbol }}
                             </button>
                         </template>
                         <button
@@ -409,7 +424,7 @@ ChartJS.register(
 )
 
 export default {
-    name: 'Stonks',
+    name: 'Stocks',
     components: {
         Line,
     },
@@ -418,7 +433,7 @@ export default {
 
         return {
             user: computed(() => store.getters.user),
-            stonks: computed(() => store.getters.stonks),
+            stocks: computed(() => store.getters.stocks),
             chartOptions: {
                 responsive: true,
                 plugins: {
@@ -442,7 +457,16 @@ export default {
                 scales: {
                     x: {
                         ticks: {
-                            color: '#fafafa',
+                            color: function() {
+                                if (
+                                    window.matchMedia &&
+                                    window.matchMedia('(prefers-color-scheme: dark)').matches
+                                ) {
+                                    return '#e4e4e7'
+                                }
+
+                                return '#27272a'
+                            },
                             minRotation: 0,
                             maxRotation: 0,
                             autoSkipPadding: 8,
@@ -453,7 +477,17 @@ export default {
                     },
                     y: {
                         ticks: {
-                            color: '#fafafa',
+                            color: function() {
+                                if (
+                                    window.matchMedia &&
+                                    window.matchMedia('(prefers-color-scheme: dark)').matches
+                                ) {
+                                    return '#e4e4e7'
+                                }
+
+                                return '#27272a'
+                            },
+                            precision: 0,
                         },
                         grid: {
                             color: 'rgba(113, 113, 122, 0.2)',
@@ -465,7 +499,7 @@ export default {
     },
     data() {
         return {
-            stonk: null,
+            stock: null,
             orderMode: 'buy',
             orderSuccess: false,
             amount: 1,
@@ -490,13 +524,13 @@ export default {
         })
     },
     methods: {
-        openModal(stonk, orderMode) {
-            this.stonk = stonk
+        openModal(stock, orderMode) {
+            this.stock = stock
             this.orderMode = orderMode
             this.modalOpen = true
         },
         closeModal() {
-            this.stonk = null
+            this.stock = null
             this.orderMode = 'buy'
             this.orderSuccess = false
             this.amount = 1
@@ -509,8 +543,8 @@ export default {
             this.modalError = null
 
             try {
-                await api.post('stonks/order', {
-                    stock_id: this.stonk.id,
+                await api.post('stocks/order', {
+                    stock_id: this.stock.id,
                     amount: this.amount,
                     proposed_price: this.price,
                     order_mode: this.orderMode,
@@ -518,7 +552,7 @@ export default {
                 this.orderSuccess = true
 
                 await this.$store.dispatch('getUser')
-                await this.$store.dispatch('getStonks')
+                await this.$store.dispatch('getStocks')
             } catch (error) {
                 console.log(error)
                 this.modalError = error.response.data.error

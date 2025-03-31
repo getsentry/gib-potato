@@ -29,7 +29,8 @@ class Share extends Entity
      */
     protected array $_accessible = [
         'stock_id' => true,
-        'created' => true,
         'user_id' => true,
+        'created' => true,
+        'updated' => true,
     ];
 }

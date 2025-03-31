@@ -52,6 +52,13 @@ class AddStonks extends BaseMigration
                 'precision' => 6,
                 'scale' => 6,
             ])
+            ->addColumn('updated', 'timestamp', [
+                'default' => null,
+                'limit' => null,
+                'null' => true,
+                'precision' => 6,
+                'scale' => 6,
+            ])
             ->create();
 
         $this->table('stocks')
@@ -121,6 +128,13 @@ class AddStonks extends BaseMigration
                 'null' => false,
             ])
             ->addColumn('created', 'timestamp', [
+                'default' => null,
+                'limit' => null,
+                'null' => true,
+                'precision' => 6,
+                'scale' => 6,
+            ])
+            ->addColumn('modified', 'timestamp', [
                 'default' => null,
                 'limit' => null,
                 'null' => true,

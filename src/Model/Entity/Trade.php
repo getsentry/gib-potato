@@ -46,5 +46,6 @@ class Trade extends Entity
         'status' => true,
         'type' => true,
         'created' => true,
+        'modified' => true,
     ];
 }

@@ -25,13 +25,6 @@
                                 Stonks
                             </RouterLink>
                             <RouterLink
-                                to="/santry-bets"
-                                class="rounded-md px-3 py-2 text-sm font-medium text-zinc-900"
-                                :class="{ '!bg-zinc-900 !text-zinc-50': $route.path === '/santry-bets' }"
-                            >
-                                Santry Bets
-                            </RouterLink>
-                            <RouterLink
                                 to="/shop"
                                 class="rounded-md px-3 py-2 text-sm font-medium text-zinc-900"
                                 :class="{ '!bg-zinc-900 !text-zinc-50': $route.path === '/shop' }"
@@ -115,13 +108,6 @@
                     to="/stonks"
                     class="block rounded-md px-3 py-2 text-base font-medium text-zinc-900"
                     :class="{ '!bg-zinc-900 !text-zinc-50': $route.path === '/stonks' }"
-                >
-                    Stonks
-                </RouterLink>
-                <RouterLink
-                    to="/santry-bets"
-                    class="block rounded-md px-3 py-2 text-base font-medium text-zinc-900"
-                    :class="{ '!bg-zinc-900 !text-zinc-50': $route.path === '/santry-bets' }"
                 >
                     Stonks
                 </RouterLink>

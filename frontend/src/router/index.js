@@ -12,12 +12,7 @@ const router = createRouter({
     {
       path: '/stonks',
       name: 'stonks',
-      component: () => import('@/views/Stonks.vue')
-    },
-    {
-      path: '/santry-bets',
-      name: 'santry-bets',
-      component: () => import('@/views/SantryBets.vue')
+      component: () => import('@/views/Stocks.vue')
     },
     {
       path: '/shop',
