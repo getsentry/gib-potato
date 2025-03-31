@@ -3,6 +3,7 @@ declare(strict_types=1);
 
 namespace App\Command;
 
+use App\Model\Entity\Trade;
 use Cake\Command\Command;
 use Cake\Console\Arguments;
 use Cake\Console\ConsoleIo;
@@ -38,42 +39,68 @@ class GenerateSharePricesCommand extends Command
     {
         $stocksTable = $this->fetchTable('Stocks');
         $sharePricesTable = $this->fetchTable('SharePrices');
+        $tradesTable = $this->fetchTable('Trades');
 
         $io->out('Generating new share prices');
 
-        $stocks = $stocksTable->find()->all();
+        $trades = $tradesTable->find()
+            ->where([
+                'status' => Trade::STATUS_PENDING,
+            ])
+            ->contain('Stocks')
+            ->orderBy(['trades.id' => 'ASC'])
+            ->all();
 
-        $time = new DateTime('2025-04-01 07:00:00');
-        for ($i = 0; $i < 96; $i++) {
-            foreach ($stocks as $stock) {
-                $latestSharePrice = $sharePricesTable->find()
-                    ->where(['stock_id' => $stock->id])
-                    ->orderBy(['id' => 'DESC'])
-                    ->first()
-                    ->price ?? random_int(10, 100);
+        $buyTrades = $trades->filter(function ($trade) {
+            return $trade->type === Trade::TYPE_BUY;
+        });
+        $sellTrades = $trades->filter(function ($trade) {
+            return $trade->type === Trade::TYPE_SELL;
+        });
 
-                $base = random_int(-25, 25); // 0 - 25%
-                $newSharePrice = (int) round($latestSharePrice * (1 + ($base / 100)), 0);
-
-                $sharePrice = $sharePricesTable->newEntity([
-                    'stock_id' => $stock->id,
-                    'price' => $newSharePrice,
-                    'created' => $time,
-                ]);
-                $sharePricesTable->saveOrFail($sharePrice);
-
-                $io->out(sprintf(
-                    'Stock %s went from %s to %s (%s%%)',
-                    $stock->symbol,
-                    $latestSharePrice,
-                    $newSharePrice,
-                    $base,
-                ));
-            }
-
-            $time = $time->modify('+15 minutes');
+        if (empty($buyTrades) || $sellTrades) {
+            $io->out(
+                sprintf("Can't perform any trades. Got %s buy and %s sell trades",
+                    $buyTrades->count(),
+                    $sellTrades->count(),
+                )
+            );
         }
 
+        $sell = $sellTrades->map(function ($value) {
+            return [
+                'id' => $value->id,
+                'stock_id' => $value->stock_id,
+                'proposed_price' => $value->proposed_price,
+                'type' => $value->type,
+            ];
+        })->toArray();
+        $buy = $buyTrades->map(function ($value) {
+            return [
+                'id' => $value->id,
+                'stock_id' => $value->stock_id,
+                'proposed_price' => $value->proposed_price,
+                'type' => $value->type,
+            ];
+        })->toArray();
+
+        debug($sell);
+        debug($buy);
+        exit;
+
         $io->success("\n[DONE]");
+    }
+
+    protected function _findClosest($haystack, $needle) {
+        $left = 0;
+        $right = count($haystack) - 1;
+        while ($left < $right) {
+            if (abs($haystack[$left] - $needle) <= abs($haystack[$right] - $needle)) {
+                $right--;
+            } else {
+                $left++;
+            }
+        }
+        return $haystack[$left];
     }
 }
