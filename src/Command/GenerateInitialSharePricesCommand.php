@@ -3,15 +3,16 @@ declare(strict_types=1);
 
 namespace App\Command;
 
+use App\Model\Entity\Trade;
 use Cake\Command\Command;
 use Cake\Console\Arguments;
 use Cake\Console\ConsoleIo;
 use Cake\Console\ConsoleOptionParser;
 
 /**
- * GenerateShares command.
+ * GenerateInitialShareprices command.
  */
-class GenerateSharesCommand extends Command
+class GenerateInitialSharePricesCommand extends Command
 {
     /**
      * Hook method for defining this command's option parser.
@@ -36,23 +37,23 @@ class GenerateSharesCommand extends Command
     public function execute(Arguments $args, ConsoleIo $io)
     {
         $stocksTable = $this->fetchTable('Stocks');
-        $sharesTable = $this->fetchTable('Shares');
+        $sharePricesTable = $this->fetchTable('SharePrices');
 
-        $io->out('Generating new shares');
+        $io->out('Generating initial share prices');
 
         $stocks = $stocksTable->find()->all();
-        foreach ($stocks as $stock) {
-            // TODO for now, we generate 100x each
-            $shares = $sharesTable->newEntities(array_fill(0, 100, ['stock_id' => $stock->id]));
-            $sharesTable->saveManyOrFail($shares);
 
-            $io->out(sprintf(
-                'Generated %s shares of type %s',
-                count($shares),
-                $stock->symbol,
-            ));
+        foreach ($stocks as $stock) {
+            $sharePrice = $sharePricesTable->newEntity([
+                'stock_id' => $stock->id,
+                'price' => $stock->initial_share_price,
+            ]);
+            $sharePricesTable->saveOrFail($sharePrice);
         }
 
-        $io->success("\n[DONE]");
+        $io->out(sprintf(
+            'Generated %s initial share prices',
+            count($stocks),
+        ));
     }
 }

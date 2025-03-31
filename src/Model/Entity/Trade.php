@@ -40,6 +40,7 @@ class Trade extends Entity
     protected array $_accessible = [
         'user_id' => true,
         'share_id' => true,
+        'stock_id' => true,
         'price' => true,
         'proposed_price' => true,
         'status' => true,

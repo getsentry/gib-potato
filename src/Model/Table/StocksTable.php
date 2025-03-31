@@ -77,6 +77,14 @@ class StocksTable extends Table
             ->scalar('description')
             ->maxLength('description', 255)
             ->allowEmptyString('description');
+        
+        $validator
+            ->integer('initial_share_quantity')
+            ->allowEmptyString('initial_share_quantity');
+
+        $validator
+            ->integer('initial_share_price')
+            ->allowEmptyString('initial_share_price');
 
         return $validator;
     }

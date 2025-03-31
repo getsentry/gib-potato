@@ -3,7 +3,6 @@ declare(strict_types=1);
 
 namespace App\Model\Table;
 
-use Cake\ORM\Query\SelectQuery;
 use Cake\ORM\RulesChecker;
 use Cake\ORM\Table;
 use Cake\Validation\Validator;
@@ -116,7 +115,7 @@ class TradesTable extends Table
     public function buildRules(RulesChecker $rules): RulesChecker
     {
         $rules->add($rules->existsIn(['user_id'], 'Users'), ['errorField' => 'user_id']);
-        $rules->add($rules->existsIn(['share_id'], 'Stocks'), ['errorField' => 'stock_id']);
+        $rules->add($rules->existsIn(['stock_id'], 'Stocks'), ['errorField' => 'stock_id']);
         $rules->add($rules->existsIn(['share_id'], 'Shares'), ['errorField' => 'share_id']);
 
         return $rules;

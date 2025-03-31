@@ -29,9 +29,9 @@ class Stock extends Entity
      */
     protected array $_accessible = [
         'symbol' => true,
-        'created' => true,
         'description' => true,
-        'shares' => true,
-        'share_prices' => true,
+        'initial_share_quantity' => true,
+        'initial_share_price' => true,
+        'created' => true,
     ];
 }

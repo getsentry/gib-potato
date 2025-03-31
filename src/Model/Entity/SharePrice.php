@@ -28,8 +28,7 @@ class SharePrice extends Entity
      */
     protected array $_accessible = [
         'stock_id' => true,
-        'created' => true,
         'price' => true,
-        'stock' => true,
+        'created' => true,
     ];
 }

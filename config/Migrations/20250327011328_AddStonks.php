@@ -65,6 +65,16 @@ class AddStonks extends BaseMigration
                 'limit' => 255,
                 'null' => true,
             ])
+            ->addColumn('initial_share_quantity', 'integer', [
+                'default' => null,
+                'limit' => 10,
+                'null' => true,
+            ])
+            ->addColumn('initial_share_price', 'integer', [
+                'default' => null,
+                'limit' => 10,
+                'null' => true,
+            ])
             ->addColumn('created', 'timestamp', [
                 'default' => null,
                 'limit' => null,

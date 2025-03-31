@@ -154,7 +154,7 @@
                     <span
                         class="text-sm font-medium ml-auto px-2.5 py-0.5 rounded"
                         :class="{
-                            '!bg-green-100 !text-green-800 dark:!bg-green-900 dark:!text-green-300': trade.status === 'executed',
+                            '!bg-green-100 !text-green-800 dark:!bg-green-900 dark:!text-green-300': trade.status === 'done',
                             '!bg-red-100 !text-red-800 dark:!bg-red-900 dark:!text-red-300': trade.status === 'failed',
                             '!bg-blue-100 !text-blue-800 dark:!bg-blue-900 dark:!text-blue-300': trade.status === 'pending',
                         }"
@@ -282,10 +282,6 @@
                                     <div class="flex text-sm">
                                         <span class="text-zinc-500">Mkt Cap</span>
                                         <span class="ml-auto font-semibold">{{ stonk.stock_info.market_cap }}</span>
-                                    </div>
-                                    <div class="flex text-sm">
-                                        <span class="text-zinc-500">???</span>
-                                        <span class="ml-auto font-semibold">{{ stonk.stock_info.something }}</span>
                                     </div>
                                 </div>
                             </div>

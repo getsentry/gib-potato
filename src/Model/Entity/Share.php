@@ -31,7 +31,5 @@ class Share extends Entity
         'stock_id' => true,
         'created' => true,
         'user_id' => true,
-        'stock' => true,
-        'user' => true,
     ];
 }
