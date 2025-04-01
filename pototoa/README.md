@@ -16,3 +16,7 @@ Create a `.sentryclirc` file in the root of the project with the following conte
 [auth]
 token=YOUR_SENTRY_AUTH_TOKEN
 ```
+
+## Screenshot
+
+![Screenshot](screenshot.png)
