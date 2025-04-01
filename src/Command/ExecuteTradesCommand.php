@@ -141,14 +141,22 @@ class ExecuteTradesCommand extends Command
         foreach ($sellTrades as $sellTrade) {
             $match = $this->_findMatchingTrade($buyTrades, $sellTrade);
             if ($match) {
+                // Validate spendable amounts
+
                 $sellTradeEntity = $tradesTable->findById($sellTrade['id'])->firstOrFail();
+                $buyTradeEntity = $tradesTable->findById($match['id'])->firstOrFail();
+
+                // Do not allow to sell to yourself
+                if ($sellTradeEntity->user_id === $buyTradeEntity->user_id) {
+                    continue;
+                }
+
                 $sellTradeEntity = $tradesTable->patchEntity($sellTradeEntity, [
                     'price' => $sellTrade['proposed_price'],
                     'status' => Trade::STATUS_DONE,
                 ]);
                 $tradesTable->saveOrFail($sellTradeEntity);
 
-                $buyTradeEntity = $tradesTable->findById($match['id'])->firstOrFail();
                 $buyTradeEntity = $tradesTable->patchEntity($buyTradeEntity, [
                     'price' => $sellTrade['proposed_price'],
                     'status' => Trade::STATUS_DONE,
