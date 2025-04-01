@@ -135,6 +135,23 @@ class StocksController extends ApiController
             ->withStringBody(json_encode($response));
     }
 
+    public function trades(): Response
+    {
+        $tradesTable = $this->fetchTable('Trades');
+        $trades = $tradesTable->find()
+            ->where([
+                'status' => Trade::STATUS_PENDING,
+            ])
+            ->contain('Stocks')
+            ->orderBy(['Trades.created' => 'DESC'])
+            ->all();
+        
+        return $this->response
+            ->withStatus(200)
+            ->withType('json')
+            ->withStringBody(json_encode($trades));
+    }
+
     /**
      * @return \Cake\Http\Response
      */
