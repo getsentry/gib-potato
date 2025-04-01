@@ -283,6 +283,7 @@ class StocksController extends ApiController
         $tradesTable = $this->fetchTable('Trades');
 
         $connection = $tradesTable->getConnection();
+
         return $connection->transactional(function () use ($tradesTable, $orderId, $userId) {
             $trade = $tradesTable->find()
                 ->where([
