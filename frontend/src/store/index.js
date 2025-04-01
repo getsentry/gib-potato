@@ -42,7 +42,7 @@ const store = createStore({
                 commit('SET_LEADERBOARD', response.data)
             } catch (error) {
                 console.log(error)
-                Sentry._experiment_log.error(error.message, { name: error.name, stack: error.stack });
+                Sentry.logger.error(error.message, { name: error.name, stack: error.stack });
             }
         },
         async getUser({ commit }) {
@@ -51,7 +51,7 @@ const store = createStore({
                 commit('SET_USER', response.data)
             } catch (error) {
                 console.log(error)
-                Sentry._experiment_log.error(error.message, { name: error.name, stack: error.stack });
+                Sentry.logger.error(error.message, { name: error.name, stack: error.stack });
             }
         },
         async getUsers({ commit }) {
@@ -60,7 +60,7 @@ const store = createStore({
                 commit('SET_USERS', response.data)
             } catch (error) {
                 console.log(error)
-                Sentry._experiment_log.error(error.message, { name: error.name, stack: error.stack });
+                Sentry.logger.error(error.message, { name: error.name, stack: error.stack });
             }
         },
         async getStocks({ commit }) {
@@ -69,7 +69,7 @@ const store = createStore({
                 commit('SET_STOCKS', response.data)
             } catch (error) {
                 console.log(error)
-                Sentry._experiment_log.error(error.message, { name: error.name, stack: error.stack });
+                Sentry.logger.error(error.message, { name: error.name, stack: error.stack });
             }
         },
         async getProducts({ commit }) {
@@ -78,7 +78,7 @@ const store = createStore({
                 commit('SET_PRODUCTS', response.data)
             } catch (error) {
                 console.log(error)
-                Sentry._experiment_log.error(error.message, { name: error.name, stack: error.stack });
+                Sentry.logger.error(error.message, { name: error.name, stack: error.stack });
             }
         },
         async getCollection({ commit }) {
@@ -87,7 +87,7 @@ const store = createStore({
                 commit('SET_COLLECTION', response.data)
             } catch (error) {
                 console.log(error)
-                Sentry._experiment_log.error(error.message, { name: error.name, stack: error.stack });
+                Sentry.logger.error(error.message, { name: error.name, stack: error.stack });
             }
         },
         async getQuickWins({ commit }) {
@@ -96,7 +96,7 @@ const store = createStore({
                 commit('SET_QUICK_WINS', response.data)
             } catch (error) {
                 console.log(error)
-                Sentry._experiment_log.error(error.message, { name: error.name, stack: error.stack });
+                Sentry.logger.error(error.message, { name: error.name, stack: error.stack });
             }
         },
         async toggleSentNotifications({ commit, getters }) {
@@ -105,7 +105,7 @@ const store = createStore({
                 const response = await api.patch('user', getters.user)
             } catch (error) {
                 console.log(error)
-                Sentry._experiment_log.error(error.message, { name: error.name, stack: error.stack });
+                Sentry.logger.error(error.message, { name: error.name, stack: error.stack });
             }
         },
         async toggleReceivedNotifications({ commit, getters }) {
@@ -114,7 +114,7 @@ const store = createStore({
                 const response = await api.patch('user', getters.user)
             } catch (error) {
                 console.log(error)
-                Sentry._experiment_log.error(error.message, { name: error.name, stack: error.stack });
+                Sentry.logger.error(error.message, { name: error.name, stack: error.stack });
             }
         },
         async toggleTooGoodToGoNotifications({ commit, getters }) {
@@ -123,7 +123,7 @@ const store = createStore({
                 const response = await api.patch('user', getters.user)
             } catch (error) {
                 console.log(error)
-                Sentry._experiment_log.error(error.message, { name: error.name, stack: error.stack });
+                Sentry.logger.error(error.message, { name: error.name, stack: error.stack });
             }
         },
         setRangeFilter({ commit }, range) {
