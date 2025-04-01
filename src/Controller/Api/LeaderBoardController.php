@@ -3,8 +3,10 @@ declare(strict_types=1);
 
 namespace App\Controller\Api;
 
+use App\Model\Entity\Trade;
 use App\Model\Entity\User;
 use Cake\Http\Response;
+use Cake\ORM\Query\SelectQuery;
 use function Cake\Collection\collection;
 
 /**
@@ -24,9 +26,16 @@ class LeaderBoardController extends ApiController
                 'Users.status' => User::STATUS_ACTIVE,
                 'Users.role !=' => User::ROLE_SERVICE,
             ])
+            ->contain('Trades', function (SelectQuery $query) {
+                return $query
+                    ->where(['Trades.status' => Trade::STATUS_DONE]);
+            })
             ->all();
 
         $stocks = collection($stockUsers)
+            ->filter(function ($user) {
+                return !empty($user->trades);
+            })
             ->map(function ($user) {
                 return [
                     'id' => $user->id,
@@ -36,7 +45,7 @@ class LeaderBoardController extends ApiController
 
                 ];
             })
-            ->sortBy('stocks', SORT_DESC, SORT_NATURAL)
+            ->sortBy('stocks', SORT_ASC, SORT_NATURAL)
             ->toList();
 
         return $this->response
