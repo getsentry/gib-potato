@@ -222,13 +222,13 @@
                             <span class="text-zinc-500">-</span>
                         </template>
                     </td>
-                    <td class="relative whitespace-nowrap py-4 pl-3 pr-4 text-right text-sm">
+                    <td class="ml-auto py-4 px-3 text-right text-sm font-bold">
                         {{ trade.time }}
                     </td>
-                    <td class="relative whitespace-nowrap py-4 pl-3 pr-4 text-right text-sm">
+                    <td class="flex relative whitespace-nowrap py-4 pl-3 pr-4 text-right text-sm">
                         <button
-                            class="inline-flex w-full justify-center rounded-md border border-transparent bg-amber-200 text-zinc-900 px-4 py-2 text-base font-medium sm:col-start-2 sm:text-sm"
-                            :disabled="trade.status !== 'pending'"
+                            v-if="trade.status === 'pending'"
+                            class="ml-auto flex justify-center rounded-md border border-zinc-300 px-2 py-1 text-sm"
                             @click="cancelOrder(trade)"
                         >
                             Cancel
