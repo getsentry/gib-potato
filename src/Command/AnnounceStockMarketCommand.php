@@ -60,7 +60,8 @@ class AnnounceStockMarketCommand extends Command
         $channelMessage .= 'You can invest in *SFO*, *YYZ*, *VIE*, *SEA*, *AMS*, or *REM* shares.' . PHP_EOL;
         $channelMessage .= 'The market is updated every five minutes.' . PHP_EOL;
         $channelMessage .= 'Placed orders expire after 20 minutes if not matched.' . PHP_EOL;
-        $channelMessage .= 'Join <#' . env('POTATO_STOCKS_CHANNEL') . '> for non-financial potato advice.' . PHP_EOL . PHP_EOL;
+        $channelMessage .= 'Join <#' . env('POTATO_STOCKS_CHANNEL') . '> for non-financial potato advice.'
+            . PHP_EOL . PHP_EOL;
         $channelMessage .= 'Head over to https://gibpotato.app/stonks to get started.' . PHP_EOL . PHP_EOL;
         $channelMessage .= '*Have fun* 🚀';
 
