@@ -80,6 +80,7 @@ return static function (RouteBuilder $routes): void {
 
             $builder->get('/stocks', ['prefix' => 'Api', 'controller' => 'Stocks', 'action' => 'list']);
             $builder->post('/stocks/order', ['prefix' => 'Api', 'controller' => 'Stocks', 'action' => 'order']);
+            $builder->post('/stocks/cancel-order', ['prefix' => 'Api', 'controller' => 'Stocks', 'action' => 'cancelOrder']);
 
             $builder->get('/shop/products', ['prefix' => 'Api', 'controller' => 'Shop', 'action' => 'products']);
             $builder->post('/shop/purchase', ['prefix' => 'Api', 'controller' => 'Shop', 'action' => 'purchase']);

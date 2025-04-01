@@ -158,6 +158,9 @@
                     <th scope="col" class="py-3.5 pl-3 text-right text-sm font-semibold">
                         Time
                     </th>
+                    <th scope="col" class="py-3.5 pl-3 text-right text-sm font-semibold">
+                        Actions
+                    </th>
                 </tr>
             </thead>
             <tbody class="divide-y divide-gray-200">
@@ -220,6 +223,15 @@
                     </td>
                     <td class="relative whitespace-nowrap py-4 pl-3 pr-4 text-right text-sm">
                         {{ trade.time }}
+                    </td>
+                    <td class="relative whitespace-nowrap py-4 pl-3 pr-4 text-right text-sm">
+                        <button
+                            class="inline-flex w-full justify-center rounded-md border border-transparent bg-amber-200 text-zinc-900 px-4 py-2 text-base font-medium sm:col-start-2 sm:text-sm"
+                            :disabled="trade.status !== 'pending'"
+                            @click="cancelOrder(trade)"
+                        >
+                            Cancel
+                        </button>
                     </td>
                 </tr>
             </tbody>
@@ -567,6 +579,21 @@ export default {
                 this.orderSuccess = true
 
                 await this.$store.dispatch('getUser')
+                await this.$store.dispatch('getStocks')
+            } catch (error) {
+                console.log(error)
+                this.modalError = error.response.data.error
+            } finally {
+                this.loading = false
+            }
+        },
+        async cancelOrder(trade) {
+            this.loading = true
+
+            try {
+                await api.post('stocks/cancel-order', {
+                    order_id: trade.id,
+                })
                 await this.$store.dispatch('getStocks')
             } catch (error) {
                 console.log(error)
