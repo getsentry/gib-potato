@@ -12,7 +12,6 @@ use Cake\Validation\Validator;
  *
  * @property \App\Model\Table\UsersTable&\Cake\ORM\Association\BelongsTo $Users
  * @property \App\Model\Table\SharesTable&\Cake\ORM\Association\BelongsTo $Shares
- *
  * @method \App\Model\Entity\Trade newEmptyEntity()
  * @method \App\Model\Entity\Trade newEntity(array $data, array $options = [])
  * @method array<\App\Model\Entity\Trade> newEntities(array $data, array $options = [])
@@ -26,7 +25,6 @@ use Cake\Validation\Validator;
  * @method iterable<\App\Model\Entity\Trade>|\Cake\Datasource\ResultSetInterface<\App\Model\Entity\Trade> saveManyOrFail(iterable $entities, array $options = [])
  * @method iterable<\App\Model\Entity\Trade>|\Cake\Datasource\ResultSetInterface<\App\Model\Entity\Trade>|false deleteMany(iterable $entities, array $options = [])
  * @method iterable<\App\Model\Entity\Trade>|\Cake\Datasource\ResultSetInterface<\App\Model\Entity\Trade> deleteManyOrFail(iterable $entities, array $options = [])
- *
  * @mixin \Cake\ORM\Behavior\TimestampBehavior
  */
 class TradesTable extends Table
@@ -72,7 +70,7 @@ class TradesTable extends Table
         $validator
             ->uuid('user_id')
             ->allowEmptyString('user_id');
-        
+
             $validator
             ->integer('stock_id')
             ->allowEmptyString('stock_id');
@@ -84,7 +82,7 @@ class TradesTable extends Table
         $validator
             ->integer('price')
             ->allowEmptyString('price', 'create');
-        
+
         $validator
             ->integer('proposed_price')
             ->requirePresence('proposed_price', 'create')

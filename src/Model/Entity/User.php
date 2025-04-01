@@ -220,7 +220,7 @@ class User extends Entity
             ->first()
             ->spent;
 
-        return ($this->getCredit()->amount ?? 0) + $this->potatoReceived() - (int) $purchases + $this->getStocks();
+        return ($this->getCredit()->amount ?? 0) + $this->potatoReceived() - (int)$purchases + $this->getStocks();
     }
 
     /**
@@ -253,6 +253,9 @@ class User extends Entity
         return $endOfDayUser;
     }
 
+    /**
+     * @return int
+     */
     public function getStocks(): int
     {
         $tradesTable = $this->fetchTable('Trades');
@@ -280,9 +283,12 @@ class User extends Entity
             ->first()
             ->price;
 
-        return (int) $sellTrades - (int) $buyTrades;
+        return (int)$sellTrades - (int)$buyTrades;
     }
 
+    /**
+     * @return \App\Model\Credit|null
+     */
     public function getCredit(): ?Credit
     {
         $creditsTable = $this->fetchTable('Credits');
@@ -295,21 +301,24 @@ class User extends Entity
         return $credit;
     }
 
+    /**
+     * @return int
+     */
     public function getCreditAmount(): int
     {
         $potatoSent = $this->potatoSent();
 
         if ($this->created >= new DateTime('-6 months')) {
             return $potatoSent * 10;
-        } else if ($this->created >= new DateTime('-1 year')) {
+        } elseif ($this->created >= new DateTime('-1 year')) {
             return $potatoSent * 5;
-        } else if ($this->created >= new DateTime('-2 years')) {
+        } elseif ($this->created >= new DateTime('-2 years')) {
             if ($potatoSent <= 25) {
                 return 0;
             }
 
             return $potatoSent * 4;
-        } else if ($this->created >= new DateTime('-3 years')) {
+        } elseif ($this->created >= new DateTime('-3 years')) {
             if ($potatoSent <= 50) {
                 return 0;
             }

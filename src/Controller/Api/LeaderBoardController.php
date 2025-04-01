@@ -7,6 +7,7 @@ use App\Model\Entity\User;
 use App\Utils\SentryTime;
 use Cake\Http\Response;
 use Cake\I18n\DateTime;
+use function Cake\Collection\collection;
 
 /**
  * @property \Authentication\Controller\Component\AuthenticationComponent $Authentication

@@ -10,6 +10,7 @@ use Cake\Console\Arguments;
 use Cake\Console\ConsoleIo;
 use Cake\Console\ConsoleOptionParser;
 use Exception;
+use function Cake\Core\env;
 
 /**
  * AnnounceStockMarket command.

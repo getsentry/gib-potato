@@ -8,6 +8,7 @@ use Cake\Http\Response;
 use Cake\I18n\DateTime;
 use Cake\ORM\Query\SelectQuery;
 use Exception;
+use function Cake\Collection\collection;
 
 /**
  * @property \Authentication\Controller\Component\AuthenticationComponent $Authentication
@@ -53,18 +54,20 @@ class StocksController extends ApiController
                     'proposed_price' => $value->proposed_price,
                     'status' => $value->status,
                     'type' => $value->type,
-                    'time' => $value->created->setTimezone($this->Authentication->getIdentity()->get('slack_time_zone'))->format('H:i'),
+                    'time' => $value->created->setTimezone(
+                        $this->Authentication->getIdentity()->get('slack_time_zone'),
+                    )->format('H:i'),
                 ];
             })->toList(),
             'portfilio' => $sharesTable->find()
                 ->where([
-                    'Shares.user_id IS' => $this->Authentication->getIdentity()->getIdentifier()
+                    'Shares.user_id IS' => $this->Authentication->getIdentity()->getIdentifier(),
                 ])
                 ->contain(['Stocks' => [
-                    'SharePrices' => function (SelectQuery $query) use ($stocks) {
-                       return $query
+                    'SharePrices' => function (SelectQuery $query) {
+                        return $query
                             ->orderBy(['SharePrices.id' => 'DESC']);
-                    }]
+                    }],
                 ])
                 ->all()
                 ->groupBy('stock.symbol')
@@ -81,7 +84,6 @@ class StocksController extends ApiController
             'market_open' => $config->market_open,
         ];
         foreach ($stocks as $stock) {
-
             $sharePricesCollection = collection($stock->share_prices);
             $sharesCollection = collection($stock->shares);
 
@@ -91,7 +93,9 @@ class StocksController extends ApiController
             $labels = [];
             $time = new DateTime('2025-04-01 06:00:00');
             for ($i = 0; $i < 288; $i++) {
-                $time = $time->modify('+5 minutes')->setTimezone($this->Authentication->getIdentity()->get('slack_time_zone'));
+                $time = $time->modify('+5 minutes')->setTimezone(
+                    $this->Authentication->getIdentity()->get('slack_time_zone'),
+                );
                 $labels[] = $time->format('G');
             }
 
@@ -119,8 +123,8 @@ class StocksController extends ApiController
                                 '#22c55e' : '#ef4444',
                             'backgroundColor' => $sharePrice - $startingPrice > 0 ?
                                 'rgba(34, 197, 94, 0.1)' : 'rgba(239, 68, 68, 0.1)',
-                        ]
-                    ]
+                        ],
+                    ],
                 ],
             ];
         }
@@ -169,7 +173,8 @@ class StocksController extends ApiController
                     ]));
             }
 
-            for ($i = 0; $i < (int) $this->request->getData('amount'); $i++) {    
+            $amountRequestData = (int)$this->request->getData('amount');
+            for ($i = 0; $i < $amountRequestData; $i++) {
                 $tradesTable = $this->fetchTable('Trades');
                 $trade = $tradesTable->newEntity([
                     'user_id' => $user->id,
@@ -208,7 +213,8 @@ class StocksController extends ApiController
             }
 
             $ownedShares = $shares->toArray();
-            for ($i = 0; $i < (int) $this->request->getData('amount'); $i++) {  
+            $amountRequestData = (int)$this->request->getData('amount');
+            for ($i = 0; $i < $amountRequestData; $i++) {
                 $tradesTable = $this->fetchTable('Trades');
                 $trade = $tradesTable->newEntity([
                     'user_id' => $user->id,

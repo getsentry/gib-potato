@@ -13,7 +13,8 @@ use Cake\ORM\Query\SelectQuery;
 use Exception;
 use Sentry\MonitorConfig;
 use Sentry\MonitorSchedule;
-
+use function Cake\Collection\collection;
+use function Cake\Core\env;
 use function Sentry\withMonitor;
 
 /**
@@ -41,21 +42,19 @@ class ExecuteTradesCommand extends Command
      */
     public function execute(Arguments $args, ConsoleIo $io)
     {
-        $this->_execute($args, $io);
-
-        // withMonitor(
-        //     slug: 'execute-trades',
-        //     callback: fn() => $this->_execute($args, $io),
-        //     monitorConfig: new MonitorConfig(
-        //         schedule: new MonitorSchedule(
-        //             type: MonitorSchedule::TYPE_CRONTAB,
-        //             value: '*/5 * * * *',
-        //         ),
-        //         checkinMargin: 1,
-        //         maxRuntime: 4,
-        //         timezone: 'UTC',
-        //     ),
-        // );
+        withMonitor(
+            slug: 'execute-trades',
+            callback: fn() => $this->_execute($args, $io),
+            monitorConfig: new MonitorConfig(
+                schedule: new MonitorSchedule(
+                    type: MonitorSchedule::TYPE_CRONTAB,
+                    value: '*/5 * * * *',
+                ),
+                checkinMargin: 1,
+                maxRuntime: 4,
+                timezone: 'UTC',
+            ),
+        );
     }
 
     /**
@@ -74,7 +73,6 @@ class ExecuteTradesCommand extends Command
         if ($config->market_open === false) {
             throw new Exception('Market currently closed');
         }
-
 
         $usersTable = $this->fetchTable('Users');
         $stocksTable = $this->fetchTable('Stocks');
@@ -172,7 +170,7 @@ class ExecuteTradesCommand extends Command
 
                 $executedTradeIds[] = $sellTrade['id'];
                 $executedTradeIds[] = $match['id'];
-            };
+            }
         }
 
         $doneTrades = $tradesTable->find()
@@ -183,7 +181,7 @@ class ExecuteTradesCommand extends Command
             ->contain('Stocks')
             ->orderBy(['trades.id' => 'ASC'])
             ->all();
-        
+
         $doneBuyTrades = $doneTrades->filter(function ($doneTrade) {
             return $doneTrade->type === Trade::TYPE_BUY;
         });
@@ -225,7 +223,7 @@ class ExecuteTradesCommand extends Command
             $sharePriceBuyAverage = $doneBuyTradesAverage[$stock->id]['average'] ?? $stock->share_prices[0]->price;
             $sharePriceSellAverage = $doneSellTradesAverage[$stock->id]['average'] ?? $stock->share_prices[0]->price;
 
-            $average = ((int) round($sharePriceBuyAverage + $sharePriceSellAverage)) / 2;
+            $average = ((int)round($sharePriceBuyAverage + $sharePriceSellAverage)) / 2;
 
             $newSharePrices[] = [
                 'stock_id' => $stock->id,
@@ -245,10 +243,13 @@ class ExecuteTradesCommand extends Command
         $io->success("\n[DONE]");
     }
 
-    protected function _findMatchingTrade(&$buyTrades, $sellTrade): ?array
+    /**
+     * @return array|null
+     */
+    protected function _findMatchingTrade(array &$buyTrades, array $sellTrade): ?array
     {
         $candidates = [];
-        foreach($buyTrades as $key => $buyTrade) {
+        foreach ($buyTrades as $key => $buyTrade) {
             if (
                 $buyTrade['stock_id'] === $sellTrade['stock_id'] &&
                 $buyTrade['proposed_price'] >= $sellTrade['proposed_price']

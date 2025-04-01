@@ -3,14 +3,12 @@ declare(strict_types=1);
 
 namespace App\Controller;
 
-use App\Model\Entity\Message;
-use Cake\I18n\DateTime;
 use Exception;
 
 /**
  * Credits Controller
  *
- * @property \App\Model\Table\CreditsTable $Credits
+ * @property \Authentication\Controller\Component\AuthenticationComponent $Authentication
  */
 class CreditsController extends AppController
 {
@@ -32,6 +30,11 @@ class CreditsController extends AppController
         ]);
     }
 
+    /**
+     * Add method
+     *
+     * @return \Cake\Http\Response|null|void Renders view
+     */
     public function add()
     {
         $usersTable = $this->fetchTable('Users');

@@ -3,7 +3,6 @@ declare(strict_types=1);
 
 namespace App\Model\Table;
 
-use Cake\ORM\Query\SelectQuery;
 use Cake\ORM\RulesChecker;
 use Cake\ORM\Table;
 use Cake\Validation\Validator;
@@ -12,7 +11,6 @@ use Cake\Validation\Validator;
  * SharePrices Model
  *
  * @property \App\Model\Table\StocksTable&\Cake\ORM\Association\BelongsTo $Stocks
- *
  * @method \App\Model\Entity\SharePrice newEmptyEntity()
  * @method \App\Model\Entity\SharePrice newEntity(array $data, array $options = [])
  * @method array<\App\Model\Entity\SharePrice> newEntities(array $data, array $options = [])
@@ -26,7 +24,6 @@ use Cake\Validation\Validator;
  * @method iterable<\App\Model\Entity\SharePrice>|\Cake\Datasource\ResultSetInterface<\App\Model\Entity\SharePrice> saveManyOrFail(iterable $entities, array $options = [])
  * @method iterable<\App\Model\Entity\SharePrice>|\Cake\Datasource\ResultSetInterface<\App\Model\Entity\SharePrice>|false deleteMany(iterable $entities, array $options = [])
  * @method iterable<\App\Model\Entity\SharePrice>|\Cake\Datasource\ResultSetInterface<\App\Model\Entity\SharePrice> deleteManyOrFail(iterable $entities, array $options = [])
- *
  * @mixin \Cake\ORM\Behavior\TimestampBehavior
  */
 class SharePricesTable extends Table
