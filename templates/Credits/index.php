@@ -52,7 +52,7 @@
         </div>
     <?php elseif ($amount === 0): ?>
         Based on your potato score, we are unable to grant you a credit.<br>
-        You need to sent more potato!
+        Maybe you should have sent more potato 🙂
     <?php else: ?>
         We already granted you a credit!
     <?php endif; ?>
