@@ -91,7 +91,7 @@ class StocksController extends ApiController
             $sharePrice = $sharePricesCollection->last()->price;
 
             $labels = [];
-            $time = new DateTime('2025-04-01 06:00:00');
+            $time = new DateTime('2025-04-01 06:15:00');
             for ($i = 0; $i < 288; $i++) {
                 $time = $time->modify('+5 minutes')->setTimezone(
                     $this->Authentication->getIdentity()->get('slack_time_zone'),
