@@ -112,8 +112,8 @@
         </h2>
         <div class="mt-4 flex space-x-4">
             <div
-                v-if="stocks.portfilio.length"
-                v-for="stock in stocks.portfilio"
+                v-if="stocks.portfolio.length"
+                v-for="stock in stocks.portfolio"
                 class="flex-1 flex items-center"
             >
                 <div>
@@ -187,7 +187,8 @@
                             class="text-sm font-medium ml-auto px-2.5 py-0.5 rounded"
                             :class="{
                                 '!bg-green-100 !text-green-800 dark:!bg-green-900 dark:!text-green-300': trade.status === 'done',
-                                '!bg-red-100 !text-red-800 dark:!bg-red-900 dark:!text-red-300': trade.status === 'expired',
+                                '!bg-rose-100 !text-rose-800 dark:!bg-rose-900 dark:!text-rose-300': trade.status === 'expired',
+                                '!bg-red-100 !text-red-800 dark:!bg-red-900 dark:!text-red-300': trade.status === 'canceled',
                                 '!bg-blue-100 !text-blue-800 dark:!bg-blue-900 dark:!text-blue-300': trade.status === 'pending',
                             }"
                         >
@@ -383,7 +384,7 @@
                             </template>
                             <template v-if="orderMode === 'sell'">
                                 <button
-                                    v-if="stocks.portfilio.length && stocks.portfilio.find(stck => stck.symbol === stock.symbol).count >= amount"
+                                    v-if="stocks.portfolio.length && stocks.portfolio.find(stck => stck.symbol === stock.symbol).count >= amount"
                                     class="inline-flex w-full justify-center rounded-md border border-transparent bg-amber-200 text-zinc-900 px-4 py-2 text-base font-medium sm:col-start-2 sm:text-sm"
                                     :disabled="price === null || amount === null || price <= 0 || amount <= 0"
                                     :class="{ 'opacity-50': price === null || amount === null || price <= 0 || amount <= 0 }"
@@ -594,6 +595,9 @@ export default {
                 await api.post('stocks/cancel-order', {
                     order_id: trade.id,
                 })
+
+                await this.$store.dispatch('getUser')
+                await this.$store.dispatch('getTrades')
                 await this.$store.dispatch('getStocks')
             } catch (error) {
                 console.log(error)

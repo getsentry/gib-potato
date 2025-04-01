@@ -59,7 +59,7 @@ class StocksController extends ApiController
                     )->format('H:i'),
                 ];
             })->toList(),
-            'portfilio' => $sharesTable->find()
+            'portfolio' => $sharesTable->find()
                 ->where([
                     'Shares.user_id IS' => $this->Authentication->getIdentity()->getIdentifier(),
                 ])
@@ -278,53 +278,23 @@ class StocksController extends ApiController
     public function cancelOrder(): Response
     {
         $orderId = $this->request->getData('order_id');
-        if (!$orderId) {
-            return $this->response
-                ->withStatus(400)
-                ->withType('json')
-                ->withStringBody(json_encode([
-                    'error' => 'Order ID is required',
-                ]));
-        }
+        $userId = $this->Authentication->getIdentity()->getIdentifier();
 
-        // Check if the order ID is valid
         $tradesTable = $this->fetchTable('Trades');
-        $trade = $tradesTable->find()
-            ->where(['id' => $orderId])
-            ->first();
-
-        // Verify that the order belongs to the current user
-        if ($trade->user_id !== $this->Authentication->getIdentity()->getIdentifier()) {
-            return $this->response
-                ->withStatus(403)
-                ->withType('json')
-                ->withStringBody(json_encode([
-                    'error' => 'You are not authorized to cancel this order',
-                ]));
-        }
 
         $connection = $tradesTable->getConnection();
-        return $connection->transactional(function () use ($tradesTable, $orderId) {
+        return $connection->transactional(function () use ($tradesTable, $orderId, $userId) {
             $trade = $tradesTable->find()
                 ->where([
                     'id' => $orderId,
-                    'user_id' => $this->Authentication->getIdentity()->getIdentifier(),
+                    'user_id' => $userId,
                     'status' => Trade::STATUS_PENDING,
                 ])
                 ->epilog('FOR UPDATE')
-                ->first();
-
-            if (!$trade) {
-                return $this->response
-                    ->withStatus(404)
-                    ->withType('json')
-                    ->withStringBody(json_encode([
-                        'error' => 'Order not found or cannot be cancelled',
-                    ]));
-            }
+                ->firstOrFail();
 
             $trade = $tradesTable->patchEntity($trade, [
-                'status' => Trade::STATUS_CANCELLED,
+                'status' => Trade::STATUS_CANCELED,
             ]);
             $tradesTable->saveOrFail($trade);
 
