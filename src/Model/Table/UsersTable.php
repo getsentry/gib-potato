@@ -67,6 +67,9 @@ class UsersTable extends Table
         $this->hasMany('Purchases')
             ->setForeignKey('user_id');
 
+        $this->hasMany('Trades')
+            ->setForeignKey('user_id');
+
         $this->hasOne('ApiTokens')
             ->setForeignKey('user_id');
     }
