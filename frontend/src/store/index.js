@@ -10,6 +10,7 @@ const store = createStore({
             user: null,
             users: [],
             stocks: [],
+            trades: [],
             products: [],
             collection: [],
             quickWins: [],
@@ -24,6 +25,7 @@ const store = createStore({
         user: state => state.user,
         users: state => state.users,
         stocks: state => state.stocks,
+        trades: state => state.trades,
         products: state => state.products,
         collection: state => state.collection,
         quickWins: state => state.quickWins,
@@ -67,6 +69,15 @@ const store = createStore({
             try {
                 const response = await api.get('stocks')
                 commit('SET_STOCKS', response.data)
+            } catch (error) {
+                console.log(error)
+                Sentry.logger.error(error.message, { name: error.name, stack: error.stack });
+            }
+        },
+        async getTrades({ commit }) {
+            try {
+                const response = await api.get('stocks/trades')
+                commit('SET_TRADES', response.data)
             } catch (error) {
                 console.log(error)
                 Sentry.logger.error(error.message, { name: error.name, stack: error.stack });
@@ -145,6 +156,9 @@ const store = createStore({
         },
         SET_STOCKS(state, stocks) {
             state.stocks = stocks
+        },
+        SET_TRADES(state, trades) {
+            state.trades = trades
         },
         SET_PRODUCTS(state, products) {
             state.products = products
