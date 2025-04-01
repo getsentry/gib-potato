@@ -118,11 +118,12 @@
             >
                 <div>
                     <h3 class="flex items-center font-medium">
-                        {{ stock.symbol }}
-                        <small class="ml-1.5">×{{ stock.count }}</small>
+                        <strong>{{ stock.symbol }}</strong>
+                        <span class="ml-1.5 text-base">×{{ stock.count }}</span>
                     </h3>
                     <div>
-                        current value <span class="font-semibold">{{ stock.value }}</span> 🥔
+                        <div>current total value <span class="font-semibold">{{ stock.value }}</span> 🥔</div>
+                        <div>current share price <span class="font-semibold">{{ stock.unit_value }}</span> 🥔</div>
                     </div>
                 </div>
             </div>

@@ -73,11 +73,13 @@ class StocksController extends ApiController
                 ->groupBy('stock.symbol')
                 ->map(function ($value) {
                     $value = collection($value);
-
+                    $stockPrice = collection($value->first()->stock->share_prices)->first()->price;
+                    
                     return [
                         'symbol' => $value->first()->stock->symbol,
                         'count' => $value->count(),
-                        'value' => $value->count() * collection($value->first()->stock->share_prices)->first()->price,
+                        'value' => $value->count() * $stockPrice,
+                        'unit_value' => $stockPrice,
                     ];
                 })->toList(),
             'stocks' => [],
