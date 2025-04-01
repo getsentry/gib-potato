@@ -1,9 +1,14 @@
 <template>
-    <div>
-        <h2 class="text-lg font-medium leading-6">You can spend up to {{ user.spendable_count ?? 0 }} 🥔</h2>
+    <div class="flex items-center">
+        <h2 class="text-lg font-medium leading-6">
+            Your current balance is {{ user.spendable_count ?? 0 }} 🥔
+        </h2>
+        <span class="mx-4">-</span>
+        <span>Out of potato?</span>
+        <button class="ml-4 flex justify-center rounded-md border border-zinc-300 px-3 py-1 text-sm">Gib Credit</button>
     </div>
 
-    <div class="mt-8 grid grid-cols-1 gap-y-12 sm:grid-cols-2 sm:gap-x-6 lg:grid-cols-4 xl:gap-x-8 mb-32">
+    <div class="mt-16 grid grid-cols-1 gap-y-12 sm:grid-cols-2 sm:gap-x-6 lg:grid-cols-4 xl:gap-x-8 mb-32">
         <div
             v-for="(product, index) in products"
             class="h-full flex flex-col"
@@ -222,6 +227,20 @@ export default {
             loading: false,
             purchaseSuccess: false,
         }
+    },
+    mounted() {
+        window.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape') {
+                this.closeModal()
+            }
+        })
+    },
+    beforeUnmount() {
+        window.removeEventListener('keydown', (e) => {
+            if (e.key === 'Escape') {
+                this.closeModal()
+            }
+        })
     },
     methods: {
         openModal(product) {
