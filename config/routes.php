@@ -65,6 +65,9 @@ return static function (RouteBuilder $routes): void {
         $builder->connect('/settings', ['controller' => 'Home', 'action' => 'index']);
 
         $builder->connect('/terms', ['controller' => 'Terms', 'action' => 'index']);
+        
+        $builder->get('/gib-credit', ['controller' => 'Credits', 'action' => 'index']);
+        $builder->post('/gib-credit', ['controller' => 'Credits', 'action' => 'add']);
 
         $builder->scope('/api', function (RouteBuilder $builder): void {
             $builder->get('/leaderboard', ['prefix' => 'Api', 'controller' => 'LeaderBoard', 'action' => 'get']);

@@ -17,7 +17,7 @@
             </tr>
         </thead>
         <tbody class="divide-y divide-gray-200">
-            <tr v-for="(user, index) in users" :key="user.id">
+            <tr v-for="(user, index) in leaderboard.users" :key="user.id">
                 <td class="whitespace-nowrap py-4 pl-4 pr-3 text-sm">
                     {{ index + 1 }}
                 </td>
@@ -48,8 +48,9 @@ export default {
     name: 'Leaderboard',
     setup() {
         const store = useStore()
+
         return {
-            users: computed(() => store.getters.leaderboard),
+            leaderboard: computed(() => store.getters.leaderboard),
         }
     },
 };

@@ -8,6 +8,7 @@ use Cake\Command\Command;
 use Cake\Console\Arguments;
 use Cake\Console\ConsoleIo;
 use Cake\Console\ConsoleOptionParser;
+use Exception;
 
 /**
  * GenerateInitialShareprices command.
@@ -36,10 +37,16 @@ class GenerateInitialSharePricesCommand extends Command
      */
     public function execute(Arguments $args, ConsoleIo $io)
     {
+        $io->out('Generating initial share prices');
+
+        $configTable = $this->fetchTable('Config');
+        $config = $configTable->find()->firstOrFail();
+        if ($config->market_initalized === true) {
+            throw new Exception('Market already initialized');
+        }
+
         $stocksTable = $this->fetchTable('Stocks');
         $sharePricesTable = $this->fetchTable('SharePrices');
-
-        $io->out('Generating initial share prices');
 
         $stocks = $stocksTable->find()->all();
 
@@ -49,11 +56,11 @@ class GenerateInitialSharePricesCommand extends Command
                 'price' => $stock->initial_share_price,
             ]);
             $sharePricesTable->saveOrFail($sharePrice);
-        }
 
-        $io->out(sprintf(
-            'Generated %s initial share prices',
-            count($stocks),
-        ));
+            $io->out(sprintf(
+                'Generated %s initial share price',
+                $stock->symbol,
+            ));
+        }
     }
 }

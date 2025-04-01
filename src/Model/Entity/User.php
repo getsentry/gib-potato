@@ -219,33 +219,8 @@ class User extends Entity
             ])
             ->first()
             ->spent;
-        
-        $tradesTable = $this->fetchTable('Trades');
-        $buyTrades = $tradesTable->find();
-        $buyTrades = $buyTrades->select([
-                'price' => $buyTrades->func()->sum('price'),
-            ])
-            ->where([
-                'user_id' => $this->id,
-                'type' => Trade::TYPE_BUY,
-                'status' => Trade::STATUS_DONE,
-            ])
-            ->first()
-            ->price;
 
-        $sellTrades = $tradesTable->find();
-        $sellTrades = $sellTrades->select([
-                'price' => $sellTrades->func()->sum('price'),
-            ])
-            ->where([
-                'user_id' => $this->id,
-                'type' => Trade::TYPE_SELL,
-                'status' => Trade::STATUS_DONE,
-            ])
-            ->first()
-            ->price;
-
-        return $this->potatoReceived() - (int) $purchases + (int) $sellTrades - (int) $buyTrades;
+        return ($this->getCredit()->amount ?? 0) + $this->potatoReceived() - (int) $purchases + $this->getStocks();
     }
 
     /**
@@ -276,5 +251,72 @@ class User extends Entity
         $endOfDayUser = $userTime->endOfDay()->subSeconds($utcOffset);
 
         return $endOfDayUser;
+    }
+
+    public function getStocks(): int
+    {
+        $tradesTable = $this->fetchTable('Trades');
+        $buyTrades = $tradesTable->find();
+        $buyTrades = $buyTrades->select([
+                'price' => $buyTrades->func()->sum('price'),
+            ])
+            ->where([
+                'user_id' => $this->id,
+                'type' => Trade::TYPE_BUY,
+                'status' => Trade::STATUS_DONE,
+            ])
+            ->first()
+            ->price;
+
+        $sellTrades = $tradesTable->find();
+        $sellTrades = $sellTrades->select([
+                'price' => $sellTrades->func()->sum('price'),
+            ])
+            ->where([
+                'user_id' => $this->id,
+                'type' => Trade::TYPE_SELL,
+                'status' => Trade::STATUS_DONE,
+            ])
+            ->first()
+            ->price;
+
+        return (int) $sellTrades - (int) $buyTrades;
+    }
+
+    public function getCredit(): ?Credit
+    {
+        $creditsTable = $this->fetchTable('Credits');
+        $credit = $creditsTable->find()
+            ->where([
+                'user_id' => $this->id,
+            ])
+            ->first();
+
+        return $credit;
+    }
+
+    public function getCreditAmount(): int
+    {
+        $potatoSent = $this->potatoSent();
+
+        if ($this->created >= new DateTime('-6 months')) {
+            return $potatoSent * 10;
+        } else if ($this->created >= new DateTime('-1 year')) {
+            return $potatoSent * 5;
+        } else if ($this->created >= new DateTime('-2 years')) {
+            if ($potatoSent <= 25) {
+                return 0;
+            }
+
+            return $potatoSent * 4;
+        } else if ($this->created >= new DateTime('-3 years')) {
+            if ($potatoSent <= 50) {
+                return 0;
+            }
+
+            return $potatoSent * 3;
+        }
+
+        return 0;
     }
 }

@@ -3,6 +3,8 @@ declare(strict_types=1);
 
 namespace App\Command;
 
+use App\Http\SlackClient;
+use App\Model\Entity\User;
 use Cake\Command\Command;
 use Cake\Console\Arguments;
 use Cake\Console\ConsoleIo;
@@ -10,9 +12,9 @@ use Cake\Console\ConsoleOptionParser;
 use Exception;
 
 /**
- * GenerateInitialShares command.
+ * AnnounceStockMarket command.
  */
-class GenerateInitialSharesCommand extends Command
+class AnnounceStockMarketCommand extends Command
 {
     /**
      * Hook method for defining this command's option parser.
@@ -36,7 +38,7 @@ class GenerateInitialSharesCommand extends Command
      */
     public function execute(Arguments $args, ConsoleIo $io)
     {
-        $io->out('Generating initial shares');
+        $io->out('Announcing stock market');
 
         $configTable = $this->fetchTable('Config');
         $config = $configTable->find()->firstOrFail();
@@ -44,28 +46,44 @@ class GenerateInitialSharesCommand extends Command
             throw new Exception('Market already initialized');
         }
 
-        $stocksTable = $this->fetchTable('Stocks');
-        $sharesTable = $this->fetchTable('Shares');
         $usersTable = $this->fetchTable('Users');
 
-        $stocks = $stocksTable->find()->all();
-        foreach ($stocks as $stock) {
-            $data = [];
-            for ($i = 0; $i < $stock->initial_share_quantity; $i++) {
-                $data[] = [
-                    'stock_id' => $stock->id,
-                    'user_id' => $usersTable->findBySlackUserId(env('POTATO_SLACK_USER_ID'))->first()->id,
-                ];
-            }
+        $slackClient = new SlackClient();
 
-            $shares = $sharesTable->newEntities($data);
-            $sharesTable->saveManyOrFail($shares);
+        $channelMessage = '<!channel> 🚨 *Announcing Sentry Stonks* 🚨' . PHP_EOL;
+
+        $slackClient->postMessage(
+            channel: env('POTATO_CHANNEL'),
+            text: $channelMessage,
+        );
+
+        $io->out('Sent announcement to the GibPotato channel');
+
+        $users = $usersTable->find()
+            ->where([
+                'Users.slack_is_bot' => false,
+                'Users.status' => User::STATUS_ACTIVE,
+                'Users.role !=' => User::ROLE_SERVICE,
+            ])
+            ->all();
+
+        foreach ($users as $user) {
+            $message = 'Your stock portfolio is ready 🤑' . PHP_EOL;
+
+            $slackClient->postMessage(
+                channel: $user->slack_user_id,
+                text: $message,
+            );
 
             $io->out(sprintf(
-                'Generated %s initial shares of type %s',
-                count($shares),
-                $stock->symbol,
+                'Sent announcement to %s',
+                $user->slack_name,
             ));
+
+            // Avoid getting rate limited by Slack
+            usleep(200 * 1000); // 200ms
         }
+
+        $io->success("\n[DONE]");
     }
 }

@@ -6,17 +6,16 @@ namespace App\Model\Entity;
 use Cake\ORM\Entity;
 
 /**
- * Share Entity
+ * Credit Entity
  *
  * @property int $id
- * @property int $stock_id
+ * @property string $user_id
+ * @property int $amount
  * @property \Cake\I18n\DateTime|null $created
- * @property string|null $user_id
  *
- * @property \App\Model\Entity\Stock $stock
  * @property \App\Model\Entity\User $user
  */
-class Share extends Entity
+class Credit extends Entity
 {
     /**
      * Fields that can be mass assigned using newEntity() or patchEntity().
@@ -28,9 +27,8 @@ class Share extends Entity
      * @var array<string, bool>
      */
     protected array $_accessible = [
-        'stock_id' => true,
         'user_id' => true,
+        'amount' => true,
         'created' => true,
-        'modified' => true,
     ];
 }

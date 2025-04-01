@@ -10,6 +10,11 @@ use Cake\Console\ConsoleIo;
 use Cake\Console\ConsoleOptionParser;
 use Cake\I18n\DateTime;
 use Cake\ORM\Query\SelectQuery;
+use Exception;
+use Sentry\MonitorConfig;
+use Sentry\MonitorSchedule;
+
+use function Sentry\withMonitor;
 
 /**
  * ExecuteTrades command.
@@ -30,20 +35,72 @@ class ExecuteTradesCommand extends Command
     }
 
     /**
-     * Implement this method with your command's logic.
-     *
      * @param \Cake\Console\Arguments $args The command arguments.
      * @param \Cake\Console\ConsoleIo $io The console io
      * @return int|null|void The exit code or null for success
      */
     public function execute(Arguments $args, ConsoleIo $io)
     {
+        $this->_execute($args, $io);
+
+        // withMonitor(
+        //     slug: 'execute-trades',
+        //     callback: fn() => $this->_execute($args, $io),
+        //     monitorConfig: new MonitorConfig(
+        //         schedule: new MonitorSchedule(
+        //             type: MonitorSchedule::TYPE_CRONTAB,
+        //             value: '*/5 * * * *',
+        //         ),
+        //         checkinMargin: 1,
+        //         maxRuntime: 4,
+        //         timezone: 'UTC',
+        //     ),
+        // );
+    }
+
+    /**
+     * Implement this method with your command's logic.
+     *
+     * @param \Cake\Console\Arguments $args The command arguments.
+     * @param \Cake\Console\ConsoleIo $io The console io
+     * @return int|null|void The exit code or null for success
+     */
+    protected function _execute(Arguments $args, ConsoleIo $io)
+    {
+        $io->out('Executing trades');
+
+        $configTable = $this->fetchTable('Config');
+        $config = $configTable->find()->firstOrFail();
+        if ($config->market_open === false) {
+            throw new Exception('Market currently closed');
+        }
+
+
+        $usersTable = $this->fetchTable('Users');
         $stocksTable = $this->fetchTable('Stocks');
         $sharesTable = $this->fetchTable('Shares');
         $sharePricesTable = $this->fetchTable('SharePrices');
         $tradesTable = $this->fetchTable('Trades');
 
-        $io->out('Executing trades');
+        $expiredTrades = $tradesTable->find()
+            ->where([
+                'status' => Trade::STATUS_PENDING,
+                'user_id IS NOT' => $usersTable->findBySlackUserId(env('POTATO_SLACK_USER_ID'))->first()->id,
+                'created <=' => new DateTime('20 minutes ago'),
+            ])
+            ->all();
+
+        foreach ($expiredTrades as $expiredTrade) {
+            $expiredTrade = $tradesTable->patchEntity($expiredTrade, [
+                'status' => Trade::STATUS_EXPIRED,
+            ]);
+            $tradesTable->saveOrFail($expiredTrade);
+
+            $io->out(sprintf(
+                'Marked trade %s as expired',
+                $expiredTrade->id,
+            ));
+        }
 
         $trades = $tradesTable->find()
             ->where([
@@ -79,7 +136,10 @@ class ExecuteTradesCommand extends Command
             ];
         })->toArray();
 
-        $executedTradeIds = [];
+        $executedTradeIds = [
+            -1,
+        ];
+
         foreach ($sellTrades as $sellTrade) {
             $match = $this->_findMatchingTrade($buyTrades, $sellTrade);
             if ($match) {
@@ -103,6 +163,12 @@ class ExecuteTradesCommand extends Command
                     'user_id' => $buyTradeEntity->user_id,
                 ]);
                 $sharesTable->saveOrFail($shareEntity);
+
+                $io->out(sprintf(
+                    'Matched and executed sell trade %s with buy trade %s',
+                    $sellTradeEntity->id,
+                    $buyTradeEntity->id,
+                ));
 
                 $executedTradeIds[] = $sellTrade['id'];
                 $executedTradeIds[] = $match['id'];
@@ -165,6 +231,12 @@ class ExecuteTradesCommand extends Command
                 'stock_id' => $stock->id,
                 'price' => $average,
             ];
+
+            $io->out(sprintf(
+                'New share price for %s as %s',
+                $stock->symbol,
+                $average,
+            ));
         }
 
         $sharePrices = $sharePricesTable->newEntities($newSharePrices);

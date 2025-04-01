@@ -7,6 +7,7 @@ use App\Model\Entity\Trade;
 use Cake\Http\Response;
 use Cake\I18n\DateTime;
 use Cake\ORM\Query\SelectQuery;
+use Exception;
 
 /**
  * @property \Authentication\Controller\Component\AuthenticationComponent $Authentication
@@ -18,6 +19,9 @@ class StocksController extends ApiController
      */
     public function list(): Response
     {
+        $configTable = $this->fetchTable('Config');
+        $config = $configTable->find()->firstOrFail();
+
         $stocksTable = $this->fetchTable('Stocks');
         $stocks = $stocksTable->find()
             ->contain('Shares', function (SelectQuery $query) {
@@ -74,6 +78,7 @@ class StocksController extends ApiController
                     ];
                 })->toList(),
             'stocks' => [],
+            'market_open' => $config->market_open,
         ];
         foreach ($stocks as $stock) {
 
@@ -131,6 +136,12 @@ class StocksController extends ApiController
      */
     public function order(): Response
     {
+        $configTable = $this->fetchTable('Config');
+        $config = $configTable->find()->firstOrFail();
+        if ($config->market_open === false) {
+            throw new Exception('Market currently closed');
+        }
+
         $stocksTable = $this->fetchTable('Stocks');
         $sharesTable = $this->fetchTable('Shares');
 

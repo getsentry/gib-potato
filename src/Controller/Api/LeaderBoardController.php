@@ -91,9 +91,33 @@ class LeaderBoardController extends ApiController
 
         $users = $query->all();
 
+        $stockUsers = $usersTable->find()
+            ->where([
+                'Users.slack_is_bot' => false,
+                'Users.status' => User::STATUS_ACTIVE,
+                'Users.role !=' => User::ROLE_SERVICE,
+            ])
+            ->all();
+
+        $stocks = collection($stockUsers)
+            ->map(function ($user) {
+                return [
+                    'id' => $user->id,
+                    'stocks' => $user->getStocks(),
+                    'slack_name' => $user->slack_name,
+                    'slack_picture' => $user->slack_picture,
+
+                ];
+            })
+            ->sortBy('stocks', SORT_DESC, SORT_NATURAL)
+            ->toList();
+
         return $this->response
             ->withStatus(200)
             ->withType('json')
-            ->withStringBody(json_encode($users));
+            ->withStringBody(json_encode([
+                'users' => $users,
+                'stocks' => $stocks,
+            ]));
     }
 }

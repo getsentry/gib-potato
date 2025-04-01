@@ -23,7 +23,7 @@ class Trade extends Entity
 {
     public const STATUS_PENDING = 'pending';
     public const STATUS_DONE = 'done';
-    public const STATUS_FAILED = 'failed';
+    public const STATUS_EXPIRED = 'expired';
 
     public const TYPE_BUY = 'buy';
     public const TYPE_SELL = 'sell';

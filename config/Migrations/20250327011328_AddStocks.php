@@ -3,7 +3,7 @@ declare(strict_types=1);
 
 use Migrations\BaseMigration;
 
-class AddStonks extends BaseMigration
+class AddStocks extends BaseMigration
 {
     /**
      * Up Method.
@@ -52,7 +52,7 @@ class AddStonks extends BaseMigration
                 'precision' => 6,
                 'scale' => 6,
             ])
-            ->addColumn('updated', 'timestamp', [
+            ->addColumn('modified', 'timestamp', [
                 'default' => null,
                 'limit' => null,
                 'null' => true,

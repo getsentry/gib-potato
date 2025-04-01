@@ -10,9 +10,9 @@ use Cake\Console\ConsoleOptionParser;
 use Exception;
 
 /**
- * GenerateInitialShares command.
+ * OpenStockMarket command.
  */
-class GenerateInitialSharesCommand extends Command
+class OpenStockMarketCommand extends Command
 {
     /**
      * Hook method for defining this command's option parser.
@@ -36,36 +36,28 @@ class GenerateInitialSharesCommand extends Command
      */
     public function execute(Arguments $args, ConsoleIo $io)
     {
-        $io->out('Generating initial shares');
-
         $configTable = $this->fetchTable('Config');
         $config = $configTable->find()->firstOrFail();
         if ($config->market_initalized === true) {
-            throw new Exception('Market already initialized');
+            return;
         }
 
         $stocksTable = $this->fetchTable('Stocks');
-        $sharesTable = $this->fetchTable('Shares');
-        $usersTable = $this->fetchTable('Users');
-
-        $stocks = $stocksTable->find()->all();
-        foreach ($stocks as $stock) {
-            $data = [];
-            for ($i = 0; $i < $stock->initial_share_quantity; $i++) {
-                $data[] = [
-                    'stock_id' => $stock->id,
-                    'user_id' => $usersTable->findBySlackUserId(env('POTATO_SLACK_USER_ID'))->first()->id,
-                ];
-            }
-
-            $shares = $sharesTable->newEntities($data);
-            $sharesTable->saveManyOrFail($shares);
-
-            $io->out(sprintf(
-                'Generated %s initial shares of type %s',
-                count($shares),
-                $stock->symbol,
-            ));
+        if ($stocksTable->find()->count() === 0) {
+            throw new Exception('No stocks added yet');
         }
+
+        $this->executeCommand(GenerateInitialSharesCommand::class);
+        $this->executeCommand(GenerateInitialSharePricesCommand::class);
+        $this->executeCommand(GenerateInitialTradesCommand::class);
+        $this->executeCommand(AnnounceStockMarketCommand::class);
+
+        $config = $configTable->patchEntity($config, [
+            'market_initalized' => true,
+            'market_open' => true,
+        ]);
+        $configTable->saveOrFail($config);
+
+        $io->success("\n[DONE]");
     }
 }

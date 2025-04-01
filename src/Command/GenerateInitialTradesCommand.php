@@ -8,6 +8,7 @@ use Cake\Command\Command;
 use Cake\Console\Arguments;
 use Cake\Console\ConsoleIo;
 use Cake\Console\ConsoleOptionParser;
+use Exception;
 
 /**
  * GenerateInitialTrades command.
@@ -36,6 +37,12 @@ class GenerateInitialTradesCommand extends Command
      */
     public function execute(Arguments $args, ConsoleIo $io)
     {
+        $configTable = $this->fetchTable('Config');
+        $config = $configTable->find()->firstOrFail();
+        if ($config->market_initalized === true) {
+            throw new Exception('Market already initialized');
+        }
+
         $usersTable = $this->fetchTable('Users');
         $sharesTable = $this->fetchTable('Shares');
         $tradesTable = $this->fetchTable('Trades');
