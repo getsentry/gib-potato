@@ -178,7 +178,6 @@ class StocksController extends ApiController
             throw new Exception('Market currently closed');
         }
 
-        $stocksTable = $this->fetchTable('Stocks');
         $sharesTable = $this->fetchTable('Shares');
 
         $usersTable = $this->fetchTable('Users');
@@ -194,7 +193,7 @@ class StocksController extends ApiController
                 $trade = $tradesTable->newEntity([
                     'user_id' => $user->id,
                     'stock_id' => $this->request->getData('stock_id'),
-                    'proposed_price' => $this->request->getData('proposed_price'),
+                    'proposed_price' => max($this->request->getData('proposed_price'), 1),
                     'status' => Trade::STATUS_PENDING,
                     'type' => Trade::TYPE_BUY,
                 ], [
@@ -235,7 +234,7 @@ class StocksController extends ApiController
                     'user_id' => $user->id,
                     'share_id' => $ownedShares[$i]->id,
                     'stock_id' => $this->request->getData('stock_id'),
-                    'proposed_price' => $this->request->getData('proposed_price'),
+                    'proposed_price' => max($this->request->getData('proposed_price'), 1),
                     'status' => Trade::STATUS_PENDING,
                     'type' => Trade::TYPE_SELL,
                 ], [
