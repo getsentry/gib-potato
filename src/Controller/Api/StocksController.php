@@ -188,23 +188,6 @@ class StocksController extends ApiController
             ->first();
 
         if ($this->request->getData('order_mode') === Trade::TYPE_BUY) {
-            $stock = $stocksTable->find()
-                ->contain('SharePrices', function (SelectQuery $query) {
-                    return $query
-                        ->orderBy(['SharePrices.id' => 'DESC']);
-                })
-                ->where(['id' => $this->request->getData('stock_id')])
-                ->first();
-
-            if ($stock->share_prices[0]->price * $this->request->getData('amount') > $user->spendablePotato()) {
-                return $this->response
-                    ->withStatus(400)
-                    ->withType('json')
-                    ->withStringBody(json_encode([
-                        'error' => 'Not enough potato to place this order 😥',
-                    ]));
-            }
-
             $amountRequestData = (int)$this->request->getData('amount');
             for ($i = 0; $i < $amountRequestData; $i++) {
                 $tradesTable = $this->fetchTable('Trades');
