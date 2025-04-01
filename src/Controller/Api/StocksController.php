@@ -74,7 +74,7 @@ class StocksController extends ApiController
                 ->map(function ($value) {
                     $value = collection($value);
                     $stockPrice = collection($value->first()->stock->share_prices)->first()->price;
-                    
+
                     return [
                         'symbol' => $value->first()->stock->symbol,
                         'count' => $value->count(),
