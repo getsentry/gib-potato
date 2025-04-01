@@ -51,7 +51,18 @@ class AnnounceStockMarketCommand extends Command
 
         $slackClient = new SlackClient();
 
-        $channelMessage = '<!channel> 🚨 *Announcing Sentry Stonks* 🚨' . PHP_EOL;
+        $channelMessage = '<!channel> 🚨 *Announcing GibPotato Stonks* 🚨' . PHP_EOL;
+        $channelMessage .= PHP_EOL . PHP_EOL;
+        $channelMessage .= 'What is *GibPotato Stonks* you might ask?' . PHP_EOL;
+        $channelMessage .= "Well, it's a potato stock exchange 🤯!" . PHP_EOL . PHP_EOL;
+        $channelMessage .= 'Gamble away all your precocious potatoes you have '
+            . 'been hoarding for far too long today, and only today! You got 24 hours...' . PHP_EOL . PHP_EOL;
+        $channelMessage .= 'You can invest in *SFO*, *YYZ*, *VIE*, *SEA*, *AMS*, or *REM* shares.' . PHP_EOL;
+        $channelMessage .= 'The market is updated every five minutes.' . PHP_EOL;
+        $channelMessage .= 'Placed orders expire after 20 minutes if not matched.' . PHP_EOL;
+        $channelMessage .= 'Join <#' . env('POTATO_STOCKS_CHANNEL') . '> for non-financial potato advice.' . PHP_EOL . PHP_EOL;
+        $channelMessage .= 'Head over to https://gibpotato.app/stonks to get started.' . PHP_EOL . PHP_EOL;
+        $channelMessage .= '*Have fun* 🚀';
 
         $slackClient->postMessage(
             channel: env('POTATO_CHANNEL'),
@@ -69,7 +80,13 @@ class AnnounceStockMarketCommand extends Command
             ->all();
 
         foreach ($users as $user) {
-            $message = 'Your stock portfolio is ready 🤑' . PHP_EOL;
+            $message = 'Thank you so much for signing up for *GibPotato Stonks*! 😬' . PHP_EOL;
+            $message .= PHP_EOL . PHP_EOL;
+            $message .= 'Your portfolio is ready, and you can begin trading right away!' . PHP_EOL;
+            $message .= 'Head over to https://gibpotato.app/stonks to get started.' . PHP_EOL;
+            $message .= 'Also make sure to have an eye on <#' . env('POTATO_CHANNEL') . '> and '
+                . '<#' . env('POTATO_STOCKS_CHANNEL') . '> today 👀' . PHP_EOL . PHP_EOL;
+            $message .= '*Good luck* 🍀';
 
             $slackClient->postMessage(
                 channel: $user->slack_user_id,
