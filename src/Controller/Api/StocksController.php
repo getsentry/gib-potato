@@ -178,6 +178,7 @@ class StocksController extends ApiController
             throw new Exception('Market currently closed');
         }
 
+        $stocksTable = $this->fetchTable('Stocks');
         $sharesTable = $this->fetchTable('Shares');
 
         $usersTable = $this->fetchTable('Users');
@@ -187,13 +188,30 @@ class StocksController extends ApiController
             ->first();
 
         if ($this->request->getData('order_mode') === Trade::TYPE_BUY) {
+            $stock = $stocksTable->find()
+                ->contain('SharePrices', function (SelectQuery $query) {
+                    return $query
+                        ->orderBy(['SharePrices.id' => 'DESC']);
+                })
+                ->where(['id' => $this->request->getData('stock_id')])
+                ->first();
+
+            if ($stock->share_prices[0]->price * $this->request->getData('amount') > $user->spendablePotato()) {
+                return $this->response
+                    ->withStatus(400)
+                    ->withType('json')
+                    ->withStringBody(json_encode([
+                        'error' => 'Not enough potato to place this order 😥',
+                    ]));
+            }
+
             $amountRequestData = (int)$this->request->getData('amount');
             for ($i = 0; $i < $amountRequestData; $i++) {
                 $tradesTable = $this->fetchTable('Trades');
                 $trade = $tradesTable->newEntity([
                     'user_id' => $user->id,
                     'stock_id' => $this->request->getData('stock_id'),
-                    'proposed_price' => max($this->request->getData('proposed_price'), 1),
+                    'proposed_price' => $this->request->getData('proposed_price'),
                     'status' => Trade::STATUS_PENDING,
                     'type' => Trade::TYPE_BUY,
                 ], [
@@ -234,7 +252,7 @@ class StocksController extends ApiController
                     'user_id' => $user->id,
                     'share_id' => $ownedShares[$i]->id,
                     'stock_id' => $this->request->getData('stock_id'),
-                    'proposed_price' => max($this->request->getData('proposed_price'), 1),
+                    'proposed_price' => $this->request->getData('proposed_price'),
                     'status' => Trade::STATUS_PENDING,
                     'type' => Trade::TYPE_SELL,
                 ], [
