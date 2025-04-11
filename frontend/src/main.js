@@ -64,6 +64,7 @@ import './assets/main.css'
                     boxShadow: 'none',
                 },
             }),
+            Sentry.consoleLoggingIntegration({ levels: ['error'] }),
         ],
     })
 
