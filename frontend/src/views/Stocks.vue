@@ -415,22 +415,13 @@
                             <div class="mb-4 text-center">
                                 Your order was submitted successfully ✅
                             </div>
-                            <div class="mt-2 sm:mt-3 sm:grid sm:grid-flow-row-dense sm:grid-cols-2 sm:gap-3">
-                                <button
-                                    class="inline-flex w-full justify-center rounded-md border border-zinc-300 px-4 py-2 text-base font-medium sm:mt-0 sm:text-sm"
-                                    :disabled="loading"
-                                    @click="doItAgin()"
-                                >
-                                    Make another order
-                                </button>
-                                <button
-                                    class="inline-flex w-full justify-center rounded-md border border-zinc-300 bg-zinc-100 px-4 py-2 text-base font-medium text-zinc-900 sm:mt-0 sm:text-sm"
-                                    :disabled="loading"
-                                    @click="closeModal"
-                                >
-                                    Close
-                                </button>
-                            </div>
+                            <button
+                                class="inline-flex w-full justify-center rounded-md border border-zinc-300 bg-zinc-100 px-4 py-2 text-base font-medium text-zinc-900 sm:mt-0 sm:text-sm"
+                                :disabled="loading"
+                                @click="closeModal"
+                            >
+                                Close
+                            </button>
                         </div>
                         <div class="mt-5 text-xs text-center text-zinc-500">
                             <a href="/terms" target="_blank" class="underline">Terms & Conditions</a> apply.
@@ -574,12 +565,6 @@ export default {
             this.price = null
             this.modalError = null
             this.modalOpen = false
-        },
-        doItAgin() {
-            this.orderSuccess = false
-            this.amount = 1
-            this.price = null
-            this.modalError = null
         },
         async order() {
             this.loading = true
