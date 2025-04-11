@@ -235,7 +235,7 @@ class ExecuteTradesCommand extends Command
             $sharePriceBuyAverage = $doneBuyTradesAverage[$stock->id]['average'] ?? $stock->share_prices[0]->price;
             $sharePriceSellAverage = $doneSellTradesAverage[$stock->id]['average'] ?? $stock->share_prices[0]->price;
 
-            $average = (int)round(($sharePriceBuyAverage + $sharePriceSellAverage) / 2, 0);
+            $average = ((int)round($sharePriceBuyAverage + $sharePriceSellAverage)) / 2;
 
             $newSharePrices[] = [
                 'stock_id' => $stock->id,
