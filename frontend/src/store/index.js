@@ -8,8 +8,6 @@ const store = createStore({
             leaderboard: [],
             user: null,
             users: [],
-            stocks: [],
-            trades: [],
             products: [],
             collection: [],
             quickWins: [],
@@ -23,8 +21,6 @@ const store = createStore({
         leaderboard: state => state.leaderboard,
         user: state => state.user,
         users: state => state.users,
-        stocks: state => state.stocks,
-        trades: state => state.trades,
         products: state => state.products,
         collection: state => state.collection,
         quickWins: state => state.quickWins,
@@ -57,22 +53,6 @@ const store = createStore({
             try {
                 const response = await api.get('users')
                 commit('SET_USERS', response.data)
-            } catch (error) {
-                console.error(error)
-            }
-        },
-        async getStocks({ commit }) {
-            try {
-                const response = await api.get('stocks')
-                commit('SET_STOCKS', response.data)
-            } catch (error) {
-                console.error(error)
-            }
-        },
-        async getTrades({ commit }) {
-            try {
-                const response = await api.get('stocks/trades')
-                commit('SET_TRADES', response.data)
             } catch (error) {
                 console.error(error)
             }
@@ -141,12 +121,6 @@ const store = createStore({
         },
         SET_USERS(state, users) {
             state.users = users
-        },
-        SET_STOCKS(state, stocks) {
-            state.stocks = stocks
-        },
-        SET_TRADES(state, trades) {
-            state.trades = trades
         },
         SET_PRODUCTS(state, products) {
             state.products = products
