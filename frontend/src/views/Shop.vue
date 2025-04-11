@@ -5,12 +5,7 @@
         </h2>
         <span class="mx-4">-</span>
         <span>Out of potato?</span>
-        <a
-            href="/gib-credit"
-            class="ml-4 flex justify-center rounded-md border border-zinc-300 px-3 py-1 text-sm"
-        >
-            Gib Credit
-        </a>
+        <button class="ml-4 flex justify-center rounded-md border border-zinc-300 px-3 py-1 text-sm">Gib Credit</button>
     </div>
 
     <div class="mt-16 grid grid-cols-1 gap-y-12 sm:grid-cols-2 sm:gap-x-6 lg:grid-cols-4 xl:gap-x-8 mb-32">
