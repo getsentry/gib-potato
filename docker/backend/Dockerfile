@@ -42,7 +42,7 @@ RUN \
     # Enable zend.assertions
     # Development Value: 1
     sed -i "s/zend.assertions = -1/zend.assertions = 1/g" /etc/php/8.4/fpm/php.ini && \
-    sed -i "s/zend.exception_ignore_args = On/zend.exception_ignore_args = Off/g" /etc/php/8.4/fpm/php.ini && \
+    sed -i "s/exception_ignore_args = On/zend.assertions = Off/g" /etc/php/8.4/fpm/php.ini && \
     sed -i "s/;clear_env = no/clear_env = no/g" /etc/php/8.4/fpm/pool.d/www.conf && \
     sed -i "s/Listen 80/Listen 8080/g" /etc/apache2/ports.conf
 
