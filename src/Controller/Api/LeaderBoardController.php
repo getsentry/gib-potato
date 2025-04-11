@@ -45,7 +45,7 @@ class LeaderBoardController extends ApiController
 
                 ];
             })
-            ->sortBy('stocks')
+            ->sortBy('stocks', SORT_ASC, SORT_NATURAL)
             ->toList();
 
         return $this->response
