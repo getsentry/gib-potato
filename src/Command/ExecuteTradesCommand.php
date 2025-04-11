@@ -152,6 +152,11 @@ class ExecuteTradesCommand extends Command
                 // Don't clear orders with a lack of funds
                 $buyUser = $usersTable->findById($buyTradeEntity->user_id)->firstOrFail();
                 if ($sellTrade['proposed_price'] > $buyUser->spendablePotato()) {
+                    $buyTradeEntity = $tradesTable->patchEntity($buyTradeEntity, [
+                        'status' => Trade::STATUS_CANCELED,
+                    ]);
+                    $tradesTable->saveOrFail($buyTradeEntity);
+
                     continue;
                 }
 
