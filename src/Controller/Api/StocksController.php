@@ -59,7 +59,7 @@ class StocksController extends ApiController
                     )->format('H:i'),
                 ];
             })->toList(),
-            'portfolio' => $sharesTable->find()
+            'portfilio' => $sharesTable->find()
                 ->where([
                     'Shares.user_id IS' => $this->Authentication->getIdentity()->getIdentifier(),
                 ])
@@ -252,37 +252,5 @@ class StocksController extends ApiController
 
         return $this->response
             ->withStatus(204);
-    }
-
-    /**
-     * @return \Cake\Http\Response
-     */
-    public function cancelOrder(): Response
-    {
-        $orderId = $this->request->getData('order_id');
-        $userId = $this->Authentication->getIdentity()->getIdentifier();
-
-        $tradesTable = $this->fetchTable('Trades');
-
-        $connection = $tradesTable->getConnection();
-
-        return $connection->transactional(function () use ($tradesTable, $orderId, $userId) {
-            $trade = $tradesTable->find()
-                ->where([
-                    'id' => $orderId,
-                    'user_id' => $userId,
-                    'status' => Trade::STATUS_PENDING,
-                ])
-                ->epilog('FOR UPDATE')
-                ->firstOrFail();
-
-            $trade = $tradesTable->patchEntity($trade, [
-                'status' => Trade::STATUS_CANCELED,
-            ]);
-            $tradesTable->saveOrFail($trade);
-
-            return $this->response
-                ->withStatus(204);
-        });
     }
 }

@@ -112,8 +112,8 @@
         </h2>
         <div class="mt-4 flex space-x-4">
             <div
-                v-if="stocks.portfolio.length"
-                v-for="stock in stocks.portfolio"
+                v-if="stocks.portfilio.length"
+                v-for="stock in stocks.portfilio"
                 class="flex-1 flex items-center"
             >
                 <div>
@@ -157,9 +157,6 @@
                     </th>
                     <th scope="col" class="py-3.5 pl-3 text-right text-sm font-semibold">
                         Time
-                    </th>
-                    <th scope="col" class="py-3.5 pl-3 text-right text-sm font-semibold">
-                        Actions
                     </th>
                 </tr>
             </thead>
@@ -222,17 +219,8 @@
                             <span class="text-zinc-500">-</span>
                         </template>
                     </td>
-                    <td class="ml-auto py-4 px-3 text-right text-sm font-bold">
+                    <td class="relative whitespace-nowrap py-4 pl-3 pr-4 text-right text-sm">
                         {{ trade.time }}
-                    </td>
-                    <td class="flex relative whitespace-nowrap py-4 pl-3 pr-4 text-right text-sm">
-                        <button
-                            v-if="trade.status === 'pending'"
-                            class="ml-auto flex justify-center rounded-md border border-zinc-300 px-2 py-1 text-sm"
-                            @click="cancelOrder(trade)"
-                        >
-                            Cancel
-                        </button>
                     </td>
                 </tr>
             </tbody>
@@ -384,7 +372,7 @@
                             </template>
                             <template v-if="orderMode === 'sell'">
                                 <button
-                                    v-if="stocks.portfolio.length && stocks.portfolio.find(stck => stck.symbol === stock.symbol).count >= amount"
+                                    v-if="stocks.portfilio.length && stocks.portfilio.find(stck => stck.symbol === stock.symbol).count >= amount"
                                     class="inline-flex w-full justify-center rounded-md border border-transparent bg-amber-200 text-zinc-900 px-4 py-2 text-base font-medium sm:col-start-2 sm:text-sm"
                                     :disabled="price === null || amount === null || price <= 0 || amount <= 0"
                                     :class="{ 'opacity-50': price === null || amount === null || price <= 0 || amount <= 0 }"
@@ -580,24 +568,6 @@ export default {
                 this.orderSuccess = true
 
                 await this.$store.dispatch('getUser')
-                await this.$store.dispatch('getStocks')
-            } catch (error) {
-                console.log(error)
-                this.modalError = error.response.data.error
-            } finally {
-                this.loading = false
-            }
-        },
-        async cancelOrder(trade) {
-            this.loading = true
-
-            try {
-                await api.post('stocks/cancel-order', {
-                    order_id: trade.id,
-                })
-
-                await this.$store.dispatch('getUser')
-                await this.$store.dispatch('getTrades')
                 await this.$store.dispatch('getStocks')
             } catch (error) {
                 console.log(error)
