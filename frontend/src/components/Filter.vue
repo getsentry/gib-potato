@@ -8,28 +8,28 @@
             All Time
         </button>
         <button
-            class="relative -ml-px inline-flex items-center border border-zinc-300 px-4 py-2 text-sm font-medium"
+            class="relative -ml-px inline-flex items-center border border-zinc-300  px-4 py-2 text-sm font-medium"
             :class="{ '!bg-amber-200 !text-zinc-900': filter.range === 'year' }"
             @click="updateRangeFilter('year')"
         >
             Last 365 Days
         </button>
         <button
-            class="relative -ml-px inline-flex items-center border border-zinc-300 px-4 py-2 text-sm font-medium"
+            class="relative -ml-px inline-flex items-center border border-zinc-300  px-4 py-2 text-sm font-medium"
             :class="{ '!bg-amber-200 !text-zinc-900': filter.range === 'quarter' }"
             @click="updateRangeFilter('quarter')"
         >
             Current Quarter
         </button>
         <button
-            class="relative -ml-px inline-flex items-center border border-zinc-300 px-4 py-2 text-sm font-medium"
+            class="relative -ml-px inline-flex items-center border border-zinc-300  px-4 py-2 text-sm font-medium"
             :class="{ '!bg-amber-200 !text-zinc-900': filter.range === 'month' }"
             @click="updateRangeFilter('month')"
         >
             Last 30 Days
         </button>
         <button
-            class="relative -ml-px inline-flex items-center rounded-r-md border border-zinc-300 px-4 py-2 text-sm font-medium"
+            class="relative -ml-px inline-flex items-center rounded-r-md border border-zinc-300  px-4 py-2 text-sm font-medium"
             :class="{ '!bg-amber-200 !text-zinc-900': filter.range === 'week' }"
             @click="updateRangeFilter('week')"
         >

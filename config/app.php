@@ -185,9 +185,7 @@ return [
         ],
         'log' => true,
         'trace' => true,
-        'ignoredDeprecationPaths' => [
-            'vendor/cakephp/migrations/src/Command/SeedCommand.php',
-        ],
+        'ignoredDeprecationPaths' => [],
     ],
 
     /*

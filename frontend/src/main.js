@@ -77,7 +77,6 @@ import './assets/main.css'
         store.dispatch('getLeaderboard'),
         store.dispatch('getUser'),
         store.dispatch('getUsers'),
-        store.dispatch('getStocks'),
         store.dispatch('getProducts'),
         store.dispatch('getCollection'),
         store.dispatch('getQuickWins'),
