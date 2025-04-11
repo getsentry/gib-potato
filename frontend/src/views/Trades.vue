@@ -15,6 +15,9 @@
                     Status
                 </th>
                 <th scope="col" class="py-3.5 px-3 text-right text-sm font-semibold">
+                    Max/Min Price
+                </th>
+                <th scope="col" class="py-3.5 px-3 text-right text-sm font-semibold">
                     Price
                 </th>
                 <th scope="col" class="py-3.5 pl-3 text-right text-sm font-semibold">
@@ -25,7 +28,7 @@
         <tbody class="divide-y divide-gray-200">
             <tr v-for="trade in trades" :key="trade.id">
                 <td class="whitespace-nowrap py-4 pl-4 pr-3 text-sm font-bold">
-                    {{ trade.symbol }}
+                    {{ trade.stock.symbol }}
                 </td>
                 <td class="whitespace-nowrap py-4 px-3 text-sm">
                     <span
@@ -43,13 +46,42 @@
                 </td>
                 <td class="whitespace-nowrap py-4 px-3 text-sm">
                     <span
-                        class="text-sm font-medium ml-auto px-2.5 py-0.5 rounded bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-300"
+                        class="text-sm font-medium ml-auto px-2.5 py-0.5 rounded"
+                        :class="{
+                            '!bg-green-100 !text-green-800 dark:!bg-green-900 dark:!text-green-300': trade.status === 'done',
+                            '!bg-red-100 !text-red-800 dark:!bg-red-900 dark:!text-red-300': trade.status === 'expired',
+                            '!bg-blue-100 !text-blue-800 dark:!bg-blue-900 dark:!text-blue-300': trade.status === 'pending',
+                        }"
                     >
                         {{ trade.status }}
                     </span>
                 </td>
                 <td class="whitespace-nowrap py-4 px-3 text-right text-sm font-bold">
-                    {{ trade.price }}
+                    <template v-if="trade.type === 'sell' && trade.proposed_price">
+                        <span class="text-green-500">
+                            +{{ trade.proposed_price }}
+                        </span>
+                    </template>
+                    <template v-if="trade.type === 'buy' && trade.proposed_price">
+                        <span class="text-red-500">
+                            -{{ trade.proposed_price }}
+                        </span>
+                    </template>
+                </td>
+                <td class="whitespace-nowrap py-4 px-3 text-right text-sm font-bold">
+                    <template v-if="trade.type === 'sell' && trade.price">
+                        <span class="text-green-500">
+                            +{{ trade.price }}
+                        </span>
+                    </template>
+                    <template v-if="trade.type === 'buy' && trade.price">
+                        <span class="text-red-500">
+                            -{{ trade.price }}
+                        </span>
+                    </template>
+                    <template v-if="(trade.type === 'sell' || trade.type === 'buy') && !trade.price">
+                        <span class="text-zinc-500">-</span>
+                    </template>
                 </td>
                 <td class="relative whitespace-nowrap py-4 pl-3 pr-4 text-right text-sm">
                     {{ trade.time }}

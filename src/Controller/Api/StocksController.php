@@ -147,19 +147,7 @@ class StocksController extends ApiController
             ])
             ->contain('Stocks')
             ->orderBy(['Trades.created' => 'DESC'])
-            ->all()
-            ->map(function ($trade) {
-                return [
-                    'id' => $trade->id,
-                    'symbol' => $trade->stock->symbol,
-                    'price' => $trade->proposed_price,
-                    'status' => $trade->status,
-                    'type' => $trade->type,
-                    'time' => $trade->created->setTimezone(
-                        $this->Authentication->getIdentity()->get('slack_time_zone'),
-                    )->format('H:i'),
-                ];
-            })->toList();
+            ->all();
 
         return $this->response
             ->withStatus(200)
