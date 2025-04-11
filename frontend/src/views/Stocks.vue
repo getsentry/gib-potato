@@ -384,7 +384,7 @@
                             </template>
                             <template v-if="orderMode === 'sell'">
                                 <button
-                                    v-if="stocks.portfolio.find(stck => stck.symbol === stock.symbol)?.count ?? 0 >= amount"
+                                    v-if="stocks.portfolio.length && stocks.portfolio.find(stck => stck.symbol === stock.symbol).count >= amount"
                                     class="inline-flex w-full justify-center rounded-md border border-transparent bg-amber-200 text-zinc-900 px-4 py-2 text-base font-medium sm:col-start-2 sm:text-sm"
                                     :disabled="price === null || amount === null || price <= 0 || amount <= 0"
                                     :class="{ 'opacity-50': price === null || amount === null || price <= 0 || amount <= 0 }"
