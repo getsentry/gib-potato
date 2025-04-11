@@ -39,7 +39,6 @@ func main() {
 
 	router := httprouter.New()
 	router.GET("/", DefaultHandler)
-	router.GET("/error", ErrorHandler)
 	router.POST("/events", slackVerification(EventsHandler))
 	router.POST("/slash", slackVerification(SlashHandler))
 	router.POST("/interactions", slackVerification(InteractionsHandler))
