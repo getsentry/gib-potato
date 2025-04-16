@@ -8,6 +8,7 @@ use App\Event\ReactionAddedEvent;
 use App\Model\Entity\User;
 use Cake\ORM\Locator\LocatorAwareTrait;
 use Sentry\SentrySdk;
+use function Sentry\logger;
 
 class AwardService
 {
@@ -68,5 +69,12 @@ class AwardService
                 'gibpotato.event_type' => $event->type,
             ]);
         }
+
+        logger()->info(sprintf(
+            '"%s" gave "%s" %s 🥔',
+            $fromUser->slack_name,
+            $toUser->slack_name,
+            $event->amount,
+        ));
     }
 }
