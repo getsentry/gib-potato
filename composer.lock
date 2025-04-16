@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "bfe59af38d056dd6b0059c0762a14ca6",
+    "content-hash": "0700ec56af94e8a2d687ac8359267487",
     "packages": [
         {
             "name": "cakephp/authentication",
@@ -2565,16 +2565,16 @@
         },
         {
             "name": "sentry/sentry",
-            "version": "4.11.0",
+            "version": "dev-logs",
             "source": {
                 "type": "git",
                 "url": "https://github.com/getsentry/sentry-php.git",
-                "reference": "ebf67deb9902b6da58a4b3383cbd12fed3f4f555"
+                "reference": "9720cc6b092319a3671fd2f74134a5a769b50921"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/getsentry/sentry-php/zipball/ebf67deb9902b6da58a4b3383cbd12fed3f4f555",
-                "reference": "ebf67deb9902b6da58a4b3383cbd12fed3f4f555",
+                "url": "https://api.github.com/repos/getsentry/sentry-php/zipball/9720cc6b092319a3671fd2f74134a5a769b50921",
+                "reference": "9720cc6b092319a3671fd2f74134a5a769b50921",
                 "shasum": ""
             },
             "require": {
@@ -2638,7 +2638,7 @@
             ],
             "support": {
                 "issues": "https://github.com/getsentry/sentry-php/issues",
-                "source": "https://github.com/getsentry/sentry-php/tree/4.11.0"
+                "source": "https://github.com/getsentry/sentry-php/tree/logs"
             },
             "funding": [
                 {
@@ -2650,7 +2650,7 @@
                     "type": "custom"
                 }
             ],
-            "time": "2025-04-14T09:04:23+00:00"
+            "time": "2025-04-16T21:56:07+00:00"
         },
         {
             "name": "sentry/sentry-agent",
@@ -4234,16 +4234,16 @@
         },
         {
             "name": "phpstan/phpstan",
-            "version": "1.12.23",
+            "version": "1.12.24",
             "source": {
                 "type": "git",
                 "url": "https://github.com/phpstan/phpstan.git",
-                "reference": "29201e7a743a6ab36f91394eab51889a82631428"
+                "reference": "338b92068f58d9f8035b76aed6cf2b9e5624c025"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/phpstan/phpstan/zipball/29201e7a743a6ab36f91394eab51889a82631428",
-                "reference": "29201e7a743a6ab36f91394eab51889a82631428",
+                "url": "https://api.github.com/repos/phpstan/phpstan/zipball/338b92068f58d9f8035b76aed6cf2b9e5624c025",
+                "reference": "338b92068f58d9f8035b76aed6cf2b9e5624c025",
                 "shasum": ""
             },
             "require": {
@@ -4288,7 +4288,7 @@
                     "type": "github"
                 }
             ],
-            "time": "2025-03-23T14:57:32+00:00"
+            "time": "2025-04-16T13:01:53+00:00"
         },
         {
             "name": "phpunit/php-code-coverage",
@@ -5979,9 +5979,17 @@
             "time": "2025-02-13T08:34:43+00:00"
         }
     ],
-    "aliases": [],
+    "aliases": [
+        {
+            "package": "sentry/sentry",
+            "version": "dev-logs",
+            "alias": "4.11.0",
+            "alias_normalized": "4.11.0.0"
+        }
+    ],
     "minimum-stability": "stable",
     "stability-flags": {
+        "sentry/sentry": 20,
         "sentry/sentry-agent": 20
     },
     "prefer-stable": true,

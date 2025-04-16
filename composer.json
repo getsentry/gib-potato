@@ -18,7 +18,7 @@
         "cakephp/plugin-installer": "^2.0.1",
         "lcobucci/jwt": "^5.5.0",
         "paragonie/csp-builder": "^3.0.2",
-        "sentry/sentry": "^4.11.0",
+        "sentry/sentry": "dev-logs as 4.11.0",
         "sentry/sentry-agent": "dev-main"
     },
     "require-dev": {
