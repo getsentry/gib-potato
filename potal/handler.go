@@ -23,6 +23,10 @@ func DefaultHandler(w http.ResponseWriter, r *http.Request, _ httprouter.Params)
 	data := map[string]string{
 		"message": "The potato is a lie!",
 	}
+
+	logger := sentry.NewLogger(ctx)
+	logger.Info(ctx, "The potato is a lie!")
+
 	w.Header().Set("Content-Type", "application/json")
 	if err := json.NewEncoder(w).Encode(data); err != nil {
 		transaction.Status = sentry.SpanStatusInternalError
