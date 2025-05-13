@@ -18,12 +18,12 @@ func slackVerification(h httprouter.Handle) httprouter.Handle {
 		// Verify the Slack request
 		// see https://github.com/slack-go/slack/blob/master/examples/workflow_step/middleware.go
 		body, err := io.ReadAll(r.Body)
+		defer r.Body.Close()
 		if err != nil {
 			w.WriteHeader(http.StatusBadRequest)
 			logger.Error(r.Context(), "[slackVerification] Bad Request")
 			return
 		}
-		r.Body.Close()
 		r.Body = io.NopCloser(bytes.NewBuffer(body))
 
 		sv, err := slack.NewSecretsVerifier(r.Header, os.Getenv("SLACK_SIGNING_SECRET"))
