@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "adba8aac8ceead7dabf50f83bde07072",
+    "content-hash": "c994c2a16a05be146101454455b1102d",
     "packages": [
         {
             "name": "cakephp/authentication",
@@ -2571,12 +2571,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/getsentry/sentry-php.git",
-                "reference": "bd543986f6eb7a9930bcdbdd19c83f511789e22d"
+                "reference": "f58895118cb7de22e571281a0a9f701777c4ec20"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/getsentry/sentry-php/zipball/bd543986f6eb7a9930bcdbdd19c83f511789e22d",
-                "reference": "bd543986f6eb7a9930bcdbdd19c83f511789e22d",
+                "url": "https://api.github.com/repos/getsentry/sentry-php/zipball/f58895118cb7de22e571281a0a9f701777c4ec20",
+                "reference": "f58895118cb7de22e571281a0a9f701777c4ec20",
                 "shasum": ""
             },
             "require": {
@@ -2652,7 +2652,7 @@
                     "type": "custom"
                 }
             ],
-            "time": "2025-05-12T09:44:02+00:00"
+            "time": "2025-05-13T12:37:09+00:00"
         },
         {
             "name": "sentry/sentry-agent",
