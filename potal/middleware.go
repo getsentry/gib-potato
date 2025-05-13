@@ -29,19 +29,19 @@ func slackVerification(h httprouter.Handle) httprouter.Handle {
 		sv, err := slack.NewSecretsVerifier(r.Header, os.Getenv("SLACK_SIGNING_SECRET"))
 		if err != nil {
 			w.WriteHeader(http.StatusBadRequest)
-			logger.Error(r.Context(), "[slackVerification] Bad Request")
+			logger.Errorf(r.Context(), "[slackVerification] %s", err)
 			return
 		}
 
 		if _, err := sv.Write(body); err != nil {
 			w.WriteHeader(http.StatusInternalServerError)
-			logger.Error(r.Context(), "[slackVerification] Internal Server Error")
+			logger.Errorf(r.Context(), "[slackVerification] %s", err)
 			return
 		}
 
 		if err := sv.Ensure(); err != nil {
 			w.WriteHeader(http.StatusUnauthorized)
-			logger.Error(r.Context(), "[slackVerification] Unauthorized")
+			logger.Errorf(r.Context(), "[slackVerification] %s", err)
 			return
 		}
 
