@@ -21,7 +21,7 @@ func slackVerification(h httprouter.Handle) httprouter.Handle {
 		defer r.Body.Close()
 		if err != nil {
 			w.WriteHeader(http.StatusBadRequest)
-			logger.Error(r.Context(), "[slackVerification] Bad Request")
+			logger.Error(r.Context(), "[slackVerification] Failed to read request body")
 			return
 		}
 		r.Body = io.NopCloser(bytes.NewBuffer(body))
