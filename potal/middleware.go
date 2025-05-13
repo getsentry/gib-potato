@@ -35,7 +35,7 @@ func slackVerification(h httprouter.Handle) httprouter.Handle {
 
 		if _, err := sv.Write(body); err != nil {
 			w.WriteHeader(http.StatusInternalServerError)
-			logger.Error(r.Context(), "[slackVerification] Interal Server Error")
+			logger.Error(r.Context(), "[slackVerification] Internal Server Error")
 			return
 		}
 
