@@ -12,9 +12,9 @@
     ],
     "require": {
         "php": ">=8.4",
-        "cakephp/authentication": "^3.2.2",
-        "cakephp/cakephp": "^5.2.1",
-        "cakephp/migrations": "^4.6.3",
+        "cakephp/authentication": "^3.2.4",
+        "cakephp/cakephp": "^5.2.3",
+        "cakephp/migrations": "^4.6.4",
         "cakephp/plugin-installer": "^2.0.1",
         "lcobucci/jwt": "^5.5.0",
         "paragonie/csp-builder": "^3.0.2",
@@ -22,10 +22,10 @@
         "sentry/sentry-agent": "dev-main"
     },
     "require-dev": {
-        "cakephp/bake": "^3.3.0",
-        "cakephp/cakephp-codesniffer": "^5.2.0",
-        "phpstan/phpstan": "^1.12.23",
-        "phpunit/phpunit": "^10.5.45"
+        "cakephp/bake": "^3.3.1",
+        "cakephp/cakephp-codesniffer": "^5.2.1",
+        "phpstan/phpstan": "^1.12.25",
+        "phpunit/phpunit": "^10.5.46"
     },
     "repositories": [
         {
