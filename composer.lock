@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "f8e2d36ed305a0223484ed888689e864",
+    "content-hash": "53ff549df33e1333acccb1ab8a050918",
     "packages": [
         {
             "name": "cakephp/authentication",
@@ -2567,16 +2567,16 @@
         },
         {
             "name": "sentry/sentry",
-            "version": "dev-logs",
+            "version": "dev-master",
             "source": {
                 "type": "git",
                 "url": "https://github.com/getsentry/sentry-php.git",
-                "reference": "1bdc502da11ac309c3396a5834b1bb28439eaaa1"
+                "reference": "bd09259fe9c6913cc5fe2b7b7d6846751e6225ae"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/getsentry/sentry-php/zipball/1bdc502da11ac309c3396a5834b1bb28439eaaa1",
-                "reference": "1bdc502da11ac309c3396a5834b1bb28439eaaa1",
+                "url": "https://api.github.com/repos/getsentry/sentry-php/zipball/bd09259fe9c6913cc5fe2b7b7d6846751e6225ae",
+                "reference": "bd09259fe9c6913cc5fe2b7b7d6846751e6225ae",
                 "shasum": ""
             },
             "require": {
@@ -2606,6 +2606,7 @@
             "suggest": {
                 "monolog/monolog": "Allow sending log messages to Sentry by using the included Monolog handler."
             },
+            "default-branch": true,
             "type": "library",
             "autoload": {
                 "files": [
@@ -2640,7 +2641,7 @@
             ],
             "support": {
                 "issues": "https://github.com/getsentry/sentry-php/issues",
-                "source": "https://github.com/getsentry/sentry-php/tree/logs"
+                "source": "https://github.com/getsentry/sentry-php/tree/master"
             },
             "funding": [
                 {
@@ -2652,7 +2653,7 @@
                     "type": "custom"
                 }
             ],
-            "time": "2025-05-21T18:16:25+00:00"
+            "time": "2025-05-22T12:49:05+00:00"
         },
         {
             "name": "sentry/sentry-agent",
@@ -6006,7 +6007,7 @@
     "aliases": [
         {
             "package": "sentry/sentry",
-            "version": "dev-logs",
+            "version": "9999999-dev",
             "alias": "4.11.1",
             "alias_normalized": "4.11.1.0"
         }

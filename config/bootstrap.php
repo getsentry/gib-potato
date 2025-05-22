@@ -101,6 +101,7 @@ init([
     'http_client' => new AgentClient(),
     'traces_sample_rate' => 1.0,
     'profiles_sample_rate' => 1.0,
+    'enable_logs' => true,
     'environment' => env('ENVIRONMENT'),
     'release' => env('RELEASE'),
     'send_default_pii' => true,
