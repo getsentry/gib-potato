@@ -70,11 +70,13 @@ class AwardService
             ]);
         }
 
-        logger()->info(sprintf(
-            '"%s" gave "%s" %s 🥔',
-            $fromUser->slack_name,
-            $toUser->slack_name,
-            $event->amount,
-        ));
+        logger()->info(
+            message: '"%s" gave "%s" %s 🥔',
+            values: [
+                $fromUser->slack_name,
+                $toUser->slack_name,
+                $event->amount,
+            ],
+        );
     }
 }
