@@ -8,6 +8,8 @@ github.com/getsentry/sentry-go v0.32.1-0.20250512120552-710be2f1cc50 h1:QbVzm+iq
 github.com/getsentry/sentry-go v0.32.1-0.20250512120552-710be2f1cc50/go.mod h1:C55omcY9ChRQIUcVcGcs+Zdy4ZpQGvNJ7JYHIoSWOtE=
 github.com/getsentry/sentry-go v0.32.1-0.20250513112357-c340089ff5e8 h1:e3Lb9c+JAVdqt7vKKqY6ll7SxM+i5r2aBD19WmkEIX8=
 github.com/getsentry/sentry-go v0.32.1-0.20250513112357-c340089ff5e8/go.mod h1:C55omcY9ChRQIUcVcGcs+Zdy4ZpQGvNJ7JYHIoSWOtE=
+github.com/getsentry/sentry-go v0.33.0 h1:YWyDii0KGVov3xOaamOnF0mjOrqSjBqwv48UEzn7QFg=
+github.com/getsentry/sentry-go v0.33.0/go.mod h1:C55omcY9ChRQIUcVcGcs+Zdy4ZpQGvNJ7JYHIoSWOtE=
 github.com/go-errors/errors v1.4.2 h1:J6MZopCL4uSllY1OfXM374weqZFFItUbrImctkmUxIA=
 github.com/go-errors/errors v1.4.2/go.mod h1:sIVyrIiJhuEF+Pj9Ebtd6P/rEYROXFi3BopGUQ5a5Og=
 github.com/go-test/deep v1.0.4 h1:u2CU3YKy9I2pmu9pX0eq50wCgjfGIt539SqR7FbHiho=
