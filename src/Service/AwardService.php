@@ -76,7 +76,7 @@ class AwardService
                 $fromUser->slack_name,
                 $toUser->slack_name,
                 $event->amount,
-            ]
+            ],
         );
     }
 }
