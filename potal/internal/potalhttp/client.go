@@ -5,6 +5,7 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
+	sentryhttpclient "github.com/getsentry/sentry-go/httpclient"
 	"log"
 	"net/http"
 	"os"
@@ -41,7 +42,10 @@ func SendRequest(ctx context.Context, e event.PotalEvent) error {
 	r.Header.Add("Baggage", span.ToBaggage())
 	r.Header.Add("Authorization", os.Getenv("POTAL_TOKEN"))
 
-	client := &http.Client{}
+	client := &http.Client{
+		Transport: sentryhttpclient.NewSentryRoundTripper(nil),
+	}
+
 	res, reqErr := client.Do(r)
 	if reqErr != nil {
 		hub.CaptureException(reqErr)
