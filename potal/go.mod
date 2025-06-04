@@ -4,8 +4,6 @@ go 1.24.0
 
 toolchain go1.24.1
 
-replace github.com/getsentry/sentry-go => github.com/aldy505/sentry-go v0.0.0-20250603124640-b31001c29726
-
 require (
 	github.com/getsentry/sentry-go v0.33.0
 	github.com/google/go-cmp v0.5.9
