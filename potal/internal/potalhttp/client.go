@@ -9,6 +9,8 @@ import (
 	"net/http"
 	"os"
 
+	sentryhttpclient "github.com/getsentry/sentry-go/httpclient"
+
 	"github.com/getsentry/gib-potato/internal/event"
 	"github.com/getsentry/sentry-go"
 )
@@ -17,10 +19,6 @@ func SendRequest(ctx context.Context, e event.PotalEvent) error {
 	url := os.Getenv("POTAL_URL")
 
 	hub := sentry.GetHubFromContext(ctx)
-	txn := sentry.TransactionFromContext(ctx)
-
-	span := txn.StartChild("http.client", sentry.WithDescription(fmt.Sprintf("POST %s", url)))
-	defer span.Finish()
 
 	body, jsonErr := json.Marshal(e)
 	if jsonErr != nil {
@@ -37,37 +35,23 @@ func SendRequest(ctx context.Context, e event.PotalEvent) error {
 	}
 
 	r.Header.Add("Content-Type", "application/json")
-	r.Header.Add("Sentry-Trace", span.ToSentryTrace())
-	r.Header.Add("Baggage", span.ToBaggage())
 	r.Header.Add("Authorization", os.Getenv("POTAL_TOKEN"))
 
-	client := &http.Client{}
+	client := &http.Client{
+		Transport: sentryhttpclient.NewSentryRoundTripper(nil),
+	}
+
 	res, reqErr := client.Do(r)
 	if reqErr != nil {
 		hub.CaptureException(reqErr)
-		span.Status = sentry.SpanStatusInternalError
 
 		log.Printf("An Error Occured %v", reqErr)
 		return reqErr
 	}
 	defer res.Body.Close()
 
-	span.Data = map[string]interface{}{
-		"http.response.status_code": res.StatusCode,
-	}
-
-	switch res.StatusCode {
-	case http.StatusOK:
-		span.Status = sentry.SpanStatusOK
+	if res.StatusCode == http.StatusOK {
 		return nil
-	case http.StatusUnauthorized:
-		fallthrough
-	case http.StatusForbidden:
-		span.Status = sentry.SpanStatusPermissionDenied
-	case http.StatusNotFound:
-		span.Status = sentry.SpanStatusNotFound
-	case http.StatusInternalServerError:
-		span.Status = sentry.SpanStatusInternalError
 	}
 
 	msg := fmt.Sprintf("GibPotato API: Got %s response", res.Status)
