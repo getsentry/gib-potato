@@ -151,8 +151,9 @@
 </template>
 
 <script>
-import { computed } from 'vue'
+import { computed, ref, watch } from 'vue'
 import { useStore } from 'vuex'
+import { useRoute } from 'vue-router'
 import { RouterLink } from 'vue-router'
 
 export default {
@@ -160,19 +161,17 @@ export default {
     components: { RouterLink },
     setup() {
         const store = useStore()
+        const route = useRoute()
+        const menuOpen = ref(false)
+
+        // Watch for route changes to close the menu
+        watch(route, () => {
+            menuOpen.value = false
+        })
 
         return {
             user: computed(() => store.getters.user),
-        };
-    },
-    watch: {
-        $route(to, from) {
-            this.menuOpen = false
-        }
-    },
-    data() {
-        return {
-            menuOpen: false,
+            menuOpen,
         };
     },
 }
