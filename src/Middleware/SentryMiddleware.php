@@ -17,6 +17,7 @@ use Sentry\Tracing\TransactionContext;
 use Sentry\Tracing\TransactionSource;
 use function microtime;
 use function Sentry\logger;
+use function Sentry\profiler;
 use function Sentry\startTransaction;
 
 /**
@@ -83,7 +84,11 @@ class SentryMiddleware implements MiddlewareInterface
             'Server.terminate',
             function (Event $event) use ($transaction): void {
                 $transaction->finish();
+
                 logger()->flush();
+
+                profiler()->stop();
+                profiler()->flush();
             },
         );
 
