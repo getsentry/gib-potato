@@ -8,7 +8,7 @@ require (
 	github.com/getsentry/sentry-go v0.33.0
 	github.com/google/go-cmp v0.5.9
 	github.com/julienschmidt/httprouter v1.3.0
-	github.com/slack-go/slack v0.17.0
+	github.com/slack-go/slack v0.17.1
 )
 
 require (

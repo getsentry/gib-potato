@@ -23,7 +23,7 @@
     },
     "require-dev": {
         "cakephp/bake": "^3.3.1",
-        "cakephp/cakephp-codesniffer": "^5.2.1",
+        "cakephp/cakephp-codesniffer": "^5.2.2",
         "phpstan/phpstan": "^1.12.27",
         "phpunit/phpunit": "^10.5.46"
     },
