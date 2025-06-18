@@ -1,4 +1,5 @@
 import { createApp } from 'vue'
+import { VueQueryPlugin } from '@tanstack/vue-query'
 
 import vSelect from 'vue-select'
 
@@ -6,7 +7,7 @@ import * as Sentry from '@sentry/vue'
 
 import App from './App.vue'
 import router from './router'
-import store from './store'
+import { queryClient } from './queryClient'
 import api from './api'
 
 import './assets/main.css'
@@ -74,18 +75,11 @@ import './assets/main.css'
 
     api.init()
 
-    await Promise.all([
-        store.dispatch('getLeaderboard'),
-        store.dispatch('getUser'),
-        store.dispatch('getUsers'),
-        store.dispatch('getProducts'),
-        store.dispatch('getCollection'),
-        store.dispatch('getQuickWins'),
-    ])
-
     app
         .use(router)
-        .use(store)
+        .use(VueQueryPlugin, {
+            queryClient
+        })
     
     app.component('v-select', vSelect)
 

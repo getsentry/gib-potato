@@ -1,5 +1,5 @@
 <template>
-    <div v-if="quickWins.length">
+    <div v-if="quickWins && quickWins.length">
 
         <div>
             <h2 class="text-lg font-medium leading-6">
@@ -36,7 +36,7 @@
     </div>
 
     <div
-        v-else
+        v-else-if="quickWins && quickWins.length === 0"
         class="absolute inset-0 flex items-center justify-center"
     >
         <h1 class="text-2xl font-extrabold">
@@ -44,12 +44,15 @@
         </h1>
     </div>
 
+    <div v-else-if="isLoading" class="flex justify-center items-center py-8">
+        <span class="animate-spin text-2xl">🥔</span>
+    </div>
+
 </template>
 
 <script>
-import { computed } from 'vue'
-import { useStore } from 'vuex'
 import FormattedMessage from '../components/FormattedMessage.vue'
+import { useQuickWins } from '@/composables/useQuickWins'
 
 export default {
     name: 'QuickWins',
@@ -57,10 +60,11 @@ export default {
         FormattedMessage,
     },
     setup() {
-        const store = useStore()
+        const { data: quickWins, isLoading } = useQuickWins()
 
         return {
-            quickWins: computed(() => store.getters.quickWins),
+            quickWins,
+            isLoading
         }
     },
 }

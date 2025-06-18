@@ -1,9 +1,9 @@
 <template>
-    <div>
+    <div v-if="user">
         <h2 class="text-lg font-medium leading-6">You can spend up to {{ user.spendable_count ?? 0 }} 🥔</h2>
     </div>
 
-    <div class="mt-8 grid grid-cols-1 gap-y-12 sm:grid-cols-2 sm:gap-x-6 lg:grid-cols-4 xl:gap-x-8 mb-32">
+    <div v-if="products" class="mt-8 grid grid-cols-1 gap-y-12 sm:grid-cols-2 sm:gap-x-6 lg:grid-cols-4 xl:gap-x-8 mb-32">
         <div
             v-for="(product, index) in products"
             class="h-full flex flex-col"
@@ -52,6 +52,10 @@
             </div>
         </div>
     </div>
+    <div v-else-if="isLoadingProducts" class="flex justify-center items-center py-8">
+        <span class="animate-spin text-2xl">🥔</span>
+    </div>
+
     <div v-if="modalOpen === true" class="relative z-10">
         <div class="fixed inset-0 bg-zinc-700 bg-opacity-75"></div>
 
@@ -130,7 +134,7 @@
                                 >
                                     <v-select
                                         v-model="presentee"
-                                        :options="users"
+                                        :options="availableUsers"
                                         label="slack_name"
                                     >
                                     </v-select>
@@ -150,11 +154,11 @@
                         class="mt-5 sm:mt-6 sm:grid sm:grid-flow-row-dense sm:grid-cols-2 sm:gap-3"
                     >
                         <button
-                            v-if="user.spendable_count >= product.price"
+                            v-if="user && user.spendable_count >= product.price"
                             class="inline-flex w-full justify-center rounded-md border border-transparent bg-amber-200 text-zinc-900 px-4 py-2 text-base font-medium sm:col-start-2 sm:text-sm"
-                            @click="purchase(product, presentee)"
+                            @click="purchase"
                         >
-                            Pay {{ product.price }} <span class="ml-2" :class="{ 'animate-spin': loading }">🥔</span>
+                            Pay {{ product.price }} <span class="ml-2" :class="{ 'animate-spin': purchaseMutation.isPending.value }">🥔</span>
                         </button>
                         <button
                             v-else
@@ -165,7 +169,7 @@
                         </button>
                         <button
                             class="mt-3 inline-flex w-full justify-center rounded-md border border-zinc-300 bg-zinc-100 px-4 py-2 text-base font-medium text-zinc-900 sm:mt-0 sm:text-sm"
-                            :disabled="loading"
+                            :disabled="purchaseMutation.isPending.value"
                             @click="closeModal"
                         >
                             Cancel
@@ -177,7 +181,6 @@
                     >
                         <button
                             class="mt-3 inline-flex w-full justify-center rounded-md border border-zinc-300 bg-zinc-100 px-4 py-2 text-base font-medium text-zinc-900 sm:mt-0 sm:text-sm"
-                            :disabled="loading"
                             @click="closeModal"
                         >
                             All set ✅
@@ -193,73 +196,84 @@
 </template>
 
 <script>
-import { computed } from 'vue'
-import { useStore } from 'vuex'
-
-import api from '@/api'
+import { ref, computed } from 'vue'
+import { useUser, useUsers } from '@/composables/useUser'
+import { useProducts, usePurchase } from '@/composables/useShop'
 
 import 'vue-select/dist/vue-select.css';
 
 export default {
     name: 'Shop',
     setup() {
-        const store = useStore()
+        const { data: user } = useUser()
+        const { data: users } = useUsers()
+        const { data: products, isLoading: isLoadingProducts } = useProducts()
+        const purchaseMutation = usePurchase()
 
-        return {
-            user: computed(() => store.getters.user),
-            users: computed(() => store.getters.users.filter((el) => el.id !== store.getters.user.id)),
-            products: computed(() => store.getters.products),
+        // Modal state
+        const product = ref(null)
+        const presentee = ref(null)
+        const message = ref(null)
+        const modalOpen = ref(false)
+        const modalError = ref(null)
+        const purchaseMode = ref('myself')
+        const purchaseSuccess = ref(false)
+
+        // Computed property for available users (excluding current user)
+        const availableUsers = computed(() => {
+            if (!users.value || !user.value) return []
+            return users.value.filter(u => u.id !== user.value.id)
+        })
+
+        const openModal = (selectedProduct) => {
+            product.value = selectedProduct
+            modalOpen.value = true
         }
-    },
-    data() {
-        return {
-            product: null,
-            presentee: null,
-            message: null,
-            modalOpen: false,
-            modalError: null,
-            purchaseMode: 'myself',
-            loading: false,
-            purchaseSuccess: false,
+
+        const closeModal = () => {
+            product.value = null
+            presentee.value = null
+            message.value = null
+            modalError.value = null
+            modalOpen.value = false
+            purchaseSuccess.value = false
+            purchaseMode.value = 'myself'
         }
-    },
-    methods: {
-        openModal(product) {
-            this.product = product
-            this.modalOpen = true
-        },
-        closeModal() {
-            this.product = null
-            this.presentee = null
-            this.message = null
-            this.modalError = null
-            this.modalOpen = false
-            this.purchaseSuccess = false
-            this.purchaseMode = 'myself'
-        },
-        async purchase() {
-            this.loading = true
-            this.modalError = null
+
+        const purchase = async () => {
+            modalError.value = null
 
             try {
-                await api.post('shop/purchase', {
-                    product_id: this.product.id,
-                    presentee_id: this.presentee?.id,
-                    message: this.message,
-                    purchase_mode: this.purchaseMode,
+                await purchaseMutation.mutateAsync({
+                    product_id: product.value.id,
+                    presentee_id: presentee.value?.id,
+                    message: message.value,
+                    purchase_mode: purchaseMode.value,
                 })
-                this.purchaseSuccess = true
-
-                await this.$store.dispatch('getUser')
-                await this.$store.dispatch('getProducts')
-                await this.$store.dispatch('getCollection')
+                purchaseSuccess.value = true
             } catch (error) {
                 console.log(error)
-                this.modalError = error.response.data.error
-            } finally {
-                this.loading = false
+                modalError.value = error.response?.data?.error || 'An error occurred'
             }
         }
-    }
+
+        return {
+            user,
+            availableUsers,
+            products,
+            isLoadingProducts,
+            purchaseMutation,
+            product,
+            presentee,
+            message,
+            modalOpen,
+            modalError,
+            purchaseMode,
+            purchaseSuccess,
+            openModal,
+            closeModal,
+            purchase
+        }
+    },
 }
 </script>
