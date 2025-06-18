@@ -76,10 +76,26 @@ class ReactionAddedEvent extends AbstractEvent
             return;
         }
 
+        // Get receiver users in batch
+        $receiverSlackIds = $this->receivers;
+        $allReceiverUsersMap = $userService->getOrCreateUsers($receiverSlackIds);
+
         $toUsers = [];
-        foreach ($this->receivers as $receiver) {
-            $toUser = $userService->getOrCreateUser($receiver);
-            $toUsers[] = $toUser;
+        foreach ($receiverSlackIds as $receiverSlackId) {
+            if (isset($allReceiverUsersMap[$receiverSlackId])) {
+                $toUsers[] = $allReceiverUsersMap[$receiverSlackId];
+            }
+        }
+        
+        if (empty($toUsers)) {
+            $this->slackClient->postEphemeral(
+                channel: $this->channel,
+                user: $this->sender,
+                text: 'No valid recipients found.',
+                threadTimestamp: $this->threadTimestamp,
+            );
+            
+            return;
         }
 
         $awardService->gib(

@@ -76,6 +76,100 @@ class UserService
 
         return $user;
     }
+    
+    /**
+     * Get or create multiple users in a batch operation
+     *
+     * @param array $slackUserIds Array of Slack user IDs.
+     * @return array Map of slack_user_id => User entity
+     * @throws \Exception
+     */
+    public function getOrCreateUsers(array $slackUserIds): array
+    {
+        if (empty($slackUserIds)) {
+            return [];
+        }
+        
+        // Fetch existing users in one query
+        $existingUsers = $this->Users->find()
+            ->where(['slack_user_id IN' => $slackUserIds])
+            ->contain('Progression')
+            ->all()
+            ->toList();
+            
+        // Map existing users by their Slack user ID
+        $usersMap = [];
+        foreach ($existingUsers as $user) {
+            $usersMap[$user->slack_user_id] = $user;
+        }
+        
+        // Identify which users are missing and need to be created
+        $missingSlackUserIds = array_diff($slackUserIds, array_keys($usersMap));
+        
+        if (!empty($missingSlackUserIds)) {
+            $newUsersData = [];
+            $createdUsers = [];
+            
+            // Fetch user details from Slack for all missing users
+            foreach ($missingSlackUserIds as $slackUserId) {
+                $slackUser = $this->slackClient->getUser($slackUserId);
+                if (empty($slackUser)) {
+                    continue; // Skip if user not found in Slack
+                }
+                
+                $newUsersData[] = [
+                    'status' => User::STATUS_ACTIVE,
+                    'role' => User::ROLE_USER,
+                    'slack_user_id' => $slackUser['id'],
+                    'slack_name' => $slackUser['real_name'],
+                    'slack_picture' => $slackUser['profile']['image_72'],
+                    'slack_is_bot' => $slackUser['is_bot'] ?? false,
+                ];
+            }
+            
+            if (!empty($newUsersData)) {
+                // Create multiple user entities at once
+                $entities = $this->Users->newEntities($newUsersData, [
+                    'accessibleFields' => [
+                        'status' => true,
+                        'role' => true,
+                        'slack_user_id' => true,
+                        'slack_name' => true,
+                        'slack_picture' => true,
+                        'slack_is_bot' => true,
+                    ],
+                ]);
+                
+                // Save all entities in a batch
+                $savedEntities = $this->Users->saveMany($entities);
+                
+                // Generate API tokens and send welcome notifications for new users
+                foreach ($savedEntities as $user) {
+                    $this->ApiTokens->generateApiToken($user);
+                    $this->sendWelcomeNotification($user);
+                    $createdUsers[$user->slack_user_id] = $user;
+                }
+                
+                // Fetch all created users with Progression to ensure they have the same data structure as existing users
+                if (!empty($createdUsers)) {
+                    $newUserIds = array_map(function ($user) {
+                        return $user->id;
+                    }, $createdUsers);
+                    
+                    $refreshedUsers = $this->Users->find()
+                        ->where(['id IN' => $newUserIds])
+                        ->contain('Progression')
+                        ->all();
+                        
+                    foreach ($refreshedUsers as $user) {
+                        $usersMap[$user->slack_user_id] = $user;
+                    }
+                }
+            }
+        }
+        
+        return $usersMap;
+    }
 
     /**
      * @param \App\Model\Entity\User $user The user.
