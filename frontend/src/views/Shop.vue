@@ -196,15 +196,17 @@
 </template>
 
 <script>
-import { ref, computed } from 'vue'
+import { ref, computed, onMounted } from 'vue'
+import { useQueryClient } from '@tanstack/vue-query'
 import { useUser, useUsers } from '@/composables/useUser'
-import { useProducts, usePurchase } from '@/composables/useShop'
+import { useProducts, usePurchase, productsQueryOptions } from '@/composables/useShop'
 
 import 'vue-select/dist/vue-select.css';
 
 export default {
     name: 'Shop',
     setup() {
+        const queryClient = useQueryClient()
         const { data: user } = useUser()
         const { data: users } = useUsers()
         const { data: products, isLoading: isLoadingProducts } = useProducts()
@@ -223,6 +225,13 @@ export default {
         const availableUsers = computed(() => {
             if (!users.value || !user.value) return []
             return users.value.filter(u => u.id !== user.value.id)
+        })
+
+        // Example: Ensure products are loaded on mount
+        onMounted(async () => {
+            // This demonstrates how to use queryOptions to ensure data is loaded
+            // The data will be fetched only if it's not already in cache
+            await queryClient.ensureQueryData(productsQueryOptions())
         })
 
         const openModal = (selectedProduct) => {
@@ -273,7 +282,7 @@ export default {
             openModal,
             closeModal,
             purchase
-        }
+            }
     },
 }
 </script>

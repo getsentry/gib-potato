@@ -1,14 +1,16 @@
-import { useQuery, useMutation, useQueryClient } from '@tanstack/vue-query'
+import { useQuery, useMutation, useQueryClient, queryOptions } from '@tanstack/vue-query'
 import api from '@/api'
 
+export const productsQueryOptions = () => queryOptions({
+  queryKey: ['products'],
+  queryFn: async () => {
+    const response = await api.get('shop/products')
+    return response.data
+  },
+})
+
 export const useProducts = () => {
-  return useQuery({
-    queryKey: ['products'],
-    queryFn: async () => {
-      const response = await api.get('shop/products')
-      return response.data
-    },
-  })
+  return useQuery(productsQueryOptions())
 }
 
 export const usePurchase = () => {
