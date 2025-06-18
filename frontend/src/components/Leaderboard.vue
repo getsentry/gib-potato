@@ -1,5 +1,5 @@
 <template>
-    <table class="w-full table-auto divide-y divide-zinc-300 mb-32">
+    <table v-if="leaderboard" class="w-full table-auto divide-y divide-zinc-300 mb-32">
         <thead>
             <tr>
                 <th scope="col" class="py-3.5 pr-3 text-left text-sm font-semibold">
@@ -17,7 +17,7 @@
             </tr>
         </thead>
         <tbody class="divide-y divide-gray-200">
-            <tr v-for="(user, index) in users" :key="user.id">
+            <tr v-for="(user, index) in leaderboard" :key="user.id">
                 <td class="whitespace-nowrap py-4 pl-4 pr-3 text-sm">
                     {{ index + 1 }}
                 </td>
@@ -38,18 +38,28 @@
             </tr>
         </tbody>
     </table>
+    <div v-else-if="isLoading" class="flex justify-center items-center py-8">
+        <span class="animate-spin text-2xl">🥔</span>
+    </div>
+    <div v-else-if="isError" class="flex justify-center items-center py-8">
+        <p class="text-red-500">Error loading leaderboard</p>
+    </div>
 </template>
 
 <script>
-import { computed } from 'vue';
-import { useStore } from 'vuex';
+import { useLeaderboard } from '@/composables/useLeaderboard'
+import { useFilters } from '@/composables/useFilters'
 
 export default {
     name: 'Leaderboard',
     setup() {
-        const store = useStore()
+        const { filters } = useFilters()
+        const { data: leaderboard, isLoading, isError } = useLeaderboard(filters)
+        
         return {
-            users: computed(() => store.getters.leaderboard),
+            leaderboard,
+            isLoading,
+            isError
         }
     },
 };

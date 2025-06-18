@@ -46,6 +46,7 @@
                         <div class="relative ml-3">
                             <div>
                                 <button
+                                    v-if="user"
                                     class="flex rounded-full text-sm"
                                     @click="menuOpen = !menuOpen"
                                 >
@@ -119,7 +120,7 @@
                     Quick Wins
                 </RouterLink>
             </div>
-            <div class="border-t border-zinc-900 pt-4 pb-3">
+            <div v-if="user" class="border-t border-zinc-900 pt-4 pb-3">
                 <div class="flex items-center px-5">
                     <div class="flex-shrink-0">
                         <img class="h-10 w-10 rounded-full" :src="user.slack_picture">
@@ -151,18 +152,18 @@
 </template>
 
 <script>
-import { computed, ref, watch } from 'vue'
-import { useStore } from 'vuex'
+import { ref, watch } from 'vue'
 import { useRoute } from 'vue-router'
 import { RouterLink } from 'vue-router'
+import { useUser } from '@/composables/useUser'
 
 export default {
     name: 'Menu',
     components: { RouterLink },
     setup() {
-        const store = useStore()
         const route = useRoute()
         const menuOpen = ref(false)
+        const { data: user } = useUser()
 
         // Watch for route changes to close the menu
         watch(route, () => {
@@ -170,7 +171,7 @@ export default {
         })
 
         return {
-            user: computed(() => store.getters.user),
+            user,
             menuOpen,
         };
     },

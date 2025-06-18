@@ -1,4 +1,5 @@
 <template>
+    <div v-if="user">
     <h1 class="text-xl font-semibold leading-6">Settings</h1>
     <div class="divide-y divide-zinc-300 pt-6">
         <div>
@@ -70,32 +71,65 @@
                 </li>
             </ul>
         </div>
+        </div>
+    </div>
+    <div v-else-if="isLoading" class="flex justify-center items-center py-8">
+        <span class="animate-spin text-2xl">🥔</span>
     </div>
 </template>
 
 <script>
-import { computed } from 'vue'
-import { useStore } from 'vuex'
+import { useUser, useUpdateUser } from '@/composables/useUser'
 
 export default {
     name: 'Settings',
     setup() {
-        const store = useStore()
+        const { data: user, isLoading } = useUser()
+        const updateUser = useUpdateUser()
+
+        const toggleSentNotifications = () => {
+            if (user.value) {
+                updateUser.mutate({
+                    ...user.value,
+                    notifications: {
+                        ...user.value.notifications,
+                        sent: !user.value.notifications.sent
+                    }
+                })
+            }
+        }
+
+        const toggleReceivedNotifications = () => {
+            if (user.value) {
+                updateUser.mutate({
+                    ...user.value,
+                    notifications: {
+                        ...user.value.notifications,
+                        received: !user.value.notifications.received
+                    }
+                })
+            }
+        }
+
+        const toggleTooGoodToGoNotifications = () => {
+            if (user.value) {
+                updateUser.mutate({
+                    ...user.value,
+                    notifications: {
+                        ...user.value.notifications,
+                        too_good_to_go: !user.value.notifications.too_good_to_go
+                    }
+                })
+            }
+        }
 
         return {
-            user: computed(() => store.getters.user),
+            user,
+            isLoading,
+            toggleSentNotifications,
+            toggleReceivedNotifications,
+            toggleTooGoodToGoNotifications
         };
-    },
-    methods: {
-        toggleSentNotifications() {
-            this.$store.dispatch('toggleSentNotifications')
-        },
-        toggleReceivedNotifications() {
-            this.$store.dispatch('toggleReceivedNotifications')
-        },
-        toggleTooGoodToGoNotifications() {
-            this.$store.dispatch('toggleTooGoodToGoNotifications')
-        },
     },
 }
 </script>
