@@ -45,7 +45,6 @@ use Cake\Utility\Security;
 use Sentry\Agent\Transport\AgentClient;
 use function Cake\Core\env;
 use function Sentry\init;
-use function Sentry\profiler;
 
 /**
  * Load global functions.
@@ -111,8 +110,6 @@ init([
     ],
     'attach_stacktrace' => true,
 ]);
-
-profiler()->start();
 
 /*
  * When debug = true the metadata cache should only last

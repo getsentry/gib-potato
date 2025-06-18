@@ -18,12 +18,12 @@
         "cakephp/plugin-installer": "^2.0.1",
         "lcobucci/jwt": "^5.5.0",
         "paragonie/csp-builder": "^3.0.2",
-        "sentry/sentry": "dev-continuous-profiling as 4.12.0",
+        "sentry/sentry": "4.12.0",
         "sentry/sentry-agent": "dev-async-http"
     },
     "require-dev": {
         "cakephp/bake": "^3.3.1",
-        "cakephp/cakephp-codesniffer": "^5.2.1",
+        "cakephp/cakephp-codesniffer": "^5.2.2",
         "phpstan/phpstan": "^1.12.27",
         "phpunit/phpunit": "^10.5.46"
     },
