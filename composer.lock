@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "d8150f9654056fe1de9ff69fe86bd129",
+    "content-hash": "eb320f53d06a8baa5819ac39777c1e06",
     "packages": [
         {
             "name": "cakephp/authentication",
@@ -2420,16 +2420,16 @@
         },
         {
             "name": "sentry/sentry",
-            "version": "dev-continuous-profiling",
+            "version": "4.12.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/getsentry/sentry-php.git",
-                "reference": "49a6a63fb8dad3579fa1070283c5b633858e1202"
+                "reference": "0173702ffcbe36ce7638f07f090271294866a7a0"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/getsentry/sentry-php/zipball/49a6a63fb8dad3579fa1070283c5b633858e1202",
-                "reference": "49a6a63fb8dad3579fa1070283c5b633858e1202",
+                "url": "https://api.github.com/repos/getsentry/sentry-php/zipball/0173702ffcbe36ce7638f07f090271294866a7a0",
+                "reference": "0173702ffcbe36ce7638f07f090271294866a7a0",
                 "shasum": ""
             },
             "require": {
@@ -2493,7 +2493,7 @@
             ],
             "support": {
                 "issues": "https://github.com/getsentry/sentry-php/issues",
-                "source": "https://github.com/getsentry/sentry-php/tree/continuous-profiling"
+                "source": "https://github.com/getsentry/sentry-php/tree/4.12.0"
             },
             "funding": [
                 {
@@ -2505,7 +2505,7 @@
                     "type": "custom"
                 }
             ],
-            "time": "2025-06-08T06:02:22+00:00"
+            "time": "2025-06-07T08:37:56+00:00"
         },
         {
             "name": "sentry/sentry-agent",
@@ -3561,16 +3561,16 @@
         },
         {
             "name": "cakephp/cakephp-codesniffer",
-            "version": "5.2.2",
+            "version": "5.2.1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/cakephp/cakephp-codesniffer.git",
-                "reference": "3c62979556e98d0330f8af8b103ad1ade0a7067e"
+                "reference": "017b827f2814827cd09734319dfc1120f2262317"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/cakephp/cakephp-codesniffer/zipball/3c62979556e98d0330f8af8b103ad1ade0a7067e",
-                "reference": "3c62979556e98d0330f8af8b103ad1ade0a7067e",
+                "url": "https://api.github.com/repos/cakephp/cakephp-codesniffer/zipball/017b827f2814827cd09734319dfc1120f2262317",
+                "reference": "017b827f2814827cd09734319dfc1120f2262317",
                 "shasum": ""
             },
             "require": {
@@ -3610,7 +3610,7 @@
                 "issues": "https://github.com/cakephp/cakephp-codesniffer/issues",
                 "source": "https://github.com/cakephp/cakephp-codesniffer"
             },
-            "time": "2025-06-07T17:04:07+00:00"
+            "time": "2025-05-12T17:04:08+00:00"
         },
         {
             "name": "cakephp/twig-view",
@@ -5506,16 +5506,16 @@
         },
         {
             "name": "slevomat/coding-standard",
-            "version": "8.19.0",
+            "version": "8.18.1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/slevomat/coding-standard.git",
-                "reference": "9cc50509c3912d465a9f6898069f64cf2abf4e8a"
+                "reference": "06b18b3f64979ab31d27c37021838439f3ed5919"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/slevomat/coding-standard/zipball/9cc50509c3912d465a9f6898069f64cf2abf4e8a",
-                "reference": "9cc50509c3912d465a9f6898069f64cf2abf4e8a",
+                "url": "https://api.github.com/repos/slevomat/coding-standard/zipball/06b18b3f64979ab31d27c37021838439f3ed5919",
+                "reference": "06b18b3f64979ab31d27c37021838439f3ed5919",
                 "shasum": ""
             },
             "require": {
@@ -5555,7 +5555,7 @@
             ],
             "support": {
                 "issues": "https://github.com/slevomat/coding-standard/issues",
-                "source": "https://github.com/slevomat/coding-standard/tree/8.19.0"
+                "source": "https://github.com/slevomat/coding-standard/tree/8.18.1"
             },
             "funding": [
                 {
@@ -5567,7 +5567,7 @@
                     "type": "tidelift"
                 }
             ],
-            "time": "2025-06-07T15:02:20+00:00"
+            "time": "2025-05-22T14:32:30+00:00"
         },
         {
             "name": "squizlabs/php_codesniffer",
@@ -5855,17 +5855,9 @@
             "time": "2025-05-03T07:21:55+00:00"
         }
     ],
-    "aliases": [
-        {
-            "package": "sentry/sentry",
-            "version": "dev-continuous-profiling",
-            "alias": "4.12.0",
-            "alias_normalized": "4.12.0.0"
-        }
-    ],
+    "aliases": [],
     "minimum-stability": "stable",
     "stability-flags": {
-        "sentry/sentry": 20,
         "sentry/sentry-agent": 20
     },
     "prefer-stable": true,
