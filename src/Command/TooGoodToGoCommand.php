@@ -105,10 +105,29 @@ class TooGoodToGoCommand extends Command
         $connection = ConnectionManager::get('default');
         $connection->getDriver()->setLogger($logger);
 
+        $transactionContext = TransactionContext::make()
+            ->setOp('command')
+            ->setName('COMMAND too_good_to_go')
+            ->setSource(TransactionSource::task());
+
+        $transaction = startTransaction($transactionContext);
+
+        SentrySdk::getCurrentHub()->setSpan($transaction);
+
+        $applicableTimeZones = $this->_getApplicableTimeZones();
+
+        if (empty($applicableTimeZones)) {
+            $io->out('No applicable timezones found for the current hour and day. No users to notify.');
+            $transaction->setStatus(SpanStatus::ok())
+                        ->finish();
+            $io->success("\n[DONE] - No applicable timezones.");
+            return;
+        }
+
         $usersTable = $this->fetchTable('Users');
         $users = $usersTable->find()
             ->where([
-                'slack_time_zone IN' => $this->_getApplicableTimeZones(),
+                'slack_time_zone IN' => $applicableTimeZones,
             ])
             ->all();
 
