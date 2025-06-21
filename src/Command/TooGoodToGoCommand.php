@@ -56,19 +56,37 @@ class TooGoodToGoCommand extends Command
      */
     public function execute(Arguments $args, ConsoleIo $io)
     {
-        withMonitor(
-            slug: 'too-good-to-go',
-            callback: fn() => $this->_execute($args, $io),
-            monitorConfig: new MonitorConfig(
-                schedule: new MonitorSchedule(
-                    type: MonitorSchedule::TYPE_CRONTAB,
-                    value: '30 * * * *',
+        $transactionContext = TransactionContext::make()
+            ->setOp('command')
+            ->setName('COMMAND too_good_to_go')
+            ->setSource(TransactionSource::task());
+
+        $transaction = startTransaction($transactionContext);
+
+        SentrySdk::getCurrentHub()->setSpan($transaction);
+
+        try {
+            withMonitor(
+                slug: 'too-good-to-go',
+                callback: fn() => $this->_execute($args, $io),
+                monitorConfig: new MonitorConfig(
+                    schedule: new MonitorSchedule(
+                        type: MonitorSchedule::TYPE_CRONTAB,
+                        value: '30 * * * *',
+                    ),
+                    checkinMargin: 10,
+                    maxRuntime: 15,
+                    timezone: 'UTC',
                 ),
-                checkinMargin: 10,
-                maxRuntime: 15,
-                timezone: 'UTC',
-            ),
-        );
+            );
+
+            $transaction->setStatus(SpanStatus::ok());
+        } catch (Throwable $e) {
+            $transaction->setStatus(SpanStatus::internalError());
+            captureException($e);
+        } finally {
+            $transaction->finish();
+        }
     }
 
     /**
@@ -87,21 +105,14 @@ class TooGoodToGoCommand extends Command
         $connection = ConnectionManager::get('default');
         $connection->getDriver()->setLogger($logger);
 
-        $transactionContext = TransactionContext::make()
-            ->setOp('command')
-            ->setName('COMMAND too_good_to_go')
-            ->setSource(TransactionSource::task());
-
-        $transaction = startTransaction($transactionContext);
-
-        SentrySdk::getCurrentHub()->setSpan($transaction);
-
         $usersTable = $this->fetchTable('Users');
         $users = $usersTable->find()
             ->where([
                 'slack_time_zone IN' => $this->_getApplicableTimeZones(),
             ])
             ->all();
+
+        $transaction = SentrySdk::getCurrentHub()->getSpan();
 
         foreach ($users as $user) {
             if (
@@ -141,9 +152,6 @@ class TooGoodToGoCommand extends Command
             }
         }
         SentrySdk::getCurrentHub()->setSpan($transaction);
-
-        $transaction->setStatus(SpanStatus::ok())
-            ->finish();
 
         $io->success("\n[DONE]");
     }
