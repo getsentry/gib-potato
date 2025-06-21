@@ -106,7 +106,6 @@ class TooGoodToGoCommand extends Command
         $connection->getDriver()->setLogger($logger);
 
         $applicableTimeZones = $this->_getApplicableTimeZones();
-
         if (empty($applicableTimeZones)) {
             $io->out('No applicable timezones found for the current hour and day. No users to notify.');
             $io->success("\n[DONE]");
