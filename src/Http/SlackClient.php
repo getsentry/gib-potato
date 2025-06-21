@@ -4,8 +4,7 @@ declare(strict_types=1);
 namespace App\Http;
 
 use function Cake\Core\env;
-use function Sentry\captureMessage;
-use function Sentry\withScope;
+use function Sentry\logger;
 
 class SlackClient
 {
@@ -44,14 +43,11 @@ class SlackClient
             $json = $response->getJson();
 
             if ($json['ok'] === false) {
-                withScope(function ($scope) use ($json, $channel, $text): void {
-                    $scope->setContext('Slack API', [
-                        'channel' => $channel,
-                        'text' => $text,
-                        'slack_response' => $json,
-                    ]);
-                    captureMessage('Slack API error: https://api.slack.com/methods/chat.postMessage');
-                });
+                logger()->warn('Slack API error: https://api.slack.com/methods/chat.postMessage', attributes: [
+                    'channel' => $channel,
+                    'text' => $text,
+                    'slack_response' => $json,
+                ]);
             }
         }
     }
@@ -73,14 +69,11 @@ class SlackClient
             $json = $response->getJson();
 
             if ($json['ok'] === false) {
-                withScope(function ($scope) use ($json, $channel, $blocks): void {
-                    $scope->setContext('Slack API', [
-                        'channel' => $channel,
-                        'blocks' => $blocks,
-                        'slack_response' => $json,
-                    ]);
-                    captureMessage('Slack API error: https://api.slack.com/methods/chat.postMessage');
-                });
+                logger()->warn('Slack API error: https://api.slack.com/methods/chat.postMessage', attributes: [
+                    'channel' => $channel,
+                    'blocks' => $blocks,
+                    'slack_response' => $json,
+                ]);
             }
         }
     }
@@ -106,16 +99,13 @@ class SlackClient
             $json = $response->getJson();
 
             if ($json['ok'] === false) {
-                withScope(function ($scope) use ($json, $channel, $user, $text, $threadTimestamp): void {
-                    $scope->setContext('Slack API', [
-                        'channel' => $channel,
-                        'user' => $user,
-                        'text' => $text,
-                        'thread_ts' => $threadTimestamp,
-                        'slack_response' => $json,
-                    ]);
-                    captureMessage('Slack API error: https://api.slack.com/methods/chat.postEphemeral');
-                });
+                logger()->warn('Slack API error: https://api.slack.com/methods/chat.postEphemeral', attributes: [
+                    'channel' => $channel,
+                    'user' => $user,
+                    'text' => $text,
+                    'thread_ts' => $threadTimestamp,
+                    'slack_response' => $json,
+                ]);
             }
         }
     }
@@ -137,14 +127,11 @@ class SlackClient
             $json = $response->getJson();
 
             if ($json['ok'] === false) {
-                withScope(function ($scope) use ($json, $user, $view): void {
-                    $scope->setContext('Slack API', [
-                        'user_id' => $user,
-                        'view' => $view,
-                        'slack_response' => $json,
-                    ]);
-                    captureMessage('Slack API error: https://api.slack.com/methods/views.publish');
-                });
+                logger()->warn('Slack API error: https://api.slack.com/methods/views.publish', attributes: [
+                    'user_id' => $user,
+                    'view' => $view,
+                    'slack_response' => $json,
+                ]);
             }
         }
     }
@@ -166,14 +153,11 @@ class SlackClient
             $json = $response->getJson();
 
             if ($json['ok'] === false) {
-                withScope(function ($scope) use ($json, $triggerId, $view): void {
-                    $scope->setContext('Slack API', [
-                        'trigger_id' => $triggerId,
-                        'view' => $view,
-                        'slack_response' => $json,
-                    ]);
-                    captureMessage('Slack API error: https://api.slack.com/methods/views.open');
-                });
+                logger()->warn('Slack API error: https://api.slack.com/methods/views.open', attributes: [
+                    'trigger_id' => $triggerId,
+                    'view' => $view,
+                    'slack_response' => $json,
+                ]);
             }
         }
     }
@@ -195,13 +179,10 @@ class SlackClient
             if ($json['ok'] === true) {
                 return $json['user'];
             } else {
-                withScope(function ($scope) use ($json, $user): void {
-                    $scope->setContext('Slack API', [
-                        'user' => $user,
-                        'slack_response' => $json,
-                    ]);
-                    captureMessage('Slack API error: https://api.slack.com/methods/users.info');
-                });
+                logger()->warn('Slack API error: https://api.slack.com/methods/users.info', attributes: [
+                    'user' => $user,
+                    'slack_response' => $json,
+                ]);
             }
         }
 
@@ -226,15 +207,12 @@ class SlackClient
         if ($response->isSuccess()) {
             $json = $response->getJson();
             if ($json['ok'] === false) {
-                withScope(function ($scope) use ($json, $channel, $timestamp, $unfurls): void {
-                    $scope->setContext('Slack API', [
-                        'channel' => $channel,
-                        'timestamp' => $timestamp,
-                        'unfurls' => $unfurls,
-                        'slack_response' => $json,
-                    ]);
-                    captureMessage('Slack API error: https://api.slack.com/methods/chat.unfurl');
-                });
+                logger()->warn('Slack API error: https://api.slack.com/methods/chat.unfurl', attributes: [
+                    'channel' => $channel,
+                    'timestamp' => $timestamp,
+                    'unfurls' => $unfurls,
+                    'slack_response' => $json,
+                ]);
             }
         }
     }
