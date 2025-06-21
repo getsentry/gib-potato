@@ -49,19 +49,38 @@ class UpdateUsersCommand extends Command
      */
     public function execute(Arguments $args, ConsoleIo $io)
     {
-        withMonitor(
-            slug: 'update-users',
-            callback: fn() => $this->_execute($args, $io),
-            monitorConfig: new MonitorConfig(
-                schedule: new MonitorSchedule(
-                    type: MonitorSchedule::TYPE_CRONTAB,
-                    value: '0 0 * * *',
+        $transactionContext = TransactionContext::make()
+            ->setOp('command')
+            ->setName('COMMAND update_users')
+            ->setSource(TransactionSource::task());
+
+        $transaction = startTransaction($transactionContext);
+
+        SentrySdk::getCurrentHub()->setSpan($transaction);
+
+        try {
+            withMonitor(
+                slug: 'update-users',
+                callback: fn() => $this->_execute($args, $io),
+                monitorConfig: new MonitorConfig(
+                    schedule: new MonitorSchedule(
+                        type: MonitorSchedule::TYPE_CRONTAB,
+                        value: '0 0 * * *',
+                    ),
+                    checkinMargin: 10,
+                    maxRuntime: 15,
+                    timezone: 'UTC',
                 ),
-                checkinMargin: 10,
-                maxRuntime: 15,
-                timezone: 'UTC',
-            ),
-        );
+            );
+
+            $transaction->setStatus(SpanStatus::ok());
+        } catch (Throwable $e) {
+            captureException($e);
+            $transaction->setStatus(SpanStatus::internalError());
+            throw $e;
+        } finally {
+            $transaction->finish();
+        }
     }
 
     /**
@@ -80,15 +99,6 @@ class UpdateUsersCommand extends Command
         $connection = ConnectionManager::get('default');
         $connection->getDriver()->setLogger($logger);
 
-        $transactionContext = TransactionContext::make()
-            ->setOp('command')
-            ->setName('COMMAND update_users')
-            ->setSource(TransactionSource::task());
-
-        $transaction = startTransaction($transactionContext);
-
-        SentrySdk::getCurrentHub()->setSpan($transaction);
-
         $usersTable = $this->fetchTable('Users');
         $users = $usersTable->find()->all();
 
@@ -99,6 +109,8 @@ class UpdateUsersCommand extends Command
         $progress->init([
             'total' => $users->count(),
         ]);
+
+        $transaction = SentrySdk::getCurrentHub()->getSpan();
 
         foreach ($users as $user) {
             $spanContext = SpanContext::make()
@@ -160,9 +172,6 @@ class UpdateUsersCommand extends Command
             }
         }
         SentrySdk::getCurrentHub()->setSpan($transaction);
-
-        $transaction->setStatus(SpanStatus::ok())
-            ->finish();
 
         $io->success("\n[DONE]");
     }
