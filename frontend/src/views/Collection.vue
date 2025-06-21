@@ -1,6 +1,6 @@
 <template>
     <div
-        v-if="collection.length"
+        v-if="collection && collection.length"
         class="grid grid-cols-1 gap-y-12 sm:grid-cols-2 sm:gap-x-6 lg:grid-cols-4 xl:gap-x-8 mb-32"
     >
         <div
@@ -22,7 +22,7 @@
             </div>
             <div class="mt-auto">
                 <p class="mt-3 text-xs text-zinc-500">
-                    <template v-if="item.presentee_id === user.id">
+                    <template v-if="item.presentee_id === user?.id">
                         Received {{ new Date(item.created).toLocaleDateString('en-us', { year:"numeric", month:"short", day:"numeric"}) }}
                     </template>
                     <template v-else>
@@ -33,27 +33,32 @@
         </div>
     </div>
     <div
-        v-else
+        v-else-if="collection && collection.length === 0"
         class="absolute inset-0 flex items-center justify-center"
     >
         <h1 class="text-2xl font-extrabold">
             You didn't purchase or receive anything...
         </h1>
     </div>
+    <div v-else-if="isLoading" class="flex justify-center items-center py-8">
+        <span class="animate-spin text-2xl">🥔</span>
+    </div>
 </template>
 
 <script>
-import { computed } from 'vue'
-import { useStore } from 'vuex'
+import { useCollection } from '@/composables/useCollection'
+import { useUser } from '@/composables/useUser'
 
 export default {
     name: 'Collection',
     setup() {
-        const store = useStore()
+        const { data: user } = useUser()
+        const { data: collection, isLoading } = useCollection()
 
         return {
-            user: computed(() => store.getters.user),
-            collection: computed(() => store.getters.collection),
+            user,
+            collection,
+            isLoading
         }
     },
 }

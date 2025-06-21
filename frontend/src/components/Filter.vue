@@ -2,36 +2,36 @@
     <div class="isolate flex md:inline-flex rounded-md mb-4 md:mb-8 md:mr-8">
         <button
             class="relative inline-flex items-center rounded-l-md border border-zinc-300 px-4 py-2 text-sm font-medium"
-            :class="{ '!bg-amber-200 !text-zinc-900': filter.range === 'all' }"
-            @click="updateRangeFilter('all')"
+            :class="{ '!bg-amber-200 !text-zinc-900': rangeFilter === 'all' }"
+            @click="setRangeFilter('all')"
         >
             All Time
         </button>
         <button
             class="relative -ml-px inline-flex items-center border border-zinc-300  px-4 py-2 text-sm font-medium"
-            :class="{ '!bg-amber-200 !text-zinc-900': filter.range === 'year' }"
-            @click="updateRangeFilter('year')"
+            :class="{ '!bg-amber-200 !text-zinc-900': rangeFilter === 'year' }"
+            @click="setRangeFilter('year')"
         >
             Last 365 Days
         </button>
         <button
             class="relative -ml-px inline-flex items-center border border-zinc-300  px-4 py-2 text-sm font-medium"
-            :class="{ '!bg-amber-200 !text-zinc-900': filter.range === 'quarter' }"
-            @click="updateRangeFilter('quarter')"
+            :class="{ '!bg-amber-200 !text-zinc-900': rangeFilter === 'quarter' }"
+            @click="setRangeFilter('quarter')"
         >
             Current Quarter
         </button>
         <button
             class="relative -ml-px inline-flex items-center border border-zinc-300  px-4 py-2 text-sm font-medium"
-            :class="{ '!bg-amber-200 !text-zinc-900': filter.range === 'month' }"
-            @click="updateRangeFilter('month')"
+            :class="{ '!bg-amber-200 !text-zinc-900': rangeFilter === 'month' }"
+            @click="setRangeFilter('month')"
         >
             Last 30 Days
         </button>
         <button
             class="relative -ml-px inline-flex items-center rounded-r-md border border-zinc-300  px-4 py-2 text-sm font-medium"
-            :class="{ '!bg-amber-200 !text-zinc-900': filter.range === 'week' }"
-            @click="updateRangeFilter('week')"
+            :class="{ '!bg-amber-200 !text-zinc-900': rangeFilter === 'week' }"
+            @click="setRangeFilter('week')"
         >
             Last 7 Days
         </button>
@@ -39,15 +39,15 @@
     <div class="isolate flex md:inline-flex rounded-md mb-4 md:mb-8">
         <button
             class="relative inline-flex items-center rounded-l-md border border-zinc-300 px-4 py-2 text-sm font-medium"
-            :class="{ '!bg-amber-200 !text-zinc-900': filter.order === 'received' }"
-            @click="updateOrderFilter('received')"
+            :class="{ '!bg-amber-200 !text-zinc-900': orderFilter === 'received' }"
+            @click="setOrderFilter('received')"
         >
             Received
         </button>
         <button
             class="relative -ml-px inline-flex items-center rounded-r-md border border-zinc-300  px-4 py-2 text-sm font-medium"
-            :class="{ '!bg-amber-200 !text-zinc-900': filter.order === 'sent' }"
-            @click="updateOrderFilter('sent')"
+            :class="{ '!bg-amber-200 !text-zinc-900': orderFilter === 'sent' }"
+            @click="setOrderFilter('sent')"
         >
             Sent
         </button>
@@ -55,26 +55,19 @@
 </template>
 
 <script>
-import { computed } from 'vue';
-import { useStore } from 'vuex';
+import { useFilters } from '@/composables/useFilters'
 
 export default {
     name: 'Filter',
     setup() {
-        const store = useStore()
+        const { rangeFilter, orderFilter, setRangeFilter, setOrderFilter } = useFilters()
+        
         return {
-            filter: computed(() => store.getters.filter)
+            rangeFilter,
+            orderFilter,
+            setRangeFilter,
+            setOrderFilter
         }
     },
-    methods: {
-        updateRangeFilter(range) {
-            this.$store.dispatch('setRangeFilter', range)
-            this.$store.dispatch('getLeaderboard')
-        },
-        updateOrderFilter(order) {
-            this.$store.dispatch('setOrderFilter', order)
-            this.$store.dispatch('getLeaderboard')
-        },
-    }
 };
 </script>

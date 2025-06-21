@@ -1,4 +1,5 @@
 <template>
+    <div v-if="user">
     <h1 class="text-xl font-semibold leading-6">Profile</h1>
     <div class="pt-6">
         <h2 class="text-lg font-medium leading-6">Hey {{ user.slack_name }} 👋</h2>
@@ -34,7 +35,7 @@
         </div>
         <div class="py-4">
             <h2 class="text-lg font-medium leading-6">Your activity in the last 30 days</h2>
-            <ul class="divide-y divide-zinc-300">
+                <ul v-if="messages" class="divide-y divide-zinc-300">
                 <li
                     v-for="(message, index) in messages"
                     :key="index"
@@ -86,42 +87,32 @@
                     </div>
                 </li>
             </ul>
+                <div v-else-if="isLoadingProfile" class="flex justify-center items-center py-8">
+                    <span class="animate-spin text-2xl">🥔</span>
+                </div>
+            </div>
         </div>
+    </div>
+    <div v-else-if="isLoadingUser" class="flex justify-center items-center py-8">
+        <span class="animate-spin text-2xl">🥔</span>
     </div>
 </template>
 
 <script>
-import { computed } from 'vue'
-import { useStore } from 'vuex'
-
-import api from '@/api'
+import { useUser, useUserProfile } from '@/composables/useUser'
 
 export default {
     name: 'Profile',
     setup() {
-        const store = useStore()
+        const { data: user, isLoading: isLoadingUser } = useUser()
+        const { data: messages, isLoading: isLoadingProfile } = useUserProfile()
 
         return {
-            user: computed(() => store.getters.user),
+            user,
+            messages,
+            isLoadingUser,
+            isLoadingProfile
         };
     },
-    data() {
-        return {
-            messages: []
-        }
-    },
-    mounted() {
-        this.fetchMessages()
-    },
-    methods: {
-        async fetchMessages() {
-            try {
-                const response = await api.get('user/profile')
-                this.messages = response.data
-            } catch (error) {
-                console.log(error)
-            }
-        },
-    }
 }
 </script>
