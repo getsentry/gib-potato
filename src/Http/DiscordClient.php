@@ -4,8 +4,7 @@ declare(strict_types=1);
 namespace App\Http;
 
 use function Cake\Core\env;
-use function Sentry\captureMessage;
-use function Sentry\withScope;
+use function Sentry\logger;
 
 class DiscordClient
 {
@@ -44,14 +43,11 @@ class DiscordClient
             return $json['content'] ?? null;
         }
 
-        withScope(function ($scope) use ($response, $channelId, $messageId): void {
-            $scope->setContext('Discord API', [
-                'channel_id' => $channelId,
-                'message_id' => $messageId,
-                'discord_response' => $response->getJson(),
-            ]);
-            captureMessage('Discord API error: Failed to fetch message');
-        });
+        logger()->warn('Discord API error: Failed to fetch message', attributes: [
+            'channel_id' => $channelId,
+            'message_id' => $messageId,
+            'discord_response' => $response->getJson(),
+        ]);
 
         return null;
     }
