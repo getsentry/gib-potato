@@ -75,9 +75,8 @@ class UpdateUsersCommand extends Command
 
             $transaction->setStatus(SpanStatus::ok());
         } catch (Throwable $e) {
-            captureException($e);
             $transaction->setStatus(SpanStatus::internalError());
-            throw $e;
+            captureException($e);
         } finally {
             $transaction->finish();
         }
