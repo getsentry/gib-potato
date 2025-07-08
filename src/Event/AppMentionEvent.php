@@ -3,6 +3,8 @@ declare(strict_types=1);
 
 namespace App\Event;
 
+use App\Http\GitHubClient;
+
 class AppMentionEvent extends AbstractEvent
 {
     protected string $sender;
@@ -30,5 +32,10 @@ class AppMentionEvent extends AbstractEvent
      */
     public function process(): void
     {
+        $githubClient = new GitHubClient();
+        $githubClient->createIssue('cleptric', 'test', [
+            'title' => 'Test Issue',
+            'body' => $this->text,
+        ]);
     }
 }
