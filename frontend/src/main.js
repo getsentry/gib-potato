@@ -25,9 +25,7 @@ import './assets/main.css'
         profilesSampleRate: 1.0,
         replaysSessionSampleRate: 1.0,
         replaysOnErrorSampleRate: 1.0,
-        _experiments: {
-            enableLogs: true,
-        },
+        enableLogs: true,
         integrations: [
             Sentry.browserTracingIntegration({
                 enableInp: true,
