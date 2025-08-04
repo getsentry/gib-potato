@@ -17,7 +17,7 @@ class HomeController extends Controller
     {
         // Add Document-Policy header for JS profiling
         return response()
-            ->view('app')
+            ->view('home')
             ->header('Document-Policy', 'js-profiling');
     }
 }

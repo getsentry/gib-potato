@@ -1,33 +1,33 @@
 <!DOCTYPE html>
-<html lang="{{ str_replace('_', '-', app()->getLocale()) }}">
+<html class="h-full min-w-[320px]">
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="csrf-token" content="{{ csrf_token() }}">
-
-    <title>{{ config('app.name', 'GibPotato') }}</title>
-
-    <!-- Favicon -->
-    <link rel="icon" type="image/x-icon" href="{{ asset('favicon.ico') }}">
     
-    <!-- Fonts -->
-    <link rel="preconnect" href="https://fonts.bunny.net">
-    <link href="https://fonts.bunny.net/css?family=instrument-sans:400,500,600&display=swap" rel="stylesheet" />
-
-    <!-- Scripts -->
-    @vite(['resources/css/app.css', 'resources/css/vue-app.css', 'resources/js/app.js'])
+    {{-- Sentry tracing meta tags - can be added when distributed tracing is needed --}}
+    
+    @yield('meta')
+    
+    <link rel="icon" type="image/x-icon" href="{{ asset('favicon.ico') }}">
+    <title>
+        @yield('title', config('app.name', 'GibPotato'))
+    </title>
+    
+    @include('partials.assets')
+    @yield('scripts')
+    @yield('css')
 </head>
-<body 
-    class="font-sans antialiased bg-zinc-50 dark:bg-zinc-900 text-zinc-900 dark:text-zinc-50"
+<body
+    class="h-full bg-zinc-50 dark:bg-zinc-900 text-zinc-900 dark:text-zinc-50 font-mono"
+    data-sentry-frontend-dsn="{{ config('sentry.frontend_dsn') }}"
+    data-sentry-environment="{{ config('app.env') }}"
+    data-sentry-release="{{ config('sentry.release') }}"
     @auth
         data-username="{{ auth()->user()->slack_name ?? '' }}"
-        data-sentry-frontend-dsn="{{ config('sentry.frontend_dsn') }}"
-        data-sentry-environment="{{ config('app.env') }}"
-        data-sentry-release="{{ config('sentry.release') }}"
     @endauth
 >
-    <div id="app">
-        @yield('content')
-    </div>
+    @yield('content')
+    @include('partials.footer')
 </body>
 </html>

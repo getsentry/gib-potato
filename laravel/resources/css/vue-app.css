@@ -5,6 +5,6 @@
 .vs__search::placeholder,
 .vs__dropdown-toggle,
 .vs__dropdown-menu {
-    @apply bg-zinc-100 !important;
-    @apply text-zinc-900 !important;
+    background-color: #f4f4f5;
+    color: #18181b;
 }
