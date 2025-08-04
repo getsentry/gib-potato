@@ -38,9 +38,9 @@ return static function (RouteBuilder $routes): void {
         'unauthenticatedRedirect' => '/login',
         'queryParam' => 'redirect',
     ]);
-    $webAuthService->loadIdentifier('ApiToken');
     $webAuthService->loadAuthenticator('Authentication.Session');
     $webAuthService->loadAuthenticator('Authentication.Token', [
+        'identifier' => 'ApiToken',
         'header' => 'Authorization',
         'tokenPrefix' => 'Bearer',
     ]);
@@ -84,9 +84,9 @@ return static function (RouteBuilder $routes): void {
 
     $serviceAuthService = new AuthenticationService();
     $serviceAuthService->loadAuthenticator('Authentication.Token', [
+        'identifier' => 'Potal',
         'header' => 'Authorization',
     ]);
-    $serviceAuthService->loadIdentifier('Potal');
     $routes->registerMiddleware('service-auth', new AuthenticationMiddleware($serviceAuthService));
 
     $routes->scope('/', function (RouteBuilder $builder): void {
