@@ -5,7 +5,7 @@ namespace App\Http\Controllers;
 use App\Events\EventFactory;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
-use Sentry\State\Scope;
+use Sentry\SentrySdk;
 
 class EventsController extends Controller
 {
@@ -24,17 +24,15 @@ class EventsController extends Controller
         $event = $eventFactory->create($request->all());
         $event->process();
 
-        // Add Sentry performance monitoring
-        if (function_exists('\Sentry\withScope')) {
-            \Sentry\withScope(function (Scope $scope) use ($event, $startTimestamp, $request) {
-                $scope->setContext('performance', [
-                    'gibpotato.potatoes.event_processing_time' => microtime(true) - $startTimestamp,
-                    'gibpotato.potatoes.event_size' => mb_strlen(serialize($request->all()), '8bit'),
-                    'gibpotato.event_type' => $event->getType(),
-                ]);
-            });
+        $span = SentrySdk::getCurrentHub()->getSpan();
+        if ($span !== null) {
+            $span->setData([
+                'gibpotato.potatoes.event_processing_time' => microtime(true) - $startTimestamp,
+                'gibpotato.potatoes.event_size' => mb_strlen(serialize($request->getData()), '8bit'),
+                'gibpotato.event_type' => $event->type,
+            ]);
         }
 
-        return response()->json(['ok' => true]);
+        return response()->json();
     }
 }

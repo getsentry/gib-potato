@@ -6,6 +6,7 @@
     <meta name="csrf-token" content="{{ csrf_token() }}">
     
     {{-- Sentry tracing meta tags - can be added when distributed tracing is needed --}}
+    {!! \Sentry\Laravel\Integration::sentryMeta() !!}
     
     @yield('meta')
     

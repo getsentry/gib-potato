@@ -125,7 +125,7 @@ class SlackLoginController extends Controller
             }
 
             // For web, log in the user
-            Auth::login($user, true);
+            Auth::login($user);
 
             return redirect()->intended(route('home'));
 
