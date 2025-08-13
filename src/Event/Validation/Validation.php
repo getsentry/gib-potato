@@ -33,12 +33,17 @@ class Validation
      */
     public function amount()
     {
-        if ($this->event->amount > Message::MAX_AMOUNT) {
+        $maxAmount = Message::MAX_AMOUNT;
+        if ($this->event->channel === env('POTATO_QUALITY_CHANNEL')) {
+            $maxAmount = Message::MAX_AMOUNT_SPECIAL;
+        }
+
+        if ($this->event->amount > $maxAmount) {
             throw new PotatoException('You can only gib out *5* potato a day 😢');
         }
 
         $recieversCount = count($this->event->receivers);
-        if ($this->event->amount * $recieversCount > Message::MAX_AMOUNT) {
+        if ($this->event->amount * $recieversCount > $maxAmount) {
             throw new PotatoException(
                 'Each :potato: is multiplied by the number of people you @ mention. ' .
                 'You can only gib out *5* potato a day 😢',
@@ -77,14 +82,19 @@ class Validation
      */
     public function sender()
     {
+        $maxAmount = Message::MAX_AMOUNT;
+        if ($this->event->channel === env('POTATO_QUALITY_CHANNEL')) {
+            $maxAmount = Message::MAX_AMOUNT_SPECIAL;
+        }
+
         $sent = $this->sender->potatoSentToday();
-        if ($sent >= Message::MAX_AMOUNT) {
+        if ($sent >= $maxAmount) {
             throw new PotatoException('You already gib out all your :potato: today 😢');
         }
 
         $recieversCount = count($this->event->receivers);
 
-        $left = $this->sender->potatoLeftToday();
+        $left = $this->sender->potatoLeftToday($maxAmount);
         if ($this->event->amount * $recieversCount > $left) {
             throw new PotatoException(sprintf('You only have *%s* :potato: left to gib today 😢', $left));
         }

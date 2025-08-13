@@ -28,6 +28,7 @@ services:
         - SENTRY_AUTH_TOKEN
         - POTAL_TOKEN
         - POTATO_CHANNEL
+        - POTATO_QUALITY_CHANNEL
         - POTATO_SLACK_USER_ID
     depends_on:
       - db

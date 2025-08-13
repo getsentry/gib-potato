@@ -163,7 +163,7 @@ class User extends Entity
     /**
      * @return int
      */
-    public function potatoLeftToday(): int
+    public function potatoLeftToday(?int $maxAmount = null): int
     {
         $messagesTable = $this->fetchTable('Messages');
 
@@ -178,6 +178,10 @@ class User extends Entity
                 'created >=' => $this->getStartOfDay(),
             ])
             ->first();
+
+        if ($maxAmount !== null) {
+            return Message::MAX_AMOUNT_SPECIAL - (int)$result->sent;
+        }
 
         return Message::MAX_AMOUNT - (int)$result->sent;
     }
