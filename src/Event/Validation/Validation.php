@@ -8,6 +8,7 @@ use App\Event\ReactionAddedEvent;
 use App\Event\Validation\Exception\PotatoException;
 use App\Model\Entity\Message;
 use App\Model\Entity\User;
+use function Cake\Core\env;
 
 class Validation
 {
