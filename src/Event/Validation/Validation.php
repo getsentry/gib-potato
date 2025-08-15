@@ -8,7 +8,6 @@ use App\Event\ReactionAddedEvent;
 use App\Event\Validation\Exception\PotatoException;
 use App\Model\Entity\Message;
 use App\Model\Entity\User;
-use function Cake\Core\env;
 
 class Validation
 {
@@ -34,17 +33,12 @@ class Validation
      */
     public function amount()
     {
-        $maxAmount = Message::MAX_AMOUNT;
-        if ($this->event->channel === env('POTATO_QUALITY_CHANNEL')) {
-            $maxAmount = Message::MAX_AMOUNT_SPECIAL;
-        }
-
-        if ($this->event->amount > $maxAmount) {
+        if ($this->event->amount > Message::MAX_AMOUNT) {
             throw new PotatoException('You can only gib out *5* potato a day 😢');
         }
 
         $recieversCount = count($this->event->receivers);
-        if ($this->event->amount * $recieversCount > $maxAmount) {
+        if ($this->event->amount * $recieversCount > Message::MAX_AMOUNT) {
             throw new PotatoException(
                 'Each :potato: is multiplied by the number of people you @ mention. ' .
                 'You can only gib out *5* potato a day 😢',
@@ -83,19 +77,14 @@ class Validation
      */
     public function sender()
     {
-        $maxAmount = Message::MAX_AMOUNT;
-        if ($this->event->channel === env('POTATO_QUALITY_CHANNEL')) {
-            $maxAmount = Message::MAX_AMOUNT_SPECIAL;
-        }
-
         $sent = $this->sender->potatoSentToday();
-        if ($sent >= $maxAmount) {
+        if ($sent >= Message::MAX_AMOUNT) {
             throw new PotatoException('You already gib out all your :potato: today 😢');
         }
 
         $recieversCount = count($this->event->receivers);
 
-        $left = $this->sender->potatoLeftToday($maxAmount);
+        $left = $this->sender->potatoLeftToday();
         if ($this->event->amount * $recieversCount > $left) {
             throw new PotatoException(sprintf('You only have *%s* :potato: left to gib today 😢', $left));
         }
