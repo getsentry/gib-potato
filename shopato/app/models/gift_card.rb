@@ -22,25 +22,9 @@ class GiftCard
   def save
     return false unless valid?
 
-    # Create gift card in Shopify
-    service = ShopifyGiftCardService.new
-    result = service.create_gift_card(amount, email)
-    
-    if result[:success]
-      @shopify_gift_card = result[:gift_card]
-      true
-    else
-      errors.add(:base, result[:message])
-      result[:errors]&.each { |error| errors.add(:base, error) }
-      false
-    end
-  rescue => e
-    errors.add(:base, "Failed to create gift card: #{e.message}")
-    false
-  end
-
-  def shopify_gift_card
-    @shopify_gift_card
+    # In a real application, you might save to a database or external service
+    # For now, we'll just return true if validation passes
+    true
   end
 
   def persisted?
