@@ -17,7 +17,6 @@ gem "puma", ">= 5.0"
 # Build JSON APIs with ease [https://github.com/rails/jbuilder]
 # gem "jbuilder"
 
-# Shopify API for gift card creation
 gem "shopify_api"
 
 # Use Active Model has_secure_password [https://guides.rubyonrails.org/active_model_basics.html#securepassword]
@@ -63,4 +62,7 @@ group :test do
   # Use system testing [https://guides.rubyonrails.org/testing.html#system-testing]
   # gem "capybara"
   # gem "selenium-webdriver"
+
+  gem "webmock"
+  gem "mocha"
 end
