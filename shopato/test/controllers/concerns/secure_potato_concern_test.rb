@@ -12,8 +12,7 @@ class SecurePotatoConcernTest < ActionDispatch::IntegrationTest
   end
 
   def setup
-    @valid_token = "eräpfelkaas"
-    ENV["POTATO_TOKEN"] = @valid_token
+    @valid_token = Rails.application.config.gib_potato_token
   end
 
   test "should authenticate with valid token" do

@@ -13,10 +13,10 @@ class ShopifyGiftCardServiceTest < ActiveSupport::TestCase
 
   def test_creates_gift_card_with_token_only_session
     # Mock the GraphQL request to Shopify
-    stub_request(:post, "https://erdapfelshop.myshopify.com/admin/api/2025-07/graphql.json")
+    stub_request(:post, "https://#{Rails.application.config.shopify_shop_domain}/admin/api/2025-07/graphql.json")
       .with(
         headers: {
-          "X-Shopify-Access-Token" => "1234_eräpfelkaas",
+          "X-Shopify-Access-Token" => Rails.application.config.shopify_admin_access_token,
           "Content-Type" => "application/json"
         },
         body: {
@@ -46,7 +46,7 @@ class ShopifyGiftCardServiceTest < ActiveSupport::TestCase
         }.to_json
       )
 
-    service = ShopifyGiftCardService.new(shop: "erdapfelshop.myshopify.com", token: "1234_eräpfelkaas")
+    service = ShopifyGiftCardService.new
     result = service.create_gift_card(25, "mr.potato@eräpfel.com")
 
     assert result[:success]

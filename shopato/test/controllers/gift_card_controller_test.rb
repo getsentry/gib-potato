@@ -5,9 +5,7 @@ class GiftCardControllerTest < ActionDispatch::IntegrationTest
     super
     @valid_email = "mr.potato@erdapfel.com"
     @valid_amount = 25
-    @potato_token = "no_more_sweet_potatoes"
-
-    ENV["POTATO_TOKEN"] = @potato_token
+    @potato_token = Rails.application.config.gib_potato_token
   end
 
   def test_create_gift_card_success

@@ -13,7 +13,7 @@ class ShopifyGiftCardService
     }
   GRAPHQL
 
-  def initialize(shop: ENV.fetch("SHOPIFY_SHOP_DOMAIN"), token: ENV.fetch("SHOPIFY_ADMIN_ACCESS_TOKEN"))
+  def initialize(shop: Rails.application.config.shopify_shop_domain, token: Rails.application.config.shopify_admin_access_token)
     @session = ShopifyAPI::Auth::Session.new(shop: shop, access_token: token)
     @client  = ShopifyAPI::Clients::Graphql::Admin.new(session: @session)
   end

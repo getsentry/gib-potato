@@ -11,6 +11,6 @@ module SecurePotatoConcern
     token = request.headers["Authorization"]
     return false unless token
 
-    token == ENV["POTATO_TOKEN"]
+    token == Rails.application.config.gib_potato_token
   end
 end
