@@ -1,8 +1,8 @@
-class GiftCardController < ApplicationController
+class GiftCardController < ActionController::Base
   include SecurePotatoConcern
 
   before_action :authenticate_🥔!, only: [ :create ]
-  skip_before_action :verify_authenticity_token
+  skip_forgery_protection
 
   def create
     Sentry.logger.info("Gift card creation request received", email: params[:email], amount: params[:amount])
