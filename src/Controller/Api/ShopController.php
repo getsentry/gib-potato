@@ -3,10 +3,13 @@ declare(strict_types=1);
 
 namespace App\Controller\Api;
 
+use App\Http\Client;
 use App\Http\SlackClient;
+use App\Model\Entity\Product;
 use Cake\Http\Response;
 use Cake\Routing\Router;
 use function Cake\Core\env;
+use function Sentry\logger;
 
 /**
  * @property \Authentication\Controller\Component\AuthenticationComponent $Authentication
@@ -115,6 +118,14 @@ class ShopController extends ApiController
             ],
         ]);
         $productsTable->saveOrFail($product);
+
+        if ($product->type === Product::TYPE_GIFT_CARD) {
+            $client = new Client();
+            $client->post(env('SHOPATO_URL'), [
+                'email' => 'foo@bar.com',
+                'amount' => 5,
+            ]);
+        }
 
         if ($presentee !== null) {
             $blocks = [

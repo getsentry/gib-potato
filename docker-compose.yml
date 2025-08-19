@@ -29,6 +29,7 @@ services:
         - POTAL_TOKEN
         - POTATO_CHANNEL
         - POTATO_SLACK_USER_ID
+        - SHOPATO_URL
     depends_on:
       - db
       - potal
