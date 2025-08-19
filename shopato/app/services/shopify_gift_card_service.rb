@@ -15,7 +15,7 @@ class ShopifyGiftCardService
 
   def initialize(shop: Rails.application.config.shopify_shop_domain, token: Rails.application.config.shopify_admin_access_token)
     @session = ShopifyAPI::Auth::Session.new(shop: shop, access_token: token)
-    @client  = ShopifyAPI::Clients::Graphql::Admin.new(session: @session)
+    @client = ShopifyAPI::Clients::Graphql::Admin.new(session: @session)
     Sentry.logger.debug("ShopifyGiftCardService initialized", shop: shop)
   end
 
@@ -31,7 +31,7 @@ class ShopifyGiftCardService
 
     Sentry.logger.trace("Executing Shopify GraphQL mutation", variables: variables)
     response = @client.query(query: CREATE_MUTATION, variables: variables)
-    payload  = response.body.dig("data", "giftCardCreate")
+    payload = response.body.dig("data", "giftCardCreate")
 
     return error!("Unexpected response") if payload.nil?
 
@@ -40,21 +40,19 @@ class ShopifyGiftCardService
       Sentry.logger.error("Shopify API returned user errors",
         errors: errors,
         amount: amount,
-        email: email
-      )
+        email: email)
       return error!(errors.join(", "))
     end
 
     gift_card_data = {
-      "id"     => payload.dig("giftCard", "id"),
+      "id" => payload.dig("giftCard", "id"),
       "amount" => payload.dig("giftCard", "initialValue", "amount"),
-      "code"   => payload["giftCardCode"]
+      "code" => payload["giftCardCode"]
     }
 
     Sentry.logger.info("Gift card created successfully via Shopify",
       gift_card_id: gift_card_data["id"],
-      amount: gift_card_data["amount"]
-    )
+      amount: gift_card_data["amount"])
 
     success!(gift_card: gift_card_data)
   rescue => e
@@ -62,18 +60,17 @@ class ShopifyGiftCardService
       error_message: e.message,
       error_class: e.class.name,
       amount: amount,
-      email: email
-    )
+      email: email)
     error!("Shopify error: #{e.message}")
   end
 
   private
 
   def success!(gift_card:)
-    { success: true, gift_card: gift_card }
+    {success: true, gift_card: gift_card}
   end
 
   def error!(message)
-    { success: false, message: message, errors: [ message ] }
+    {success: false, message: message, errors: [message]}
   end
 end

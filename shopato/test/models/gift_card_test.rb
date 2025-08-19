@@ -38,7 +38,7 @@ class GiftCardTest < ActiveSupport::TestCase
   end
 
   test "should not accept invalid amounts" do
-    invalid_amounts = [ 1, 10, 100, 0, -5 ]
+    invalid_amounts = [1, 10, 100, 0, -5]
     invalid_amounts.each do |amount|
       @valid_gift_card.amount = amount
       assert_not @valid_gift_card.valid?, "#{amount} should be invalid"

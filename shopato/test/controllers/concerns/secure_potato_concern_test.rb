@@ -17,7 +17,7 @@ class SecurePotatoConcernTest < ActionDispatch::IntegrationTest
 
   test "should authenticate with valid token" do
     with_test_controller do
-      get "/test", headers: { "Authorization" => @valid_token }
+      get "/test", headers: {"Authorization" => @valid_token}
 
       assert_response :success
     end
@@ -33,7 +33,7 @@ class SecurePotatoConcernTest < ActionDispatch::IntegrationTest
 
   test "should reject request with invalid token" do
     with_test_controller do
-      get "/test", headers: { "Authorization" => "SüßkartoffelFTW" }
+      get "/test", headers: {"Authorization" => "SüßkartoffelFTW"}
 
       assert_response :unauthorized
     end

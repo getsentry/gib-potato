@@ -1,4 +1,3 @@
-
 require_relative "boot"
 
 # require "rails/all"
@@ -58,8 +57,7 @@ module Shopato
       Sentry.logger.info("Application configuration loaded",
         environment: Rails.env,
         shopify_shop_domain: config.shopify_shop_domain,
-        potato_token_configured: config.gib_potato_token.present?
-      )
+        potato_token_configured: config.gib_potato_token.present?)
     end
   end
 end

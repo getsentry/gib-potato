@@ -4,18 +4,16 @@ module SecurePotatoConcern
   private
 
   def authenticate_🥔!
-    unless valid_authentication?
+    if valid_authentication?
+      Sentry.logger.debug("Authentication successful",
+        request_path: request.path,
+        request_method: request.method)
+    else
       Sentry.logger.warn("Authentication failed - invalid or missing token",
         request_path: request.path,
         request_method: request.method,
-        remote_ip: request.remote_ip
-      )
+        remote_ip: request.remote_ip)
       head :unauthorized
-    else
-      Sentry.logger.debug("Authentication successful",
-        request_path: request.path,
-        request_method: request.method
-      )
     end
   end
 
@@ -28,8 +26,7 @@ module SecurePotatoConcern
     unless is_valid
       Sentry.logger.debug("Token validation failed",
         token_present: token.present?,
-        token_length: token&.length
-      )
+        token_length: token&.length)
     end
 
     is_valid

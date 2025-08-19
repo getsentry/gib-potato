@@ -31,13 +31,13 @@ class ShopifyGiftCardServiceTest < ActiveSupport::TestCase
       )
       .to_return(
         status: 200,
-        headers: { "Content-Type" => "application/json" },
+        headers: {"Content-Type" => "application/json"},
         body: {
           data: {
             giftCardCreate: {
               giftCard: {
                 id: "gid://shopify/GiftCard/123",
-                initialValue: { amount: "25.00" }
+                initialValue: {amount: "25.00"}
               },
               giftCardCode: "POTATO-1234",
               userErrors: []
