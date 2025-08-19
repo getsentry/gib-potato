@@ -54,6 +54,9 @@ module Shopato
     config.shopify_shop_domain = ENV.fetch("SHOPIFY_SHOP_DOMAIN", nil)
     config.shopify_admin_access_token = ENV.fetch("SHOPIFY_ADMIN_ACCESS_TOKEN", nil)
 
+    # no CSRF protection
+    config.action_controller.allow_forgery_protection = false
+
     # Log application startup
     initializer "shopato.startup_logging" do
       Rails.logger.info("Shopato application starting up")
