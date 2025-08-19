@@ -30,6 +30,7 @@ services:
         - POTATO_CHANNEL
         - POTATO_SLACK_USER_ID
         - SHOPATO_URL
+        - SHOPATO_TOKEN
     depends_on:
       - db
       - potal
@@ -71,7 +72,7 @@ services:
       - SENTRY_SHOPATO_DSN
       - SHOPIFY_SHOP_DOMAIN
       - SHOPIFY_ADMIN_ACCESS_TOKEN
-      - POTAL_TOKEN
+      - SHOPATO_TOKEN
       - RAILS_MASTER_KEY
     ports:
       - 3001:3000
