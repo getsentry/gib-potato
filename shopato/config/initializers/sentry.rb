@@ -6,10 +6,10 @@ GIB_POTATO_ENV_MAPPING = {
 Sentry.init do |config|
   config.dsn = ENV["SENTRY_SHOPATO_DSN"]
 
-  config.enabled_environments = %w[production development]
+  config.enabled_environments = %w[production local]
   config.environment = GIB_POTATO_ENV_MAPPING[Rails.env.to_sym]
 
-  config.breadcrumbs_logger = [:active_support_logger, :http_logger]
+  config.breadcrumbs_logger = [ :active_support_logger, :http_logger ]
   config.traces_sample_rate = 1.0
   config.send_default_pii = true
 
