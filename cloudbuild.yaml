@@ -1,5 +1,19 @@
 steps:
 - name: 'gcr.io/cloud-builders/docker'
+  id: build-shopato
+  args: [
+    'build',
+    '-f', './docker/shopato/Dockerfile',
+    '-t', 'us-central1-docker.pkg.dev/$PROJECT_ID/shopato/shopato:$COMMIT_SHA',
+    '-t', 'us-central1-docker.pkg.dev/$PROJECT_ID/shopato/shopato:latest',
+    '.',
+    ]
+  waitFor: ['-']
+- name: 'gcr.io/cloud-builders/docker'
+  id: push-shopato
+  args: [ 'push', 'us-central1-docker.pkg.dev/$PROJECT_ID/shopato/poshopatotal:$COMMIT_SHA']
+  waitFor: ['build-shopato']
+- name: 'gcr.io/cloud-builders/docker'
   id: build-potal
   args: [
     'build',
@@ -27,6 +41,18 @@ steps:
   id: push-backend
   args: [ 'push', 'us-central1-docker.pkg.dev/$PROJECT_ID/backend/backend:$COMMIT_SHA']
   waitFor: ['build-backend']
+- name: 'gcr.io/google.com/cloudsdktool/cloud-sdk'
+  id: deploy-shopato
+  entrypoint: gcloud
+  args:
+  - 'run'
+  - 'deploy'
+  - 'potal'
+  - '--image'
+  - 'us-central1-docker.pkg.dev/$PROJECT_ID/shopato/shopato:$COMMIT_SHA'
+  - '--region'
+  - 'us-central1'
+  waitFor: ['push-shopato']
 - name: 'gcr.io/google.com/cloudsdktool/cloud-sdk'
   id: deploy-potal
   entrypoint: gcloud
@@ -63,6 +89,7 @@ steps:
 images:
 - 'us-central1-docker.pkg.dev/$PROJECT_ID/backend/backend:latest'
 - 'us-central1-docker.pkg.dev/$PROJECT_ID/potal/potal:latest'
+- 'us-central1-docker.pkg.dev/$PROJECT_ID/shopato/shopato:latest'
 artifacts:
   objects:
     location: gs://gib-potato-assets/
