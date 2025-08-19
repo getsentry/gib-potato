@@ -4,7 +4,7 @@ GIB_POTATO_ENV_MAPPING = {
 }.freeze
 
 Sentry.init do |config|
-  config.dsn = ENV["SENTRY_DSN"]
+  config.dsn = ENV["SENTRY_SHOPATO_DSN"]
 
   config.enabled_environments = %w[production development]
   config.environment = GIB_POTATO_ENV_MAPPING[Rails.env.to_sym]

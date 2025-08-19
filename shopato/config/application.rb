@@ -27,7 +27,10 @@ end
 # you've limited to :test, :development, or :production.
 Bundler.require(*Rails.groups)
 
-require "dotenv/load"
+# Load environment variables from .env file in development and test environments
+if Rails.env.development? || Rails.env.test?
+  require "dotenv/load"
+end
 
 module Shopato
   class Application < Rails::Application
@@ -47,17 +50,19 @@ module Shopato
     # config.time_zone = "Central Time (US & Canada)"
     # config.eager_load_paths << Rails.root.join("extras")
 
-    config.gib_potato_token = ENV.fetch("POTATO_TOKEN")
-    config.shopify_shop_domain = ENV.fetch("SHOPIFY_SHOP_DOMAIN")
-    config.shopify_admin_access_token = ENV.fetch("SHOPIFY_ADMIN_ACCESS_TOKEN")
+    config.gib_potato_token = ENV.fetch("POTAL_TOKEN", nil)
+    config.shopify_shop_domain = ENV.fetch("SHOPIFY_SHOP_DOMAIN", nil)
+    config.shopify_admin_access_token = ENV.fetch("SHOPIFY_ADMIN_ACCESS_TOKEN", nil)
 
     # Log application startup
     initializer "shopato.startup_logging" do
       Rails.logger.info("Shopato application starting up")
-      Sentry.logger.info("Application configuration loaded",
-        environment: Rails.env,
-        shopify_shop_domain: config.shopify_shop_domain,
-        potato_token_configured: config.gib_potato_token.present?)
+      if defined?(Sentry)
+        Sentry.logger.info("Application configuration loaded",
+          environment: Rails.env,
+          shopify_shop_domain: config.shopify_shop_domain,
+          potato_token_configured: config.gib_potato_token.present?)
+      end
     end
   end
 end
