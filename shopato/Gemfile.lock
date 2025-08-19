@@ -257,6 +257,12 @@ GEM
     ruby-progressbar (1.13.0)
     ruby2_keywords (0.0.5)
     securerandom (0.4.1)
+    sentry-rails (5.26.0)
+      railties (>= 5.0)
+      sentry-ruby (~> 5.26.0)
+    sentry-ruby (5.26.0)
+      bigdecimal
+      concurrent-ruby (~> 1.0, >= 1.0.2)
     shopify_api (14.11.0)
       activesupport
       concurrent-ruby
@@ -325,6 +331,8 @@ DEPENDENCIES
   puma (>= 5.0)
   rails (~> 8.0.2, >= 8.0.2.1)
   rubocop-rails-omakase
+  sentry-rails
+  sentry-ruby
   shopify_api
   sqlite3 (>= 2.1)
   thruster

@@ -30,5 +30,15 @@ module Shopato
     config.gib_potato_token = ENV.fetch("POTATO_TOKEN")
     config.shopify_shop_domain = ENV.fetch("SHOPIFY_SHOP_DOMAIN")
     config.shopify_admin_access_token = ENV.fetch("SHOPIFY_ADMIN_ACCESS_TOKEN")
+
+    # Log application startup
+    initializer "shopato.startup_logging" do
+      Rails.logger.info("Shopato application starting up")
+      Sentry.logger.info("Application configuration loaded",
+        environment: Rails.env,
+        shopify_shop_domain: config.shopify_shop_domain,
+        potato_token_configured: config.gib_potato_token.present?
+      )
+    end
   end
 end
