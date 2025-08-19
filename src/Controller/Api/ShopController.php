@@ -124,6 +124,10 @@ class ShopController extends ApiController
             $client->post(env('SHOPATO_URL'), [
                 'email' => 'foo@bar.com',
                 'amount' => 5,
+            ], [
+                'headers' => [
+                    'Authorization' => env('SHOPATO_TOKEN'),
+                ],
             ]);
         }
 
