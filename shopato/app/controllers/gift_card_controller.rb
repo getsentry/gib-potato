@@ -1,7 +1,8 @@
 class GiftCardController < ApplicationController
   include SecurePotatoConcern
 
-  before_action :authenticate_🥔!, only: [:create]
+  before_action :authenticate_🥔!, only: [ :create ]
+  skip_before_action :verify_authenticity_token
 
   def create
     Sentry.logger.info("Gift card creation request received", email: params[:email], amount: params[:amount])
@@ -29,14 +30,14 @@ class GiftCardController < ApplicationController
           error_message: result[:message],
           email: gift_card.email,
           amount: gift_card.amount)
-        render json: {errors: result[:message]}, status: :unprocessable_content
+        render json: { errors: result[:message] }, status: :unprocessable_content
       end
     else
       Sentry.logger.warn("Gift card validation failed",
         errors: gift_card.errors.full_messages,
         email: gift_card.email,
         amount: gift_card.amount)
-      render json: {errors: gift_card.errors.full_messages}, status: :unprocessable_content
+      render json: { errors: gift_card.errors.full_messages }, status: :unprocessable_content
     end
   end
 
