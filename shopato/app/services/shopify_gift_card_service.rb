@@ -67,10 +67,10 @@ class ShopifyGiftCardService
   private
 
   def success!(gift_card:)
-    {success: true, gift_card: gift_card}
+    { success: true, gift_card: gift_card }
   end
 
   def error!(message)
-    {success: false, message: message, errors: [message]}
+    { success: false, message: message, errors: [ message ] }
   end
 end
