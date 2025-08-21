@@ -18,7 +18,6 @@ class AddProductType extends BaseMigration
         $this->table('products')
             ->addColumn('type', 'string', [
                 'after' => 'modified',
-                'collate' => null,
                 'default' => null,
                 'length' => 255,
                 'null' => true,
