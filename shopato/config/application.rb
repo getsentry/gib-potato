@@ -50,7 +50,7 @@ module Shopato
     # config.time_zone = "Central Time (US & Canada)"
     # config.eager_load_paths << Rails.root.join("extras")
 
-    config.gib_potato_token = ENV.fetch("POTAL_TOKEN", nil)
+    config.gib_potato_token = ENV.fetch("SHOPATO_TOKEN", nil)
     config.shopify_shop_domain = ENV.fetch("SHOPIFY_SHOP_DOMAIN", nil)
     config.shopify_admin_access_token = ENV.fetch("SHOPIFY_ADMIN_ACCESS_TOKEN", nil)
 
