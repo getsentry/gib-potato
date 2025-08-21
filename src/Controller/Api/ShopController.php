@@ -9,7 +9,6 @@ use App\Model\Entity\Product;
 use Cake\Http\Response;
 use Cake\Routing\Router;
 use function Cake\Core\env;
-use function Sentry\logger;
 
 /**
  * @property \Authentication\Controller\Component\AuthenticationComponent $Authentication
