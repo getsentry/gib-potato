@@ -122,7 +122,7 @@ class ShopController extends ApiController
             $client = new Client();
             $client->post(env('SHOPATO_URL'), [
                 'name' => $presentee->slack_name ?? $user->slack_name,
-                'amount' => 10,
+                'amount' => $product->price / 10, // 1 🥔 = $0.10
             ], [
                 'headers' => [
                     'Authorization' => env('SHOPATO_TOKEN'),
