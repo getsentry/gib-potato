@@ -5,8 +5,6 @@ GIB_POTATO_ENV_MAPPING = {
 
 Sentry.init do |config|
   config.dsn = ENV["SENTRY_SHOPATO_DSN"]
-
-  config.enabled_environments = %w[production local]
   config.environment = ENV["SENTRY_ENVIRONMENT"]
 
   config.breadcrumbs_logger = [:active_support_logger, :http_logger]
