@@ -3,7 +3,7 @@ require "test_helper"
 class GiftCardTest < ActiveSupport::TestCase
   def setup
     @valid_gift_card = GiftCard.new(
-      email: "mr@potatohead.com",
+      name: "Mr. Potato Head",
       amount: 25
     )
   end
@@ -12,16 +12,10 @@ class GiftCardTest < ActiveSupport::TestCase
     assert @valid_gift_card.valid?
   end
 
-  test "should require email" do
-    @valid_gift_card.email = nil
+  test "should require name" do
+    @valid_gift_card.name = nil
     assert_not @valid_gift_card.valid?
-    assert_includes @valid_gift_card.errors[:email], "can't be blank"
-  end
-
-  test "should require valid email format" do
-    @valid_gift_card.email = "invalid-email"
-    assert_not @valid_gift_card.valid?
-    assert_includes @valid_gift_card.errors[:email], "is invalid"
+    assert_includes @valid_gift_card.errors[:name], "can't be blank"
   end
 
   test "should require amount" do
@@ -38,11 +32,11 @@ class GiftCardTest < ActiveSupport::TestCase
   end
 
   test "should not accept invalid amounts" do
-    invalid_amounts = [1, 10, 100, 0, -5]
+    invalid_amounts = [ 1, 5, 100, 0, -5 ]
     invalid_amounts.each do |amount|
       @valid_gift_card.amount = amount
       assert_not @valid_gift_card.valid?, "#{amount} should be invalid"
-      assert_includes @valid_gift_card.errors[:amount], "must be one of: 5, 25, 50"
+      assert_includes @valid_gift_card.errors[:amount], "must be one of: 10, 25, 50"
     end
   end
 

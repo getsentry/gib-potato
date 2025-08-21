@@ -19,13 +19,13 @@ class ShopifyGiftCardService
     Sentry.logger.debug("ShopifyGiftCardService initialized", shop: shop)
   end
 
-  def create_gift_card(amount, email = nil, note: nil)
-    Sentry.logger.info("Creating gift card via Shopify API", amount: amount, email: email)
+  def create_gift_card(amount, name = nil, note: nil)
+    Sentry.logger.info("Creating gift card via Shopify API", amount: amount, name: name)
 
     variables = {
       input: {
         initialValue: format("%.2f", amount.to_f),
-        note: note.presence || "Issued via Gib🥔 for #{email}"
+        note: note.presence || "Issued via GibPotato for #{name}"
       }
     }
 
@@ -40,7 +40,7 @@ class ShopifyGiftCardService
       Sentry.logger.error("Shopify API returned user errors",
         errors: errors,
         amount: amount,
-        email: email)
+        name: name)
       return error!(errors.join(", "))
     end
 
@@ -60,7 +60,7 @@ class ShopifyGiftCardService
       error_message: e.message,
       error_class: e.class.name,
       amount: amount,
-      email: email)
+      name: name)
     error!("Shopify error: #{e.message}")
   end
 

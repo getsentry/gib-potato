@@ -3,19 +3,19 @@ require "test_helper"
 class GiftCardControllerTest < ActionDispatch::IntegrationTest
   def setup
     super
-    @valid_email = "mr.potato@erdapfel.com"
+    @valid_name = "Mr. Potato Head"
     @valid_amount = 25
     @potato_token = Rails.application.config.gib_potato_token
   end
 
   def test_create_gift_card_success
     mock_service = mock
-    mock_service.expects(:create_gift_card).with(25, @valid_email).returns({ success: true, gift_card: { "code" => "POTATO-1234", "amount" => "25.00" } })
+    mock_service.expects(:create_gift_card).with(25, @valid_name).returns({ success: true, gift_card: { "code" => "POTATO-1234", "amount" => "25.00" } })
 
     GiftCardController.any_instance.stubs(:gift_card_service).returns(mock_service)
 
     post "/gift-card", params: {
-      email: @valid_email,
+      name: @valid_name,
       amount: @valid_amount
     }, headers: { "Authorization" => @potato_token }
 
@@ -27,7 +27,7 @@ class GiftCardControllerTest < ActionDispatch::IntegrationTest
 
   def test_create_gift_card_requires_authentication
     post "/gift-card", params: {
-      email: @valid_email,
+      name: @valid_name,
       amount: @valid_amount
     }
 
@@ -37,12 +37,12 @@ class GiftCardControllerTest < ActionDispatch::IntegrationTest
   def test_create_gift_card_with_shopify_error
     # Stub the gift card service to return an error
     mock_service = mock
-    mock_service.expects(:create_gift_card).with(25, @valid_email).returns({ success: false, message: "Shopify error occurred" })
+    mock_service.expects(:create_gift_card).with(25, @valid_name).returns({ success: false, message: "Shopify error occurred" })
 
     GiftCardController.any_instance.stubs(:gift_card_service).returns(mock_service)
 
     post "/gift-card", params: {
-      email: @valid_email,
+      name: @valid_name,
       amount: @valid_amount
     }, headers: { "Authorization" => @potato_token }
 

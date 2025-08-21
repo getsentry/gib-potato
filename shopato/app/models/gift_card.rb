@@ -2,12 +2,12 @@ class GiftCard
   include ActiveModel::Model
   include ActiveModel::Attributes
 
-  VALID_AMOUNTS = [ 5, 25, 50 ].freeze
+  VALID_AMOUNTS = [ 10, 25, 50 ].freeze
 
-  attribute :email, :string
+  attribute :name, :string
   attribute :amount, :integer
 
-  validates :email, presence: true, format: { with: URI::MailTo::EMAIL_REGEXP }
+  validates :name, presence: true, length: { minimum: 3, maximum: 255 }
   validates :amount, presence: true, inclusion: { in: VALID_AMOUNTS, message: "must be one of: #{VALID_AMOUNTS.join(", ")}" }
 
   def initialize(attributes = {})

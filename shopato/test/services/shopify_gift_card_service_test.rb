@@ -24,20 +24,20 @@ class ShopifyGiftCardServiceTest < ActiveSupport::TestCase
           variables: {
             input: {
               initialValue: "25.00",
-              note: "Issued via Gib🥔 for mr.potato@eräpfel.com"
+              note: "Issued via GibPotato for Mr. Potato Head"
             }
           }
         }.to_json
       )
       .to_return(
         status: 200,
-        headers: {"Content-Type" => "application/json"},
+        headers: { "Content-Type" => "application/json" },
         body: {
           data: {
             giftCardCreate: {
               giftCard: {
                 id: "gid://shopify/GiftCard/123",
-                initialValue: {amount: "25.00"}
+                initialValue: { amount: "25.00" }
               },
               giftCardCode: "POTATO-1234",
               userErrors: []
@@ -47,7 +47,7 @@ class ShopifyGiftCardServiceTest < ActiveSupport::TestCase
       )
 
     service = ShopifyGiftCardService.new
-    result = service.create_gift_card(25, "mr.potato@eräpfel.com")
+    result = service.create_gift_card(25, "Mr. Potato Head")
 
     assert result[:success]
     assert_equal "POTATO-1234", result[:gift_card]["code"]
