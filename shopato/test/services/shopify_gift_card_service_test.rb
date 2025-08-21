@@ -12,44 +12,48 @@ class ShopifyGiftCardServiceTest < ActiveSupport::TestCase
   end
 
   def test_creates_gift_card_with_token_only_session
-    # Mock the GraphQL request to Shopify
+    stub_shopify_api_success
+
+    service = ShopifyGiftCardService.new
+    result = service.create_gift_card(VALID_AMOUNT, VALID_NAME)
+
+    assert result[:success]
+    assert_equal "POTATO-1234", result[:gift_card]["code"]
+    assert_equal "gid://shopify/GiftCard/123", result[:gift_card]["id"]
+    assert_equal "25.00", result[:gift_card]["amount"]
+  end
+
+  def test_handles_shopify_api_user_errors
     stub_request(:post, "https://#{Rails.application.config.shopify_shop_domain}/admin/api/2025-07/graphql.json")
-      .with(
-        headers: {
-          "X-Shopify-Access-Token" => Rails.application.config.shopify_admin_access_token,
-          "Content-Type" => "application/json"
-        },
-        body: {
-          query: ShopifyGiftCardService::CREATE_MUTATION,
-          variables: {
-            input: {
-              initialValue: "25.00",
-              note: "Issued via GibPotato for Mr. Potato Head"
-            }
-          }
-        }.to_json
-      )
       .to_return(
         status: 200,
-        headers: { "Content-Type" => "application/json" },
+        headers: {"Content-Type" => "application/json"},
         body: {
           data: {
             giftCardCreate: {
-              giftCard: {
-                id: "gid://shopify/GiftCard/123",
-                initialValue: { amount: "25.00" }
-              },
-              giftCardCode: "POTATO-1234",
-              userErrors: []
+              giftCard: nil,
+              giftCardCode: nil,
+              userErrors: [{message: "Invalid amount", field: "initialValue", code: "INVALID"}]
             }
           }
         }.to_json
       )
 
     service = ShopifyGiftCardService.new
-    result = service.create_gift_card(25, "Mr. Potato Head")
+    result = service.create_gift_card(VALID_AMOUNT, VALID_NAME)
 
-    assert result[:success]
-    assert_equal "POTATO-1234", result[:gift_card]["code"]
+    assert_not result[:success]
+    assert_equal "Invalid amount", result[:message]
+  end
+
+  def test_handles_network_errors
+    stub_request(:post, "https://#{Rails.application.config.shopify_shop_domain}/admin/api/2025-07/graphql.json")
+      .to_raise(StandardError.new("Network error"))
+
+    service = ShopifyGiftCardService.new
+    result = service.create_gift_card(VALID_AMOUNT, VALID_NAME)
+
+    assert_not result[:success]
+    assert_includes result[:message], "Shopify error: Network error"
   end
 end

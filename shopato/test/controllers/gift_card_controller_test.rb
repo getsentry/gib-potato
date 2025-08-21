@@ -1,53 +1,40 @@
 require "test_helper"
 
 class GiftCardControllerTest < ActionDispatch::IntegrationTest
-  def setup
-    super
-    @valid_name = "Mr. Potato Head"
-    @valid_amount = 25
-    @potato_token = Rails.application.config.gib_potato_token
-  end
-
   def test_create_gift_card_success
-    mock_service = mock
-    mock_service.expects(:create_gift_card).with(25, @valid_name).returns({ success: true, gift_card: { "code" => "POTATO-1234", "amount" => "25.00" } })
+    mock_successful_gift_card_service
 
-    GiftCardController.any_instance.stubs(:gift_card_service).returns(mock_service)
-
-    post "/gift-card", params: {
-      name: @valid_name,
-      amount: @valid_amount
-    }, headers: { "Authorization" => @potato_token }
+    post "/gift-card", params: valid_gift_card_params, headers: authenticated_headers
 
     assert_response :success
     response_body = JSON.parse(response.body)
-    assert_equal "POTATO-1234", response_body["code"]
-    assert_equal "25.00", response_body["amount"]
+    assert_gift_card_created_successfully(response_body)
   end
 
   def test_create_gift_card_requires_authentication
-    post "/gift-card", params: {
-      name: @valid_name,
-      amount: @valid_amount
-    }
+    post "/gift-card", params: valid_gift_card_params
 
-    assert_response :unauthorized
+    assert_unauthorized_response
   end
 
   def test_create_gift_card_with_shopify_error
-    # Stub the gift card service to return an error
-    mock_service = mock
-    mock_service.expects(:create_gift_card).with(25, @valid_name).returns({ success: false, message: "Shopify error occurred" })
+    error_message = "Shopify error occurred"
+    mock_failed_gift_card_service(error_message)
 
-    GiftCardController.any_instance.stubs(:gift_card_service).returns(mock_service)
+    post "/gift-card", params: valid_gift_card_params, headers: authenticated_headers
 
-    post "/gift-card", params: {
-      name: @valid_name,
-      amount: @valid_amount
-    }, headers: { "Authorization" => @potato_token }
+    assert_unprocessable_response_with_errors(error_message)
+  end
 
-    assert_response :unprocessable_content
-    response_body = JSON.parse(response.body)
-    assert_includes response_body["errors"], "Shopify error occurred"
+  def test_create_gift_card_with_validation_errors
+    post "/gift-card", params: {name: "", amount: 25}, headers: authenticated_headers
+
+    assert_unprocessable_response_with_errors("Name can't be blank")
+  end
+
+  def test_create_gift_card_with_invalid_amount
+    post "/gift-card", params: {name: VALID_NAME, amount: 100}, headers: authenticated_headers
+
+    assert_unprocessable_response_with_errors("Amount must be one of: 10, 25, 50")
   end
 end
