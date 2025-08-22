@@ -9,6 +9,8 @@ use App\Model\Entity\Product;
 use Cake\Http\Response;
 use Cake\Routing\Router;
 use function Cake\Core\env;
+use function Sentry\getBaggage;
+use function Sentry\getTraceparent;
 
 /**
  * @property \Authentication\Controller\Component\AuthenticationComponent $Authentication
@@ -127,6 +129,8 @@ class ShopController extends ApiController
             ], [
                 'headers' => [
                     'Authorization' => env('SHOPATO_TOKEN'),
+                    'Baggage' => getBaggage(),
+                    'Sentry-Trace' => getTraceparent(),
                 ],
             ]);
             if ($response->isSuccess()) {
