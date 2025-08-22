@@ -221,6 +221,11 @@ class User extends Entity
             ])
             ->first();
 
+        // @FIXME make this based on 90 days
+        if ((int)$result->spent >= 500) {
+            return 0;
+        }
+
         return $this->potatoReceived() - (int)$result->spent;
     }
 
