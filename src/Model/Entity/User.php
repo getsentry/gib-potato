@@ -221,6 +221,11 @@ class User extends Entity
             ])
             ->first();
 
+        // @FIXME check spend over the last three months
+        if ((int)$result->spent >= 500) {
+            return 0;
+        }
+
         return $this->potatoReceived() - (int)$result->spent;
     }
 
