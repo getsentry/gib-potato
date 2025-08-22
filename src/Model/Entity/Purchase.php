@@ -16,6 +16,7 @@ use Cake\ORM\Entity;
  * @property string $image_link
  * @property string $message
  * @property int $price
+ * @property string $code
  * @property \Cake\I18n\DateTime|null $created
  *
  * @property \App\Model\Entity\User $user
