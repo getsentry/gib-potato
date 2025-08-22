@@ -24,16 +24,6 @@ steps:
     ]
   waitFor: ['-']
 - name: 'gcr.io/cloud-builders/docker'
-  id: build-potal
-  args: [
-    'build',
-    '-f', './docker/potal/Dockerfile',
-    '-t', 'us-central1-docker.pkg.dev/$PROJECT_ID/potal/potal:$COMMIT_SHA',
-    '-t', 'us-central1-docker.pkg.dev/$PROJECT_ID/potal/potal:latest',
-    '.',
-    ]
-  waitFor: ['-']
-- name: 'gcr.io/cloud-builders/docker'
   id: push-potal
   args: [ 'push', 'us-central1-docker.pkg.dev/$PROJECT_ID/potal/potal:$COMMIT_SHA']
   waitFor: ['build-potal']
