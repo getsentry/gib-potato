@@ -236,6 +236,7 @@ export default {
         openModal(product) {
             this.product = product
             this.modalOpen = true
+            document.addEventListener('keydown', this.handleEscKey)
         },
         closeModal() {
             this.product = null
@@ -246,6 +247,12 @@ export default {
             this.purchaseSuccess = false
             this.code = null
             this.purchaseMode = 'myself'
+            document.removeEventListener('keydown', this.handleEscKey)
+        },
+        handleEscKey(event) {
+            if (event.key === 'Escape' && this.modalOpen) {
+                this.closeModal()
+            }
         },
         async purchase() {
             this.loading = true
