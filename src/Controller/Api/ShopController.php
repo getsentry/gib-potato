@@ -3,10 +3,14 @@ declare(strict_types=1);
 
 namespace App\Controller\Api;
 
+use App\Http\Client;
 use App\Http\SlackClient;
+use App\Model\Entity\Product;
 use Cake\Http\Response;
 use Cake\Routing\Router;
 use function Cake\Core\env;
+use function Sentry\getBaggage;
+use function Sentry\getTraceparent;
 
 /**
  * @property \Authentication\Controller\Component\AuthenticationComponent $Authentication
@@ -105,7 +109,7 @@ class ShopController extends ApiController
                 'message' => true,
             ],
         ]);
-        $purchasesTable->saveOrFail($purchase);
+        $purchase = $purchasesTable->saveOrFail($purchase);
 
         $productsTable->patchEntity($product, [
             'stock' => $product->stock - 1,
@@ -115,6 +119,42 @@ class ShopController extends ApiController
             ],
         ]);
         $productsTable->saveOrFail($product);
+
+        $code = null;
+        if ($product->type === Product::TYPE_GIFT_CARD) {
+            $client = new Client();
+            $response = $client->post(env('SHOPATO_URL'), [
+                /** @var \App\Model\Entity\User $presentee */
+                'name' => $presentee->slack_name ?? $user->slack_name,
+                'amount' => $product->price / 10, // 1 🥔 = $0.10
+            ], [
+                'headers' => [
+                    'Authorization' => env('SHOPATO_TOKEN'),
+                    'Baggage' => getBaggage(),
+                    'Sentry-Trace' => getTraceparent(),
+                ],
+            ]);
+            if ($response->isSuccess()) {
+                $json = $response->getJson();
+                $code = $json['code'];
+
+                $purchase = $purchasesTable->patchEntity($purchase, [
+                    'code' => $code,
+                ], [
+                    'accessibleFields' => [
+                        'code' => true,
+                    ],
+                ]);
+                $purchase = $purchasesTable->saveOrFail($purchase);
+            } else {
+                return $this->response
+                    ->withStatus(500)
+                    ->withType('json')
+                    ->withStringBody(json_encode([
+                        'error' => 'Something went wrong 🫠',
+                    ]));
+            }
+        }
 
         if ($presentee !== null) {
             $blocks = [
@@ -170,6 +210,10 @@ class ShopController extends ApiController
         }
 
         return $this->response
-            ->withStatus(204);
+            ->withStatus(200)
+            ->withType('json')
+            ->withStringBody(json_encode([
+                'code' => $code,
+            ]));
     }
 }

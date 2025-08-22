@@ -14,6 +14,7 @@ use Cake\ORM\Entity;
  * @property string|null $image_link
  * @property int $price
  * @property int|null $stock
+ * @property string|null $type
  * @property \Cake\I18n\DateTime|null $created
  * @property \Cake\I18n\DateTime|null $modified
  */
@@ -31,4 +32,6 @@ class Product extends Entity
     protected array $_accessible = [
         '*' => false,
     ];
+
+    public const TYPE_GIFT_CARD = 'gift_card';
 }

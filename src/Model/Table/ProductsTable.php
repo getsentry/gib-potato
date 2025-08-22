@@ -76,6 +76,11 @@ class ProductsTable extends Table
             ->integer('stock')
             ->allowEmptyString('stock');
 
+        $validator
+            ->scalar('type')
+            ->maxLength('type', 255)
+            ->allowEmptyString('type');
+
         return $validator;
     }
 }
