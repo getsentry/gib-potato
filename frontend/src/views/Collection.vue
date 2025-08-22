@@ -17,7 +17,9 @@
                 <div class="relative mt-4">
                     <h3 class="text-sm font-medium">{{ item.name }}</h3>
                     <p class="mt-1 text-sm text-zinc-500">{{ item.description }}</p>
-
+                    <div class="relative mt-2 w-full justify-center rounded-md border border-zinc-300 px-4 py-2 font-medium text-sm">
+                        Your code: {{ item.code }}
+                    </div>
                 </div>
             </div>
             <div class="mt-auto">

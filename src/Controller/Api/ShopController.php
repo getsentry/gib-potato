@@ -107,7 +107,7 @@ class ShopController extends ApiController
                 'message' => true,
             ],
         ]);
-        $purchasesTable->saveOrFail($purchase);
+        $purchase = $purchasesTable->saveOrFail($purchase);
 
         $productsTable->patchEntity($product, [
             'stock' => $product->stock - 1,
@@ -118,9 +118,10 @@ class ShopController extends ApiController
         ]);
         $productsTable->saveOrFail($product);
 
+        $code = null;
         if ($product->type === Product::TYPE_GIFT_CARD) {
             $client = new Client();
-            $client->post(env('SHOPATO_URL'), [
+            $response = $client->post(env('SHOPATO_URL'), [
                 'name' => $presentee->slack_name ?? $user->slack_name,
                 'amount' => $product->price / 10, // 1 🥔 = $0.10
             ], [
@@ -128,6 +129,26 @@ class ShopController extends ApiController
                     'Authorization' => env('SHOPATO_TOKEN'),
                 ],
             ]);
+            if ($response->isSuccess()) {
+                $json = $response->getJson();
+                $code = $json['code'];
+
+                $purchase = $purchasesTable->patchEntity($purchase, [
+                    'code' => $code,
+                ], [
+                    'accessibleFields' => [
+                        'code' => true,
+                    ],
+                ]);
+                $purchase = $purchasesTable->saveOrFail($purchase);
+            } else {
+                return $this->response
+                    ->withStatus(500)
+                    ->withType('json')
+                    ->withStringBody(json_encode([
+                        'error' => 'Something went wrong 🫠',
+                    ]));
+            }
         }
 
         if ($presentee !== null) {
@@ -184,6 +205,10 @@ class ShopController extends ApiController
         }
 
         return $this->response
-            ->withStatus(204);
+            ->withStatus(200)
+            ->withType('json')
+            ->withStringBody(json_encode([
+                'code' => $code,
+            ]));
     }
 }
