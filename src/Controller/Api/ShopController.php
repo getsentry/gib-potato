@@ -124,6 +124,7 @@ class ShopController extends ApiController
         if ($product->type === Product::TYPE_GIFT_CARD) {
             $client = new Client();
             $response = $client->post(env('SHOPATO_URL'), [
+                /** @var \App\Model\Entity\User $presentee */
                 'name' => $presentee->slack_name ?? $user->slack_name,
                 'amount' => $product->price / 10, // 1 🥔 = $0.10
             ], [
