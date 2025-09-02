@@ -36,6 +36,7 @@ class Client extends CakeClient
                 'http.fragment' => $request->getUri()->getFragment(),
             ]);
             $span = $parentSpan->startChild($context);
+            SentrySdk::getCurrentHub()->setSpan($span);
         }
 
         $response = parent::_sendRequest($request, $options);
@@ -47,6 +48,10 @@ class Client extends CakeClient
                     'http.response.status_code' => $response->getStatusCode(),
                 ])
                 ->finish();
+
+            if ($parentSpan !== null) {
+                SentrySdk::getCurrentHub()->setSpan($parentSpan);
+            }
         }
 
         return $response;
