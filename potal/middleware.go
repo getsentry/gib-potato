@@ -18,7 +18,11 @@ func slackVerification(h httprouter.Handle) httprouter.Handle {
 		// Verify the Slack request
 		// see https://github.com/slack-go/slack/blob/master/examples/workflow_step/middleware.go
 		body, err := io.ReadAll(r.Body)
-		defer r.Body.Close()
+		defer func() {
+			if err := r.Body.Close(); err != nil {
+				logger.Error().Emitf("[slackVerification] Failed to close request body: %v", err)
+			}
+		}()
 		if err != nil {
 			w.WriteHeader(http.StatusBadRequest)
 			logger.Error().Emit("[slackVerification] Failed to read request body")
