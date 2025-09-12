@@ -3,8 +3,10 @@ declare(strict_types=1);
 
 namespace App\Test\TestCase\Model\Entity;
 
+use App\Model\Entity\Message;
 use Cake\Chronos\Chronos;
 use Cake\TestSuite\TestCase;
+use Cake\Utility\Text;
 
 /**
  * App\Model\Entity\User Test Case
@@ -150,11 +152,11 @@ class UserTest extends TestCase
         // Add some received potatoes for User 1
         $messagesTable = $this->fetchTable('Messages');
         $message = $messagesTable->newEntity([
-            'id' => 'test-msg-001',
-            'sender_user_id' => '00000000-0000-0000-0000-000000000002',
-            'receiver_user_id' => '00000000-0000-0000-0000-000000000001',
+            'id' => Text::uuid(),
+            'sender_user_id' => $this->UserCanada->id,
+            'receiver_user_id' => $this->UserEurope->id,
             'amount' => 600,
-            'type' => 'potato',
+            'type' => Message::TYPE_POTATO,
             'created' => new Chronos('2025-08-01 10:00:00'),
         ], ['accessibleFields' => ['*' => true]]);
         $messagesTable->saveOrFail($message);
@@ -182,11 +184,11 @@ class UserTest extends TestCase
         // Add some received potatoes for User 2
         $messagesTable = $this->fetchTable('Messages');
         $message = $messagesTable->newEntity([
-            'id' => 'test-msg-002',
-            'sender_user_id' => '00000000-0000-0000-0000-000000000001',
-            'receiver_user_id' => '00000000-0000-0000-0000-000000000002',
+            'id' => Text::uuid(),
+            'sender_user_id' => $this->UserEurope->id,
+            'receiver_user_id' => $this->UserCanada->id,
             'amount' => 800,
-            'type' => 'potato',
+            'type' => Message::TYPE_POTATO,
             'created' => new Chronos('2025-08-01 10:00:00'),
         ], ['accessibleFields' => ['*' => true]]);
         $messagesTable->saveOrFail($message);
@@ -211,7 +213,7 @@ class UserTest extends TestCase
         // Create a user with only old purchases
         $purchasesTable = $this->fetchTable('Purchases');
         $purchase = $purchasesTable->newEntity([
-            'user_id' => '00000000-0000-0000-0000-000000000003',
+            'user_id' => $this->UserUS->id,
             'name' => 'Very Old Purchase',
             'description' => 'Purchase from 100 days ago',
             'image_link' => 'https://example.com/old.jpg',
@@ -223,11 +225,11 @@ class UserTest extends TestCase
         // Add received potatoes
         $messagesTable = $this->fetchTable('Messages');
         $message = $messagesTable->newEntity([
-            'id' => 'test-msg-003',
-            'sender_user_id' => '00000000-0000-0000-0000-000000000001',
-            'receiver_user_id' => '00000000-0000-0000-0000-000000000003',
+            'id' => Text::uuid(),
+            'sender_user_id' => $this->UserEurope->id,
+            'receiver_user_id' => $this->UserUS->id,
             'amount' => 600,
-            'type' => 'potato',
+            'type' => Message::TYPE_POTATO,
             'created' => new Chronos('2025-08-01 10:00:00'),
         ], ['accessibleFields' => ['*' => true]]);
         $messagesTable->saveOrFail($message);
@@ -254,7 +256,7 @@ class UserTest extends TestCase
         // Create a scenario where available balance is less than 90-day limit
         $purchasesTable = $this->fetchTable('Purchases');
         $purchase = $purchasesTable->newEntity([
-            'user_id' => '00000000-0000-0000-0000-000000000003',
+            'user_id' => $this->UserUS->id,
             'name' => 'Recent Small Purchase',
             'description' => 'Small purchase from 5 days ago',
             'image_link' => 'https://example.com/small.jpg',
@@ -266,11 +268,11 @@ class UserTest extends TestCase
         // Add limited received potatoes
         $messagesTable = $this->fetchTable('Messages');
         $message = $messagesTable->newEntity([
-            'id' => 'test-msg-004',
-            'sender_user_id' => '00000000-0000-0000-0000-000000000001',
-            'receiver_user_id' => '00000000-0000-0000-0000-000000000003',
+            'id' => Text::uuid(),
+            'sender_user_id' => $this->UserCanada->id,
+            'receiver_user_id' => $this->UserUS->id,
             'amount' => 100,
-            'type' => 'potato',
+            'type' => Message::TYPE_POTATO,
             'created' => new Chronos('2025-08-01 10:00:00'),
         ], ['accessibleFields' => ['*' => true]]);
         $messagesTable->saveOrFail($message);
