@@ -226,7 +226,7 @@ class User extends Entity
         $totalSpent = (int)$totalSpentResult->spent;
 
         // Calculate spent in the last 90 days
-        $ninetyDaysAgo = DateTime::now()->subDays(90);
+        $ninetyDaysAgo = DateTime::now('UTC')->subDays(90);
         $last90DaysQuery = $purchasesTable->find();
         $last90DaysResult = $last90DaysQuery
             ->select([
