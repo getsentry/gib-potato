@@ -24,6 +24,7 @@ func main() {
 		EnableTracing:    true,
 		TracesSampleRate: 1.0,
 		EnableLogs:       true,
+		Transport:        sentry.NewInternalAsyncTransport(),
 	})
 	if sentryErr != nil {
 		log.Fatalf("An Error Occured: %v", sentryErr)
