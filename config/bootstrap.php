@@ -98,7 +98,7 @@ try {
 
 init([
     'dsn' => env('SENTRY_BACKEND_DSN'),
-    'http_client' => new AgentClient(),
+//    'http_client' => new AgentClient(),
     'traces_sample_rate' => 1.0,
     'profiles_sample_rate' => 1.0,
     'enable_logs' => true,

@@ -25,9 +25,9 @@ class SentryHelper extends Helper
     protected array $_defaultConfig = [];
 
     /**
-     * @var \Sentry\Tracing\Span|null
+     * @var \Sentry\Tracing\Spans\Span|null
      */
-    protected ?Span $span;
+    protected ?\Sentry\Tracing\Spans\Span $span;
 
     /**
      * @inheritDoc
@@ -55,15 +55,15 @@ class SentryHelper extends Helper
     /**
      * @return string|null
      */
-    public function sentryBaggageMeta(): ?string
-    {
-        if (empty($this->span)) {
-            return null;
-        }
-
-        return $this->Html->meta(
-            'baggage',
-            $this->span->toBaggage(),
-        );
-    }
+//    public function sentryBaggageMeta(): ?string
+//    {
+//        if (empty($this->span)) {
+//            return null;
+//        }
+//
+//        return $this->Html->meta(
+//            'baggage',
+//            $this->span->toBaggage(),
+//        );
+//    }
 }

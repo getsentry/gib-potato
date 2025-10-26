@@ -5,6 +5,7 @@ namespace App\Event;
 
 use Exception;
 use Sentry\SentrySdk;
+use Sentry\State\Scope;
 
 class EventFactory
 {
@@ -21,11 +22,11 @@ class EventFactory
             throw new Exception('Empty event type');
         }
 
-        SentrySdk::getCurrentHub()->configureScope(function ($scope) use ($eventType): void {
+        SentrySdk::getCurrentHub()->configureScope(function (Scope $scope) use ($eventType): void {
             $scope->setTag('event_type', $eventType);
         });
-        SentrySdk::getCurrentHub()->getTransaction()->setName(
-            SentrySdk::getCurrentHub()->getTransaction()->getName() . ' - ' . $eventType,
+        SentrySdk::getCurrentHub()->getSpan()->setName(
+            SentrySdk::getCurrentHub()->getSpan()->getName() . ' - ' . $eventType,
         );
 
         return match ($eventType) {

@@ -35,7 +35,7 @@ class SentryUserMiddleware implements MiddlewareInterface
 
                 $span = $scope->getSpan();
                 if ($span !== null) {
-                    $span->setData([
+                    $span->setAttributes([
                         'gibpotato.users.web_ui' => $user->id,
                     ]);
                 }

@@ -18,8 +18,7 @@
         "cakephp/plugin-installer": "^2.0.1",
         "lcobucci/jwt": "^5.6.0",
         "paragonie/csp-builder": "^3.0.2",
-        "sentry/sentry": "^4.17.0",
-        "sentry/sentry-agent": "^0.1.1"
+        "sentry/sentry": "dev-span-first"
     },
     "require-dev": {
         "cakephp/bake": "^3.5.0",
@@ -28,6 +27,13 @@
         "phpunit/phpunit": "^10.5.54"
     },
     "repositories": [
+        {
+            "type": "path",
+            "url": "../sentry-php",
+            "options": {
+                "symlink": false
+            }
+        },
         {
             "type": "vcs",
             "url": "https://github.com/getsentry/sentry-php-agent"

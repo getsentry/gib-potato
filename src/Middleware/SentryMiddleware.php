@@ -12,12 +12,12 @@ use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Server\MiddlewareInterface;
 use Psr\Http\Server\RequestHandlerInterface;
 use Sentry\SentrySdk;
-use Sentry\Tracing\SpanContext;
-use Sentry\Tracing\TransactionContext;
-use Sentry\Tracing\TransactionSource;
+use Sentry\State\Scope;
+use Sentry\Tracing\PropagationContext;
+use Sentry\Tracing\Spans\Spans;
 use function microtime;
 use function Sentry\logger;
-use function Sentry\startTransaction;
+use function Sentry\startSpan;
 
 /**
  * Sentry middleware
@@ -43,46 +43,65 @@ class SentryMiddleware implements MiddlewareInterface
         $sentryTraceHeader = $request->getHeaderLine('sentry-trace');
         $baggageHeader = $request->getHeaderLine('baggage');
 
-        $transactionContext = TransactionContext::fromHeaders($sentryTraceHeader, $baggageHeader)
-            ->setOp('http.server')
-            ->setName($request->getMethod() . ' ' . $request->getUri()->getPath())
-            ->setSource(TransactionSource::route())
-            ->setStartTimestamp($requestStartTime);
+        if ($sentryTraceHeader !== '') {
+            $pc = PropagationContext::fromHeaders($sentryTraceHeader, $baggageHeader ?? '');
+            SentrySdk::getCurrentHub()->configureScope(function (Scope $scope) use ($pc): void {
+                $scope->setPropagationContext($pc);
+            });
+        }
 
-        $transaction = startTransaction($transactionContext);
+        $segmentSpan = startSpan($request->getMethod() . ' ' . $request->getUri()->getPath());
+        $segmentSpan->setAttribute('sentry.op', 'http.server');
+        $segmentSpan->setStartTimestamp($requestStartTime);
 
-        SentrySdk::getCurrentHub()->setSpan($transaction);
+        $span = startSpan('middleware.handle');
 
-        $spanContext = SpanContext::make()
-            ->setOp('middleware.handle');
-        $span = $transaction->startChild($spanContext);
+//        $transactionContext = TransactionContext::fromHeaders($sentryTraceHeader, $baggageHeader)
+//            ->setOp('http.server')
+//            ->setName($request->getMethod() . ' ' . $request->getUri()->getPath())
+//            ->setSource(TransactionSource::route())
+//            ->setStartTimestamp($requestStartTime);
+//
+//        $transaction = startTransaction($transactionContext);
+//
+//        SentrySdk::getCurrentHub()->setSpan($transaction);
 
-        SentrySdk::getCurrentHub()->setSpan($span);
+//        $spanContext = SpanContext::make()
+//            ->setOp('middleware.handle');
+//        $span = $transaction->startChild($spanContext);
+
+//        SentrySdk::getCurrentHub()->setSpan($span);
 
         $this->setupQueryLogging();
 
         $response = $handler->handle($request);
 
-        $span->setHttpStatus($response->getStatusCode())
+        $span->finish();
+        $segmentSpan
+            ->setAttribute('http.response_code', (string)$response->getStatusCode())
             ->finish();
 
-        SentrySdk::getCurrentHub()->setSpan($transaction);
+        Spans::getInstance()->flush();
+
+//        $span->setHttpStatus($response->getStatusCode())
+//            ->finish();
+
+//        SentrySdk::getCurrentHub()->setSpan($transaction);
 
         // We don't want to trace 404 responses as they are not relevant.
-        if ($response->getStatusCode() === 404) {
-            $transaction->setSampled(false);
-        } else {
-            $transaction
-                ->setHttpStatus($response->getStatusCode())
-                ->setData([
-                    'gibpotato.gcp.mem_peak_usage' => memory_get_peak_usage(false),
-                ]);
-        }
+//        if ($response->getStatusCode() === 404) {
+//            $transaction->setSampled(false);
+//        } else {
+//            $transaction
+//                ->setHttpStatus($response->getStatusCode())
+//                ->setData([
+//                    'gibpotato.gcp.mem_peak_usage' => memory_get_peak_usage(false),
+//                ]);
+//        }
 
         EventManager::instance()->on(
             'Server.terminate',
-            function (Event $event) use ($transaction): void {
-                $transaction->finish();
+            function (Event $event): void {
                 logger()->flush();
             },
         );
