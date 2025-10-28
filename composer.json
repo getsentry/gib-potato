@@ -28,13 +28,6 @@
     },
     "repositories": [
         {
-            "type": "path",
-            "url": "../sentry-php",
-            "options": {
-                "symlink": false
-            }
-        },
-        {
             "type": "vcs",
             "url": "https://github.com/getsentry/sentry-php-agent"
         }
