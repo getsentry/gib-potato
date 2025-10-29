@@ -5,6 +5,7 @@ namespace App\Database\Log;
 
 use Psr\Log\AbstractLogger;
 use Sentry\SentrySdk;
+use Sentry\Tracing\Spans\Spans;
 use Stringable;
 use function Sentry\startSpan;
 
@@ -18,11 +19,11 @@ class SentryQueryLogger extends AbstractLogger
      */
     public function log($level, string|Stringable $message, array $context = []): void
     {
-//        $parentSpan = SentrySdk::getCurrentHub()->getSpanV2();
-//
-//        if ($parentSpan === null) {
-//            return;
-//        }
+        $parentSpan = SentrySdk::getCurrentHub()->getSpan();
+
+        if ($parentSpan === null) {
+            return;
+        }
 
         $loggedQueryContext = $context['query']->getContext();
         if ($loggedQueryContext['query'] === 'BEGIN') {
@@ -34,11 +35,8 @@ class SentryQueryLogger extends AbstractLogger
         }
 
         if ($loggedQueryContext['query'] === 'COMMIT') {
-//            dd(SentrySdk::getCurrentHub()->getSpan());
             SentrySdk::getCurrentHub()->getSpan()?->finish();
-//            $dbTransactionSpan = $this->popSpan();
-//
-//            $dbTransactionSpan?->finish();
+            Spans::getInstance()->flush();
 
             return;
         }
@@ -49,8 +47,9 @@ class SentryQueryLogger extends AbstractLogger
             'sentry.op' => 'db.sql.query',
             'sentry.description' => $loggedQueryContext['query'],
         ]);
-        $span->finish();
+
         $span->setStartTimestamp(microtime(true) - $loggedQueryContext['took'] / 1000);
+        $span->finish();
         $span->setEndTimestamp($span->getStartTimestamp() + $loggedQueryContext['took'] / 1000);
     }
 

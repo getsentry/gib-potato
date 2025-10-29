@@ -44,7 +44,7 @@ class SentryMiddleware implements MiddlewareInterface
         $baggageHeader = $request->getHeaderLine('baggage');
 
         if ($sentryTraceHeader !== '') {
-            $pc = PropagationContext::fromHeaders($sentryTraceHeader, $baggageHeader ?? '');
+            $pc = PropagationContext::fromHeaders($sentryTraceHeader, $baggageHeader);
             SentrySdk::getCurrentHub()->configureScope(function (Scope $scope) use ($pc): void {
                 $scope->setPropagationContext($pc);
             });
@@ -81,8 +81,6 @@ class SentryMiddleware implements MiddlewareInterface
             ->setAttribute('http.response_code', (string)$response->getStatusCode())
             ->finish();
 
-        Spans::getInstance()->flush();
-
 //        $span->setHttpStatus($response->getStatusCode())
 //            ->finish();
 
@@ -103,6 +101,7 @@ class SentryMiddleware implements MiddlewareInterface
             'Server.terminate',
             function (Event $event): void {
                 logger()->flush();
+                Spans::getInstance()->flush();
             },
         );
 
