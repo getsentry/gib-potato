@@ -21,6 +21,7 @@ use Sentry\Tracing\TransactionContext;
 use Sentry\Tracing\TransactionSource;
 use Throwable;
 use function Sentry\captureException;
+use function Sentry\startSpan;
 use function Sentry\startTransaction;
 use function Sentry\withMonitor;
 
@@ -56,14 +57,7 @@ class TooGoodToGoCommand extends Command
      */
     public function execute(Arguments $args, ConsoleIo $io)
     {
-        $transactionContext = TransactionContext::make()
-            ->setOp('command')
-            ->setName('COMMAND too_good_to_go')
-            ->setSource(TransactionSource::task());
-
-        $transaction = startTransaction($transactionContext);
-
-        SentrySdk::getCurrentHub()->setSpan($transaction);
+        $span = startSpan('COMMAND too_good_to_go');
 
         try {
             withMonitor(
@@ -80,12 +74,13 @@ class TooGoodToGoCommand extends Command
                 ),
             );
 
-            $transaction->setStatus(SpanStatus::ok());
+            $span->setStatus(SpanStatus::ok());
         } catch (Throwable $e) {
-            $transaction->setStatus(SpanStatus::internalError());
+            // TODO: think if we need own error for span first
+            $span->setStatus(SpanStatus::internalError());
             captureException($e);
         } finally {
-            $transaction->finish();
+            $span->finish();
         }
     }
 
@@ -133,12 +128,13 @@ class TooGoodToGoCommand extends Command
                 continue;
             }
 
-            $spanContext = SpanContext::make()
-                ->setOp('command')
-                ->setDescription('Send notification');
-            $span = $transaction->startChild($spanContext);
+//            $spanContext = SpanContext::make()
+//                ->setOp('command')
+//                ->setDescription('Send notification');
+//            $span = $transaction->startChild($spanContext);
+            $span = startSpan('Send notification');
 
-            SentrySdk::getCurrentHub()->setSpan($span);
+//            SentrySdk::getCurrentHub()->setSpan($span);
 
             try {
                 $message = 'Hallo, just letting you know that you have *' . $user->potatoLeftToday()
@@ -159,7 +155,7 @@ class TooGoodToGoCommand extends Command
                 $span->finish();
             }
         }
-        SentrySdk::getCurrentHub()->setSpan($transaction);
+//        SentrySdk::getCurrentHub()->setSpan($transaction);
 
         $io->success("\n[DONE]");
     }
