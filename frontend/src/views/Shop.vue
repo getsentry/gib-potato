@@ -232,10 +232,16 @@ export default {
             code: null,
         }
     },
+    beforeUnmount() {
+        document.removeEventListener('keydown', this.handleEscKey)
+    },
     methods: {
         openModal(product) {
             this.product = product
             this.modalOpen = true
+            // Remove first to prevent duplicate event listeners
+            document.removeEventListener('keydown', this.handleEscKey)
+            document.addEventListener('keydown', this.handleEscKey)
         },
         closeModal() {
             this.product = null
@@ -246,6 +252,12 @@ export default {
             this.purchaseSuccess = false
             this.code = null
             this.purchaseMode = 'myself'
+            document.removeEventListener('keydown', this.handleEscKey)
+        },
+        handleEscKey(event) {
+            if (event.key === 'Escape' && this.modalOpen) {
+                this.closeModal()
+            }
         },
         async purchase() {
             this.loading = true
