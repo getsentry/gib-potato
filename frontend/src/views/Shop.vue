@@ -232,10 +232,15 @@ export default {
             code: null,
         }
     },
+    beforeUnmount() {
+        document.removeEventListener('keydown', this.handleEscKey)
+    },
     methods: {
         openModal(product) {
             this.product = product
             this.modalOpen = true
+            // Remove first to prevent duplicate event listeners
+            document.removeEventListener('keydown', this.handleEscKey)
             document.addEventListener('keydown', this.handleEscKey)
         },
         closeModal() {
