@@ -22,6 +22,7 @@ import './assets/main.css'
         environment: dataSet.sentryEnvironment,
         release: dataSet.sentryRelease,
         tracesSampleRate: 1.0,
+        traceLifecycle: 'stream',
         profilesSampleRate: 1.0,
         replaysSessionSampleRate: 1.0,
         replaysOnErrorSampleRate: 1.0,
@@ -36,6 +37,7 @@ import './assets/main.css'
                 },
             }),
             Sentry.browserProfilingIntegration(),
+            Sentry.spanStreamingIntegration(),
             Sentry.replayIntegration({
                 maskAllText: false,
                 blockAllMedia: false,
