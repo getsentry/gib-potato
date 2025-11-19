@@ -28,8 +28,9 @@ services:
         - SENTRY_AUTH_TOKEN
         - POTAL_TOKEN
         - POTATO_CHANNEL
-        - POTATO_STOCKS_CHANNEL
         - POTATO_SLACK_USER_ID
+        - SHOPATO_URL
+        - SHOPATO_TOKEN
     depends_on:
       - db
       - potal
@@ -60,6 +61,25 @@ services:
       gib-potato:
         aliases:
           - potal.gib-potato.test
+  
+  shopato:
+    build:
+      context: .
+      dockerfile: ./docker/shopato/Dockerfile
+    environment:
+      - ENVIRONMENT
+      - RELEASE
+      - SENTRY_SHOPATO_DSN
+      - SHOPIFY_SHOP_DOMAIN
+      - SHOPIFY_ADMIN_ACCESS_TOKEN
+      - SHOPATO_TOKEN
+      - RAILS_MASTER_KEY
+    ports:
+      - 3001:3000
+    networks:
+      gib-potato:
+        aliases:
+          - shopato.gib-potato.test
 
   db:
     image: postgres:14

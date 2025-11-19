@@ -50,7 +50,11 @@ func SendRequest(ctx context.Context, e event.PotalEvent) error {
 		log.Printf("An Error Occured %v", reqErr)
 		return reqErr
 	}
-	defer res.Body.Close()
+	defer func() {
+		if err := res.Body.Close(); err != nil {
+			log.Printf("Failed to close response body: %v", err)
+		}
+	}()
 
 	span.Data = map[string]interface{}{
 		"http.response.status_code": res.StatusCode,

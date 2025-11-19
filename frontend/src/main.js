@@ -22,12 +22,11 @@ import './assets/main.css'
         environment: dataSet.sentryEnvironment,
         release: dataSet.sentryRelease,
         tracesSampleRate: 1.0,
+        traceLifecycle: 'stream',
         profilesSampleRate: 1.0,
         replaysSessionSampleRate: 1.0,
         replaysOnErrorSampleRate: 1.0,
-        _experiments: {
-            enableLogs: true,
-        },
+        enableLogs: true,
         integrations: [
             Sentry.browserTracingIntegration({
                 enableInp: true,
@@ -38,6 +37,7 @@ import './assets/main.css'
                 },
             }),
             Sentry.browserProfilingIntegration(),
+            Sentry.spanStreamingIntegration(),
             Sentry.replayIntegration({
                 maskAllText: false,
                 blockAllMedia: false,
@@ -64,6 +64,7 @@ import './assets/main.css'
                     boxShadow: 'none',
                 },
             }),
+            Sentry.consoleLoggingIntegration({ levels: ['error'] }),
         ],
     })
 
@@ -77,8 +78,6 @@ import './assets/main.css'
         store.dispatch('getLeaderboard'),
         store.dispatch('getUser'),
         store.dispatch('getUsers'),
-        store.dispatch('getStocks'),
-        store.dispatch('getTrades'),
         store.dispatch('getProducts'),
         store.dispatch('getCollection'),
         store.dispatch('getQuickWins'),

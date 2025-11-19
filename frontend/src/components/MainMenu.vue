@@ -18,20 +18,6 @@
                                 Home
                             </RouterLink>
                             <RouterLink
-                                to="/stonks"
-                                class="rounded-md px-3 py-2 text-sm font-medium text-zinc-900"
-                                :class="{ '!bg-zinc-900 !text-zinc-50': $route.path === '/stonks' }"
-                            >
-                                Stonks
-                            </RouterLink>
-                            <RouterLink
-                                to="/trades"
-                                class="rounded-md px-3 py-2 text-sm font-medium text-zinc-900"
-                                :class="{ '!bg-zinc-900 !text-zinc-50': $route.path === '/trades' }"
-                            >
-                                Trades
-                            </RouterLink>
-                            <RouterLink
                                 to="/shop"
                                 class="rounded-md px-3 py-2 text-sm font-medium text-zinc-900"
                                 :class="{ '!bg-zinc-900 !text-zinc-50': $route.path === '/shop' }"
@@ -112,20 +98,6 @@
                     Home
                 </RouterLink>
                 <RouterLink
-                    to="/stonks"
-                    class="block rounded-md px-3 py-2 text-base font-medium text-zinc-900"
-                    :class="{ '!bg-zinc-900 !text-zinc-50': $route.path === '/stonks' }"
-                >
-                    Stonks
-                </RouterLink>
-                <RouterLink
-                    to="/trades"
-                    class="block rounded-md px-3 py-2 text-base font-medium text-zinc-900"
-                    :class="{ '!bg-zinc-900 !text-zinc-50': $route.path === '/trades' }"
-                >
-                    Trades
-                </RouterLink>
-                <RouterLink
                     to="/shop"
                     class="block rounded-md px-3 py-2 text-base font-medium text-zinc-900"
                     :class="{ '!bg-zinc-900 !text-zinc-50': $route.path === '/shop' }"
@@ -179,8 +151,9 @@
 </template>
 
 <script>
-import { computed } from 'vue'
+import { computed, ref, watch } from 'vue'
 import { useStore } from 'vuex'
+import { useRoute } from 'vue-router'
 import { RouterLink } from 'vue-router'
 
 export default {
@@ -188,19 +161,17 @@ export default {
     components: { RouterLink },
     setup() {
         const store = useStore()
+        const route = useRoute()
+        const menuOpen = ref(false)
+
+        // Watch for route changes to close the menu
+        watch(route, () => {
+            menuOpen.value = false
+        })
 
         return {
             user: computed(() => store.getters.user),
-        };
-    },
-    watch: {
-        $route(to, from) {
-            this.menuOpen = false
-        }
-    },
-    data() {
-        return {
-            menuOpen: false,
+            menuOpen,
         };
     },
 }

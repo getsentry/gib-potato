@@ -1,14 +1,17 @@
 <template>
-    <StocksLeaderboard />
+    <Filter />
+    <Leaderboard />
 </template>
 
 <script>
-import StocksLeaderboard from '@/components/StocksLeaderboard.vue';
+import Filter from '@/components/Filter.vue';
+import Leaderboard from '@/components/Leaderboard.vue';
 
 export default {
     name: 'Home',
     components: {
-        StocksLeaderboard,
+        Filter,
+        Leaderboard
     }
 };
 </script>

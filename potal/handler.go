@@ -23,6 +23,7 @@ func DefaultHandler(w http.ResponseWriter, r *http.Request, _ httprouter.Params)
 	data := map[string]string{
 		"message": "The potato is a lie!",
 	}
+
 	w.Header().Set("Content-Type", "application/json")
 	if err := json.NewEncoder(w).Encode(data); err != nil {
 		transaction.Status = sentry.SpanStatusInternalError
@@ -31,18 +32,6 @@ func DefaultHandler(w http.ResponseWriter, r *http.Request, _ httprouter.Params)
 	}
 
 	transaction.Status = sentry.SpanStatusOK
-}
-
-func ErrorHandler(w http.ResponseWriter, r *http.Request, _ httprouter.Params) {
-	// Overwrite transaction source with something usefull
-	ctx := r.Context()
-	transaction := sentry.TransactionFromContext(ctx)
-	transaction.Source = sentry.SourceRoute
-
-	sentry.CaptureMessage("This is an error 🔥")
-
-	transaction.Status = sentry.SpanStatusInternalError
-	w.WriteHeader(http.StatusInternalServerError)
 }
 
 func EventsHandler(w http.ResponseWriter, r *http.Request, _ httprouter.Params) {
@@ -104,6 +93,7 @@ func EventsHandler(w http.ResponseWriter, r *http.Request, _ httprouter.Params) 
 						sentry.ContinueFromHeaders(transaction.ToSentryTrace(), transaction.ToBaggage()),
 					}
 					txn := sentry.StartTransaction(ctx, "EVENT direct_message", options...)
+					txn.SetData("event_type", "direct_message")
 					defer txn.Finish()
 
 					processedEvent := event.ProcessDirectMessageEvent(txn.Context(), ev)
@@ -129,6 +119,7 @@ func EventsHandler(w http.ResponseWriter, r *http.Request, _ httprouter.Params) 
 						sentry.ContinueFromHeaders(transaction.ToSentryTrace(), transaction.ToBaggage()),
 					}
 					txn := sentry.StartTransaction(ctx, "EVENT message", options...)
+					txn.SetData("event_type", "message")
 					defer txn.Finish()
 
 					processedEvent := event.ProcessMessageEvent(txn.Context(), ev, slackClient)
@@ -156,6 +147,7 @@ func EventsHandler(w http.ResponseWriter, r *http.Request, _ httprouter.Params) 
 					sentry.ContinueFromHeaders(transaction.ToSentryTrace(), transaction.ToBaggage()),
 				}
 				txn := sentry.StartTransaction(ctx, "EVENT reaction_added", options...)
+				txn.SetData("event_type", "reaction_added")
 				defer txn.Finish()
 
 				processedEvent := event.ProcessReactionEvent(txn.Context(), ev, slackClient)
@@ -183,6 +175,7 @@ func EventsHandler(w http.ResponseWriter, r *http.Request, _ httprouter.Params) 
 					sentry.ContinueFromHeaders(transaction.ToSentryTrace(), transaction.ToBaggage()),
 				}
 				txn := sentry.StartTransaction(ctx, "EVENT app_mention", options...)
+				txn.SetData("event_type", "app_mention")
 				defer txn.Finish()
 
 				processedEvent := event.ProcessAppMentionEvent(txn.Context(), ev)
@@ -210,6 +203,7 @@ func EventsHandler(w http.ResponseWriter, r *http.Request, _ httprouter.Params) 
 					sentry.ContinueFromHeaders(transaction.ToSentryTrace(), transaction.ToBaggage()),
 				}
 				txn := sentry.StartTransaction(ctx, "EVENT app_home_opened", options...)
+				txn.SetData("event_type", "app_home_opened")
 				defer txn.Finish()
 
 				processedEvent := event.ProcessAppHomeOpenedEvent(txn.Context(), ev)
@@ -237,6 +231,7 @@ func EventsHandler(w http.ResponseWriter, r *http.Request, _ httprouter.Params) 
 					sentry.ContinueFromHeaders(transaction.ToSentryTrace(), transaction.ToBaggage()),
 				}
 				txn := sentry.StartTransaction(ctx, "EVENT link_shared", options...)
+				txn.SetData("event_type", "link_shared")
 				defer txn.Finish()
 
 				processedEvent := event.ProcessLinkSharedEvent(txn.Context(), ev)
@@ -283,6 +278,7 @@ func SlashHandler(w http.ResponseWriter, r *http.Request, _ httprouter.Params) {
 				sentry.ContinueFromHeaders(transaction.ToSentryTrace(), transaction.ToBaggage()),
 			}
 			txn := sentry.StartTransaction(ctx, "COMMAND /gibopinion", options...)
+			txn.SetData("event_type", "gibopinion")
 			defer txn.Finish()
 
 			processedEvent := event.ProcessSlashCommand(txn.Context(), s)
@@ -334,6 +330,7 @@ func InteractionsHandler(w http.ResponseWriter, r *http.Request, _ httprouter.Pa
 				sentry.ContinueFromHeaders(transaction.ToSentryTrace(), transaction.ToBaggage()),
 			}
 			txn := sentry.StartTransaction(ctx, "INTERACTION block", options...)
+			txn.SetData("event_type", "block")
 			defer txn.Finish()
 
 			processedEvent := event.ProcessInteractionCallbackEvent(txn.Context(), payload)

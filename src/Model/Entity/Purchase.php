@@ -10,12 +10,13 @@ use Cake\ORM\Entity;
  *
  * @property int $id
  * @property string $user_id
- * @property string $presentee_id
+ * @property string|null $presentee_id
  * @property string $name
  * @property string $description
  * @property string $image_link
- * @property string $message
+ * @property string|null $message
  * @property int $price
+ * @property string|null $code
  * @property \Cake\I18n\DateTime|null $created
  *
  * @property \App\Model\Entity\User $user

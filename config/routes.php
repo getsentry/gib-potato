@@ -38,9 +38,9 @@ return static function (RouteBuilder $routes): void {
         'unauthenticatedRedirect' => '/login',
         'queryParam' => 'redirect',
     ]);
-    $webAuthService->loadIdentifier('ApiToken');
     $webAuthService->loadAuthenticator('Authentication.Session');
     $webAuthService->loadAuthenticator('Authentication.Token', [
+        'identifier' => 'ApiToken',
         'header' => 'Authorization',
         'tokenPrefix' => 'Bearer',
     ]);
@@ -58,17 +58,12 @@ return static function (RouteBuilder $routes): void {
 
         $builder->connect('/', ['controller' => 'Home', 'action' => 'index']);
         $builder->connect('/shop', ['controller' => 'Home', 'action' => 'index']);
-        $builder->connect('/stonks', ['controller' => 'Home', 'action' => 'index']);
-        $builder->connect('/trades', ['controller' => 'Home', 'action' => 'index']);
         $builder->connect('/collection', ['controller' => 'Home', 'action' => 'index']);
         $builder->connect('/quick-wins', ['controller' => 'Home', 'action' => 'index']);
         $builder->connect('/profile', ['controller' => 'Home', 'action' => 'index']);
         $builder->connect('/settings', ['controller' => 'Home', 'action' => 'index']);
 
         $builder->connect('/terms', ['controller' => 'Terms', 'action' => 'index']);
-
-        $builder->get('/gib-credit', ['controller' => 'Credits', 'action' => 'index']);
-        $builder->post('/gib-credit', ['controller' => 'Credits', 'action' => 'add']);
 
         $builder->scope('/api', function (RouteBuilder $builder): void {
             $builder->get('/leaderboard', ['prefix' => 'Api', 'controller' => 'LeaderBoard', 'action' => 'get']);
@@ -78,11 +73,6 @@ return static function (RouteBuilder $routes): void {
             $builder->patch('/user', ['prefix' => 'Api', 'controller' => 'Users', 'action' => 'edit']);
 
             $builder->get('/user/profile', ['prefix' => 'Api', 'controller' => 'Users', 'action' => 'profile']);
-
-            $builder->get('/stocks', ['prefix' => 'Api', 'controller' => 'Stocks', 'action' => 'list']);
-            $builder->post('/stocks/order', ['prefix' => 'Api', 'controller' => 'Stocks', 'action' => 'order']);
-            $builder->post('/stocks/cancel-order', ['prefix' => 'Api', 'controller' => 'Stocks', 'action' => 'cancelOrder']);
-            $builder->get('/stocks/trades', ['prefix' => 'Api', 'controller' => 'Stocks', 'action' => 'trades']);
 
             $builder->get('/shop/products', ['prefix' => 'Api', 'controller' => 'Shop', 'action' => 'products']);
             $builder->post('/shop/purchase', ['prefix' => 'Api', 'controller' => 'Shop', 'action' => 'purchase']);
@@ -94,9 +84,9 @@ return static function (RouteBuilder $routes): void {
 
     $serviceAuthService = new AuthenticationService();
     $serviceAuthService->loadAuthenticator('Authentication.Token', [
+        'identifier' => 'Potal',
         'header' => 'Authorization',
     ]);
-    $serviceAuthService->loadIdentifier('Potal');
     $routes->registerMiddleware('service-auth', new AuthenticationMiddleware($serviceAuthService));
 
     $routes->scope('/', function (RouteBuilder $builder): void {

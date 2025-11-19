@@ -100,6 +100,11 @@ class PurchasesTable extends Table
             ->maxLength('message', 1024)
             ->allowEmptyString('message');
 
+        $validator
+            ->scalar('code')
+            ->maxLength('code', 255)
+            ->allowEmptyString('code');
+
         return $validator;
     }
 

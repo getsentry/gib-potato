@@ -1,5 +1,4 @@
 import { createStore } from 'vuex'
-import * as Sentry from '@sentry/vue'
 import api from '@/api'
 import helper from '@/helper'
 
@@ -9,8 +8,6 @@ const store = createStore({
             leaderboard: [],
             user: null,
             users: [],
-            stocks: [],
-            trades: [],
             products: [],
             collection: [],
             quickWins: [],
@@ -24,8 +21,6 @@ const store = createStore({
         leaderboard: state => state.leaderboard,
         user: state => state.user,
         users: state => state.users,
-        stocks: state => state.stocks,
-        trades: state => state.trades,
         products: state => state.products,
         collection: state => state.collection,
         quickWins: state => state.quickWins,
@@ -43,8 +38,7 @@ const store = createStore({
                 })
                 commit('SET_LEADERBOARD', response.data)
             } catch (error) {
-                console.log(error)
-                Sentry.logger.error(error.message, { name: error.name, stack: error.stack });
+                console.error(error)
             }
         },
         async getUser({ commit }) {
@@ -52,8 +46,7 @@ const store = createStore({
                 const response = await api.get('user')
                 commit('SET_USER', response.data)
             } catch (error) {
-                console.log(error)
-                Sentry.logger.error(error.message, { name: error.name, stack: error.stack });
+                console.error(error)
             }
         },
         async getUsers({ commit }) {
@@ -61,26 +54,7 @@ const store = createStore({
                 const response = await api.get('users')
                 commit('SET_USERS', response.data)
             } catch (error) {
-                console.log(error)
-                Sentry.logger.error(error.message, { name: error.name, stack: error.stack });
-            }
-        },
-        async getStocks({ commit }) {
-            try {
-                const response = await api.get('stocks')
-                commit('SET_STOCKS', response.data)
-            } catch (error) {
-                console.log(error)
-                Sentry.logger.error(error.message, { name: error.name, stack: error.stack });
-            }
-        },
-        async getTrades({ commit }) {
-            try {
-                const response = await api.get('stocks/trades')
-                commit('SET_TRADES', response.data)
-            } catch (error) {
-                console.log(error)
-                Sentry.logger.error(error.message, { name: error.name, stack: error.stack });
+                console.error(error)
             }
         },
         async getProducts({ commit }) {
@@ -88,8 +62,7 @@ const store = createStore({
                 const response = await api.get('shop/products')
                 commit('SET_PRODUCTS', response.data)
             } catch (error) {
-                console.log(error)
-                Sentry.logger.error(error.message, { name: error.name, stack: error.stack });
+                console.error(error)
             }
         },
         async getCollection({ commit }) {
@@ -97,8 +70,7 @@ const store = createStore({
                 const response = await api.get('collection')
                 commit('SET_COLLECTION', response.data)
             } catch (error) {
-                console.log(error)
-                Sentry.logger.error(error.message, { name: error.name, stack: error.stack });
+                console.error(error)
             }
         },
         async getQuickWins({ commit }) {
@@ -106,8 +78,7 @@ const store = createStore({
                 const response = await api.get('quick-wins')
                 commit('SET_QUICK_WINS', response.data)
             } catch (error) {
-                console.log(error)
-                Sentry.logger.error(error.message, { name: error.name, stack: error.stack });
+                console.error(error)
             }
         },
         async toggleSentNotifications({ commit, getters }) {
@@ -115,8 +86,7 @@ const store = createStore({
             try {
                 const response = await api.patch('user', getters.user)
             } catch (error) {
-                console.log(error)
-                Sentry.logger.error(error.message, { name: error.name, stack: error.stack });
+                console.error(error)
             }
         },
         async toggleReceivedNotifications({ commit, getters }) {
@@ -124,8 +94,7 @@ const store = createStore({
             try {
                 const response = await api.patch('user', getters.user)
             } catch (error) {
-                console.log(error)
-                Sentry.logger.error(error.message, { name: error.name, stack: error.stack });
+                console.error(error)
             }
         },
         async toggleTooGoodToGoNotifications({ commit, getters }) {
@@ -133,8 +102,7 @@ const store = createStore({
             try {
                 const response = await api.patch('user', getters.user)
             } catch (error) {
-                console.log(error)
-                Sentry.logger.error(error.message, { name: error.name, stack: error.stack });
+                console.error(error)
             }
         },
         setRangeFilter({ commit }, range) {
@@ -153,12 +121,6 @@ const store = createStore({
         },
         SET_USERS(state, users) {
             state.users = users
-        },
-        SET_STOCKS(state, stocks) {
-            state.stocks = stocks
-        },
-        SET_TRADES(state, trades) {
-            state.trades = trades
         },
         SET_PRODUCTS(state, products) {
             state.products = products

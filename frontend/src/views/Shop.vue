@@ -1,19 +1,14 @@
 <template>
-    <div class="flex items-center">
+    <div>
         <h2 class="text-lg font-medium leading-6">
-            Your current balance is {{ user.spendable_count ?? 0 }} 🥔
+            You can spend up to {{ user.spendable_count ?? 0 }} 🥔
         </h2>
-        <span class="mx-4">-</span>
-        <span>Out of potato?</span>
-        <a
-            href="/gib-credit"
-            class="ml-4 flex justify-center rounded-md border border-zinc-300 px-3 py-1 text-sm"
-        >
-            Gib Credit
-        </a>
+        <small class="text-sm text-zinc-500">
+            Max spend is limited to 500 🥔 every three months
+        </small>
     </div>
 
-    <div class="mt-16 grid grid-cols-1 gap-y-12 sm:grid-cols-2 sm:gap-x-6 lg:grid-cols-4 xl:gap-x-8 mb-32">
+    <div class="mt-8 grid grid-cols-1 gap-y-12 sm:grid-cols-2 sm:gap-x-6 lg:grid-cols-4 xl:gap-x-8 mb-32">
         <div
             v-for="(product, index) in products"
             class="h-full flex flex-col"
@@ -185,6 +180,9 @@
                         v-if="purchaseSuccess"
                         class="mt-5 sm:mt-6"
                     >
+                        <div class="my-3 inline-flex w-full justify-center rounded-md border border-zinc-300 px-4 py-2 text-base font-medium sm:mt-0 sm:text-sm">
+                            Your code: {{ code }}
+                        </div>
                         <button
                             class="mt-3 inline-flex w-full justify-center rounded-md border border-zinc-300 bg-zinc-100 px-4 py-2 text-base font-medium text-zinc-900 sm:mt-0 sm:text-sm"
                             :disabled="loading"
@@ -231,26 +229,19 @@ export default {
             purchaseMode: 'myself',
             loading: false,
             purchaseSuccess: false,
+            code: null,
         }
     },
-    mounted() {
-        window.addEventListener('keydown', (e) => {
-            if (e.key === 'Escape') {
-                this.closeModal()
-            }
-        })
-    },
     beforeUnmount() {
-        window.removeEventListener('keydown', (e) => {
-            if (e.key === 'Escape') {
-                this.closeModal()
-            }
-        })
+        document.removeEventListener('keydown', this.handleEscKey)
     },
     methods: {
         openModal(product) {
             this.product = product
             this.modalOpen = true
+            // Remove first to prevent duplicate event listeners
+            document.removeEventListener('keydown', this.handleEscKey)
+            document.addEventListener('keydown', this.handleEscKey)
         },
         closeModal() {
             this.product = null
@@ -259,20 +250,28 @@ export default {
             this.modalError = null
             this.modalOpen = false
             this.purchaseSuccess = false
+            this.code = null
             this.purchaseMode = 'myself'
+            document.removeEventListener('keydown', this.handleEscKey)
+        },
+        handleEscKey(event) {
+            if (event.key === 'Escape' && this.modalOpen) {
+                this.closeModal()
+            }
         },
         async purchase() {
             this.loading = true
             this.modalError = null
 
             try {
-                await api.post('shop/purchase', {
+                const response = await api.post('shop/purchase', {
                     product_id: this.product.id,
                     presentee_id: this.presentee?.id,
                     message: this.message,
                     purchase_mode: this.purchaseMode,
                 })
                 this.purchaseSuccess = true
+                this.code = response.data.code
 
                 await this.$store.dispatch('getUser')
                 await this.$store.dispatch('getProducts')
