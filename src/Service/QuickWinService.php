@@ -9,6 +9,8 @@ use App\Model\Entity\User;
 use Cake\ORM\Locator\LocatorAwareTrait;
 use Sentry\SentrySdk;
 
+use function Sentry\metrics;
+
 class QuickWinService
 {
     use LocatorAwareTrait;
@@ -46,6 +48,11 @@ class QuickWinService
             $span->setData([
                 'gibpotato.message.quick_win' => 1,
             ]);
+
+            metrics()->count(
+                'gibpotato.message.quick_win',
+                1,
+            );
         }
 
         return true;
