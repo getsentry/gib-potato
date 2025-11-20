@@ -48,7 +48,9 @@ func SendRequest(ctx context.Context, e event.PotalEvent) error {
 		log.Printf("An Error Occured %v", reqErr)
 		return reqErr
 	}
-	defer res.Body.Close()
+	defer func() {
+		_ = res.Body.Close()
+	}()
 
 	if res.StatusCode == http.StatusOK {
 		return nil
