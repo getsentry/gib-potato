@@ -37,7 +37,6 @@ func SendRequest(ctx context.Context, e event.PotalEvent) error {
 	r.Header.Add("Content-Type", "application/json")
 	r.Header.Add("Authorization", os.Getenv("POTAL_TOKEN"))
 
-	// sentryhttpclient automatically creates spans, injects tracing headers, and sets status
 	client := &http.Client{
 		Transport: sentryhttpclient.NewSentryRoundTripper(nil),
 	}
