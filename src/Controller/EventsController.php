@@ -7,7 +7,6 @@ use App\Event\EventFactory;
 use Cake\Controller\Controller;
 use Cake\Http\Response;
 use Sentry\SentrySdk;
-
 use function Sentry\metrics;
 
 class EventsController extends Controller
@@ -42,28 +41,28 @@ class EventsController extends Controller
             ]);
             metrics()->distribution(
                 'gibpotato.potatoes.event_processing_time',
-                (float) microtime(true) - $startTimestamp,
+                (float)microtime(true) - $startTimestamp,
                 [
                     'gibpotato.event_type' => $event->type,
                 ],
             );
             metrics()->gauge(
                 'gibpotato.potatoes.event_processing_time',
-                (float) microtime(true) - $startTimestamp,
+                (float)microtime(true) - $startTimestamp,
                 [
                     'gibpotato.event_type' => $event->type,
                 ],
             );
             metrics()->distribution(
                 'gibpotato.potatoes.event_size',
-                (float) mb_strlen(serialize($this->request->getData()), '8bit'),
+                (float)mb_strlen(serialize($this->request->getData()), '8bit'),
                 [
                     'gibpotato.event_type' => $event->type,
                 ],
             );
             metrics()->gauge(
                 'gibpotato.potatoes.event_size',
-                (float) mb_strlen(serialize($this->request->getData()), '8bit'),
+                (float)mb_strlen(serialize($this->request->getData()), '8bit'),
                 [
                     'gibpotato.event_type' => $event->type,
                 ],

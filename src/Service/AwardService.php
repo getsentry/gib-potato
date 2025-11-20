@@ -72,12 +72,11 @@ class AwardService
         }
         metrics()->count(
             'gibpotato.potatoes.given_out',
-            (float) $event->amount,
+            (float)$event->amount,
             [
                 'gibpotato.event_type' => $event->type,
             ],
         );
-
 
         logger()->info(
             message: '"%s" gave "%s" %s 🥔',

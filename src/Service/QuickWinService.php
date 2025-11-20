@@ -8,7 +8,6 @@ use App\Model\Entity\QuickWin;
 use App\Model\Entity\User;
 use Cake\ORM\Locator\LocatorAwareTrait;
 use Sentry\SentrySdk;
-
 use function Sentry\metrics;
 
 class QuickWinService

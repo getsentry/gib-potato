@@ -18,7 +18,6 @@ use Sentry\Tracing\TransactionSource;
 use function microtime;
 use function Sentry\logger;
 use function Sentry\metrics;
-use function Sentry\metrics as SentryMetrics;
 use function Sentry\startTransaction;
 
 /**
@@ -82,7 +81,7 @@ class SentryMiddleware implements MiddlewareInterface
 
                 metrics()->distribution(
                     'gcp.mem_peak_usage',
-                    (float) memory_get_peak_usage(false),
+                    (float)memory_get_peak_usage(false),
                 );
         }
 
