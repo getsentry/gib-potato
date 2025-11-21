@@ -27,6 +27,8 @@ class User extends Entity
 {
     use LocatorAwareTrait;
 
+    protected ?int $potatoSentTodayCache = null;
+
     /**
      * Fields that can be mass assigned using newEntity() or patchEntity().
      *
@@ -121,6 +123,10 @@ class User extends Entity
      */
     public function potatoSentToday(): int
     {
+        if ($this->potatoSentTodayCache !== null) {
+            return $this->potatoSentTodayCache;
+        }
+
         $messagesTable = $this->fetchTable('Messages');
 
         $query = $messagesTable->find();
@@ -135,7 +141,9 @@ class User extends Entity
             ])
             ->first();
 
-        return (int)$result->sent;
+        $this->potatoSentTodayCache = (int)($result?->sent ?? 0);
+
+        return $this->potatoSentTodayCache;
     }
 
     /**
@@ -165,21 +173,24 @@ class User extends Entity
      */
     public function potatoLeftToday(): int
     {
-        $messagesTable = $this->fetchTable('Messages');
+        $remaining = Message::MAX_AMOUNT - $this->potatoSentToday();
 
-        $query = $messagesTable->find();
-        $result = $query
-            ->select([
-                'sent' => $query->func()->sum('amount'),
-            ])
-            ->where([
-                'sender_user_id' => $this->id,
-                'type' => Message::TYPE_POTATO,
-                'created >=' => $this->getStartOfDay(),
-            ])
-            ->first();
+        return max(0, $remaining);
+    }
 
-        return Message::MAX_AMOUNT - (int)$result->sent;
+    /**
+     * Increase cached potato sent today total when it's already known.
+     *
+     * @param int $amount Amount to add to the cached sent total.
+     * @return void
+     */
+    public function increasePotatoSentTodayCache(int $amount): void
+    {
+        if ($this->potatoSentTodayCache === null) {
+            return;
+        }
+
+        $this->potatoSentTodayCache += $amount;
     }
 
     /**
