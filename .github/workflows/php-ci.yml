@@ -10,6 +10,7 @@ on:
 
 permissions:
   contents: read
+  id-token: write
 
 jobs:
   php-ci:
@@ -50,9 +51,12 @@ jobs:
     - name: Run PHPUnit
       run: |
         export CODECOVERAGE=1
-        vendor/bin/phpunit --colors=always --coverage-clover=coverage.xml
+        vendor/bin/phpunit --colors=always --coverage-clover=coverage.xml --log-junit=junit.xml
 
     - name: Upload coverage to Codecov
       uses: codecov/codecov-action@v5
       with:
         token: ${{ secrets.CODECOV_TOKEN }}
+
+    - name: Upload test results to Sentry Prevent
+      uses: getsentry/prevent-action@v0
