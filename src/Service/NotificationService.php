@@ -29,12 +29,14 @@ class NotificationService
      * @param \App\Model\Entity\User $fromUser User who did gib the potato
      * @param array<\App\Model\Entity\User> $toUsers Users who will receive the potato
      * @param \App\Event\MessageEvent|\App\Event\ReactionAddedEvent $event The event.
+     * @param int|null $potatoLeftToday Optional pre-computed potato left today to avoid re-querying
      * @return void
      */
     public function notifyUsers(
         User $fromUser,
         array $toUsers,
         MessageEvent|ReactionAddedEvent $event,
+        ?int $potatoLeftToday = null,
     ): void {
         $toUserNames = [];
         foreach ($toUsers as $toUser) {
@@ -58,7 +60,8 @@ class NotificationService
         }
 
         if ($fromUser->notifications['sent'] === true) {
-            $potatoLeftToday = $fromUser->potatoLeftToday();
+            // Use pre-computed value if provided, otherwise query
+            $potatoLeft = $potatoLeftToday ?? $fromUser->potatoLeftToday();
 
             $gibMessage = sprintf(
                 'You did gib *%s* %s to %s.',
@@ -69,7 +72,7 @@ class NotificationService
             $gibMessage .= PHP_EOL;
             $gibMessage .= sprintf(
                 'You have *%s* :potato: left. Your potato do reset in *%s hours* and *%s minutes*.',
-                $potatoLeftToday,
+                $potatoLeft,
                 $fromUser->potatoResetInHours(),
                 $fromUser->potatoResetInMinutes(),
             );

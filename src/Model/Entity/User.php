@@ -40,6 +40,13 @@ class User extends Entity
         '*' => false,
     ];
 
+    /**
+     * Cache for potatoSentToday() to avoid duplicate queries
+     *
+     * @var int|null
+     */
+    protected ?int $_potatoSentTodayCache = null;
+
     public const STATUS_ACTIVE = 'active';
     public const STATUS_DELETED = 'deleted';
 
@@ -121,6 +128,11 @@ class User extends Entity
      */
     public function potatoSentToday(): int
     {
+        // Return cached value if already computed
+        if ($this->_potatoSentTodayCache !== null) {
+            return $this->_potatoSentTodayCache;
+        }
+
         $messagesTable = $this->fetchTable('Messages');
 
         $query = $messagesTable->find();
@@ -135,7 +147,10 @@ class User extends Entity
             ])
             ->first();
 
-        return (int)$result->sent;
+        // Cache the result for subsequent calls
+        $this->_potatoSentTodayCache = (int)$result->sent;
+
+        return $this->_potatoSentTodayCache;
     }
 
     /**
@@ -165,21 +180,8 @@ class User extends Entity
      */
     public function potatoLeftToday(): int
     {
-        $messagesTable = $this->fetchTable('Messages');
-
-        $query = $messagesTable->find();
-        $result = $query
-            ->select([
-                'sent' => $query->func()->sum('amount'),
-            ])
-            ->where([
-                'sender_user_id' => $this->id,
-                'type' => Message::TYPE_POTATO,
-                'created >=' => $this->getStartOfDay(),
-            ])
-            ->first();
-
-        return Message::MAX_AMOUNT - (int)$result->sent;
+        // Reuse the cached result from potatoSentToday() to avoid duplicate query
+        return Message::MAX_AMOUNT - $this->potatoSentToday();
     }
 
     /**
