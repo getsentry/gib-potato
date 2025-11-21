@@ -28,6 +28,15 @@ class User extends Entity
     use LocatorAwareTrait;
 
     /**
+     * Cached per-request statistics.
+     *
+     * @var array<string, int|null>
+     */
+    protected array $statsCache = [
+        'potato_sent_today' => null,
+    ];
+
+    /**
      * Fields that can be mass assigned using newEntity() or patchEntity().
      *
      * Note that when '*' is set to true, this allows all unspecified fields to
@@ -121,6 +130,10 @@ class User extends Entity
      */
     public function potatoSentToday(): int
     {
+        if ($this->statsCache['potato_sent_today'] !== null) {
+            return (int)$this->statsCache['potato_sent_today'];
+        }
+
         $messagesTable = $this->fetchTable('Messages');
 
         $query = $messagesTable->find();
@@ -135,7 +148,10 @@ class User extends Entity
             ])
             ->first();
 
-        return (int)$result->sent;
+        $sentToday = (int)($result->sent ?? 0);
+        $this->statsCache['potato_sent_today'] = $sentToday;
+
+        return $sentToday;
     }
 
     /**
@@ -165,21 +181,9 @@ class User extends Entity
      */
     public function potatoLeftToday(): int
     {
-        $messagesTable = $this->fetchTable('Messages');
+        $sentToday = $this->potatoSentToday();
 
-        $query = $messagesTable->find();
-        $result = $query
-            ->select([
-                'sent' => $query->func()->sum('amount'),
-            ])
-            ->where([
-                'sender_user_id' => $this->id,
-                'type' => Message::TYPE_POTATO,
-                'created >=' => $this->getStartOfDay(),
-            ])
-            ->first();
-
-        return Message::MAX_AMOUNT - (int)$result->sent;
+        return Message::MAX_AMOUNT - $sentToday;
     }
 
     /**
