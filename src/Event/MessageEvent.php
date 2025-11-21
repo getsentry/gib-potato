@@ -78,6 +78,9 @@ class MessageEvent extends AbstractEvent
             return;
         }
 
+        // Capture potato left after validation to avoid re-querying in notification
+        $potatoLeftAfterValidation = $fromUser->potatoLeftToday();
+
         $toUsers = [];
         foreach ($this->receivers as $receiver) {
             $toUser = $userService->getOrCreateUser($receiver);
@@ -94,6 +97,7 @@ class MessageEvent extends AbstractEvent
             fromUser: $fromUser,
             toUsers: $toUsers,
             event: $this,
+            potatoLeftToday: $potatoLeftAfterValidation,
         );
 
         $stored = $quickWinService->store(
