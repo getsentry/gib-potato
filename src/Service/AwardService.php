@@ -5,6 +5,7 @@ namespace App\Service;
 
 use App\Event\MessageEvent;
 use App\Event\ReactionAddedEvent;
+use App\Model\Entity\Message;
 use App\Model\Entity\User;
 use Cake\ORM\Locator\LocatorAwareTrait;
 use Sentry\SentrySdk;
@@ -26,12 +27,18 @@ class AwardService
         array $toUsers,
         MessageEvent|ReactionAddedEvent $event,
     ): void {
+        $messageType = str_replace(':', '', $event->reaction);
         foreach ($toUsers as $toUser) {
             $this->gibToUser(
                 fromUser: $fromUser,
                 toUser: $toUser,
                 event: $event,
+                messageType: $messageType,
             );
+        }
+
+        if ($messageType === Message::TYPE_POTATO) {
+            $fromUser->increasePotatoSentTodayCache($event->amount * count($toUsers));
         }
     }
 
@@ -45,6 +52,7 @@ class AwardService
         User $fromUser,
         User $toUser,
         MessageEvent|ReactionAddedEvent $event,
+        string $messageType,
     ): void {
         $messagesTable = $this->fetchTable('Messages');
 
@@ -52,7 +60,7 @@ class AwardService
             'sender_user_id' => $fromUser->id,
             'receiver_user_id' => $toUser->id,
             'amount' => $event->amount,
-            'type' => str_replace(':', '', $event->reaction),
+            'type' => $messageType,
         ], [
             'accessibleFields' => [
                 'sender_user_id' => true,
