@@ -28,6 +28,17 @@ class EventsController extends Controller
     {
         $this->request->allowMethod('POST');
 
+        // Close session early to prevent blocking on HTTP client calls to Slack API.
+        // Database session writes were causing the HTTP client to timeout after 30s.
+        // This endpoint is a webhook that doesn't require session persistence.
+        // See: GIBPOTATO-POTAL-11
+        if ($this->request instanceof \Cake\Http\ServerRequest) {
+            $session = $this->request->getSession();
+            if ($session->started()) {
+                $session->close();
+            }
+        }
+
         $startTimestamp = microtime(true);
         $event = EventFactory::createEvent($this->request->getData());
         $event->process();
