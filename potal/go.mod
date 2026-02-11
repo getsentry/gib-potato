@@ -2,11 +2,8 @@ module github.com/getsentry/gib-potato
 
 go 1.25.0
 
-// Test httpclient integration, PR #876
-replace github.com/getsentry/sentry-go => github.com/aldy505/sentry-go v0.0.0-20251120002518-9de99efea3a2
-
 require (
-	github.com/getsentry/sentry-go v0.36.3-0.20251028153640-e2badbb7694c
+	github.com/getsentry/sentry-go v0.42.0
 	github.com/google/go-cmp v0.5.9
 	github.com/julienschmidt/httprouter v1.3.0
 	github.com/slack-go/slack v0.17.3
@@ -14,6 +11,6 @@ require (
 
 require (
 	github.com/gorilla/websocket v1.5.3 // indirect
-	golang.org/x/sys v0.37.0 // indirect
-	golang.org/x/text v0.30.0 // indirect
+	golang.org/x/sys v0.41.0 // indirect
+	golang.org/x/text v0.34.0 // indirect
 )

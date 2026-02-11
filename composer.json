@@ -12,27 +12,21 @@
     ],
     "require": {
         "php": ">=8.4",
-        "cakephp/authentication": "^3.3.3",
-        "cakephp/cakephp": "^5.2.9",
-        "cakephp/migrations": "^4.8.2",
+        "cakephp/authentication": "^3.3.5",
+        "cakephp/cakephp": "^5.3.1",
+        "cakephp/migrations": "^4.9.5",
         "cakephp/plugin-installer": "^2.0.1",
         "lcobucci/jwt": "^5.6.0",
         "paragonie/csp-builder": "^3.0.2",
-        "sentry/sentry": "dev-metrics as 4.18.1",
+        "sentry/sentry": "^4.19.1",
         "sentry/sentry-agent": "^0.1.1"
     },
     "require-dev": {
-        "cakephp/bake": "^3.5.1",
+        "cakephp/bake": "^3.6.0",
         "cakephp/cakephp-codesniffer": "^5.3.0",
         "phpstan/phpstan": "^1.12.32",
-        "phpunit/phpunit": "^10.5.54"
+        "phpunit/phpunit": "^10.5.63"
     },
-    "repositories": [
-        {
-            "type": "vcs",
-            "url": "https://github.com/getsentry/sentry-php-agent"
-        }
-    ],
     "autoload": {
         "psr-4": {
             "App\\": "src/"
