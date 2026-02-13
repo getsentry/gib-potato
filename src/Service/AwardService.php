@@ -9,7 +9,7 @@ use App\Model\Entity\User;
 use Cake\ORM\Locator\LocatorAwareTrait;
 use Sentry\SentrySdk;
 use function Sentry\logger;
-use function Sentry\metrics;
+use function Sentry\trace_metrics;
 
 class AwardService
 {
@@ -70,7 +70,7 @@ class AwardService
                 'gibpotato.event_type' => $event->type,
             ]);
         }
-        metrics()->count(
+        trace_metrics()->count(
             'gibpotato.potatoes.given_out',
             (float)$event->amount,
             [
