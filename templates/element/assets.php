@@ -6,6 +6,10 @@ declare(strict_types=1);
  */
 use Cake\Core\Configure;
 
+if (PHP_SAPI === 'cli') {
+    return;
+}
+
 if (Configure::read('debug')) {
     echo $this->Html->script('http://localhost:5173/@vite/client', ['type' => 'module']);
     echo $this->Html->script('http://localhost:5173/frontend/src/main.js', ['type' => 'module']);
