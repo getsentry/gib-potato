@@ -35,18 +35,18 @@ jobs:
     - name: Setup PHP
       uses: shivammathur/setup-php@v2
       with:
-        php-version: '8.4'
+        php-version: '8.5'
         extensions: mbstring, intl
-    
+
     - name: Run composer install
       run: composer update --no-progress
 
     - name: Run PHP CodeSniffer
       run: vendor/bin/phpcs --colors -p  src/ tests/
-    
+
     - name: Run PHPStan
       run: vendor/bin/phpstan analyse
-    
+
     - name: Run PHPUnit
       run: |
         export CODECOVERAGE=1
