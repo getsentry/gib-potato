@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "914b64756bd8ba1c76f26555ccd7d14f",
+    "content-hash": "f14997b945aa140e5ce4a8f97887b1d1",
     "packages": [
         {
             "name": "cakephp/authentication",
@@ -1970,33 +1970,7 @@
                     "Sentry\\Agent\\": "src/"
                 }
             },
-            "autoload-dev": {
-                "psr-4": {
-                    "Sentry\\Agent\\Tests\\": "tests/"
-                }
-            },
-            "scripts": {
-                "check": [
-                    "@cs-check",
-                    "@phpstan",
-                    "@tests"
-                ],
-                "tests": [
-                    "vendor/bin/phpunit --verbose"
-                ],
-                "cs-check": [
-                    "vendor/bin/php-cs-fixer fix --verbose --diff --dry-run"
-                ],
-                "cs-fix": [
-                    "vendor/bin/php-cs-fixer fix --verbose --diff"
-                ],
-                "phpstan": [
-                    "vendor/bin/phpstan analyse"
-                ],
-                "build": [
-                    "scripts/build.sh"
-                ]
-            },
+            "notification-url": "https://packagist.org/downloads/",
             "license": [
                 "MIT"
             ],
@@ -2009,17 +1983,17 @@
             "description": "Sentry Agent for PHP (https://sentry.io)",
             "homepage": "https://sentry.io",
             "support": {
-                "source": "https://github.com/getsentry/sentry-php-agent/tree/0.1.1",
-                "issues": "https://github.com/getsentry/sentry-php-agent/issues"
+                "issues": "https://github.com/getsentry/sentry-php-agent/issues",
+                "source": "https://github.com/getsentry/sentry-php-agent/tree/0.1.1"
             },
             "funding": [
                 {
-                    "type": "custom",
-                    "url": "https://sentry.io/pricing/"
+                    "url": "https://sentry.io/",
+                    "type": "custom"
                 },
                 {
-                    "type": "custom",
-                    "url": "https://sentry.io/"
+                    "url": "https://sentry.io/pricing/",
+                    "type": "custom"
                 }
             ],
             "time": "2025-09-05T10:03:28+00:00"
@@ -2974,16 +2948,16 @@
         },
         {
             "name": "cakephp/bake",
-            "version": "3.6.0",
+            "version": "3.6.2",
             "source": {
                 "type": "git",
                 "url": "https://github.com/cakephp/bake.git",
-                "reference": "c8dc9c6cce30b067adda5baa6d19f82481b12453"
+                "reference": "40a6208109a6d3922fb10c0446a00b50c1b098f6"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/cakephp/bake/zipball/c8dc9c6cce30b067adda5baa6d19f82481b12453",
-                "reference": "c8dc9c6cce30b067adda5baa6d19f82481b12453",
+                "url": "https://api.github.com/repos/cakephp/bake/zipball/40a6208109a6d3922fb10c0446a00b50c1b098f6",
+                "reference": "40a6208109a6d3922fb10c0446a00b50c1b098f6",
                 "shasum": ""
             },
             "require": {
@@ -3027,7 +3001,7 @@
                 "issues": "https://github.com/cakephp/bake/issues",
                 "source": "https://github.com/cakephp/bake"
             },
-            "time": "2026-01-12T00:13:14+00:00"
+            "time": "2026-02-13T12:33:29+00:00"
         },
         {
             "name": "cakephp/cakephp-codesniffer",
@@ -5378,7 +5352,7 @@
     "prefer-stable": true,
     "prefer-lowest": false,
     "platform": {
-        "php": ">=8.4"
+        "php": ">=8.5"
     },
     "platform-dev": {},
     "plugin-api-version": "2.9.0"

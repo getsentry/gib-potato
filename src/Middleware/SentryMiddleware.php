@@ -17,8 +17,8 @@ use Sentry\Tracing\TransactionContext;
 use Sentry\Tracing\TransactionSource;
 use function microtime;
 use function Sentry\logger;
-use function Sentry\metrics;
 use function Sentry\startTransaction;
+use function Sentry\trace_metrics;
 
 /**
  * Sentry middleware
@@ -79,7 +79,7 @@ class SentryMiddleware implements MiddlewareInterface
                     'gibpotato.gcp.mem_peak_usage' => memory_get_peak_usage(false),
                 ]);
 
-                metrics()->distribution(
+                trace_metrics()->distribution(
                     'gcp.mem_peak_usage',
                     (float)memory_get_peak_usage(false),
                 );
@@ -90,7 +90,7 @@ class SentryMiddleware implements MiddlewareInterface
             function (Event $event) use ($transaction): void {
                 $transaction->finish();
                 logger()->flush();
-                metrics()->flush();
+                trace_metrics()->flush();
             },
         );
 

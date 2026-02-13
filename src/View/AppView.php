@@ -37,11 +37,8 @@ class AppView extends View
      */
     public function initialize(): void
     {
-        $this->loadHelper('Sentry');
         $this->loadHelper('Authentication.Identity');
-
-        if (PHP_SAPI !== 'cli') {
-            $this->loadHelper('Vite');
-        }
+        $this->loadHelper('Sentry');
+        $this->loadHelper('Vite');
     }
 }
