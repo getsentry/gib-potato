@@ -7,11 +7,12 @@ import (
 	"net/http"
 	"os"
 
+	"github.com/getsentry/sentry-go"
 	"github.com/julienschmidt/httprouter"
 	"github.com/slack-go/slack"
 )
 
-func slackVerification(h httprouter.Handle) httprouter.Handle {
+func slackVerification(meter sentry.Meter, h httprouter.Handle) httprouter.Handle {
 	return func(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {
 		ctx := r.Context()
 
@@ -44,6 +45,7 @@ func slackVerification(h httprouter.Handle) httprouter.Handle {
 		}
 
 		if err := sv.Ensure(); err != nil {
+			meter.WithCtx(ctx).Count("potal.slack.verification_failed", 1)
 			w.WriteHeader(http.StatusUnauthorized)
 			slog.WarnContext(ctx, "slack signature rejected", "error", err)
 			return

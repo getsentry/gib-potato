@@ -8,14 +8,13 @@ import (
 	"os"
 	"time"
 
+	"github.com/getsentry/gib-potato/internal/potalhttp"
 	"github.com/getsentry/sentry-go"
 	sentryhttp "github.com/getsentry/sentry-go/http"
 	sentryslog "github.com/getsentry/sentry-go/slog"
 	"github.com/julienschmidt/httprouter"
 	"github.com/slack-go/slack"
 )
-
-var slackClient *slack.Client
 
 func main() {
 	sentryErr := sentry.Init(sentry.ClientOptions{
@@ -56,13 +55,16 @@ func main() {
 	)
 	slog.SetDefault(slog.New(slogHandler))
 
-	slackClient = slack.New(os.Getenv("SLACK_BOT_USER_OAUTH_TOKEN"))
+	meter := sentry.NewMeter(context.Background())
+	slackClient := slack.New(os.Getenv("SLACK_BOT_USER_OAUTH_TOKEN"))
+	potalClient := potalhttp.NewClient(meter)
+	h := NewHandler(slackClient, potalClient, meter)
 
 	router := httprouter.New()
 	router.GET("/", DefaultHandler)
-	router.POST("/events", slackVerification(EventsHandler))
-	router.POST("/slash", slackVerification(SlashHandler))
-	router.POST("/interactions", slackVerification(InteractionsHandler))
+	router.POST("/events", slackVerification(meter, h.EventsHandler))
+	router.POST("/slash", slackVerification(meter, h.SlashHandler))
+	router.POST("/interactions", slackVerification(meter, h.InteractionsHandler))
 
 	slog.Info("server starting", "port", 3000)
 	httpErr := http.ListenAndServe(":3000", sentryHandler.Handle(router))
