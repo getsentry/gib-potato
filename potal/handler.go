@@ -4,6 +4,7 @@ import (
 	"context"
 	"encoding/json"
 	"io"
+	"log/slog"
 	"net/http"
 
 	"github.com/getsentry/gib-potato/internal/event"
@@ -42,6 +43,7 @@ func EventsHandler(w http.ResponseWriter, r *http.Request, _ httprouter.Params) 
 
 	body, err := io.ReadAll(r.Body)
 	if err != nil {
+		slog.ErrorContext(ctx, "failed to read request body", "error", err)
 		transaction.Status = sentry.SpanStatusInvalidArgument
 		w.WriteHeader(http.StatusBadRequest)
 		return
@@ -49,6 +51,7 @@ func EventsHandler(w http.ResponseWriter, r *http.Request, _ httprouter.Params) 
 
 	eventsAPIEvent, err := slackevents.ParseEvent(json.RawMessage(body), slackevents.OptionNoVerifyToken())
 	if err != nil {
+		slog.ErrorContext(ctx, "failed to parse slack event", "error", err)
 		transaction.Status = sentry.SpanStatusInternalError
 		w.WriteHeader(http.StatusInternalServerError)
 		return
@@ -98,10 +101,12 @@ func EventsHandler(w http.ResponseWriter, r *http.Request, _ httprouter.Params) 
 
 					processedEvent := event.ProcessDirectMessageEvent(txn.Context(), ev)
 					if processedEvent == nil {
+						slog.DebugContext(txn.Context(), "event skipped", "event_type", "direct_message")
 						return
 					}
 					err := potalhttp.SendRequest(txn.Context(), processedEvent)
 					if err != nil {
+						slog.ErrorContext(txn.Context(), "failed to forward event", "event_type", "direct_message", "error", err)
 						txn.Status = sentry.SpanStatusInternalError
 						return
 					}
@@ -124,10 +129,12 @@ func EventsHandler(w http.ResponseWriter, r *http.Request, _ httprouter.Params) 
 
 					processedEvent := event.ProcessMessageEvent(txn.Context(), ev, slackClient)
 					if processedEvent == nil {
+						slog.DebugContext(txn.Context(), "event skipped", "event_type", "message")
 						return
 					}
 					err := potalhttp.SendRequest(txn.Context(), processedEvent)
 					if err != nil {
+						slog.ErrorContext(txn.Context(), "failed to forward event", "event_type", "message", "error", err)
 						txn.Status = sentry.SpanStatusInternalError
 						return
 					}
@@ -152,11 +159,13 @@ func EventsHandler(w http.ResponseWriter, r *http.Request, _ httprouter.Params) 
 
 				processedEvent := event.ProcessReactionEvent(txn.Context(), ev, slackClient)
 				if processedEvent == nil {
+					slog.DebugContext(txn.Context(), "event skipped", "event_type", "reaction_added")
 					txn.Status = sentry.SpanStatusInternalError
 					return
 				}
 				err := potalhttp.SendRequest(txn.Context(), processedEvent)
 				if err != nil {
+					slog.ErrorContext(txn.Context(), "failed to forward event", "event_type", "reaction_added", "error", err)
 					txn.Status = sentry.SpanStatusInternalError
 					return
 				}
@@ -180,11 +189,13 @@ func EventsHandler(w http.ResponseWriter, r *http.Request, _ httprouter.Params) 
 
 				processedEvent := event.ProcessAppMentionEvent(txn.Context(), ev)
 				if processedEvent == nil {
+					slog.DebugContext(txn.Context(), "event skipped", "event_type", "app_mention")
 					txn.Status = sentry.SpanStatusInternalError
 					return
 				}
 				err := potalhttp.SendRequest(txn.Context(), processedEvent)
 				if err != nil {
+					slog.ErrorContext(txn.Context(), "failed to forward event", "event_type", "app_mention", "error", err)
 					txn.Status = sentry.SpanStatusInternalError
 					return
 				}
@@ -208,11 +219,13 @@ func EventsHandler(w http.ResponseWriter, r *http.Request, _ httprouter.Params) 
 
 				processedEvent := event.ProcessAppHomeOpenedEvent(txn.Context(), ev)
 				if processedEvent == nil {
+					slog.DebugContext(txn.Context(), "event skipped", "event_type", "app_home_opened")
 					txn.Status = sentry.SpanStatusInternalError
 					return
 				}
 				err := potalhttp.SendRequest(txn.Context(), processedEvent)
 				if err != nil {
+					slog.ErrorContext(txn.Context(), "failed to forward event", "event_type", "app_home_opened", "error", err)
 					txn.Status = sentry.SpanStatusInternalError
 					return
 				}
@@ -236,16 +249,20 @@ func EventsHandler(w http.ResponseWriter, r *http.Request, _ httprouter.Params) 
 
 				processedEvent := event.ProcessLinkSharedEvent(txn.Context(), ev)
 				if processedEvent == nil {
+					slog.DebugContext(txn.Context(), "event skipped", "event_type", "link_shared")
 					return
 				}
 				err := potalhttp.SendRequest(txn.Context(), processedEvent)
 				if err != nil {
+					slog.ErrorContext(txn.Context(), "failed to forward event", "event_type", "link_shared", "error", err)
 					txn.Status = sentry.SpanStatusInternalError
 					return
 				}
 
 				txn.Status = sentry.SpanStatusOK
 			}()
+		default:
+			slog.WarnContext(ctx, "unhandled callback event type", "type", innerEvent.Type)
 		}
 	}
 
@@ -261,6 +278,7 @@ func SlashHandler(w http.ResponseWriter, r *http.Request, _ httprouter.Params) {
 
 	s, err := slack.SlashCommandParse(r)
 	if err != nil {
+		slog.ErrorContext(ctx, "failed to parse slash command", "error", err)
 		transaction.Status = sentry.SpanStatusInternalError
 		w.WriteHeader(http.StatusInternalServerError)
 		return
@@ -283,11 +301,13 @@ func SlashHandler(w http.ResponseWriter, r *http.Request, _ httprouter.Params) {
 
 			processedEvent := event.ProcessSlashCommand(txn.Context(), s)
 			if processedEvent == nil {
+				slog.DebugContext(txn.Context(), "event skipped", "event_type", "slash_command")
 				txn.Status = sentry.SpanStatusInternalError
 				return
 			}
 			err := potalhttp.SendRequest(txn.Context(), processedEvent)
 			if err != nil {
+				slog.ErrorContext(txn.Context(), "failed to forward event", "event_type", "slash_command", "error", err)
 				txn.Status = sentry.SpanStatusInternalError
 				return
 			}
@@ -295,6 +315,7 @@ func SlashHandler(w http.ResponseWriter, r *http.Request, _ httprouter.Params) {
 			txn.Status = sentry.SpanStatusOK
 		}()
 	default:
+		slog.WarnContext(ctx, "unknown slash command", "command", s.Command)
 		transaction.Status = sentry.SpanStatusInvalidArgument
 		w.WriteHeader(http.StatusBadRequest)
 		return
@@ -313,6 +334,7 @@ func InteractionsHandler(w http.ResponseWriter, r *http.Request, _ httprouter.Pa
 	var payload slack.InteractionCallback
 	jsonErr := json.Unmarshal([]byte(r.FormValue("payload")), &payload)
 	if jsonErr != nil {
+		slog.ErrorContext(ctx, "failed to parse interaction payload", "error", jsonErr)
 		transaction.Status = sentry.SpanStatusInternalError
 		w.WriteHeader(http.StatusInternalServerError)
 		return
@@ -335,11 +357,13 @@ func InteractionsHandler(w http.ResponseWriter, r *http.Request, _ httprouter.Pa
 
 			processedEvent := event.ProcessInteractionCallbackEvent(txn.Context(), payload)
 			if processedEvent == nil {
+				slog.DebugContext(txn.Context(), "event skipped", "event_type", "interaction_callback")
 				txn.Status = sentry.SpanStatusInternalError
 				return
 			}
 			err := potalhttp.SendRequest(txn.Context(), processedEvent)
 			if err != nil {
+				slog.ErrorContext(txn.Context(), "failed to forward event", "event_type", "interaction_callback", "error", err)
 				txn.Status = sentry.SpanStatusInternalError
 				return
 			}
@@ -347,6 +371,7 @@ func InteractionsHandler(w http.ResponseWriter, r *http.Request, _ httprouter.Pa
 			txn.Status = sentry.SpanStatusOK
 		}()
 	default:
+		slog.WarnContext(ctx, "unknown interaction type", "type", payload.Type)
 		transaction.Status = sentry.SpanStatusInvalidArgument
 		w.WriteHeader(http.StatusBadRequest)
 		return
