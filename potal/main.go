@@ -38,7 +38,7 @@ func main() {
 		Repanic: true,
 	})
 
-	logLevels := []slog.Level{slog.LevelDebug, slog.LevelInfo, slog.LevelWarn, slog.LevelError}
+	logLevels := []slog.Level{slog.LevelInfo, slog.LevelWarn, slog.LevelError}
 	if os.Getenv("ENVIRONMENT") != "production" {
 		logLevels = append(logLevels, slog.LevelDebug)
 	}
