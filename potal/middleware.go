@@ -3,6 +3,7 @@ package main
 import (
 	"bytes"
 	"io"
+	"log/slog"
 	"net/http"
 	"os"
 
@@ -11,21 +12,21 @@ import (
 	"github.com/slack-go/slack"
 )
 
-func slackVerification(h httprouter.Handle) httprouter.Handle {
+func slackVerification(meter sentry.Meter, h httprouter.Handle) httprouter.Handle {
 	return func(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {
-		logger := sentry.NewLogger(r.Context())
+		ctx := r.Context()
 
 		// Verify the Slack request
 		// see https://github.com/slack-go/slack/blob/master/examples/workflow_step/middleware.go
 		body, err := io.ReadAll(r.Body)
 		defer func() {
 			if err := r.Body.Close(); err != nil {
-				logger.Error().Emitf("[slackVerification] Failed to close request body: %v", err)
+				slog.ErrorContext(ctx, "failed to close request body", "error", err)
 			}
 		}()
 		if err != nil {
 			w.WriteHeader(http.StatusBadRequest)
-			logger.Error().Emit("[slackVerification] Failed to read request body")
+			slog.ErrorContext(ctx, "failed to read request body", "error", err)
 			return
 		}
 		r.Body = io.NopCloser(bytes.NewBuffer(body))
@@ -33,19 +34,20 @@ func slackVerification(h httprouter.Handle) httprouter.Handle {
 		sv, err := slack.NewSecretsVerifier(r.Header, os.Getenv("SLACK_SIGNING_SECRET"))
 		if err != nil {
 			w.WriteHeader(http.StatusBadRequest)
-			logger.Error().Emitf("[slackVerification] %s", err)
+			slog.ErrorContext(ctx, "slack verification failed", "error", err)
 			return
 		}
 
 		if _, err := sv.Write(body); err != nil {
 			w.WriteHeader(http.StatusInternalServerError)
-			logger.Error().Emitf("[slackVerification] %s", err)
+			slog.ErrorContext(ctx, "slack verification write failed", "error", err)
 			return
 		}
 
 		if err := sv.Ensure(); err != nil {
+			meter.WithCtx(ctx).Count("potal.slack.verification_failed", 1)
 			w.WriteHeader(http.StatusUnauthorized)
-			logger.Error().Emitf("[slackVerification] %s", err)
+			slog.WarnContext(ctx, "slack signature rejected", "error", err)
 			return
 		}
 

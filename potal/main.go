@@ -1,18 +1,20 @@
 package main
 
 import (
+	"context"
 	"log"
+	"log/slog"
 	"net/http"
 	"os"
 	"time"
 
+	"github.com/getsentry/gib-potato/internal/potalhttp"
 	"github.com/getsentry/sentry-go"
 	sentryhttp "github.com/getsentry/sentry-go/http"
+	sentryslog "github.com/getsentry/sentry-go/slog"
 	"github.com/julienschmidt/httprouter"
 	"github.com/slack-go/slack"
 )
-
-var slackClient *slack.Client
 
 func main() {
 	sentryErr := sentry.Init(sentry.ClientOptions{
@@ -36,17 +38,39 @@ func main() {
 		Repanic: true,
 	})
 
-	slackClient = slack.New(os.Getenv("SLACK_BOT_USER_OAUTH_TOKEN"))
+	logLevels := []slog.Level{slog.LevelInfo, slog.LevelWarn, slog.LevelError}
+	if os.Getenv("ENVIRONMENT") != "production" {
+		logLevels = append(logLevels, slog.LevelDebug)
+	}
+
+	slogHandler := slog.NewMultiHandler(
+		slog.NewJSONHandler(os.Stdout, &slog.HandlerOptions{
+			Level: slog.LevelInfo,
+		}),
+		sentryslog.Option{
+			EventLevel: []slog.Level{},
+			LogLevel:   logLevels,
+			AddSource:  true,
+		}.NewSentryHandler(context.Background()),
+	)
+	slog.SetDefault(slog.New(slogHandler))
+
+	meter := sentry.NewMeter(context.Background())
+	slackClient := slack.New(os.Getenv("SLACK_BOT_USER_OAUTH_TOKEN"))
+	potalClient := potalhttp.NewClient(meter)
+	h := NewHandler(slackClient, potalClient, meter)
 
 	router := httprouter.New()
 	router.GET("/", DefaultHandler)
-	router.POST("/events", slackVerification(EventsHandler))
-	router.POST("/slash", slackVerification(SlashHandler))
-	router.POST("/interactions", slackVerification(InteractionsHandler))
+	router.POST("/events", slackVerification(meter, h.EventsHandler))
+	router.POST("/slash", slackVerification(meter, h.SlashHandler))
+	router.POST("/interactions", slackVerification(meter, h.InteractionsHandler))
 
+	slog.Info("server starting", "port", 3000)
 	httpErr := http.ListenAndServe(":3000", sentryHandler.Handle(router))
 	if httpErr != nil {
 		sentry.CaptureException(httpErr)
-		log.Fatalf("An Error Occured: %v", httpErr)
+		slog.Error("server failed", "error", httpErr)
+		os.Exit(1)
 	}
 }
