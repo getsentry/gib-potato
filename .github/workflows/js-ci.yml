@@ -17,11 +17,9 @@ jobs:
 
     steps:
     - uses: actions/checkout@v6
-    
+
     - name: Run npm install
       run: npm install
-    
+
     - name: Run npm build
       run: npm run build
-      env:
-        CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}

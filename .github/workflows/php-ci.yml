@@ -48,11 +48,4 @@ jobs:
       run: vendor/bin/phpstan analyse
 
     - name: Run PHPUnit
-      run: |
-        export CODECOVERAGE=1
-        vendor/bin/phpunit --colors=always --coverage-clover=coverage.xml
-
-    - name: Upload coverage to Codecov
-      uses: codecov/codecov-action@v5
-      with:
-        token: ${{ secrets.CODECOV_TOKEN }}
+      run: vendor/bin/phpunit --colors=always
