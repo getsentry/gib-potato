@@ -14,7 +14,7 @@
         "php": ">=8.5",
         "cakephp/authentication": "^3.3.5",
         "cakephp/cakephp": "^5.3.3",
-        "cakephp/migrations": "^4.9.6",
+        "cakephp/migrations": "^5.0.4",
         "cakephp/plugin-installer": "^2.0.1",
         "lcobucci/jwt": "^5.6.0",
         "paragonie/csp-builder": "^3.0.2",

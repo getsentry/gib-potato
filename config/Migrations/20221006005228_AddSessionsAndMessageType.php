@@ -1,10 +1,10 @@
 <?php
 declare(strict_types=1);
 
-use Migrations\AbstractMigration;
+use Migrations\BaseMigration;
 use Phinx\Db\Adapter\MysqlAdapter;
 
-class AddSessionsAndMessageType extends AbstractMigration
+class AddSessionsAndMessageType extends BaseMigration
 {
     /**
      * Up Method.
