@@ -3,7 +3,6 @@ import { fileURLToPath, URL } from 'node:url';
 import { defineConfig, loadEnv } from "vite";
 import vue from '@vitejs/plugin-vue';
 import { sentryVitePlugin } from '@sentry/vite-plugin';
-import { codecovVitePlugin } from "@codecov/vite-plugin";
 
 // https://vitejs.dev/config/
 export default defineConfig(({ mode }) => {
@@ -22,11 +21,6 @@ export default defineConfig(({ mode }) => {
         dryRun: env.SENTRY_AUTH_TOKEN,
         release: env.RELEASE,
         telemetry: false
-      }),
-      codecovVitePlugin({
-        enableBundleAnalysis: process.env.CODECOV_TOKEN !== undefined,
-        bundleName: "gib-potato",
-        uploadToken: process.env.CODECOV_TOKEN,
       }),
     ],
     build: {

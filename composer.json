@@ -13,18 +13,18 @@
     "require": {
         "php": ">=8.5",
         "cakephp/authentication": "^3.3.5",
-        "cakephp/cakephp": "^5.3.1",
-        "cakephp/migrations": "^4.9.5",
+        "cakephp/cakephp": "^5.3.3",
+        "cakephp/migrations": "^5.0.4",
         "cakephp/plugin-installer": "^2.0.1",
         "lcobucci/jwt": "^5.6.0",
         "paragonie/csp-builder": "^3.0.2",
-        "sentry/sentry": "^4.19.1",
+        "sentry/sentry": "^4.24.0",
         "sentry/sentry-agent": "^0.1.1"
     },
     "require-dev": {
-        "cakephp/bake": "^3.6.2",
+        "cakephp/bake": "^3.6.3",
         "cakephp/cakephp-codesniffer": "^5.3.0",
-        "phpstan/phpstan": "^1.12.32",
+        "phpstan/phpstan": "^1.12.33",
         "phpunit/phpunit": "^10.5.63"
     },
     "autoload": {
