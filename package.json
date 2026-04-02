@@ -18,7 +18,6 @@
     "vuex": "^4.1.0"
   },
   "devDependencies": {
-    "@codecov/vite-plugin": "^1.9.1",
     "@rushstack/eslint-patch": "^1.16.1",
     "@vitejs/plugin-vue": "^5.2.4",
     "@vue/eslint-config-prettier": "^10.2.0",
