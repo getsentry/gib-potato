@@ -44,7 +44,7 @@ func ProcessAppMentionEvent(ctx context.Context, e *slackevents.AppMentionEvent)
 	}
 	span.Status = sentry.SpanStatusOK
 
-	hub.Scope().SetExtra("event", appMentionEvent)
+	hub.Scope().SetContext("event", sentry.Context{"data": appMentionEvent})
 	hub.Scope().SetTag("event_type", appMention.String())
 
 	return &appMentionEvent

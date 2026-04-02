@@ -2,9 +2,9 @@
 declare(strict_types=1);
 
 use Cake\ORM\Locator\LocatorAwareTrait;
-use Migrations\AbstractMigration;
+use Migrations\BaseMigration;
 
-class AddApiToken extends AbstractMigration
+class AddApiToken extends BaseMigration
 {
     use LocatorAwareTrait;
 

@@ -39,7 +39,7 @@ func ProcessAppHomeOpenedEvent(ctx context.Context, e *slackevents.AppHomeOpened
 	}
 	span.Status = sentry.SpanStatusOK
 
-	hub.Scope().SetExtra("event", appHomeOpenedEvent)
+	hub.Scope().SetContext("event", sentry.Context{"data": appHomeOpenedEvent})
 	hub.Scope().SetTag("event_type", appHomeOpened.String())
 
 	return &appHomeOpenedEvent
