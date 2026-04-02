@@ -2,7 +2,6 @@
 declare(strict_types=1);
 
 use Migrations\BaseMigration;
-use Phinx\Db\Adapter\MysqlAdapter;
 
 class AddSessionsAndMessageType extends BaseMigration
 {
@@ -34,7 +33,6 @@ class AddSessionsAndMessageType extends BaseMigration
             ])
             ->addColumn('data', 'binary', [
                 'default' => null,
-                'limit' => MysqlAdapter::BLOB_REGULAR,
                 'null' => true,
             ])
             ->addColumn('expires', 'integer', [
