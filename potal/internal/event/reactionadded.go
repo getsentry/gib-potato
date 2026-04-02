@@ -104,7 +104,7 @@ func ProcessReactionEvent(ctx context.Context, e *slackevents.ReactionAddedEvent
 
 	span.Status = sentry.SpanStatusOK
 
-	hub.Scope().SetExtra("event", reactionEvent)
+	hub.Scope().SetContext("event", sentry.Context{"data": reactionEvent})
 	hub.Scope().SetTag("event_type", reactionAdded.String())
 
 	return &reactionEvent

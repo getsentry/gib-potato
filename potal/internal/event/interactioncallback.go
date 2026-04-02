@@ -54,7 +54,7 @@ func ProcessInteractionCallbackEvent(ctx context.Context, e slack.InteractionCal
 	}
 	span.Status = sentry.SpanStatusOK
 
-	hub.Scope().SetExtra("event", interactionEvent)
+	hub.Scope().SetContext("event", sentry.Context{"data": interactionEvent})
 	hub.Scope().SetTag("event_type", interactionCallback.String())
 
 	return &interactionEvent
