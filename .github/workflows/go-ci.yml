@@ -1,4 +1,4 @@
-name: "Go CI"
+name: 'Go CI'
 
 on:
   push:
@@ -16,26 +16,26 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-    - uses: actions/checkout@v6
+      - uses: actions/checkout@v6
 
-    - name: Setup Go
-      uses: actions/setup-go@v6
-      with:
-        go-version: 'stable'
+      - name: Setup Go
+        uses: actions/setup-go@v6
+        with:
+          go-version: 'stable'
 
-    - name: Run build
-      working-directory: ./potal
-      run: go build .
-
-    - name: Run vet
-      working-directory: ./potal
-      run: go vet .
-
-    - name: Run lint
-      uses: golangci/golangci-lint-action@v9
-      with:
+      - name: Run build
         working-directory: ./potal
+        run: go build .
 
-    - name: Run tests
-      working-directory: ./potal
-      run: go test -v -count=1 -race ./...
+      - name: Run vet
+        working-directory: ./potal
+        run: go vet .
+
+      - name: Run lint
+        uses: golangci/golangci-lint-action@v9
+        with:
+          working-directory: ./potal
+
+      - name: Run tests
+        working-directory: ./potal
+        run: go test -v -count=1 -race ./...

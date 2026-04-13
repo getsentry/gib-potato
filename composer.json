@@ -1,62 +1,62 @@
 {
-    "name": "getsentry/gib-potato",
-    "description": "More Potato, more awesome 🥔",
-    "type": "project",
-    "homepage": "https://sentry.io",
-    "license": "MIT",
-    "authors": [
-        {
-            "name": "Sentry",
-            "email": "accounts@sentry.io"
-        }
-    ],
-    "require": {
-        "php": ">=8.5",
-        "cakephp/authentication": "^3.3.5",
-        "cakephp/cakephp": "^5.3.3",
-        "cakephp/migrations": "^5.0.4",
-        "cakephp/plugin-installer": "^2.0.1",
-        "lcobucci/jwt": "^5.6.0",
-        "paragonie/csp-builder": "^3.0.2",
-        "sentry/sentry": "^4.24.0",
-        "sentry/sentry-agent": "^0.1.1"
-    },
-    "require-dev": {
-        "cakephp/bake": "^3.6.3",
-        "cakephp/cakephp-codesniffer": "^5.3.0",
-        "phpstan/phpstan": "^1.12.33",
-        "phpunit/phpunit": "^10.5.63"
-    },
-    "autoload": {
-        "psr-4": {
-            "App\\": "src/"
-        }
-    },
-    "autoload-dev": {
-        "psr-4": {
-            "App\\Test\\": "tests/",
-            "Cake\\Test\\": "vendor/cakephp/cakephp/tests/"
-        }
-    },
-    "scripts": {
-        "post-install-cmd": "App\\Console\\Installer::postInstall",
-        "post-create-project-cmd": "App\\Console\\Installer::postInstall",
-        "check": [
-            "@test",
-            "@cs-check",
-            "@phpstan"
-        ],
-        "cs-check": "phpcs --colors -p",
-        "cs-fix": "phpcbf --colors -p",
-        "phpstan": "phpstan analyse",
-        "test": "phpunit --colors=always"
-    },
-    "prefer-stable": true,
-    "config": {
-        "sort-packages": true,
-        "allow-plugins": {
-            "cakephp/plugin-installer": true,
-            "dealerdirect/phpcodesniffer-composer-installer": true
-        }
+  "name": "getsentry/gib-potato",
+  "description": "More Potato, more awesome 🥔",
+  "type": "project",
+  "homepage": "https://sentry.io",
+  "license": "MIT",
+  "authors": [
+    {
+      "name": "Sentry",
+      "email": "accounts@sentry.io"
     }
+  ],
+  "require": {
+    "php": ">=8.5",
+    "cakephp/authentication": "^3.3.5",
+    "cakephp/cakephp": "^5.3.3",
+    "cakephp/migrations": "^5.0.4",
+    "cakephp/plugin-installer": "^2.0.1",
+    "lcobucci/jwt": "^5.6.0",
+    "paragonie/csp-builder": "^3.0.2",
+    "sentry/sentry": "^4.24.0",
+    "sentry/sentry-agent": "^0.1.1"
+  },
+  "require-dev": {
+    "cakephp/bake": "^3.6.3",
+    "cakephp/cakephp-codesniffer": "^5.3.0",
+    "phpstan/phpstan": "^1.12.33",
+    "phpunit/phpunit": "^10.5.63"
+  },
+  "autoload": {
+    "psr-4": {
+      "App\\": "src/"
+    }
+  },
+  "autoload-dev": {
+    "psr-4": {
+      "App\\Test\\": "tests/",
+      "Cake\\Test\\": "vendor/cakephp/cakephp/tests/"
+    }
+  },
+  "scripts": {
+    "post-install-cmd": "App\\Console\\Installer::postInstall",
+    "post-create-project-cmd": "App\\Console\\Installer::postInstall",
+    "check": [
+      "@test",
+      "@cs-check",
+      "@phpstan"
+    ],
+    "cs-check": "phpcs --colors -p",
+    "cs-fix": "phpcbf --colors -p",
+    "phpstan": "phpstan analyse",
+    "test": "phpunit --colors=always"
+  },
+  "prefer-stable": true,
+  "config": {
+    "sort-packages": true,
+    "allow-plugins": {
+      "cakephp/plugin-installer": true,
+      "dealerdirect/phpcodesniffer-composer-installer": true
+    }
+  }
 }

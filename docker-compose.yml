@@ -5,32 +5,32 @@ services:
       dockerfile: ./docker/backend/Dockerfile
       target: php-local
     environment:
-        - DEBUG
-        - ENVIRONMENT
-        - RELEASE
-        - SECURITY_SALT
-        - MAIN_DOMAIN
-        - DATABASE_HOST
-        - DATABASE_USER
-        - DATABASE_PASSWORD
-        - DATABASE_NAME
-        - LOG_DEBUG_URL
-        - LOG_ERROR_URL
-        - SLACK_CLIENT_ID
-        - SLACK_CLIENT_SECRET
-        - SLACK_SIGNING_SECRET
-        - SLACK_TEAM_ID
-        - SLACK_REDIRECT_URI
-        - SLACK_BOT_USER_OAUTH_TOKEN
-        - DISCORD_BOT_TOKEN
-        - SENTRY_BACKEND_DSN
-        - SENTRY_FRONTEND_DSN
-        - SENTRY_AUTH_TOKEN
-        - POTAL_TOKEN
-        - POTATO_CHANNEL
-        - POTATO_SLACK_USER_ID
-        - SHOPATO_URL
-        - SHOPATO_TOKEN
+      - DEBUG
+      - ENVIRONMENT
+      - RELEASE
+      - SECURITY_SALT
+      - MAIN_DOMAIN
+      - DATABASE_HOST
+      - DATABASE_USER
+      - DATABASE_PASSWORD
+      - DATABASE_NAME
+      - LOG_DEBUG_URL
+      - LOG_ERROR_URL
+      - SLACK_CLIENT_ID
+      - SLACK_CLIENT_SECRET
+      - SLACK_SIGNING_SECRET
+      - SLACK_TEAM_ID
+      - SLACK_REDIRECT_URI
+      - SLACK_BOT_USER_OAUTH_TOKEN
+      - DISCORD_BOT_TOKEN
+      - SENTRY_BACKEND_DSN
+      - SENTRY_FRONTEND_DSN
+      - SENTRY_AUTH_TOKEN
+      - POTAL_TOKEN
+      - POTATO_CHANNEL
+      - POTATO_SLACK_USER_ID
+      - SHOPATO_URL
+      - SHOPATO_TOKEN
     depends_on:
       - db
       - potal
@@ -61,7 +61,7 @@ services:
       gib-potato:
         aliases:
           - potal.gib-potato.test
-  
+
   shopato:
     build:
       context: .

@@ -1,4 +1,4 @@
-name: "PHP CI"
+name: 'PHP CI'
 
 on:
   push:
@@ -30,22 +30,22 @@ jobs:
           - 5432:5432
 
     steps:
-    - uses: actions/checkout@v6
+      - uses: actions/checkout@v6
 
-    - name: Setup PHP
-      uses: shivammathur/setup-php@v2
-      with:
-        php-version: '8.5'
-        extensions: mbstring, intl
+      - name: Setup PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.5'
+          extensions: mbstring, intl
 
-    - name: Run composer install
-      run: composer update --no-progress
+      - name: Run composer install
+        run: composer update --no-progress
 
-    - name: Run PHP CodeSniffer
-      run: vendor/bin/phpcs --colors -p  src/ tests/
+      - name: Run PHP CodeSniffer
+        run: vendor/bin/phpcs --colors -p  src/ tests/
 
-    - name: Run PHPStan
-      run: vendor/bin/phpstan analyse
+      - name: Run PHPStan
+        run: vendor/bin/phpstan analyse
 
-    - name: Run PHPUnit
-      run: vendor/bin/phpunit --colors=always
+      - name: Run PHPUnit
+        run: vendor/bin/phpunit --colors=always

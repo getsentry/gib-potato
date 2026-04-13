@@ -1,4 +1,4 @@
-name: "JS CI"
+name: 'JS CI'
 
 on:
   push:
@@ -16,10 +16,10 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-    - uses: actions/checkout@v6
+      - uses: actions/checkout@v6
 
-    - name: Run npm install
-      run: npm install
+      - name: Run npm install
+        run: npm install
 
-    - name: Run npm build
-      run: npm run build
+      - name: Run npm build
+        run: npm run build
