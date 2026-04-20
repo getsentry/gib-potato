@@ -1,9 +1,9 @@
 github.com/davecgh/go-spew v1.1.1 h1:vj9j/u1bqnvCEfJOwUhtlOARqs3+rkHYY13jYWTU97c=
 github.com/davecgh/go-spew v1.1.1/go.mod h1:J7Y8YcW2NihsgmVo/mv3lAwl/skON4iLHjSsI+c5H38=
-github.com/getsentry/sentry-go v0.45.1-0.20260410091754-cb84b35b8455 h1:jP6IJzAJN+BeyWdtBr777ifHNCCAEazyjxoprhnjljA=
-github.com/getsentry/sentry-go v0.45.1-0.20260410091754-cb84b35b8455/go.mod h1:XDotiNZbgf5U8bPDUAfvcFmOnMQQceESxyKaObSssW0=
-github.com/getsentry/sentry-go/slog v0.45.1-0.20260410091754-cb84b35b8455 h1:Lg5XaslYqYD2E1+jpJ61CDY4qHUAoXiLYWVVv4pfgpQ=
-github.com/getsentry/sentry-go/slog v0.45.1-0.20260410091754-cb84b35b8455/go.mod h1:P04C1cKn7DgjnJ+/VBFdIEo2IJWdiMFwrWrkXM9082Y=
+github.com/getsentry/sentry-go v0.45.2-0.20260420132157-edb9172ff7f5 h1:frTLw2jkoNvugnU2GicoslOwFq75wpmzyKRoRGsMSrs=
+github.com/getsentry/sentry-go v0.45.2-0.20260420132157-edb9172ff7f5/go.mod h1:evVbw2qotNUdYG8KxXbAdjOQWWvWIwKxpjdZZIvcIPw=
+github.com/getsentry/sentry-go/slog v0.45.2-0.20260420132157-edb9172ff7f5 h1:bpO6ib23aEWPoSa/Nfe5nlhPuFIWchwJ4YvwyIoMuwY=
+github.com/getsentry/sentry-go/slog v0.45.2-0.20260420132157-edb9172ff7f5/go.mod h1:pI6GZvQj51e2y8yhuGzfbWA/grRnyNaCemUKE0rwq8I=
 github.com/go-errors/errors v1.4.2 h1:J6MZopCL4uSllY1OfXM374weqZFFItUbrImctkmUxIA=
 github.com/go-errors/errors v1.4.2/go.mod h1:sIVyrIiJhuEF+Pj9Ebtd6P/rEYROXFi3BopGUQ5a5Og=
 github.com/go-test/deep v1.1.1 h1:0r/53hagsehfO4bzD2Pgr/+RgHqhmf+k1Bpse2cTu1U=
