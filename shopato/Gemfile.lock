@@ -91,7 +91,7 @@ GEM
       rexml
     crass (1.0.6)
     csv (3.3.5)
-    date (3.4.1)
+    date (3.5.1)
     debug (1.11.0)
       irb (~> 1.10)
       reline (>= 0.3.8)
@@ -136,7 +136,7 @@ GEM
     msgpack (1.8.0)
     multi_xml (0.8.1)
       bigdecimal (>= 3.1, < 5)
-    net-imap (0.5.9)
+    net-imap (0.5.14)
       date
       net-protocol
     net-pop (0.1.2)
@@ -305,7 +305,7 @@ GEM
     thruster (0.1.15-aarch64-linux)
     thruster (0.1.15-arm64-darwin)
     thruster (0.1.15-x86_64-linux)
-    timeout (0.4.3)
+    timeout (0.6.1)
     tsort (0.2.0)
     tzinfo (2.0.6)
       concurrent-ruby (~> 1.0)
