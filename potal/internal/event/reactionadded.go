@@ -50,6 +50,7 @@ func ProcessReactionEvent(ctx context.Context, e *slackevents.ReactionAddedEvent
 		userSpan.Status = sentry.SpanStatusInternalError
 		hub.CaptureException(err)
 		slog.ErrorContext(ctx, "failed to get user", "error", err, "user", e.User)
+		return nil
 	} else {
 		userSpan.Status = sentry.SpanStatusOK
 	}
