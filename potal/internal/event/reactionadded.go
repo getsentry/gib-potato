@@ -25,13 +25,13 @@ type ReactionAddedEvent struct {
 
 	ThreadTimestamp string `json:"thread_timestamp,omitempty"`
 
-	BotID bool `json:"-"`
+	IsBot bool `json:"-"`
 }
 
 func (e ReactionAddedEvent) isValid() bool {
 	// Only process potato reactions
 	return e.Reaction == "potato" &&
-		!e.BotID
+		!e.IsBot
 }
 
 func ProcessReactionEvent(ctx context.Context, e *slackevents.ReactionAddedEvent, sc *slack.Client) *ReactionAddedEvent {
@@ -58,7 +58,7 @@ func ProcessReactionEvent(ctx context.Context, e *slackevents.ReactionAddedEvent
 
 	reactionEvent := ReactionAddedEvent{
 		Reaction: e.Reaction,
-		BotID:    user.IsBot,
+		IsBot:    user.IsBot,
 	}
 
 	if !reactionEvent.isValid() {
