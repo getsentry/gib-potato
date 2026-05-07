@@ -31,7 +31,7 @@ type ReactionAddedEvent struct {
 func (e ReactionAddedEvent) isValid() bool {
 	// Only process potato reactions
 	return e.Reaction == "potato" &&
-		e.BotID == false
+		!e.BotID
 }
 
 func ProcessReactionEvent(ctx context.Context, e *slackevents.ReactionAddedEvent, sc *slack.Client) *ReactionAddedEvent {
