@@ -48,6 +48,8 @@ class User extends Entity
     public const ROLE_USER = 'user';
     public const ROLE_SERVICE = 'service';
 
+    public const SPENDING_LIMIT_90_DAYS = 500;
+
     /**
      * @param array<string, bool>|null $notifications The user's notification settings.
      * @return array<string, bool>
@@ -209,24 +211,46 @@ class User extends Entity
      */
     public function spendablePotato(): int
     {
-        $pruchasesTable = $this->fetchTable('Purchases');
+        $purchasesTable = $this->fetchTable('Purchases');
 
-        $query = $pruchasesTable->find();
-        $result = $query
+        // Calculate total spent by this user (all time)
+        $totalSpentQuery = $purchasesTable->find();
+        $totalSpentResult = $totalSpentQuery
             ->select([
-                'spent' => $query->func()->sum('price'),
+                'spent' => $totalSpentQuery->func()->sum('price'),
             ])
             ->where([
                 'user_id' => $this->id,
             ])
             ->first();
+        $totalSpent = (int)$totalSpentResult->spent;
 
-        // @FIXME make this based on 90 days
-        if ((int)$result->spent >= 500) {
+        // Calculate spent in the last 90 days
+        $ninetyDaysAgo = DateTime::now()->subDays(90);
+        $last90DaysQuery = $purchasesTable->find();
+        $last90DaysResult = $last90DaysQuery
+            ->select([
+                'spent' => $last90DaysQuery->func()->sum('price'),
+            ])
+            ->where([
+                'user_id' => $this->id,
+                'created >=' => $ninetyDaysAgo,
+            ])
+            ->first();
+        $spentLast90Days = (int)$last90DaysResult->spent;
+
+        // Check if the user has reached the spending limit in the last 90 days
+        if ($spentLast90Days >= self::SPENDING_LIMIT_90_DAYS) {
             return 0;
         }
 
-        return $this->potatoReceived() - (int)$result->spent;
+        // Calculate available balance (total received minus total spent)
+        $availableBalance = $this->potatoReceived() - $totalSpent;
+
+        // Return the minimum of available balance or remaining 90-day limit
+        $remainingLimit = self::SPENDING_LIMIT_90_DAYS - $spentLast90Days;
+
+        return min($availableBalance, $remainingLimit);
     }
 
     /**
