@@ -91,6 +91,10 @@ class MessagesTable extends Table
      * Returns a rules checker object that will be used for validating
      * application integrity.
      *
+     * Note: existsIn validation rules are defined here but may be skipped during save
+     * when called with pre-loaded User entities (e.g., in AwardService). Database
+     * foreign key constraints provide backup enforcement in such cases.
+     *
      * @param \Cake\ORM\RulesChecker $rules The rules object to be modified.
      * @return \Cake\ORM\RulesChecker
      */

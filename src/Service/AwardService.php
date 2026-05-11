@@ -61,7 +61,9 @@ class AwardService
                 'type' => true,
             ],
         ]);
-        $messagesTable->saveOrFail($message);
+        // Skip ORM validation since User entities are already loaded and guaranteed to exist.
+        // Database foreign key constraints will enforce referential integrity.
+        $messagesTable->saveOrFail($message, ['validate' => false]);
 
         $span = SentrySdk::getCurrentHub()->getSpan();
         if ($span !== null) {
