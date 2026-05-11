@@ -6,9 +6,12 @@ if [ -z "${LD_PRELOAD+x}" ]; then
     export LD_PRELOAD
 fi
 
-# Thruster listens on HTTP_PORT (default 80), but Cloud Run sends traffic to PORT.
+# Cloud Run sends traffic to PORT, but Thruster listens on HTTP_PORT (default 80)
+# and proxies to TARGET_PORT (default 3000). Thruster sets PORT=TARGET_PORT for the
+# child process (Puma), so we must ensure HTTP_PORT != TARGET_PORT.
 if [ -n "${PORT}" ] && [ -z "${HTTP_PORT}" ]; then
     export HTTP_PORT="${PORT}"
+    export TARGET_PORT="${TARGET_PORT:-3001}"
 fi
 
 # If running the rails server then create or migrate existing database
