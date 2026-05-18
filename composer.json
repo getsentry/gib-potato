@@ -19,7 +19,7 @@
         "lcobucci/jwt": "^5.6.0",
         "paragonie/csp-builder": "^3.0.2",
         "sentry/sentry": "^4.27.0",
-        "sentry/sentry-agent": "^0.1.1"
+        "sentry/sentry-agent": "dev-main"
     },
     "require-dev": {
         "cakephp/bake": "^3.6.4",
