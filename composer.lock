@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "65e5750c0165460a2c4ddbb3a593ce32",
+    "content-hash": "945073837aa8ded9573bebd7afcc74c7",
     "packages": [
         {
             "name": "cakephp/authentication",
@@ -1910,37 +1910,30 @@
         },
         {
             "name": "sentry/sentry-agent",
-            "version": "0.1.1",
+            "version": "dev-main",
             "source": {
                 "type": "git",
                 "url": "https://github.com/getsentry/sentry-php-agent.git",
-                "reference": "7618c2e4959b5fac181495c849e662b2948d101f"
+                "reference": "cda732f5939ff6b6c14802cdc8d4776b6e2161a1"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/getsentry/sentry-php-agent/zipball/7618c2e4959b5fac181495c849e662b2948d101f",
-                "reference": "7618c2e4959b5fac181495c849e662b2948d101f",
+                "url": "https://api.github.com/repos/getsentry/sentry-php-agent/zipball/cda732f5939ff6b6c14802cdc8d4776b6e2161a1",
+                "reference": "cda732f5939ff6b6c14802cdc8d4776b6e2161a1",
                 "shasum": ""
             },
             "require": {
                 "ext-json": "*",
-                "php": "^7.2|^8",
-                "sentry/sentry": "^4.15.0"
+                "php": "^7.2|^8"
             },
             "require-dev": {
-                "friendsofphp/php-cs-fixer": "^3.70",
-                "phpstan/phpstan": "^2.1",
-                "phpunit/phpunit": "^8.5|^9.6"
+                "friendsofphp/php-cs-fixer": "^3.70"
             },
+            "default-branch": true,
             "bin": [
                 "bin/sentry-agent"
             ],
             "type": "library",
-            "autoload": {
-                "psr-4": {
-                    "Sentry\\Agent\\": "src/"
-                }
-            },
             "notification-url": "https://packagist.org/downloads/",
             "license": [
                 "MIT"
@@ -1955,7 +1948,7 @@
             "homepage": "https://sentry.io",
             "support": {
                 "issues": "https://github.com/getsentry/sentry-php-agent/issues",
-                "source": "https://github.com/getsentry/sentry-php-agent/tree/0.1.1"
+                "source": "https://github.com/getsentry/sentry-php-agent/tree/main"
             },
             "funding": [
                 {
@@ -1967,7 +1960,7 @@
                     "type": "custom"
                 }
             ],
-            "time": "2025-09-05T10:03:28+00:00"
+            "time": "2026-05-06T14:43:20+00:00"
         },
         {
             "name": "symfony/deprecation-contracts",
@@ -4733,7 +4726,9 @@
     ],
     "aliases": [],
     "minimum-stability": "stable",
-    "stability-flags": {},
+    "stability-flags": {
+        "sentry/sentry-agent": 20
+    },
     "prefer-stable": true,
     "prefer-lowest": false,
     "platform": {
