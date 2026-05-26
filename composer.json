@@ -13,8 +13,8 @@
     "require": {
         "php": ">=8.5",
         "cakephp/authentication": "^3.3.5",
-        "cakephp/cakephp": "^5.3.4",
-        "cakephp/migrations": "^5.1.1",
+        "cakephp/cakephp": "^5.3.6",
+        "cakephp/migrations": "^5.2.0",
         "cakephp/plugin-installer": "^2.0.2",
         "lcobucci/jwt": "^5.6.0",
         "paragonie/csp-builder": "^3.0.2",
