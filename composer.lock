@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "46fa88dffd93bc0d246f2aff1fae14c0",
+    "content-hash": "58b9b442bb6feb0cf480f8d97a77de94",
     "packages": [
         {
             "name": "cakephp/authentication",
@@ -1912,16 +1912,16 @@
         },
         {
             "name": "sentry/sentry-agent",
-            "version": "dev-main",
+            "version": "1.0.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/getsentry/sentry-php-agent.git",
-                "reference": "830081b3362770f43b1f87320c23896518e3dc4a"
+                "reference": "244ca737e7ba5f3b381a57e9d6637b7d4040c545"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/getsentry/sentry-php-agent/zipball/830081b3362770f43b1f87320c23896518e3dc4a",
-                "reference": "830081b3362770f43b1f87320c23896518e3dc4a",
+                "url": "https://api.github.com/repos/getsentry/sentry-php-agent/zipball/244ca737e7ba5f3b381a57e9d6637b7d4040c545",
+                "reference": "244ca737e7ba5f3b381a57e9d6637b7d4040c545",
                 "shasum": ""
             },
             "require": {
@@ -1931,7 +1931,6 @@
             "require-dev": {
                 "friendsofphp/php-cs-fixer": "^3.70"
             },
-            "default-branch": true,
             "bin": [
                 "bin/sentry-agent"
             ],
@@ -1950,7 +1949,7 @@
             "homepage": "https://sentry.io",
             "support": {
                 "issues": "https://github.com/getsentry/sentry-php-agent/issues",
-                "source": "https://github.com/getsentry/sentry-php-agent/tree/main"
+                "source": "https://github.com/getsentry/sentry-php-agent/tree/1.0.0"
             },
             "funding": [
                 {
@@ -1962,7 +1961,7 @@
                     "type": "custom"
                 }
             ],
-            "time": "2026-05-18T13:07:19+00:00"
+            "time": "2026-06-10T09:41:48+00:00"
         },
         {
             "name": "symfony/deprecation-contracts",
@@ -4524,16 +4523,16 @@
         },
         {
             "name": "symfony/polyfill-mbstring",
-            "version": "v1.38.1",
+            "version": "v1.38.2",
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/polyfill-mbstring.git",
-                "reference": "14c5439eec4ccff081ac14eca2dc57feb2a66d92"
+                "reference": "d3d318bad5e7a1bfbd026009c8bfb8d8f99ae6b6"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/polyfill-mbstring/zipball/14c5439eec4ccff081ac14eca2dc57feb2a66d92",
-                "reference": "14c5439eec4ccff081ac14eca2dc57feb2a66d92",
+                "url": "https://api.github.com/repos/symfony/polyfill-mbstring/zipball/d3d318bad5e7a1bfbd026009c8bfb8d8f99ae6b6",
+                "reference": "d3d318bad5e7a1bfbd026009c8bfb8d8f99ae6b6",
                 "shasum": ""
             },
             "require": {
@@ -4585,7 +4584,7 @@
                 "shim"
             ],
             "support": {
-                "source": "https://github.com/symfony/polyfill-mbstring/tree/v1.38.1"
+                "source": "https://github.com/symfony/polyfill-mbstring/tree/v1.38.2"
             },
             "funding": [
                 {
@@ -4605,7 +4604,7 @@
                     "type": "tidelift"
                 }
             ],
-            "time": "2026-05-26T12:51:13+00:00"
+            "time": "2026-05-27T06:59:30+00:00"
         },
         {
             "name": "theseer/tokenizer",
@@ -4812,14 +4811,12 @@
     ],
     "aliases": [],
     "minimum-stability": "stable",
-    "stability-flags": {
-        "sentry/sentry-agent": 20
-    },
+    "stability-flags": {},
     "prefer-stable": true,
     "prefer-lowest": false,
     "platform": {
         "php": ">=8.5"
     },
     "platform-dev": {},
-    "plugin-api-version": "2.6.0"
+    "plugin-api-version": "2.9.0"
 }
