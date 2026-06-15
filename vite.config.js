@@ -28,8 +28,7 @@ export default defineConfig(({ mode }) => {
       emptyOutDir: false,
       outDir: './webroot/',
       manifest: true,
-      minify: 'esbuild',
-      rollupOptions: {
+      rolldownOptions: {
         input: './frontend/src/main.js',
       },
     },
