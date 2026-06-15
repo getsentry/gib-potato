@@ -77,12 +77,14 @@ steps:
   - '--region'
   - 'us-central1'
   waitFor: ['push-backend']
-- name: 'gcr.io/cloud-builders/npm'
+- name: 'node:24'
   id: 'npm-install'
-  args: ['install', '--frozen-lock'] 
+  entrypoint: npm
+  args: ['install', '--frozen-lock']
   waitFor: ['-']
-- name: 'gcr.io/cloud-builders/npm'
+- name: 'node:24'
   id: 'build-assets'
+  entrypoint: npm
   args: ['run', 'build']
   waitFor: ['npm-install']
   secretEnv: ['SENTRY_AUTH_TOKEN']
