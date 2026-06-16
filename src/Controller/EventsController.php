@@ -24,6 +24,7 @@ class EventsController extends Controller
 
     /**
      * @return \Cake\Http\Response
+     * @phpstan-ignore-next-line
      */
     #[Trace(['op' => 'controller.method', 'description' => 'events controller'])]
     public function index(): Response
