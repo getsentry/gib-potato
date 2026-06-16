@@ -44,7 +44,6 @@ RUN \
     make -j"$(nproc)" && \
     make install && \
     echo "extension=sentry.so" > /etc/php/8.5/mods-available/sentry.ini && \
-    phpenmod sentry && \
     cd / && rm -rf /tmp/sentry-php-tracer && \
     apt-get purge -y php8.5-dev autoconf make gcc g++ && \
     apt-get autoremove -y && \
@@ -59,6 +58,7 @@ RUN \
     a2enmod proxy_fcgi && \
     a2enmod rewrite && \
     phpenmod -s fpm excimer && \
+    phpenmod -s fpm sentry && \
     # Enable zend.assertions
     # Development Value: 1
     sed -i "s/zend.assertions = -1/zend.assertions = 1/g" /etc/php/8.5/fpm/php.ini && \
