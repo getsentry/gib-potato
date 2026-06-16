@@ -7,6 +7,7 @@ use App\Event\EventFactory;
 use Cake\Controller\Controller;
 use Cake\Http\Response;
 use Sentry\SentrySdk;
+use Sentry\Trace;
 use function Sentry\trace_metrics;
 
 class EventsController extends Controller
@@ -23,7 +24,9 @@ class EventsController extends Controller
 
     /**
      * @return \Cake\Http\Response
+     * @phpstan-ignore-next-line
      */
+    #[Trace(['op' => 'controller.method', 'description' => 'events controller'])]
     public function index(): Response
     {
         $this->request->allowMethod('POST');

@@ -27,7 +27,26 @@ RUN \
     php8.5-pgsql \
     php8.5-xml \
     php8.5-zip \
-    php8.5-excimer && \
+    php8.5-excimer
+
+RUN \
+    apt-get install -y --no-install-recommends \
+    php8.5-dev \
+    git \
+    autoconf \
+    make \
+    gcc \
+    g++ && \
+    git clone --branch initial-tracing --single-branch https://github.com/getsentry/sentry-php-tracer.git /tmp/sentry-php-tracer && \
+    cd /tmp/sentry-php-tracer && \
+    phpize && \
+    ./configure --enable-sentry && \
+    make -j"$(nproc)" && \
+    make install && \
+    echo "extension=sentry.so" > /etc/php/8.5/mods-available/sentry.ini && \
+    cd / && rm -rf /tmp/sentry-php-tracer && \
+    apt-get purge -y php8.5-dev autoconf make gcc g++ && \
+    apt-get autoremove -y && \
     rm -rf /var/lib/apt/lists/*
 
 RUN rm /etc/apache2/sites-available/*.conf
@@ -39,6 +58,7 @@ RUN \
     a2enmod proxy_fcgi && \
     a2enmod rewrite && \
     phpenmod -s fpm excimer && \
+    phpenmod -s fpm sentry && \
     # Enable zend.assertions
     # Development Value: 1
     sed -i "s/zend.assertions = -1/zend.assertions = 1/g" /etc/php/8.5/fpm/php.ini && \
