@@ -24,6 +24,7 @@ class EventsController extends Controller
     /**
      * @return \Cake\Http\Response
      */
+    #[\Sentry\Trace(['op' => 'controller.method', 'description' => 'events controller'])]
     public function index(): Response
     {
         $this->request->allowMethod('POST');
