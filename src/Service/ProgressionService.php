@@ -7,6 +7,7 @@ use App\Http\SlackClient;
 use App\Model\Entity\Progression;
 use App\Model\Entity\User;
 use Cake\ORM\Locator\LocatorAwareTrait;
+use function Sentry\logger;
 
 class ProgressionService
 {
@@ -43,6 +44,15 @@ class ProgressionService
             ],
         ]);
         $usersTable->saveOrFail($user);
+
+        logger()->info(
+            message: 'User progression unlocked',
+            attributes: [
+                'gibpotato.user.id' => $user->id,
+                'gibpotato.progression.id' => $progression->id,
+                'gibpotato.progression.name' => $progression->name,
+            ],
+        );
 
         $this->sendProgressionNotification($user, $progression);
     }

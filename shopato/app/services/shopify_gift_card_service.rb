@@ -18,11 +18,11 @@ class ShopifyGiftCardService
   def initialize(shop: Rails.application.config.shopify_shop_domain, token: Rails.application.config.shopify_admin_access_token)
     @session = ShopifyAPI::Auth::Session.new(shop: shop, access_token: token)
     @client = ShopifyAPI::Clients::Graphql::Admin.new(session: @session)
-    log_debug("ShopifyGiftCardService initialized", shop: shop)
   end
 
   def create_gift_card(amount, name = nil, note: nil)
-    log_info("Creating gift card via Shopify API", amount: amount, name: name)
+    log_info("Creating gift card via Shopify",
+      "gibpotato.giftcard.amount": amount)
 
     begin
       variables = build_mutation_variables(amount, name, note)
@@ -45,7 +45,6 @@ class ShopifyGiftCardService
   end
 
   def execute_graphql_mutation(variables)
-    log_trace("Executing Shopify GraphQL mutation", variables: variables)
     @client.query(query: CREATE_MUTATION, variables: variables)
   end
 
@@ -68,10 +67,9 @@ class ShopifyGiftCardService
   end
 
   def handle_user_errors(errors, amount, name)
-    log_error("Shopify API returned user errors",
-      errors: errors,
-      amount: amount,
-      name: name)
+    log_error("Shopify returned user errors creating gift card",
+      "gibpotato.giftcard.amount": amount,
+      "gibpotato.giftcard.user_errors": errors)
     error!(errors.join(", "))
   end
 
@@ -82,19 +80,18 @@ class ShopifyGiftCardService
       "code" => payload["giftCardCode"]
     }
 
-    log_info("Gift card created successfully via Shopify",
-      gift_card_id: gift_card_data["id"],
-      amount: gift_card_data["amount"])
+    log_info("Gift card created via Shopify",
+      "gibpotato.giftcard.id": gift_card_data["id"],
+      "gibpotato.giftcard.amount": gift_card_data["amount"])
 
     success!(gift_card: gift_card_data)
   end
 
   def handle_api_error(error, amount, name)
-    log_error("Shopify API error occurred",
-      error_message: error.message,
-      error_class: error.class.name,
-      amount: amount,
-      name: name)
+    log_error("Shopify API request failed",
+      "gibpotato.giftcard.amount": amount,
+      "gibpotato.giftcard.error_class": error.class.name,
+      "gibpotato.giftcard.error_message": error.message)
     error!("Shopify error: #{error.message}")
   end
 

@@ -1,4 +1,5 @@
 import { createStore } from 'vuex'
+import * as Sentry from '@sentry/vue'
 import api from '@/api'
 import helper from '@/helper'
 
@@ -46,7 +47,10 @@ const store = createStore({
                 const response = await api.get('user')
                 commit('SET_USER', response.data)
             } catch (error) {
-                console.error(error)
+                Sentry.logger.error('Failed to load authenticated user', {
+                    'gibpotato.api.endpoint': 'user',
+                    'gibpotato.api.status_code': error.response?.status,
+                })
             }
         },
         async getUsers({ commit }) {
@@ -84,25 +88,34 @@ const store = createStore({
         async toggleSentNotifications({ commit, getters }) {
             commit('TOGGLE_SENT_NOTIFICATIONS')
             try {
-                const response = await api.patch('user', getters.user)
+                await api.patch('user', getters.user)
             } catch (error) {
-                console.error(error)
+                Sentry.logger.warn('Notification preference may not have persisted', {
+                    'gibpotato.settings.notification_type': 'sent',
+                    'gibpotato.api.status_code': error.response?.status,
+                })
             }
         },
         async toggleReceivedNotifications({ commit, getters }) {
             commit('TOGGLE_RECEIVED_NOTIFICATIONS')
             try {
-                const response = await api.patch('user', getters.user)
+                await api.patch('user', getters.user)
             } catch (error) {
-                console.error(error)
+                Sentry.logger.warn('Notification preference may not have persisted', {
+                    'gibpotato.settings.notification_type': 'received',
+                    'gibpotato.api.status_code': error.response?.status,
+                })
             }
         },
         async toggleTooGoodToGoNotifications({ commit, getters }) {
             commit('TOGGLE_TOO_GOOD_TO_GO_NOTIFICATIONS')
             try {
-                const response = await api.patch('user', getters.user)
+                await api.patch('user', getters.user)
             } catch (error) {
-                console.error(error)
+                Sentry.logger.warn('Notification preference may not have persisted', {
+                    'gibpotato.settings.notification_type': 'too_good_to_go',
+                    'gibpotato.api.status_code': error.response?.status,
+                })
             }
         },
         setRangeFilter({ commit }, range) {

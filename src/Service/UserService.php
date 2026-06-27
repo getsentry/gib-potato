@@ -10,6 +10,7 @@ use App\Model\Table\UsersTable;
 use Cake\ORM\Locator\LocatorAwareTrait;
 use Exception;
 use function Cake\Core\env;
+use function Sentry\logger;
 
 class UserService
 {
@@ -69,6 +70,15 @@ class UserService
         ]);
 
         $user = $this->Users->saveOrFail($user);
+
+        logger()->info(
+            message: 'New user created',
+            attributes: [
+                'gibpotato.user.id' => $user->id,
+                'gibpotato.user.slack_user_id' => $user->slack_user_id,
+                'gibpotato.user.is_bot' => $user->slack_is_bot,
+            ],
+        );
 
         $this->ApiTokens->generateApiToken($user);
 
