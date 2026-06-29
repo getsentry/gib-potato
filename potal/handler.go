@@ -166,6 +166,13 @@ func (h *Handler) EventsHandler(w http.ResponseWriter, r *http.Request, _ httpro
 					}
 
 					h.emitEventMetric(txn.Context(), "potal.event.forwarded", "message")
+					slog.InfoContext(txn.Context(), "Potato message forwarded to API",
+						"gibpotato.event.type", "message",
+						"gibpotato.message.sender", processedEvent.Sender,
+						"gibpotato.message.receivers", len(processedEvent.Receivers),
+						"gibpotato.potatoes.amount", processedEvent.Amount,
+						"gibpotato.slack.channel", processedEvent.Channel,
+					)
 					txn.Status = sentry.SpanStatusOK
 				}()
 			}
@@ -200,6 +207,13 @@ func (h *Handler) EventsHandler(w http.ResponseWriter, r *http.Request, _ httpro
 				}
 
 				h.emitEventMetric(txn.Context(), "potal.event.forwarded", "reaction_added")
+				slog.InfoContext(txn.Context(), "Potato reaction forwarded to API",
+					"gibpotato.event.type", "reaction_added",
+					"gibpotato.message.sender", processedEvent.Sender,
+					"gibpotato.message.receivers", len(processedEvent.Receivers),
+					"gibpotato.potatoes.amount", processedEvent.Amount,
+					"gibpotato.slack.channel", processedEvent.Channel,
+				)
 				txn.Status = sentry.SpanStatusOK
 			}()
 		case *slackevents.AppMentionEvent:

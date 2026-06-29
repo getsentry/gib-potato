@@ -11,6 +11,7 @@ use Cake\Routing\Router;
 use function Cake\Core\env;
 use function Sentry\getBaggage;
 use function Sentry\getTraceparent;
+use function Sentry\logger;
 
 /**
  * @property \Authentication\Controller\Component\AuthenticationComponent $Authentication
@@ -147,6 +148,15 @@ class ShopController extends ApiController
                 ]);
                 $purchase = $purchasesTable->saveOrFail($purchase);
             } else {
+                logger()->warn(
+                    message: 'Gift card fulfilment failed',
+                    attributes: [
+                        'gibpotato.purchase.id' => $purchase->id,
+                        'gibpotato.shop.product_id' => $product->id,
+                        'gibpotato.api.status_code' => $response->getStatusCode(),
+                    ],
+                );
+
                 return $this->response
                     ->withStatus(500)
                     ->withType('json')
@@ -208,6 +218,17 @@ class ShopController extends ApiController
                 blocks: json_encode($blocks),
             );
         }
+
+        logger()->info(
+            message: 'Shop purchase completed',
+            attributes: [
+                'gibpotato.purchase.id' => $purchase->id,
+                'gibpotato.shop.product_id' => $product->id,
+                'gibpotato.purchase.price' => $product->price,
+                'gibpotato.purchase.is_gift' => $presentee !== null,
+                'gibpotato.purchase.is_gift_card' => $product->type === Product::TYPE_GIFT_CARD,
+            ],
+        );
 
         return $this->response
             ->withStatus(200)

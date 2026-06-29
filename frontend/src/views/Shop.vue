@@ -204,6 +204,8 @@
 import { computed } from 'vue'
 import { useStore } from 'vuex'
 
+import * as Sentry from '@sentry/vue'
+
 import api from '@/api'
 
 import 'vue-select/dist/vue-select.css';
@@ -273,11 +275,21 @@ export default {
                 this.purchaseSuccess = true
                 this.code = response.data.code
 
+                Sentry.logger.info('Shop purchase completed', {
+                    'gibpotato.shop.product_id': this.product.id,
+                    'gibpotato.shop.purchase_mode': this.purchaseMode,
+                    'gibpotato.shop.is_gift': this.purchaseMode !== 'myself',
+                })
+
                 await this.$store.dispatch('getUser')
                 await this.$store.dispatch('getProducts')
                 await this.$store.dispatch('getCollection')
             } catch (error) {
-                console.log(error)
+                Sentry.logger.warn('Shop purchase failed', {
+                    'gibpotato.shop.product_id': this.product?.id,
+                    'gibpotato.shop.purchase_mode': this.purchaseMode,
+                    'gibpotato.shop.status_code': error.response?.status,
+                })
                 this.modalError = error.response.data.error
             } finally {
                 this.loading = false
