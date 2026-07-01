@@ -250,7 +250,7 @@ class User extends Entity
         // Return the minimum of available balance or remaining 90-day limit
         $remainingLimit = self::SPENDING_LIMIT_90_DAYS - $spentLast90Days;
 
-        return min($availableBalance, $remainingLimit);
+        return max(0, min($availableBalance, $remainingLimit));
     }
 
     /**

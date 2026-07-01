@@ -134,6 +134,8 @@ class UserTest extends TestCase
      */
     public function testSpendablePotatoNoPurchasesNoReceived(): void
     {
+        Chronos::setTestNow(new Chronos('2025-09-12 12:00:00', 'UTC'));
+
         // User 3 has no purchases and no received potatoes
         $spendable = $this->UserUS->spendablePotato();
         $this->assertSame(0, $spendable);
