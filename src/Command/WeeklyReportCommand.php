@@ -53,7 +53,7 @@ class WeeklyReportCommand extends Command
                     type: MonitorSchedule::TYPE_CRONTAB,
                     value: '15 23 * * 5',
                 ),
-                checkinMargin: 10,
+                checkinMargin: 30,
                 maxRuntime: 15,
                 timezone: 'UTC',
             ),

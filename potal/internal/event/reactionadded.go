@@ -24,11 +24,14 @@ type ReactionAddedEvent struct {
 	Permalink      string         `json:"permalink"`
 
 	ThreadTimestamp string `json:"thread_timestamp,omitempty"`
+
+	IsBot bool `json:"-"`
 }
 
 func (e ReactionAddedEvent) isValid() bool {
 	// Only process potato reactions
-	return e.Reaction == "potato"
+	return e.Reaction == "potato" &&
+		!e.IsBot
 }
 
 func ProcessReactionEvent(ctx context.Context, e *slackevents.ReactionAddedEvent, sc *slack.Client) *ReactionAddedEvent {
@@ -38,8 +41,24 @@ func ProcessReactionEvent(ctx context.Context, e *slackevents.ReactionAddedEvent
 	span := txn.StartChild("event.process", sentry.WithDescription("Process ReactionAdded Event"))
 	defer span.Finish()
 
+	userSpan := span.StartChild("http.client")
+	userSpan.Description = "GET https://slack.com/api/users.info"
+
+	// Get the user for the original message
+	user, err := sc.GetUserInfo(e.User)
+	if err != nil {
+		userSpan.Status = sentry.SpanStatusInternalError
+		hub.CaptureException(err)
+		slog.ErrorContext(ctx, "failed to get user", "error", err, "user", e.User)
+		return nil
+	} else {
+		userSpan.Status = sentry.SpanStatusOK
+	}
+	userSpan.Finish()
+
 	reactionEvent := ReactionAddedEvent{
 		Reaction: e.Reaction,
+		IsBot:    user.IsBot,
 	}
 
 	if !reactionEvent.isValid() {

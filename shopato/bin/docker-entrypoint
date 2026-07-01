@@ -6,6 +6,13 @@ if [ -z "${LD_PRELOAD+x}" ]; then
     export LD_PRELOAD
 fi
 
+# Cloud Run sends traffic to PORT, but Thruster listens on HTTP_PORT and proxies
+# to TARGET_PORT. Derive TARGET_PORT from HTTP_PORT so they never collide.
+if [ -n "${PORT}" ] && [ -z "${HTTP_PORT}" ]; then
+    export HTTP_PORT="${PORT}"
+    export TARGET_PORT="${TARGET_PORT:-$((PORT + 1))}"
+fi
+
 # If running the rails server then create or migrate existing database
 if [ "${@: -2:1}" == "./bin/rails" ] && [ "${@: -1:1}" == "server" ]; then
   ./bin/rails db:prepare
