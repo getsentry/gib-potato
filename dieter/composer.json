@@ -10,6 +10,7 @@
     "license": "MIT",
     "require": {
         "php": "^8.3",
+        "laravel/ai": "^0.8.1",
         "laravel/framework": "^13.18",
         "laravel/tinker": "^3.0.2",
         "sentry/sentry-laravel": "^4.26"
