@@ -37,7 +37,7 @@ RUN \
     make \
     gcc \
     g++ && \
-    git clone --branch initial-tracing --single-branch https://github.com/getsentry/sentry-php-tracer.git /tmp/sentry-php-tracer && \
+    git clone --branch main --single-branch https://github.com/getsentry/sentry-php-tracer.git /tmp/sentry-php-tracer && \
     cd /tmp/sentry-php-tracer && \
     phpize && \
     ./configure --enable-sentry && \
