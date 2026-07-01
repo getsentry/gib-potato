@@ -40,7 +40,7 @@ func ProcessSlashCommand(ctx context.Context, e slack.SlashCommand) *SlashComman
 	}
 	span.Status = sentry.SpanStatusOK
 
-	hub.Scope().SetExtra("event", slashCommandEvent)
+	hub.Scope().SetContext("event", sentry.Context{"data": slashCommandEvent})
 	hub.Scope().SetTag("event_type", slashCommand.String())
 
 	return &slashCommandEvent

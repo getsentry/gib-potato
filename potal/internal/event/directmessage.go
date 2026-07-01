@@ -46,7 +46,7 @@ func ProcessDirectMessageEvent(ctx context.Context, e *slackevents.MessageEvent)
 	}
 	span.Status = sentry.SpanStatusOK
 
-	hub.Scope().SetExtra("event", directMessageEvent)
+	hub.Scope().SetContext("event", sentry.Context{"data": directMessageEvent})
 	hub.Scope().SetTag("event_type", directMessage.String())
 
 	return &directMessageEvent

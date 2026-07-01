@@ -61,7 +61,7 @@ func ProcessLinkSharedEvent(ctx context.Context, e *slackevents.LinkSharedEvent)
 	}
 	span.Status = sentry.SpanStatusOK
 
-	hub.Scope().SetExtra("event", linkSharedEvent)
+	hub.Scope().SetContext("event", sentry.Context{"data": linkSharedEvent})
 	hub.Scope().SetTag("event_type", linkShared.String())
 
 	return &linkSharedEvent

@@ -7,6 +7,8 @@ use App\Event\EventFactory;
 use Cake\Controller\Controller;
 use Cake\Http\Response;
 use Sentry\SentrySdk;
+use Sentry\Trace;
+use function Sentry\trace_metrics;
 
 class EventsController extends Controller
 {
@@ -22,7 +24,9 @@ class EventsController extends Controller
 
     /**
      * @return \Cake\Http\Response
+     * @phpstan-ignore-next-line
      */
+    #[Trace(['op' => 'controller.method', 'description' => 'events controller'])]
     public function index(): Response
     {
         $this->request->allowMethod('POST');
@@ -38,6 +42,34 @@ class EventsController extends Controller
                 'gibpotato.potatoes.event_size' => mb_strlen(serialize($this->request->getData()), '8bit'),
                 'gibpotato.event_type' => $event->type,
             ]);
+            trace_metrics()->distribution(
+                'gibpotato.potatoes.event_processing_time',
+                (float)microtime(true) - $startTimestamp,
+                [
+                    'gibpotato.event_type' => $event->type,
+                ],
+            );
+            trace_metrics()->gauge(
+                'gibpotato.potatoes.event_processing_time',
+                (float)microtime(true) - $startTimestamp,
+                [
+                    'gibpotato.event_type' => $event->type,
+                ],
+            );
+            trace_metrics()->distribution(
+                'gibpotato.potatoes.event_size',
+                (float)mb_strlen(serialize($this->request->getData()), '8bit'),
+                [
+                    'gibpotato.event_type' => $event->type,
+                ],
+            );
+            trace_metrics()->gauge(
+                'gibpotato.potatoes.event_size',
+                (float)mb_strlen(serialize($this->request->getData()), '8bit'),
+                [
+                    'gibpotato.event_type' => $event->type,
+                ],
+            );
         }
 
         return $this->response

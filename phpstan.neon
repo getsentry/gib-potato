@@ -3,7 +3,6 @@ parameters:
     treatPhpDocTypesAsCertain: false
     bootstrapFiles:
         - config/paths.php
-    checkGenericClassInNonGenericObjectType: false
     paths:
         - src/
     excludePaths:

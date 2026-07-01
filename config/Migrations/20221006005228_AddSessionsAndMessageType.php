@@ -1,10 +1,9 @@
 <?php
 declare(strict_types=1);
 
-use Migrations\AbstractMigration;
-use Phinx\Db\Adapter\MysqlAdapter;
+use Migrations\BaseMigration;
 
-class AddSessionsAndMessageType extends AbstractMigration
+class AddSessionsAndMessageType extends BaseMigration
 {
     /**
      * Up Method.
@@ -34,7 +33,6 @@ class AddSessionsAndMessageType extends AbstractMigration
             ])
             ->addColumn('data', 'binary', [
                 'default' => null,
-                'limit' => MysqlAdapter::BLOB_REGULAR,
                 'null' => true,
             ])
             ->addColumn('expires', 'integer', [

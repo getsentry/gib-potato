@@ -5,76 +5,77 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
-	"log"
+	"log/slog"
 	"net/http"
 	"os"
+	"time"
+
+	sentryhttpclient "github.com/getsentry/sentry-go/httpclient"
 
 	"github.com/getsentry/gib-potato/internal/event"
 	"github.com/getsentry/sentry-go"
+	"github.com/getsentry/sentry-go/attribute"
 )
 
-func SendRequest(ctx context.Context, e event.PotalEvent) error {
+type Client struct {
+	Meter sentry.Meter
+}
+
+func NewClient(meter sentry.Meter) *Client {
+	return &Client{Meter: meter}
+}
+
+func (c *Client) SendRequest(ctx context.Context, e event.PotalEvent) error {
 	url := os.Getenv("POTAL_URL")
 
 	hub := sentry.GetHubFromContext(ctx)
-	txn := sentry.TransactionFromContext(ctx)
-
-	span := txn.StartChild("http.client", sentry.WithDescription(fmt.Sprintf("POST %s", url)))
-	defer span.Finish()
 
 	body, jsonErr := json.Marshal(e)
 	if jsonErr != nil {
 		hub.CaptureException(jsonErr)
-		log.Printf("An Error Occured %v", jsonErr)
+		slog.ErrorContext(ctx, "failed to marshal event", "error", jsonErr)
 		return jsonErr
 	}
 
-	r, newReqErr := http.NewRequest("POST", url, bytes.NewBuffer(body))
+	r, newReqErr := http.NewRequestWithContext(ctx, "POST", url, bytes.NewBuffer(body))
 	if newReqErr != nil {
 		hub.CaptureException(newReqErr)
-		log.Printf("An Error Occured %v", newReqErr)
+		slog.ErrorContext(ctx, "failed to create API request", "error", newReqErr)
 		return newReqErr
 	}
 
 	r.Header.Add("Content-Type", "application/json")
-	r.Header.Add("Sentry-Trace", span.ToSentryTrace())
-	r.Header.Add("Baggage", span.ToBaggage())
 	r.Header.Add("Authorization", os.Getenv("POTAL_TOKEN"))
 
-	client := &http.Client{}
+	client := &http.Client{
+		Transport: sentryhttpclient.NewSentryRoundTripper(nil),
+	}
+
+	start := time.Now()
+
 	res, reqErr := client.Do(r)
 	if reqErr != nil {
 		hub.CaptureException(reqErr)
-		span.Status = sentry.SpanStatusInternalError
-
-		log.Printf("An Error Occured %v", reqErr)
+		slog.ErrorContext(ctx, "API request failed", "error", reqErr)
 		return reqErr
 	}
 	defer func() {
-		if err := res.Body.Close(); err != nil {
-			log.Printf("Failed to close response body: %v", err)
-		}
+		_ = res.Body.Close()
 	}()
 
-	span.Data = map[string]interface{}{
-		"http.response.status_code": res.StatusCode,
-	}
+	c.Meter.WithCtx(ctx).Distribution(
+		"potal.event.forward_duration",
+		float64(time.Since(start).Milliseconds()),
+		sentry.WithUnit(sentry.UnitMillisecond),
+		sentry.WithAttributes(attribute.Int("http.response.status_code", res.StatusCode)),
+	)
 
-	switch res.StatusCode {
-	case http.StatusOK:
-		span.Status = sentry.SpanStatusOK
+	if res.StatusCode == http.StatusOK {
 		return nil
-	case http.StatusUnauthorized:
-		fallthrough
-	case http.StatusForbidden:
-		span.Status = sentry.SpanStatusPermissionDenied
-	case http.StatusNotFound:
-		span.Status = sentry.SpanStatusNotFound
-	case http.StatusInternalServerError:
-		span.Status = sentry.SpanStatusInternalError
 	}
 
 	msg := fmt.Sprintf("GibPotato API: Got %s response", res.Status)
+	slog.ErrorContext(ctx, "API error response", "status", res.Status, "status_code", res.StatusCode)
 
 	hub.ConfigureScope(func(scope *sentry.Scope) {
 		scope.SetLevel(sentry.LevelFatal)

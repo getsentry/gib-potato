@@ -2,7 +2,7 @@ package event
 
 import (
 	"context"
-	"log"
+	"log/slog"
 
 	"github.com/getsentry/gib-potato/internal/constants"
 	"github.com/getsentry/gib-potato/internal/utils"
@@ -72,7 +72,7 @@ func ProcessMessageEvent(ctx context.Context, e *slackevents.MessageEvent, sc *s
 	if err != nil {
 		permalinkSpan.Status = sentry.SpanStatusInternalError
 		hub.CaptureException(err)
-		log.Printf("An Error Occured %v", err)
+		slog.ErrorContext(ctx, "failed to get permalink", "error", err, "channel", e.Channel)
 	} else {
 		permalinkSpan.Status = sentry.SpanStatusOK
 	}
@@ -80,7 +80,7 @@ func ProcessMessageEvent(ctx context.Context, e *slackevents.MessageEvent, sc *s
 
 	messageEvent.Permalink = permalink
 
-	hub.Scope().SetExtra("event", messageEvent)
+	hub.Scope().SetContext("event", sentry.Context{"data": messageEvent})
 	hub.Scope().SetTag("event_type", message.String())
 
 	return &messageEvent

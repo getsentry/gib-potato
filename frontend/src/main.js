@@ -22,7 +22,8 @@ import './assets/main.css'
         environment: dataSet.sentryEnvironment,
         release: dataSet.sentryRelease,
         tracesSampleRate: 1.0,
-        profilesSampleRate: 1.0,
+        profileSessionSampleRate: 1.0,
+        profileLifecycle: 'trace',
         replaysSessionSampleRate: 1.0,
         replaysOnErrorSampleRate: 1.0,
         enableLogs: true,
@@ -36,6 +37,7 @@ import './assets/main.css'
                 },
             }),
             Sentry.browserProfilingIntegration(),
+            Sentry.spanStreamingIntegration(),
             Sentry.replayIntegration({
                 maskAllText: false,
                 blockAllMedia: false,
@@ -84,7 +86,7 @@ import './assets/main.css'
     app
         .use(router)
         .use(store)
-    
+
     app.component('v-select', vSelect)
 
     app.mount('#app')

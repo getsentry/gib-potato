@@ -1,4 +1,4 @@
-FROM ubuntu:22.04 AS php-local
+FROM ubuntu:24.04 AS php-local
 
 ENV DEBIAN_FRONTEND=noninteractive
 
@@ -10,7 +10,7 @@ RUN \
 
 RUN \
     # https://launchpad.net/~ondrej/+archive/ubuntu/php
-    # ubuntu:22.04 only ships with PHP 8.1
+    # ubuntu:24.04 only ships with PHP 8.3
     LC_ALL=C.UTF-8 add-apt-repository -y ppa:ondrej/php && \
     apt-get update
 
@@ -19,15 +19,34 @@ RUN \
     ca-certificates \
     supervisor \
     apache2 \
-    php8.4 \
-    php8.4-curl \
-    php8.4-fpm \
-    php8.4-intl \
-    php8.4-mbstring \
-    php8.4-pgsql \
-    php8.4-xml \
-    php8.4-zip \
-    php8.4-excimer && \
+    php8.5 \
+    php8.5-curl \
+    php8.5-fpm \
+    php8.5-intl \
+    php8.5-mbstring \
+    php8.5-pgsql \
+    php8.5-xml \
+    php8.5-zip \
+    php8.5-excimer
+
+RUN \
+    apt-get install -y --no-install-recommends \
+    php8.5-dev \
+    git \
+    autoconf \
+    make \
+    gcc \
+    g++ && \
+    git clone --branch main --single-branch https://github.com/getsentry/sentry-php-tracer.git /tmp/sentry-php-tracer && \
+    cd /tmp/sentry-php-tracer && \
+    phpize && \
+    ./configure --enable-sentry && \
+    make -j"$(nproc)" && \
+    make install && \
+    echo "extension=sentry.so" > /etc/php/8.5/mods-available/sentry.ini && \
+    cd / && rm -rf /tmp/sentry-php-tracer && \
+    apt-get purge -y php8.5-dev autoconf make gcc g++ && \
+    apt-get autoremove -y && \
     rm -rf /var/lib/apt/lists/*
 
 RUN rm /etc/apache2/sites-available/*.conf
@@ -35,15 +54,16 @@ COPY ./docker/backend/apache/gib-potato.conf /etc/apache2/sites-available/gib-po
 
 RUN \
     a2ensite gib-potato && \
-    a2enconf php8.4-fpm && \
+    a2enconf php8.5-fpm && \
     a2enmod proxy_fcgi && \
     a2enmod rewrite && \
     phpenmod -s fpm excimer && \
+    phpenmod -s fpm sentry && \
     # Enable zend.assertions
     # Development Value: 1
-    sed -i "s/zend.assertions = -1/zend.assertions = 1/g" /etc/php/8.4/fpm/php.ini && \
-    sed -i "s/zend.exception_ignore_args = On/zend.exception_ignore_args = Off/g" /etc/php/8.4/fpm/php.ini && \
-    sed -i "s/;clear_env = no/clear_env = no/g" /etc/php/8.4/fpm/pool.d/www.conf && \
+    sed -i "s/zend.assertions = -1/zend.assertions = 1/g" /etc/php/8.5/fpm/php.ini && \
+    sed -i "s/zend.exception_ignore_args = On/zend.exception_ignore_args = Off/g" /etc/php/8.5/fpm/php.ini && \
+    sed -i "s/;clear_env = no/clear_env = no/g" /etc/php/8.5/fpm/pool.d/www.conf && \
     sed -i "s/Listen 80/Listen 8080/g" /etc/apache2/ports.conf
 
 RUN mkdir -p /run/php/
@@ -58,7 +78,7 @@ EXPOSE 8080
 
 CMD [ "/bin/bash", "/run.sh" ]
 
-FROM node:22-bullseye AS js-build
+FROM node:24-bookworm AS js-build
 
 WORKDIR /app
 
@@ -74,7 +94,7 @@ RUN \
     npm install --frozen-lock && \
     npm run build
 
-FROM php-local as php-build
+FROM php-local AS php-build
 
 COPY --from=composer:latest /usr/bin/composer /usr/local/bin/composer
 
@@ -84,11 +104,11 @@ COPY composer.json composer.lock ./
 
 RUN composer install --no-dev
 
-FROM php-local as php-prod
+FROM php-local AS php-prod
 
 # Disable zend.assertions again
 # -1: Do not compile at all
-RUN sed -i "s/zend.assertions = 1/zend.assertions = -1/g" /etc/php/8.4/fpm/php.ini
+RUN sed -i "s/zend.assertions = 1/zend.assertions = -1/g" /etc/php/8.5/fpm/php.ini
 
 WORKDIR /var/www/gib-potato
 

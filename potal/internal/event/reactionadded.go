@@ -2,7 +2,7 @@ package event
 
 import (
 	"context"
-	"log"
+	"log/slog"
 
 	"github.com/getsentry/gib-potato/internal/constants"
 	"github.com/getsentry/gib-potato/internal/utils"
@@ -24,11 +24,14 @@ type ReactionAddedEvent struct {
 	Permalink      string         `json:"permalink"`
 
 	ThreadTimestamp string `json:"thread_timestamp,omitempty"`
+
+	IsBot bool `json:"-"`
 }
 
 func (e ReactionAddedEvent) isValid() bool {
 	// Only process potato reactions
-	return e.Reaction == "potato"
+	return e.Reaction == "potato" &&
+		!e.IsBot
 }
 
 func ProcessReactionEvent(ctx context.Context, e *slackevents.ReactionAddedEvent, sc *slack.Client) *ReactionAddedEvent {
@@ -38,8 +41,24 @@ func ProcessReactionEvent(ctx context.Context, e *slackevents.ReactionAddedEvent
 	span := txn.StartChild("event.process", sentry.WithDescription("Process ReactionAdded Event"))
 	defer span.Finish()
 
+	userSpan := span.StartChild("http.client")
+	userSpan.Description = "GET https://slack.com/api/users.info"
+
+	// Get the user for the original message
+	user, err := sc.GetUserInfo(e.User)
+	if err != nil {
+		userSpan.Status = sentry.SpanStatusInternalError
+		hub.CaptureException(err)
+		slog.ErrorContext(ctx, "failed to get user", "error", err, "user", e.User)
+		return nil
+	} else {
+		userSpan.Status = sentry.SpanStatusOK
+	}
+	userSpan.Finish()
+
 	reactionEvent := ReactionAddedEvent{
 		Reaction: e.Reaction,
+		IsBot:    user.IsBot,
 	}
 
 	if !reactionEvent.isValid() {
@@ -59,7 +78,7 @@ func ProcessReactionEvent(ctx context.Context, e *slackevents.ReactionAddedEvent
 		conversationsSpan.Status = sentry.SpanStatusInternalError
 		span.Status = sentry.SpanStatusInternalError
 		hub.CaptureException(err)
-		log.Printf("An Error Occured %v", err)
+		slog.ErrorContext(ctx, "failed to get conversation replies", "error", err, "channel", e.Item.Channel)
 		return nil
 	}
 	conversationsSpan.Status = sentry.SpanStatusOK
@@ -82,7 +101,7 @@ func ProcessReactionEvent(ctx context.Context, e *slackevents.ReactionAddedEvent
 	if err != nil {
 		permaLinkSpan.Status = sentry.SpanStatusInternalError
 		hub.CaptureException(err)
-		log.Printf("An Error Occured %v", err)
+		slog.ErrorContext(ctx, "failed to get permalink", "error", err, "channel", e.Item.Channel)
 	} else {
 		permaLinkSpan.Status = sentry.SpanStatusOK
 	}
@@ -104,7 +123,7 @@ func ProcessReactionEvent(ctx context.Context, e *slackevents.ReactionAddedEvent
 
 	span.Status = sentry.SpanStatusOK
 
-	hub.Scope().SetExtra("event", reactionEvent)
+	hub.Scope().SetContext("event", sentry.Context{"data": reactionEvent})
 	hub.Scope().SetTag("event_type", reactionAdded.String())
 
 	return &reactionEvent

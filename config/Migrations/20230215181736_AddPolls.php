@@ -1,9 +1,9 @@
 <?php
 declare(strict_types=1);
 
-use Migrations\AbstractMigration;
+use Migrations\BaseMigration;
 
-class AddPolls extends AbstractMigration
+class AddPolls extends BaseMigration
 {
     /**
      * Up Method.
