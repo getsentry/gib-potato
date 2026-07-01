@@ -8,10 +8,10 @@
                 <th scope="col" class="py-3.5 px-3 text-left text-sm font-semibold">
                     Person
                 </th>
-                <th scope="col" class="hidden md:table-cell relative py-3.5 pl-3 text-right text-sm font-semibold">
+                <th scope="col" class="hidden md:table-cell py-3.5 px-3 text-right text-sm font-semibold">
                     Received
                 </th>
-                <th scope="col" class="hidden md:table-cell py-3.5 px-3 text-right text-sm font-semibold">
+                <th scope="col" class="hidden md:table-cell relative py-3.5 pl-3 text-right text-sm font-semibold">
                     Sent
                 </th>
             </tr>
