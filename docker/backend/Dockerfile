@@ -1,4 +1,4 @@
-FROM ubuntu:22.04 AS php-local
+FROM ubuntu:24.04 AS php-local
 
 ENV DEBIAN_FRONTEND=noninteractive
 
@@ -10,7 +10,7 @@ RUN \
 
 RUN \
     # https://launchpad.net/~ondrej/+archive/ubuntu/php
-    # ubuntu:22.04 only ships with PHP 8.1
+    # ubuntu:24.04 only ships with PHP 8.3
     LC_ALL=C.UTF-8 add-apt-repository -y ppa:ondrej/php && \
     apt-get update
 
@@ -37,7 +37,7 @@ RUN \
     make \
     gcc \
     g++ && \
-    git clone --branch initial-tracing --single-branch https://github.com/getsentry/sentry-php-tracer.git /tmp/sentry-php-tracer && \
+    git clone --branch main --single-branch https://github.com/getsentry/sentry-php-tracer.git /tmp/sentry-php-tracer && \
     cd /tmp/sentry-php-tracer && \
     phpize && \
     ./configure --enable-sentry && \
@@ -78,7 +78,7 @@ EXPOSE 8080
 
 CMD [ "/bin/bash", "/run.sh" ]
 
-FROM node:24-bullseye AS js-build
+FROM node:24-bookworm AS js-build
 
 WORKDIR /app
 
@@ -94,7 +94,7 @@ RUN \
     npm install --frozen-lock && \
     npm run build
 
-FROM php-local as php-build
+FROM php-local AS php-build
 
 COPY --from=composer:latest /usr/bin/composer /usr/local/bin/composer
 
@@ -104,7 +104,7 @@ COPY composer.json composer.lock ./
 
 RUN composer install --no-dev
 
-FROM php-local as php-prod
+FROM php-local AS php-prod
 
 # Disable zend.assertions again
 # -1: Do not compile at all
