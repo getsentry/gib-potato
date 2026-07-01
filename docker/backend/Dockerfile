@@ -1,4 +1,4 @@
-FROM ubuntu:22.04 AS php-local
+FROM ubuntu:24.04 AS php-local
 
 ENV DEBIAN_FRONTEND=noninteractive
 
@@ -10,7 +10,7 @@ RUN \
 
 RUN \
     # https://launchpad.net/~ondrej/+archive/ubuntu/php
-    # ubuntu:22.04 only ships with PHP 8.1
+    # ubuntu:24.04 only ships with PHP 8.3
     LC_ALL=C.UTF-8 add-apt-repository -y ppa:ondrej/php && \
     apt-get update
 
@@ -78,7 +78,7 @@ EXPOSE 8080
 
 CMD [ "/bin/bash", "/run.sh" ]
 
-FROM node:24-bullseye AS js-build
+FROM node:24-bookworm AS js-build
 
 WORKDIR /app
 
