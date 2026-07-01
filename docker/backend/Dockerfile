@@ -94,7 +94,7 @@ RUN \
     npm install --frozen-lock && \
     npm run build
 
-FROM php-local as php-build
+FROM php-local AS php-build
 
 COPY --from=composer:latest /usr/bin/composer /usr/local/bin/composer
 
@@ -104,7 +104,7 @@ COPY composer.json composer.lock ./
 
 RUN composer install --no-dev
 
-FROM php-local as php-prod
+FROM php-local AS php-prod
 
 # Disable zend.assertions again
 # -1: Do not compile at all
