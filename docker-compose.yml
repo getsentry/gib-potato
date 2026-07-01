@@ -55,6 +55,8 @@ services:
             - SENTRY_POTAL_DSN
             - POTAL_URL
             - POTAL_TOKEN
+            - DIETER_URL
+            - DIETER_TOKEN
         ports:
             - 3000:3000
         networks:

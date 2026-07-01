@@ -95,5 +95,7 @@ return static function (RouteBuilder $routes): void {
         $builder->applyMiddleware('service-auth');
 
         $builder->connect('/events', ['controller' => 'Events', 'action' => 'index']);
+        $builder->get('/polls', ['controller' => 'Polls', 'action' => 'list']);
+        $builder->post('/polls', ['controller' => 'Polls', 'action' => 'create']);
     });
 };

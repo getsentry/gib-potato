@@ -3,7 +3,6 @@ package event
 import (
 	"context"
 
-	"github.com/getsentry/gib-potato/internal/utils"
 	"github.com/getsentry/sentry-go"
 	"github.com/slack-go/slack/slackevents"
 )
@@ -13,7 +12,10 @@ type AppMentionEvent struct {
 	Sender         string         `json:"sender"`
 	Channel        string         `json:"channel"`
 	Text           string         `json:"text"`
+	Timestamp      string         `json:"timestamp"`
 	EventTimestamp string         `json:"event_timestamp"`
+
+	ThreadTimestamp string `json:"thread_timestamp,omitempty"`
 
 	BotID string `json:"-"`
 }
@@ -31,12 +33,14 @@ func ProcessAppMentionEvent(ctx context.Context, e *slackevents.AppMentionEvent)
 	defer span.Finish()
 
 	appMentionEvent := AppMentionEvent{
-		Type:           appMention,
-		Sender:         e.User,
-		Channel:        e.Channel,
-		Text:           utils.ScrubText(e.Text),
-		EventTimestamp: e.EventTimeStamp,
-		BotID:          e.BotID,
+		Type:            appMention,
+		Sender:          e.User,
+		Channel:         e.Channel,
+		Text:            e.Text,
+		Timestamp:       e.TimeStamp,
+		EventTimestamp:  e.EventTimeStamp,
+		ThreadTimestamp: e.ThreadTimeStamp,
+		BotID:           e.BotID,
 	}
 
 	if !appMentionEvent.isValid() {

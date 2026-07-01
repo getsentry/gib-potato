@@ -8,6 +8,7 @@ import (
 	"os"
 	"time"
 
+	"github.com/getsentry/gib-potato/internal/dieterhttp"
 	"github.com/getsentry/gib-potato/internal/potalhttp"
 	"github.com/getsentry/sentry-go"
 	sentryhttp "github.com/getsentry/sentry-go/http"
@@ -58,7 +59,8 @@ func main() {
 	meter := sentry.NewMeter(context.Background())
 	slackClient := slack.New(os.Getenv("SLACK_BOT_USER_OAUTH_TOKEN"))
 	potalClient := potalhttp.NewClient(meter)
-	h := NewHandler(slackClient, potalClient, meter)
+	dieterClient := dieterhttp.NewClient(meter)
+	h := NewHandler(slackClient, potalClient, dieterClient, meter)
 
 	router := httprouter.New()
 	router.GET("/", DefaultHandler)
