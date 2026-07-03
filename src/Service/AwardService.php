@@ -85,6 +85,12 @@ class AwardService
                 $toUser->slack_name,
                 $event->amount,
             ],
+            attributes: [
+                'gibpotato.event.type' => $event->type,
+                'gibpotato.potatoes.amount' => $event->amount,
+                'gibpotato.message.sender_id' => $fromUser->id,
+                'gibpotato.message.receiver_id' => $toUser->id,
+            ],
         );
     }
 }
