@@ -24,17 +24,17 @@ if (function_exists(function: 'Sentry\instrument')) {
         ],
         preprocessing: static function (StatementInterface $statement, ?array $params = null): array {
             $sql = $statement->queryString();
-            $query = trim(string: preg_replace(pattern: '/\s+/', replacement: ' ', subject: $sql) ?? $sql);
+            $query = trim(preg_replace('/\s+/', ' ', $sql) ?? $sql);
             // Handle parenthesized statements like "(SELECT ...)" and capture the SQL operation.
-            $operation = preg_match(pattern: '/^\(*(\w+)/', subject: $query, matches: $matches) === 1
-                ? strtoupper(string: $matches[1])
+            $operation = preg_match('/^\(*(\w+)/',$query,$matches) === 1
+                ? strtoupper($matches[1])
                 : 'QUERY';
 
             return [
                 'description' => $query,
                 'db.operation' => $operation,
                 'db.query.text' => $query,
-                'db.query.parameter_count' => count(value: $params ?? $statement->getBoundParams()),
+                'db.query.parameter_count' => count($params ?? $statement->getBoundParams()),
             ];
         },
     );
@@ -48,10 +48,10 @@ if (function_exists(function: 'Sentry\instrument')) {
             'db.system' => DB_SYSTEM,
         ],
         preprocessing: static function (string $sql): array {
-            $query = trim(string: preg_replace(pattern: '/\s+/', replacement: ' ', subject: $sql) ?? $sql);
+            $query = trim(preg_replace('/\s+/', ' ', $sql) ?? $sql);
             // Handle parenthesized statements like "(SELECT ...)" and capture the SQL operation.
-            $operation = preg_match(pattern: '/^\(*(\w+)/', subject: $query, matches: $matches) === 1
-                ? strtoupper(string: $matches[1])
+            $operation = preg_match('/^\(*(\w+)/', $query, $matches) === 1
+                ? strtoupper($matches[1])
                 : 'QUERY';
 
             return [
