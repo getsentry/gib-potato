@@ -13,7 +13,7 @@ const DB_SYSTEM = 'postgresql';
 const QUERY_OP = 'db.sql.query';
 const TRANSACTION_OP = 'db.sql.transaction';
 
-if (function_exists(function: 'Sentry\instrument')) {
+if (function_exists('\Sentry\instrument')) {
     instrument(
         className: Driver::class,
         functionName: 'executeStatement',
