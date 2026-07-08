@@ -15,8 +15,8 @@ const TRANSACTION_OP = 'db.sql.transaction';
 
 if (function_exists(function: 'Sentry\instrument')) {
     instrument(
-        class_name: Driver::class,
-        function_name: 'executeStatement',
+        className: Driver::class,
+        functionName: 'executeStatement',
         op: QUERY_OP,
         origin: CAKEPHP_DB_ORIGIN,
         attributes: [
@@ -40,8 +40,8 @@ if (function_exists(function: 'Sentry\instrument')) {
     );
 
     instrument(
-        class_name: Driver::class,
-        function_name: 'exec',
+        className: Driver::class,
+        functionName: 'exec',
         op: QUERY_OP,
         origin: CAKEPHP_DB_ORIGIN,
         attributes: [
@@ -64,8 +64,8 @@ if (function_exists(function: 'Sentry\instrument')) {
     );
 
     instrument(
-        class_name: Connection::class,
-        function_name: 'transactional',
+        className: Connection::class,
+        functionName: 'transactional',
         description: 'TRANSACTION',
         op: TRANSACTION_OP,
         origin: CAKEPHP_DB_ORIGIN,
