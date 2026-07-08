@@ -26,7 +26,7 @@ if (function_exists(function: 'Sentry\instrument')) {
             $sql = $statement->queryString();
             $query = trim(preg_replace('/\s+/', ' ', $sql) ?? $sql);
             // Handle parenthesized statements like "(SELECT ...)" and capture the SQL operation.
-            $operation = preg_match('/^\(*(\w+)/',$query,$matches) === 1
+            $operation = preg_match('/^\(*(\w+)/', $query, $matches) === 1
                 ? strtoupper($matches[1])
                 : 'QUERY';
 

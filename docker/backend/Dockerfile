@@ -58,7 +58,7 @@ RUN \
     a2enmod proxy_fcgi && \
     a2enmod rewrite && \
     phpenmod -s fpm excimer && \
-    phpenmod -s fpm sentry && \
+    phpenmod sentry && \
     # Enable zend.assertions
     # Development Value: 1
     sed -i "s/zend.assertions = -1/zend.assertions = 1/g" /etc/php/8.5/fpm/php.ini && \
