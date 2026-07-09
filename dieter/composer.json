@@ -13,7 +13,7 @@
         "laravel/ai": "^0.8.1",
         "laravel/framework": "^13.18",
         "laravel/tinker": "^3.0.2",
-        "sentry/sentry-laravel": "^4.26"
+        "sentry/sentry-laravel": "dev-master"
     },
     "require-dev": {
         "fakerphp/faker": "^1.24.1",

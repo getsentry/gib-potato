@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "806be5b7acb3616d4d890a525b7c2a63",
+    "content-hash": "15015a8643cc3efaacf5eb8acdc30aed",
     "packages": [
         {
             "name": "aws/aws-crt-php",
@@ -62,16 +62,16 @@
         },
         {
             "name": "aws/aws-sdk-php",
-            "version": "3.387.0",
+            "version": "3.387.1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/aws/aws-sdk-php.git",
-                "reference": "38422b3eaed583a6056cef6d40e5594cd90cc895"
+                "reference": "2e1a16e9c87f2a069aa8a0a14a314dd148de21e1"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/aws/aws-sdk-php/zipball/38422b3eaed583a6056cef6d40e5594cd90cc895",
-                "reference": "38422b3eaed583a6056cef6d40e5594cd90cc895",
+                "url": "https://api.github.com/repos/aws/aws-sdk-php/zipball/2e1a16e9c87f2a069aa8a0a14a314dd148de21e1",
+                "reference": "2e1a16e9c87f2a069aa8a0a14a314dd148de21e1",
                 "shasum": ""
             },
             "require": {
@@ -153,9 +153,9 @@
             "support": {
                 "forum": "https://github.com/aws/aws-sdk-php/discussions",
                 "issues": "https://github.com/aws/aws-sdk-php/issues",
-                "source": "https://github.com/aws/aws-sdk-php/tree/3.387.0"
+                "source": "https://github.com/aws/aws-sdk-php/tree/3.387.1"
             },
-            "time": "2026-06-30T18:31:55+00:00"
+            "time": "2026-07-01T18:10:42+00:00"
         },
         {
             "name": "brick/math",
@@ -3829,16 +3829,16 @@
         },
         {
             "name": "sentry/sentry-laravel",
-            "version": "4.26.0",
+            "version": "dev-master",
             "source": {
                 "type": "git",
                 "url": "https://github.com/getsentry/sentry-laravel.git",
-                "reference": "8f2cc669ee99d3cda31a89f0a18197fd2efbd1b6"
+                "reference": "7fa04ee3be494ac96b0e1c22a3ac9baa52847e2f"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/getsentry/sentry-laravel/zipball/8f2cc669ee99d3cda31a89f0a18197fd2efbd1b6",
-                "reference": "8f2cc669ee99d3cda31a89f0a18197fd2efbd1b6",
+                "url": "https://api.github.com/repos/getsentry/sentry-laravel/zipball/7fa04ee3be494ac96b0e1c22a3ac9baa52847e2f",
+                "reference": "7fa04ee3be494ac96b0e1c22a3ac9baa52847e2f",
                 "shasum": ""
             },
             "require": {
@@ -3851,6 +3851,7 @@
             "require-dev": {
                 "friendsofphp/php-cs-fixer": "^3.11",
                 "guzzlehttp/guzzle": "^7.2",
+                "laravel/ai": "^0.1.5",
                 "laravel/folio": "^1.1",
                 "laravel/framework": "^6.0 | ^7.0 | ^8.0 | ^9.0 | ^10.0 | ^11.0 | ^12.0 | ^13.0",
                 "laravel/octane": "^2.15",
@@ -3861,6 +3862,7 @@
                 "phpstan/phpstan": "^1.10",
                 "phpunit/phpunit": "^8.5 | ^9.6 | ^10.4 | ^11.5"
             },
+            "default-branch": true,
             "type": "library",
             "extra": {
                 "laravel": {
@@ -3904,7 +3906,7 @@
             ],
             "support": {
                 "issues": "https://github.com/getsentry/sentry-laravel/issues",
-                "source": "https://github.com/getsentry/sentry-laravel/tree/4.26.0"
+                "source": "https://github.com/getsentry/sentry-laravel/tree/master"
             },
             "funding": [
                 {
@@ -3916,7 +3918,7 @@
                     "type": "custom"
                 }
             ],
-            "time": "2026-06-11T13:22:14+00:00"
+            "time": "2026-07-02T14:23:29+00:00"
         },
         {
             "name": "symfony/clock",
@@ -10561,7 +10563,9 @@
     ],
     "aliases": [],
     "minimum-stability": "stable",
-    "stability-flags": {},
+    "stability-flags": {
+        "sentry/sentry-laravel": 20
+    },
     "prefer-stable": true,
     "prefer-lowest": false,
     "platform": {
