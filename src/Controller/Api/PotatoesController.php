@@ -52,7 +52,10 @@ class PotatoesController extends ApiController
             'allowedParameters' => ['page'],
             'limit' => min(max((int)$this->request->getQuery('per_page', '100'), 1), 500),
             'maxLimit' => 500,
-            'order' => ['Messages.created' => 'DESC'],
+            'order' => [
+                'Messages.created' => 'DESC',
+                'Messages.id' => 'DESC',
+            ],
         ]);
 
         $items = [];
