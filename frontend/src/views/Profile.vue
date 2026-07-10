@@ -197,6 +197,7 @@ export default {
             } finally {
                 this.regenerating = false
                 this.confirmRegenerate = false
+                this.tokenVisible = false
             }
         },
     }
