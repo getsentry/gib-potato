@@ -25,7 +25,9 @@ class UsersController extends ApiController
                 'Users.status' => User::STATUS_ACTIVE,
                 'Users.role !=' => User::ROLE_SERVICE,
             ])
-            ->all();
+            ->all()
+            ->map(fn (User $user) => $user->setHidden(array_diff($user->getHidden(), ['slack_email'])))
+            ->toList();
 
         return $this->response
             ->withStatus(200)
