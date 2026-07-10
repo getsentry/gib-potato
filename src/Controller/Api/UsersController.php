@@ -26,7 +26,7 @@ class UsersController extends ApiController
                 'Users.role !=' => User::ROLE_SERVICE,
             ])
             ->all()
-            ->map(fn (User $user) => $user->setHidden(array_diff($user->getHidden(), ['slack_email'])))
+            ->map(fn(User $user) => $user->setHidden(array_diff($user->getHidden(), ['slack_email'])))
             ->toList();
 
         return $this->response
