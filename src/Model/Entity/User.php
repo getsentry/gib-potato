@@ -16,6 +16,7 @@ use Cake\ORM\Locator\LocatorAwareTrait;
  * @property string $role
  * @property string $slack_user_id
  * @property string $slack_name
+ * @property string|null $slack_email
  * @property string $slack_picture
  * @property string $slack_time_zone
  * @property bool $slack_is_bot
@@ -38,6 +39,15 @@ class User extends Entity
      */
     protected array $_accessible = [
         '*' => false,
+    ];
+
+    /**
+     * Fields that are excluded from JSON versions of the entity.
+     *
+     * @var array<string>
+     */
+    protected array $_hidden = [
+        'slack_email',
     ];
 
     public const STATUS_ACTIVE = 'active';
