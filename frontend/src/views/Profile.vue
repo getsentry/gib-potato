@@ -39,29 +39,38 @@
             </p>
             <div class="mt-3 flex items-center gap-2">
                 <code
-                    class="flex-1 truncate rounded-md border border-zinc-300 bg-zinc-100 dark:bg-zinc-800 dark:border-zinc-600 px-3 py-2 text-sm"
+                    class="sentry-mask flex-1 truncate rounded-md border border-zinc-300 bg-zinc-100 dark:bg-zinc-800 dark:border-zinc-600 px-3 py-2 text-sm"
                 >{{ tokenVisible ? apiToken : '••••••••••••••••••••••••••••••••' }}</code>
                 <button
                     type="button"
-                    class="rounded-md border border-zinc-300 bg-zinc-100 px-3 py-2 text-sm font-medium text-zinc-900"
+                    class="rounded-md border border-zinc-300 bg-zinc-100 dark:bg-zinc-800 dark:border-zinc-600 dark:text-zinc-100 px-3 py-2 text-sm font-medium text-zinc-900"
                     @click="tokenVisible = !tokenVisible"
                 >
                     {{ tokenVisible ? 'Hide' : 'Show' }}
                 </button>
                 <button
                     type="button"
-                    class="rounded-md border border-zinc-300 bg-zinc-100 px-3 py-2 text-sm font-medium text-zinc-900"
+                    class="rounded-md border border-zinc-300 bg-zinc-100 dark:bg-zinc-800 dark:border-zinc-600 dark:text-zinc-100 px-3 py-2 text-sm font-medium text-zinc-900"
                     @click="copyToken"
                 >
                     {{ copied ? 'Copied!' : 'Copy' }}
                 </button>
                 <button
+                    v-if="!confirmRegenerate"
                     type="button"
                     class="rounded-md border border-transparent bg-amber-200 px-3 py-2 text-sm font-medium text-zinc-900"
+                    @click="confirmRegenerate = true"
+                >
+                    Regenerate
+                </button>
+                <button
+                    v-else
+                    type="button"
+                    class="rounded-md border border-transparent bg-red-400 px-3 py-2 text-sm font-medium text-zinc-900"
                     :disabled="regenerating"
                     @click="regenerateToken"
                 >
-                    {{ regenerating ? 'Regenerating…' : 'Regenerate' }}
+                    {{ regenerating ? 'Regenerating…' : 'Really? Old token stops working!' }}
                 </button>
             </div>
         </div>
@@ -144,6 +153,7 @@ export default {
             apiToken: '',
             tokenVisible: false,
             copied: false,
+            confirmRegenerate: false,
             regenerating: false,
         }
     },
@@ -186,6 +196,7 @@ export default {
                 console.log(error)
             } finally {
                 this.regenerating = false
+                this.confirmRegenerate = false
             }
         },
     }
