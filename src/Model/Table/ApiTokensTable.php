@@ -110,4 +110,29 @@ class ApiTokensTable extends Table
 
         return $this->saveOrFail($apiToken);
     }
+
+    /**
+     * @param \App\Model\Entity\User $user User.
+     * @return \App\Model\Entity\ApiToken
+     */
+    public function regenerateApiToken(User $user): ApiToken
+    {
+        $apiToken = $this->find()
+            ->where(['ApiTokens.user_id' => $user->id])
+            ->first();
+
+        if ($apiToken === null) {
+            return $this->generateApiToken($user);
+        }
+
+        $apiToken = $this->patchEntity($apiToken, [
+            'token' => Security::randomString(),
+        ], [
+            'accessibleFields' => [
+                'token' => true,
+            ],
+        ]);
+
+        return $this->saveOrFail($apiToken);
+    }
 }

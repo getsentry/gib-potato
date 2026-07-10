@@ -113,6 +113,53 @@ class UsersController extends ApiController
     /**
      * @return \Cake\Http\Response
      */
+    public function token(): Response
+    {
+        /** @var \App\Model\Table\ApiTokensTable $apiTokensTable */
+        $apiTokensTable = $this->fetchTable('ApiTokens');
+
+        $apiToken = $apiTokensTable->find()
+            ->where(['ApiTokens.user_id' => $this->Authentication->getIdentityData('id')])
+            ->first();
+
+        if ($apiToken === null) {
+            $usersTable = $this->fetchTable('Users');
+            /** @var \App\Model\Entity\User $user */
+            $user = $usersTable->get($this->Authentication->getIdentityData('id'));
+
+            $apiToken = $apiTokensTable->generateApiToken($user);
+        }
+
+        return $this->response
+            ->withStatus(200)
+            ->withType('json')
+            ->withStringBody(json_encode(['token' => $apiToken->token]));
+    }
+
+    /**
+     * @return \Cake\Http\Response
+     */
+    public function regenerateToken(): Response
+    {
+        $this->request->allowMethod('post');
+
+        $usersTable = $this->fetchTable('Users');
+        /** @var \App\Model\Entity\User $user */
+        $user = $usersTable->get($this->Authentication->getIdentityData('id'));
+
+        /** @var \App\Model\Table\ApiTokensTable $apiTokensTable */
+        $apiTokensTable = $this->fetchTable('ApiTokens');
+        $apiToken = $apiTokensTable->regenerateApiToken($user);
+
+        return $this->response
+            ->withStatus(200)
+            ->withType('json')
+            ->withStringBody(json_encode(['token' => $apiToken->token]));
+    }
+
+    /**
+     * @return \Cake\Http\Response
+     */
     public function profile(): Response
     {
         $messagesTable = $this->fetchTable('Messages');

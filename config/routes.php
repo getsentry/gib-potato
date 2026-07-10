@@ -74,6 +74,13 @@ return static function (RouteBuilder $routes): void {
 
             $builder->get('/user/profile', ['prefix' => 'Api', 'controller' => 'Users', 'action' => 'profile']);
 
+            $builder->get('/user/token', ['prefix' => 'Api', 'controller' => 'Users', 'action' => 'token']);
+            $builder->post('/user/token/regenerate', [
+                'prefix' => 'Api',
+                'controller' => 'Users',
+                'action' => 'regenerateToken',
+            ]);
+
             $builder->get('/shop/products', ['prefix' => 'Api', 'controller' => 'Shop', 'action' => 'products']);
             $builder->post('/shop/purchase', ['prefix' => 'Api', 'controller' => 'Shop', 'action' => 'purchase']);
 
