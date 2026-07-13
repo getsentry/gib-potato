@@ -25,8 +25,7 @@ class UsersController extends ApiController
                 'Users.status' => User::STATUS_ACTIVE,
                 'Users.role !=' => User::ROLE_SERVICE,
             ])
-            ->all()
-            ->toList();
+            ->all();
 
         return $this->response
             ->withStatus(200)
