@@ -8,7 +8,10 @@
         </small>
     </div>
 
-    <div class="mt-8 grid grid-cols-1 gap-y-12 sm:grid-cols-2 sm:gap-x-6 lg:grid-cols-4 xl:gap-x-8 mb-32">
+    <div
+        v-if="products.length"
+        class="mt-8 grid grid-cols-1 gap-y-12 sm:grid-cols-2 sm:gap-x-6 lg:grid-cols-4 xl:gap-x-8 mb-32"
+    >
         <div
             v-for="(product, index) in products"
             class="h-full flex flex-col"
@@ -25,7 +28,7 @@
                     <p class="mt-1 text-sm text-zinc-500">{{ product.description }}</p>
                 </div>
                 <div class="absolute inset-x-0 top-0 flex h-72 items-end justify-end overflow-hidden rounded-lg p-4">
-                    <div class="absolute inset-x-0 bottom-0 h-36 bg-gradient-to-t from-black opacity-50"></div>
+                    <div class="absolute inset-x-0 bottom-0 h-36 bg-linear-to-t from-black opacity-50"></div>
                     <p class="relative text-lg font-semibold text-white">🥔 {{ product.price }}</p>
                 </div>
             </div>
@@ -57,8 +60,16 @@
             </div>
         </div>
     </div>
+    <div
+        v-else
+        class="absolute inset-0 flex items-center justify-center"
+    >
+        <h1 class="text-2xl font-extrabold">
+            Nothing available in the shop right now...
+        </h1>
+    </div>
     <div v-if="modalOpen === true" class="relative z-10">
-        <div class="fixed inset-0 bg-zinc-700 bg-opacity-75"></div>
+        <div class="fixed inset-0 bg-zinc-700/75"></div>
 
         <div class="fixed inset-0 z-10 overflow-y-auto">
             <div class="flex min-h-full items-end justify-center p-4 text-center sm:items-center sm:p-0">
@@ -67,7 +78,7 @@
                         <div>
                             <div v-if="modalError" class="rounded-md bg-red-50 p-4 mb-4">
                                 <div class="flex">
-                                    <div class="flex-shrink-0">
+                                    <div class="shrink-0">
                                         <!-- Heroicon name: mini/x-circle -->
                                         <svg class="h-5 w-5 text-red-400" xmlns="http://www.w3.org/2000/svg"
                                             viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
@@ -94,7 +105,7 @@
                                 <div
                                     class="absolute inset-x-0 top-0 flex h-72 items-end justify-end overflow-hidden rounded-lg p-4">
                                     <div
-                                        class="absolute inset-x-0 bottom-0 h-36 bg-gradient-to-t from-black opacity-50">
+                                        class="absolute inset-x-0 bottom-0 h-36 bg-linear-to-t from-black opacity-50">
                                     </div>
                                 </div>
                             </div>

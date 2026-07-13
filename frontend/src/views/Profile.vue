@@ -27,7 +27,7 @@
                 class="mt-1 text-sm text-zinc-500"
             >
                 Your current potato level is
-                <span class="bg-purple-100 text-purple-800 text-sm font-medium ml-auto px-2.5 py-0.5 rounded dark:bg-purple-900 dark:text-purple-300">
+                <span class="bg-purple-100 text-purple-800 text-sm font-medium ml-auto px-2.5 py-0.5 rounded-sm dark:bg-purple-900 dark:text-purple-300">
                     Level {{ user.progression.id }} ({{ user.progression.name }})
                 </span>
             </p>

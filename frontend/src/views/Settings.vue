@@ -15,13 +15,13 @@
                         </p>
                     </div>
                     <button type="button"
-                        class="bg-zinc-200 dark:bg-zinc-600 relative ml-4 inline-flex h-6 w-11 flex-shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors duration-200 ease-in-out"
-                        :class="{ '!bg-green-500': user.notifications.sent === true }"
+                        class="bg-zinc-200 dark:bg-zinc-600 relative ml-4 inline-flex h-6 w-11 shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors duration-200 ease-in-out"
+                        :class="{ 'bg-green-500!': user.notifications.sent === true }"
                         @click="toggleSentNotifications"
                     >
                         <span
-                            class="translate-x-0 inline-block h-5 w-5 transform rounded-full bg-white shadow ring-0 transition duration-200 ease-in-out"
-                            :class="{ '!translate-x-5': user.notifications.sent === true }"
+                            class="translate-x-0 inline-block h-5 w-5 transform rounded-full bg-white shadow-sm ring-0 transition duration-200 ease-in-out"
+                            :class="{ 'translate-x-5!': user.notifications.sent === true }"
                         >
                         </span>
                     </button>
@@ -36,13 +36,13 @@
                         </p>
                     </div>
                     <button type="button"
-                        class="bg-zinc-200 dark:bg-zinc-600 relative ml-4 inline-flex h-6 w-11 flex-shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors duration-200 ease-in-out"
-                        :class="{ '!bg-green-500': user.notifications.received === true }"
+                        class="bg-zinc-200 dark:bg-zinc-600 relative ml-4 inline-flex h-6 w-11 shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors duration-200 ease-in-out"
+                        :class="{ 'bg-green-500!': user.notifications.received === true }"
                         @click="toggleReceivedNotifications"
                     >
                         <span
-                            class="translate-x-0 inline-block h-5 w-5 transform rounded-full bg-white shadow ring-0 transition duration-200 ease-in-out"
-                            :class="{ '!translate-x-5': user.notifications.received === true }"
+                            class="translate-x-0 inline-block h-5 w-5 transform rounded-full bg-white shadow-sm ring-0 transition duration-200 ease-in-out"
+                            :class="{ 'translate-x-5!': user.notifications.received === true }"
                         >
                         </span>
                     </button>
@@ -57,13 +57,13 @@
                         </p>
                     </div>
                     <button type="button"
-                        class="bg-zinc-200 dark:bg-zinc-600 relative ml-4 inline-flex h-6 w-11 flex-shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors duration-200 ease-in-out"
-                        :class="{ '!bg-green-500': user.notifications.too_good_to_go === true }"
+                        class="bg-zinc-200 dark:bg-zinc-600 relative ml-4 inline-flex h-6 w-11 shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors duration-200 ease-in-out"
+                        :class="{ 'bg-green-500!': user.notifications.too_good_to_go === true }"
                         @click="toggleTooGoodToGoNotifications"
                     >
                         <span
-                            class="translate-x-0 inline-block h-5 w-5 transform rounded-full bg-white shadow ring-0 transition duration-200 ease-in-out"
-                            :class="{ '!translate-x-5': user.notifications.too_good_to_go === true }"
+                            class="translate-x-0 inline-block h-5 w-5 transform rounded-full bg-white shadow-sm ring-0 transition duration-200 ease-in-out"
+                            :class="{ 'translate-x-5!': user.notifications.too_good_to_go === true }"
                         >
                         </span>
                     </button>
