@@ -6,6 +6,7 @@ namespace App\Controller\Api;
 use App\Model\Entity\User;
 use Cake\Http\Response;
 use Cake\I18n\DateTime;
+use Cake\Utility\Security;
 
 /**
  * @property \Authentication\Controller\Component\AuthenticationComponent $Authentication
@@ -108,6 +109,57 @@ class UsersController extends ApiController
 
         return $this->response
             ->withStatus(204);
+    }
+
+    /**
+     * @return \Cake\Http\Response
+     */
+    public function token(): Response
+    {
+        /** @var \App\Model\Table\ApiTokensTable $apiTokensTable */
+        $apiTokensTable = $this->fetchTable('ApiTokens');
+
+        /** @var \App\Model\Entity\ApiToken $apiToken */
+        $apiToken = $apiTokensTable->find()
+            ->where(['ApiTokens.user_id' => $this->Authentication->getIdentityData('id')])
+            ->firstOrFail();
+
+        return $this->response
+            ->withStatus(200)
+            ->withType('json')
+            ->withStringBody(json_encode(['token' => $apiToken->token]));
+    }
+
+    /**
+     * @return \Cake\Http\Response
+     */
+    public function regenerateToken(): Response
+    {
+        $this->request->allowMethod('post');
+
+        /** @var \App\Model\Table\ApiTokensTable $apiTokensTable */
+        $apiTokensTable = $this->fetchTable('ApiTokens');
+
+        /** @var \App\Model\Entity\ApiToken $apiToken */
+        $apiToken = $apiTokensTable->find()
+            ->where(['ApiTokens.user_id' => $this->Authentication->getIdentityData('id')])
+            ->firstOrFail();
+
+        $apiToken = $apiTokensTable->patchEntity($apiToken, [
+            'token' => Security::randomString(),
+            'last_used' => null,
+        ], [
+            'accessibleFields' => [
+                'token' => true,
+                'last_used' => true,
+            ],
+        ]);
+        $apiTokensTable->saveOrFail($apiToken);
+
+        return $this->response
+            ->withStatus(200)
+            ->withType('json')
+            ->withStringBody(json_encode(['token' => $apiToken->token]));
     }
 
     /**

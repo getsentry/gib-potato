@@ -33,6 +33,48 @@
             </p>
         </div>
         <div class="py-4">
+            <h2 class="text-lg font-medium leading-6">Your API Token</h2>
+            <p class="mt-1 text-sm text-zinc-500">
+                Use this token to access the GibPotato API, e.g. <code>GET /api/leaderboard</code> with an <code>Authorization: Bearer</code> header.
+            </p>
+            <div class="mt-3 flex items-center gap-2">
+                <code
+                    class="sentry-mask flex-1 truncate rounded-md border border-zinc-300 bg-zinc-100 dark:bg-zinc-800 dark:border-zinc-600 px-3 py-2 text-sm"
+                >{{ tokenVisible ? apiToken : '••••••••••••••••••••••••••••••••' }}</code>
+                <button
+                    type="button"
+                    class="rounded-md border border-zinc-300 bg-zinc-100 dark:bg-zinc-800 dark:border-zinc-600 dark:text-zinc-100 px-3 py-2 text-sm font-medium text-zinc-900"
+                    @click="tokenVisible = !tokenVisible"
+                >
+                    {{ tokenVisible ? 'Hide' : 'Show' }}
+                </button>
+                <button
+                    type="button"
+                    class="rounded-md border border-zinc-300 bg-zinc-100 dark:bg-zinc-800 dark:border-zinc-600 dark:text-zinc-100 px-3 py-2 text-sm font-medium text-zinc-900"
+                    @click="copyToken"
+                >
+                    {{ copied ? 'Copied!' : 'Copy' }}
+                </button>
+                <button
+                    v-if="!confirmRegenerate"
+                    type="button"
+                    class="rounded-md border border-transparent bg-amber-200 px-3 py-2 text-sm font-medium text-zinc-900"
+                    @click="confirmRegenerate = true"
+                >
+                    Regenerate
+                </button>
+                <button
+                    v-else
+                    type="button"
+                    class="rounded-md border border-transparent bg-red-400 px-3 py-2 text-sm font-medium text-zinc-900"
+                    :disabled="regenerating"
+                    @click="regenerateToken"
+                >
+                    {{ regenerating ? 'Regenerating…' : 'Really? Old token stops working!' }}
+                </button>
+            </div>
+        </div>
+        <div class="py-4">
             <h2 class="text-lg font-medium leading-6">Your activity in the last 30 days</h2>
             <ul class="divide-y divide-zinc-300">
                 <li
@@ -107,11 +149,17 @@ export default {
     },
     data() {
         return {
-            messages: []
+            messages: [],
+            apiToken: '',
+            tokenVisible: false,
+            copied: false,
+            confirmRegenerate: false,
+            regenerating: false,
         }
     },
     mounted() {
         this.fetchMessages()
+        this.fetchToken()
     },
     methods: {
         async fetchMessages() {
@@ -120,6 +168,36 @@ export default {
                 this.messages = response.data
             } catch (error) {
                 console.log(error)
+            }
+        },
+        async fetchToken() {
+            try {
+                const response = await api.get('user/token')
+                this.apiToken = response.data.token
+            } catch (error) {
+                console.log(error)
+            }
+        },
+        async copyToken() {
+            try {
+                await navigator.clipboard.writeText(this.apiToken)
+                this.copied = true
+                setTimeout(() => this.copied = false, 2000)
+            } catch (error) {
+                console.log(error)
+            }
+        },
+        async regenerateToken() {
+            this.regenerating = true
+            try {
+                const response = await api.post('user/token/regenerate')
+                this.apiToken = response.data.token
+            } catch (error) {
+                console.log(error)
+            } finally {
+                this.regenerating = false
+                this.confirmRegenerate = false
+                this.tokenVisible = false
             }
         },
     }
