@@ -110,10 +110,7 @@ class UsersTable extends Table
 
         $validator
             ->email('slack_email')
-            ->maxLength('slack_email', 255)
-            ->requirePresence('slack_email', 'create')
-            ->notEmptyString('slack_email')
-            ->add('slack_email', 'unique', ['rule' => 'validateUnique', 'provider' => 'table']);
+            ->allowEmptyString('slack_email');
 
         $validator
             ->scalar('slack_picture')
