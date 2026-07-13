@@ -18,11 +18,15 @@ export default defineConfig(({ mode }) => {
       sentryVitePlugin({
         org: "sentry",
         project: "gibpotato-frontend",
-        include: './webroot/assets/**',
         authToken: env.SENTRY_AUTH_TOKEN,
-        dryRun: env.SENTRY_AUTH_TOKEN,
-        release: env.RELEASE,
-        telemetry: false
+        disable: !env.SENTRY_AUTH_TOKEN,
+        release: {
+          name: env.RELEASE,
+        },
+        sourcemaps: {
+          assets: './webroot/assets/**',
+        },
+        telemetry: false,
       }),
     ],
     build: {
