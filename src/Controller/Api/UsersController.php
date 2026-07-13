@@ -6,6 +6,7 @@ namespace App\Controller\Api;
 use App\Model\Entity\User;
 use Cake\Http\Response;
 use Cake\I18n\DateTime;
+use Cake\Utility\Security;
 
 /**
  * @property \Authentication\Controller\Component\AuthenticationComponent $Authentication
@@ -118,17 +119,10 @@ class UsersController extends ApiController
         /** @var \App\Model\Table\ApiTokensTable $apiTokensTable */
         $apiTokensTable = $this->fetchTable('ApiTokens');
 
+        /** @var \App\Model\Entity\ApiToken $apiToken */
         $apiToken = $apiTokensTable->find()
             ->where(['ApiTokens.user_id' => $this->Authentication->getIdentityData('id')])
-            ->first();
-
-        if ($apiToken === null) {
-            $usersTable = $this->fetchTable('Users');
-            /** @var \App\Model\Entity\User $user */
-            $user = $usersTable->get($this->Authentication->getIdentityData('id'));
-
-            $apiToken = $apiTokensTable->generateApiToken($user);
-        }
+            ->firstOrFail();
 
         return $this->response
             ->withStatus(200)
@@ -143,13 +137,24 @@ class UsersController extends ApiController
     {
         $this->request->allowMethod('post');
 
-        $usersTable = $this->fetchTable('Users');
-        /** @var \App\Model\Entity\User $user */
-        $user = $usersTable->get($this->Authentication->getIdentityData('id'));
-
         /** @var \App\Model\Table\ApiTokensTable $apiTokensTable */
         $apiTokensTable = $this->fetchTable('ApiTokens');
-        $apiToken = $apiTokensTable->regenerateApiToken($user);
+
+        /** @var \App\Model\Entity\ApiToken $apiToken */
+        $apiToken = $apiTokensTable->find()
+            ->where(['ApiTokens.user_id' => $this->Authentication->getIdentityData('id')])
+            ->firstOrFail();
+
+        $apiToken = $apiTokensTable->patchEntity($apiToken, [
+            'token' => Security::randomString(),
+            'last_used' => null,
+        ], [
+            'accessibleFields' => [
+                'token' => true,
+                'last_used' => true,
+            ],
+        ]);
+        $apiTokensTable->saveOrFail($apiToken);
 
         return $this->response
             ->withStatus(200)

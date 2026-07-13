@@ -15,15 +15,6 @@ class AddApiTokensUserIdUnique extends BaseMigration
      */
     public function up(): void
     {
-        // Remove duplicate tokens per user, keeping the most recently used
-        // (falling back to the most recently created) one.
-        $this->execute(
-            'DELETE FROM api_tokens WHERE id NOT IN (
-                SELECT DISTINCT ON (user_id) id FROM api_tokens
-                ORDER BY user_id, last_used DESC NULLS LAST, created DESC
-            )',
-        );
-
         $this->table('api_tokens')
             ->addIndex(['user_id'], ['unique' => true])
             ->update();
