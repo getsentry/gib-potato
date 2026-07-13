@@ -41,15 +41,6 @@ class User extends Entity
         '*' => false,
     ];
 
-    /**
-     * Fields that are excluded from JSON versions of the entity.
-     *
-     * @var array<string>
-     */
-    protected array $_hidden = [
-        'slack_email',
-    ];
-
     public const STATUS_ACTIVE = 'active';
     public const STATUS_DELETED = 'deleted';
 

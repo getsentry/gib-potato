@@ -127,7 +127,7 @@ class UpdateUsersCommand extends Command
                     'status' => User::STATUS_ACTIVE,
                     'slack_user_id' => $slackUser['id'],
                     'slack_name' => $slackUser['real_name'],
-                    'slack_email' => $slackUser['profile']['email'] ?? null,
+                    'slack_email' => $slackUser['profile']['email'],
                     'slack_picture' => $slackUser['profile']['image_72'],
                     'slack_time_zone' => $slackUser['tz'],
                     'slack_is_bot' => $slackUser['is_bot'] ?? false,
