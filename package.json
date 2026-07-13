@@ -9,11 +9,12 @@
     "preview": "vite preview"
   },
   "dependencies": {
-    "@sentry/vite-plugin": "^4.9.1",
-    "@sentry/vue": "^10.62.0",
+    "@sentry/vite-plugin": "^5.4.0",
+    "@sentry/vue": "^10.65.0",
+    "@tailwindcss/vite": "^4.3.2",
     "axios": "^1.18.1",
     "vue": "^3.5.39",
-    "vue-router": "^4.6.4",
+    "vue-router": "^5.1.0",
     "vue-select": "^4.0.0-beta.6",
     "vuex": "^4.1.0"
   },
@@ -21,10 +22,7 @@
     "@rushstack/eslint-patch": "^1.16.1",
     "@vitejs/plugin-vue": "^6.0.7",
     "@vue/eslint-config-prettier": "^10.2.0",
-    "autoprefixer": "^10.5.2",
-    "postcss": "^8.5.16",
-    "prettier": "^3.9.4",
-    "tailwindcss": "^3.4.19",
-    "vite": "^8.1.2"
+    "prettier": "^3.9.5",
+    "vite": "^8.1.4"
   }
 }

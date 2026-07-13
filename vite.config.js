@@ -2,6 +2,7 @@ import { fileURLToPath, URL } from 'node:url';
 
 import { defineConfig, loadEnv } from "vite";
 import vue from '@vitejs/plugin-vue';
+import tailwindcss from '@tailwindcss/vite';
 import { sentryVitePlugin } from '@sentry/vite-plugin';
 
 // https://vitejs.dev/config/
@@ -13,14 +14,19 @@ export default defineConfig(({ mode }) => {
   return {
     plugins: [
       vue(),
+      tailwindcss(),
       sentryVitePlugin({
         org: "sentry",
         project: "gibpotato-frontend",
-        include: './webroot/assets/**',
         authToken: env.SENTRY_AUTH_TOKEN,
-        dryRun: env.SENTRY_AUTH_TOKEN,
-        release: env.RELEASE,
-        telemetry: false
+        disable: !env.SENTRY_AUTH_TOKEN,
+        release: {
+          name: env.RELEASE,
+        },
+        sourcemaps: {
+          assets: './webroot/assets/**',
+        },
+        telemetry: false,
       }),
     ],
     build: {
