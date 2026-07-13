@@ -7,7 +7,6 @@ use App\Event\Validation\Exception\PotatoException;
 use App\Event\Validation\Validation;
 use App\Service\AwardService;
 use App\Service\NotificationService;
-use App\Service\QuickWinService;
 use App\Service\UserService;
 
 class MessageEvent extends AbstractEvent
@@ -54,7 +53,6 @@ class MessageEvent extends AbstractEvent
         $userService = new UserService();
         $awardService = new AwardService();
         $notificationService = new NotificationService();
-        $quickWinService = new QuickWinService();
 
         $fromUser = $userService->getOrCreateUser($this->sender);
         $validator = new Validation(
@@ -95,17 +93,5 @@ class MessageEvent extends AbstractEvent
             toUsers: $toUsers,
             event: $this,
         );
-
-        $stored = $quickWinService->store(
-            fromUser: $fromUser,
-            event: $this,
-        );
-
-        if ($stored === true) {
-            $notificationService->notifyChannelNewQuickwin(
-                fromUser: $fromUser,
-                event: $this,
-            );
-        }
     }
 }

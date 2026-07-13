@@ -80,7 +80,6 @@ import './assets/main.css'
         store.dispatch('getUsers'),
         store.dispatch('getProducts'),
         store.dispatch('getCollection'),
-        store.dispatch('getQuickWins'),
     ])
 
     app

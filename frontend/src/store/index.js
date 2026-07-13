@@ -10,7 +10,6 @@ const store = createStore({
             users: [],
             products: [],
             collection: [],
-            quickWins: [],
             filter: {
                 range: helper.getRangeFilter(),
                 order: helper.getOrderFilter(),
@@ -23,7 +22,6 @@ const store = createStore({
         users: state => state.users,
         products: state => state.products,
         collection: state => state.collection,
-        quickWins: state => state.quickWins,
         filter: state => state.filter,
         range: state => state.filter.range,
         order: state => state.filter.order,
@@ -69,14 +67,6 @@ const store = createStore({
             try {
                 const response = await api.get('collection')
                 commit('SET_COLLECTION', response.data)
-            } catch (error) {
-                console.error(error)
-            }
-        },
-        async getQuickWins({ commit }) {
-            try {
-                const response = await api.get('quick-wins')
-                commit('SET_QUICK_WINS', response.data)
             } catch (error) {
                 console.error(error)
             }
@@ -127,9 +117,6 @@ const store = createStore({
         },
         SET_COLLECTION(state, collection) {
             state.collection = collection
-        },
-        SET_QUICK_WINS(state, quickWins) {
-            state.quickWins = quickWins
         },
         TOGGLE_SENT_NOTIFICATIONS(state) {
             state.user.notifications.sent = !state.user.notifications.sent
