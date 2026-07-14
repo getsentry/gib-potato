@@ -24,15 +24,15 @@
         "@vitejs/plugin-vue": "^6.0.7",
         "vite-plus": "^0.2.4"
     },
-    "allowScripts": {
-        "@sentry/cli@2.58.6": true,
-        "fsevents@2.3.3": true
-    },
     "devEngines": {
         "packageManager": {
             "name": "npm",
             "version": ">=11.0.0",
             "onFail": "download"
         }
+    },
+    "allowScripts": {
+        "@sentry/cli@2.58.6": true,
+        "fsevents@2.3.3": true
     }
 }
