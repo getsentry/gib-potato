@@ -9,8 +9,6 @@ use Cake\TestSuite\TestCase;
 
 /**
  * App\Controller\EventsController Test Case
- *
- * @uses \App\Controller\EventsController
  */
 class EventsControllerTest extends TestCase
 {
