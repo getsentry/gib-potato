@@ -8,28 +8,28 @@
             All Time
         </button>
         <button
-            class="relative -ml-px inline-flex items-center border border-zinc-300  px-4 py-2 text-sm font-medium"
+            class="relative -ml-px inline-flex items-center border border-zinc-300 px-4 py-2 text-sm font-medium"
             :class="{ 'bg-amber-200! text-zinc-900!': filter.range === 'year' }"
             @click="updateRangeFilter('year')"
         >
             Last 365 Days
         </button>
         <button
-            class="relative -ml-px inline-flex items-center border border-zinc-300  px-4 py-2 text-sm font-medium"
+            class="relative -ml-px inline-flex items-center border border-zinc-300 px-4 py-2 text-sm font-medium"
             :class="{ 'bg-amber-200! text-zinc-900!': filter.range === 'quarter' }"
             @click="updateRangeFilter('quarter')"
         >
             Current Quarter
         </button>
         <button
-            class="relative -ml-px inline-flex items-center border border-zinc-300  px-4 py-2 text-sm font-medium"
+            class="relative -ml-px inline-flex items-center border border-zinc-300 px-4 py-2 text-sm font-medium"
             :class="{ 'bg-amber-200! text-zinc-900!': filter.range === 'month' }"
             @click="updateRangeFilter('month')"
         >
             Last 30 Days
         </button>
         <button
-            class="relative -ml-px inline-flex items-center rounded-r-md border border-zinc-300  px-4 py-2 text-sm font-medium"
+            class="relative -ml-px inline-flex items-center rounded-r-md border border-zinc-300 px-4 py-2 text-sm font-medium"
             :class="{ 'bg-amber-200! text-zinc-900!': filter.range === 'week' }"
             @click="updateRangeFilter('week')"
         >
@@ -45,7 +45,7 @@
             Received
         </button>
         <button
-            class="relative -ml-px inline-flex items-center rounded-r-md border border-zinc-300  px-4 py-2 text-sm font-medium"
+            class="relative -ml-px inline-flex items-center rounded-r-md border border-zinc-300 px-4 py-2 text-sm font-medium"
             :class="{ 'bg-amber-200! text-zinc-900!': filter.order === 'sent' }"
             @click="updateOrderFilter('sent')"
         >
@@ -61,20 +61,20 @@ import { useStore } from 'vuex';
 export default {
     name: 'Filter',
     setup() {
-        const store = useStore()
+        const store = useStore();
         return {
-            filter: computed(() => store.getters.filter)
-        }
+            filter: computed(() => store.getters.filter),
+        };
     },
     methods: {
         updateRangeFilter(range) {
-            this.$store.dispatch('setRangeFilter', range)
-            this.$store.dispatch('getLeaderboard')
+            this.$store.dispatch('setRangeFilter', range);
+            this.$store.dispatch('getLeaderboard');
         },
         updateOrderFilter(order) {
-            this.$store.dispatch('setOrderFilter', order)
-            this.$store.dispatch('getLeaderboard')
+            this.$store.dispatch('setOrderFilter', order);
+            this.$store.dispatch('getLeaderboard');
         },
-    }
+    },
 };
 </script>

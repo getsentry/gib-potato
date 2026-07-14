@@ -1,28 +1,38 @@
 {
-  "name": "gib-potato",
-  "type": "module",
-  "private": true,
-  "scripts": {
-    "build": "vite build",
-    "dev": "vite",
-    "lint": "eslint . --ext .vue,.js,.jsx,.cjs,.mjs --fix --ignore-path .gitignore",
-    "preview": "vite preview"
-  },
-  "dependencies": {
-    "@sentry/vite-plugin": "^5.4.0",
-    "@sentry/vue": "^10.65.0",
-    "@tailwindcss/vite": "^4.3.2",
-    "axios": "^1.18.1",
-    "vue": "^3.5.39",
-    "vue-router": "^5.1.0",
-    "vue-select": "^4.0.0-beta.6",
-    "vuex": "^4.1.0"
-  },
-  "devDependencies": {
-    "@rushstack/eslint-patch": "^1.16.1",
-    "@vitejs/plugin-vue": "^6.0.7",
-    "@vue/eslint-config-prettier": "^10.2.0",
-    "prettier": "^3.9.5",
-    "vite": "^8.1.4"
-  }
+    "name": "gib-potato",
+    "private": true,
+    "type": "module",
+    "scripts": {
+        "build": "vp build",
+        "dev": "vp dev",
+        "lint": "vp lint --fix",
+        "fmt": "vp fmt",
+        "check": "vp check",
+        "preview": "vp preview"
+    },
+    "dependencies": {
+        "@sentry/vite-plugin": "^5.4.0",
+        "@sentry/vue": "^10.65.0",
+        "@tailwindcss/vite": "^4.3.2",
+        "axios": "^1.18.1",
+        "vue": "^3.5.39",
+        "vue-router": "^5.1.0",
+        "vue-select": "^4.0.0-beta.6",
+        "vuex": "^4.1.0"
+    },
+    "devDependencies": {
+        "@vitejs/plugin-vue": "^6.0.7",
+        "vite-plus": "^0.2.4"
+    },
+    "devEngines": {
+        "packageManager": {
+            "name": "npm",
+            "version": ">=11.0.0",
+            "onFail": "download"
+        }
+    },
+    "allowScripts": {
+        "@sentry/cli@2.58.6": true,
+        "fsevents@2.3.3": true
+    }
 }

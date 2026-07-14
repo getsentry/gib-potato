@@ -78,7 +78,7 @@ EXPOSE 8080
 
 CMD [ "/bin/bash", "/run.sh" ]
 
-FROM node:24-bookworm AS js-build
+FROM node:26-bookworm AS js-build
 
 WORKDIR /app
 
@@ -89,7 +89,7 @@ COPY ./package-lock.json package-lock.json
 COPY ./vite.config.js vite.config.js
 
 RUN \
-    npm install --frozen-lock && \
+    npm ci && \
     npm run build
 
 FROM php-local AS php-build
