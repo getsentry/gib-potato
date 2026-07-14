@@ -18,14 +18,14 @@ jobs:
         steps:
             - uses: actions/checkout@v7
 
-            - name: Run vp install
-              run: vp install
+            - name: Run npm install
+              run: npm install
 
-            - name: Run vp lint
-              run: vp lint
+            - name: Run npx vp lint
+              run: npx vp lint
 
-            - name: Run vp fmt --check
-              run: vp fmt --check
+            - name: Run npx vp fmt --check
+              run: npx vp fmt --check
 
-            - name: Run vp build
-              run: vp build
+            - name: Run npm build
+              run: npm run build

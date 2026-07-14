@@ -89,8 +89,8 @@ COPY ./package-lock.json package-lock.json
 COPY ./vite.config.js vite.config.js
 
 RUN \
-    vp install --frozen-lockfile && \
-    vp build
+    npm install --frozen-lock && \
+    npm run build
 
 FROM php-local AS php-build
 

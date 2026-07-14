@@ -90,15 +90,15 @@ steps:
           - 'us-central1'
       waitFor: ['push-backend']
     - name: 'node:24'
-      id: 'vp-install'
-      entrypoint: vp
-      args: ['install', '--frozen-lockfile']
+      id: 'npm-install'
+      entrypoint: npm
+      args: ['install', '--frozen-lock']
       waitFor: ['-']
     - name: 'node:24'
       id: 'build-assets'
-      entrypoint: vp
-      args: ['build']
-      waitFor: ['vp-install']
+      entrypoint: npm
+      args: ['run', 'build']
+      waitFor: ['npm-install']
       secretEnv: ['SENTRY_AUTH_TOKEN']
 images:
     - 'us-central1-docker.pkg.dev/$PROJECT_ID/backend/backend:latest'
