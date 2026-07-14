@@ -78,7 +78,7 @@ EXPOSE 8080
 
 CMD [ "/bin/bash", "/run.sh" ]
 
-FROM node:24-bookworm AS js-build
+FROM node:26-bookworm AS js-build
 
 WORKDIR /app
 

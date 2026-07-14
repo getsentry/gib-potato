@@ -89,12 +89,12 @@ steps:
           - '--region'
           - 'us-central1'
       waitFor: ['push-backend']
-    - name: 'node:24'
+    - name: 'node:26'
       id: 'npm-install'
       entrypoint: npm
       args: ['install', '--frozen-lock']
       waitFor: ['-']
-    - name: 'node:24'
+    - name: 'node:26'
       id: 'build-assets'
       entrypoint: npm
       args: ['run', 'build']
