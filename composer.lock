@@ -4,24 +4,25 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "0b0d93174acadce2ed2bc916332d9ff8",
+    "content-hash": "65957dc861355a9b12b0323f05645636",
     "packages": [
         {
             "name": "cakephp/authentication",
-            "version": "3.3.7",
+            "version": "4.2.1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/cakephp/authentication.git",
-                "reference": "a96a198816549d603a990730a861b756b887be95"
+                "reference": "ad018852ebc0c2594894c5d820d4296e5357097c"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/cakephp/authentication/zipball/a96a198816549d603a990730a861b756b887be95",
-                "reference": "a96a198816549d603a990730a861b756b887be95",
+                "url": "https://api.github.com/repos/cakephp/authentication/zipball/ad018852ebc0c2594894c5d820d4296e5357097c",
+                "reference": "ad018852ebc0c2594894c5d820d4296e5357097c",
                 "shasum": ""
             },
             "require": {
                 "cakephp/http": "^5.0",
+                "cakephp/utility": "^5.0",
                 "laminas/laminas-diactoros": "^3.0",
                 "php": ">=8.1",
                 "psr/http-client": "^1.0",
@@ -32,8 +33,8 @@
             "require-dev": {
                 "cakephp/cakephp": "^5.1.0",
                 "cakephp/cakephp-codesniffer": "^5.0",
-                "firebase/php-jwt": "^6.2",
-                "phpunit/phpunit": "^10.5.58 || ^11.5.3 || ^12.4"
+                "firebase/php-jwt": "^7.0",
+                "phpunit/phpunit": "^10.5.58 || ^11.5.3 || ^12.4 || ^13.0"
             },
             "suggest": {
                 "cakephp/cakephp": "Install full core to use \"CookieAuthenticator\".",
@@ -67,12 +68,12 @@
                 "middleware"
             ],
             "support": {
-                "docs": "https://book.cakephp.org/authentication/3/en/",
+                "docs": "https://book.cakephp.org/authentication/4/en/",
                 "forum": "https://discourse.cakephp.org/",
                 "issues": "https://github.com/cakephp/authentication/issues",
                 "source": "https://github.com/cakephp/authentication"
             },
-            "time": "2026-07-08T22:07:16+00:00"
+            "time": "2026-07-08T03:44:13+00:00"
         },
         {
             "name": "cakephp/cakephp",
@@ -4802,5 +4803,5 @@
         "php": ">=8.5"
     },
     "platform-dev": {},
-    "plugin-api-version": "2.6.0"
+    "plugin-api-version": "2.9.0"
 }
