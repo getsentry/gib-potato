@@ -109,6 +109,10 @@ class UsersTable extends Table
             ->notEmptyString('slack_name');
 
         $validator
+            ->email('slack_email')
+            ->allowEmptyString('slack_email');
+
+        $validator
             ->scalar('slack_picture')
             ->maxLength('slack_picture', 255)
             ->requirePresence('slack_picture', 'create')
