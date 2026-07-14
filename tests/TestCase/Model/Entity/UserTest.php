@@ -4,6 +4,7 @@ declare(strict_types=1);
 namespace App\Test\TestCase\Model\Entity;
 
 use App\Model\Entity\Message;
+use App\Model\Entity\User;
 use Cake\Chronos\Chronos;
 use Cake\I18n\DateTime;
 use Cake\TestSuite\TestCase;
@@ -25,22 +26,22 @@ class UserTest extends TestCase
     ];
 
     /**
-     * @var \App\Model\Entity\User
+     * @var User
      */
     protected $UserEurope;
 
     /**
-     * @var \App\Model\Entity\User
+     * @var User
      */
     protected $UserCanada;
 
     /**
-     * @var \App\Model\Entity\User
+     * @var User
      */
     protected $UserUS;
 
     /**
-     * @var \App\Model\Entity\User
+     * @var User
      */
     protected $UserBuyer;
 
@@ -82,7 +83,7 @@ class UserTest extends TestCase
      * Test getStartOfDay method
      *
      * @return void
-     * @uses \App\Model\Entity\User::getStartOfDay()
+     * @uses User::getStartOfDay()
      */
     public function testGetStartOfDay(): void
     {
@@ -102,7 +103,7 @@ class UserTest extends TestCase
      * Test getEndOfDay method
      *
      * @return void
-     * @uses \App\Model\Entity\User::getEndOfDay()
+     * @uses User::getEndOfDay()
      */
     public function testGetEndOfDay(): void
     {
@@ -122,7 +123,7 @@ class UserTest extends TestCase
      * Test potatoResetInHours method
      *
      * @return void
-     * @uses \App\Model\Entity\User::potatoResetInHours()
+     * @uses User::potatoResetInHours()
      */
     public function testPotatoResetInHours(): void
     {
@@ -137,7 +138,7 @@ class UserTest extends TestCase
      * Test spendablePotato method with no purchases
      *
      * @return void
-     * @uses \App\Model\Entity\User::spendablePotato()
+     * @uses User::spendablePotato()
      */
     public function testSpendablePotatoWithNoPurchases(): void
     {
@@ -152,7 +153,7 @@ class UserTest extends TestCase
      * Test spendablePotato method returns zero when spending limit reached
      *
      * @return void
-     * @uses \App\Model\Entity\User::spendablePotato()
+     * @uses User::spendablePotato()
      */
     public function testSpendablePotatoReturnsZeroWhenLimitReached(): void
     {
@@ -168,7 +169,7 @@ class UserTest extends TestCase
      * Test spendablePotato method counts purchase at exactly 90 days
      *
      * @return void
-     * @uses \App\Model\Entity\User::spendablePotato()
+     * @uses User::spendablePotato()
      */
     public function testSpendablePotatoCountsPurchaseAtExactly90Days(): void
     {
@@ -184,7 +185,7 @@ class UserTest extends TestCase
      * Test spendablePotato method ignores purchases older than 90 days
      *
      * @return void
-     * @uses \App\Model\Entity\User::spendablePotato()
+     * @uses User::spendablePotato()
      */
     public function testSpendablePotatoIgnoresPurchasesOlderThan90Days(): void
     {
@@ -200,7 +201,7 @@ class UserTest extends TestCase
      * Test spendablePotato method counts recent and ignores old purchases
      *
      * @return void
-     * @uses \App\Model\Entity\User::spendablePotato()
+     * @uses User::spendablePotato()
      */
     public function testSpendablePotatoCountsRecentAndIgnoresOldPurchases(): void
     {
@@ -217,7 +218,7 @@ class UserTest extends TestCase
      * Test spendablePotato method returns zero when multiple purchases exceed limit
      *
      * @return void
-     * @uses \App\Model\Entity\User::spendablePotato()
+     * @uses User::spendablePotato()
      */
     public function testSpendablePotatoReturnsZeroWhenMultiplePurchasesExceedLimit(): void
     {
@@ -234,7 +235,7 @@ class UserTest extends TestCase
      * Test spendablePotato method clamps to zero when spent exceeds received
      *
      * @return void
-     * @uses \App\Model\Entity\User::spendablePotato()
+     * @uses User::spendablePotato()
      */
     public function testSpendablePotatoClampsToZeroWhenSpentExceedsReceived(): void
     {
@@ -246,7 +247,7 @@ class UserTest extends TestCase
         $this->assertSame(0, $this->UserBuyer->spendablePotato());
     }
 
-    private function addReceivedPotatoes(\App\Model\Entity\User $user, int $amount): void
+    private function addReceivedPotatoes(User $user, int $amount): void
     {
         $messagesTable = $this->fetchTable('Messages');
         $message = $messagesTable->newEntity([
@@ -258,7 +259,7 @@ class UserTest extends TestCase
         $messagesTable->saveOrFail($message);
     }
 
-    private function addPurchase(\App\Model\Entity\User $user, int $price, DateTime $created): void
+    private function addPurchase(User $user, int $price, DateTime $created): void
     {
         $purchasesTable = $this->fetchTable('Purchases');
         $purchase = $purchasesTable->newEntity([
