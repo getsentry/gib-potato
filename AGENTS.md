@@ -15,7 +15,7 @@ chore(deps): Update project dependencies
 ref(frontend|backend): Migrate from Vite to Vite+
 ```
 
-Keep commit messages concise. The body (if needed) is objective statements of what changed — no prose, no test plans, no verification steps.
+Keep commit messages concise. The body is required and should be objective statements of what changed — no prose, no test plans, no verification steps.
 
 # Updating Dependencies
 
