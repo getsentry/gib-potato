@@ -1,3 +1,22 @@
+# Commit Messages
+
+Format: `type(scope): description`
+
+Types: `feat`, `ref`, `chore`, `fix`
+
+Scope is the part of the project that was updated: `frontend`, `backend`, `potal`, `shopato`, `docker`, `ci`, `deps`, etc. If multiple scopes are touched, join them with `|`.
+
+Examples:
+
+```
+feat(frontend): Add dark mode toggle
+fix(backend|potal): Handle empty response from events API
+chore(deps): Update project dependencies
+ref(frontend|backend): Migrate from Vite to Vite+
+```
+
+Keep commit messages concise. The body (if needed) is objective statements of what changed — no prose, no test plans, no verification steps.
+
 # Updating Dependencies
 
 This repo has four dependency ecosystems. Update all of them together.
@@ -14,8 +33,8 @@ composer bump
 ## JavaScript (root)
 
 ```sh
-npx npm-check-updates -u --target minor
-npm install
+vpx npm-check-updates -u --target minor
+vp install
 ```
 
 Use `--target minor` to avoid unplanned major version upgrades.

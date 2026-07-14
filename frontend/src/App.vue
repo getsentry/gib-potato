@@ -9,7 +9,7 @@
 import MainMenu from '@/components/MainMenu.vue';
 
 export default {
-    name: "App",
+    name: 'App',
     components: { MainMenu },
 };
 </script>
