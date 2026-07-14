@@ -1,3 +1,7 @@
+// Intentionally minimal service worker — uncomment the listeners below to
+// enable Web Push notification support.
+self.addEventListener('install', () => self.skipWaiting());
+
 // Add a service worker for processing Web Push notifications:
 //
 // self.addEventListener("push", async (event) => {

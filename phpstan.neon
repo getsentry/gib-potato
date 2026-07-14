@@ -1,6 +1,5 @@
 parameters:
     level: 1
-    treatPhpDocTypesAsCertain: false
     bootstrapFiles:
         - config/paths.php
     paths:

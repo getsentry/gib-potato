@@ -1,26 +1,31 @@
 version: 2
 updates:
-  # - package-ecosystem: "npm"
-  #   directory: "/"
-  #   schedule:
-  #     interval: "weekly"
-  
-  # - package-ecosystem: "composer"
-  #   directory: "/"
-  #   schedule: 
-  #     interval: weekly
-  
-  # - package-ecosystem: "gomod"
-  #   directory: "/"
-  #   schedule: 
-  #     interval: weekly
+    - package-ecosystem: 'npm'
+      directory: '/'
+      schedule:
+          interval: 'weekly'
 
-  - package-ecosystem: "docker"
-    directory: "/docker"
-    schedule:
-      interval: "weekly"
-  
-  - package-ecosystem: "github-actions"
-    directory: "/"
-    schedule: 
-      interval: weekly
+    - package-ecosystem: 'composer'
+      directory: '/'
+      schedule:
+          interval: 'weekly'
+
+    - package-ecosystem: 'gomod'
+      directory: '/potal'
+      schedule:
+          interval: 'weekly'
+
+    - package-ecosystem: 'bundler'
+      directory: '/shopato'
+      schedule:
+          interval: 'weekly'
+
+    - package-ecosystem: 'docker'
+      directory: '/docker'
+      schedule:
+          interval: 'weekly'
+
+    - package-ecosystem: 'github-actions'
+      directory: '/'
+      schedule:
+          interval: 'weekly'
