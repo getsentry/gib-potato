@@ -92,7 +92,7 @@ steps:
     - name: 'node:26'
       id: 'npm-install'
       entrypoint: npm
-      args: ['install', '--frozen-lock']
+      args: ['ci']
       waitFor: ['-']
     - name: 'node:26'
       id: 'build-assets'
