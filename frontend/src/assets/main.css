@@ -1,10 +1,11 @@
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
+@import 'tailwindcss';
+
+@source "../../../config/**/*.php";
+@source "../../../templates/**/*.php";
 
 .vs__search::placeholder,
 .vs__dropdown-toggle,
 .vs__dropdown-menu {
-    @apply bg-zinc-100 !important;
-    @apply text-zinc-900 !important;
+    background-color: var(--color-zinc-100) !important;
+    color: var(--color-zinc-900) !important;
 }

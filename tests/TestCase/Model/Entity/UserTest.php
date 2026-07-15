@@ -3,7 +3,10 @@ declare(strict_types=1);
 
 namespace App\Test\TestCase\Model\Entity;
 
+use App\Model\Entity\Message;
+use App\Model\Entity\User;
 use Cake\Chronos\Chronos;
+use Cake\I18n\DateTime;
 use Cake\TestSuite\TestCase;
 
 /**
@@ -18,22 +21,29 @@ class UserTest extends TestCase
      */
     protected array $fixtures = [
         'app.Users',
+        'app.Messages',
+        'app.Purchases',
     ];
 
     /**
-     * @var \App\Model\Entity\User
+     * @var User
      */
     protected $UserEurope;
 
     /**
-     * @var \App\Model\Entity\User
+     * @var User
      */
     protected $UserCanada;
 
     /**
-     * @var \App\Model\Entity\User
+     * @var User
      */
     protected $UserUS;
+
+    /**
+     * @var User
+     */
+    protected $UserBuyer;
 
     /**
      * setUp method
@@ -49,6 +59,7 @@ class UserTest extends TestCase
         $this->UserEurope = $usersTable->get('00000000-0000-0000-0000-000000000001');
         $this->UserCanada = $usersTable->get('00000000-0000-0000-0000-000000000002');
         $this->UserUS = $usersTable->get('00000000-0000-0000-0000-000000000003');
+        $this->UserBuyer = $usersTable->get('00000000-0000-0000-0000-000000000004');
     }
 
     /**
@@ -61,6 +72,7 @@ class UserTest extends TestCase
         unset($this->UserEurope);
         unset($this->UserCanada);
         unset($this->UserUS);
+        unset($this->UserBuyer);
 
         Chronos::setTestNow();
 
@@ -71,7 +83,7 @@ class UserTest extends TestCase
      * Test getStartOfDay method
      *
      * @return void
-     * @uses \App\Model\Entity\User::getStartOfDay()
+     * @uses User::getStartOfDay()
      */
     public function testGetStartOfDay(): void
     {
@@ -91,7 +103,7 @@ class UserTest extends TestCase
      * Test getEndOfDay method
      *
      * @return void
-     * @uses \App\Model\Entity\User::getEndOfDay()
+     * @uses User::getEndOfDay()
      */
     public function testGetEndOfDay(): void
     {
@@ -111,7 +123,7 @@ class UserTest extends TestCase
      * Test potatoResetInHours method
      *
      * @return void
-     * @uses \App\Model\Entity\User::potatoResetInHours()
+     * @uses User::potatoResetInHours()
      */
     public function testPotatoResetInHours(): void
     {
@@ -120,5 +132,144 @@ class UserTest extends TestCase
         $this->assertSame('9', $this->UserEurope->potatoResetInHours());
         $this->assertSame('15', $this->UserCanada->potatoResetInHours());
         $this->assertSame('18', $this->UserUS->potatoResetInHours());
+    }
+
+    /**
+     * Test spendablePotato method with no purchases
+     *
+     * @return void
+     * @uses User::spendablePotato()
+     */
+    public function testSpendablePotatoWithNoPurchases(): void
+    {
+        Chronos::setTestNow(new Chronos('2024-07-17 12:00:00', 'UTC'));
+
+        $this->addReceivedPotatoes($this->UserBuyer, 100);
+
+        $this->assertSame(100, $this->UserBuyer->spendablePotato());
+    }
+
+    /**
+     * Test spendablePotato method returns zero when spending limit reached
+     *
+     * @return void
+     * @uses User::spendablePotato()
+     */
+    public function testSpendablePotatoReturnsZeroWhenLimitReached(): void
+    {
+        Chronos::setTestNow(new Chronos('2024-07-17 12:00:00', 'UTC'));
+
+        $this->addReceivedPotatoes($this->UserBuyer, 600);
+        $this->addPurchase($this->UserBuyer, 500, DateTime::now('UTC')->subDays(30));
+
+        $this->assertSame(0, $this->UserBuyer->spendablePotato());
+    }
+
+    /**
+     * Test spendablePotato method counts purchase at exactly 90 days
+     *
+     * @return void
+     * @uses User::spendablePotato()
+     */
+    public function testSpendablePotatoCountsPurchaseAtExactly90Days(): void
+    {
+        Chronos::setTestNow(new Chronos('2024-07-17 12:00:00', 'UTC'));
+
+        $this->addReceivedPotatoes($this->UserBuyer, 600);
+        $this->addPurchase($this->UserBuyer, 500, DateTime::now('UTC')->subDays(90));
+
+        $this->assertSame(0, $this->UserBuyer->spendablePotato());
+    }
+
+    /**
+     * Test spendablePotato method ignores purchases older than 90 days
+     *
+     * @return void
+     * @uses User::spendablePotato()
+     */
+    public function testSpendablePotatoIgnoresPurchasesOlderThan90Days(): void
+    {
+        Chronos::setTestNow(new Chronos('2024-07-17 12:00:00', 'UTC'));
+
+        $this->addReceivedPotatoes($this->UserBuyer, 600);
+        $this->addPurchase($this->UserBuyer, 500, DateTime::now('UTC')->subDays(91));
+
+        $this->assertSame(600, $this->UserBuyer->spendablePotato());
+    }
+
+    /**
+     * Test spendablePotato method counts recent and ignores old purchases
+     *
+     * @return void
+     * @uses User::spendablePotato()
+     */
+    public function testSpendablePotatoCountsRecentAndIgnoresOldPurchases(): void
+    {
+        Chronos::setTestNow(new Chronos('2024-07-17 12:00:00', 'UTC'));
+
+        $this->addReceivedPotatoes($this->UserBuyer, 600);
+        $this->addPurchase($this->UserBuyer, 400, DateTime::now('UTC')->subDays(91));
+        $this->addPurchase($this->UserBuyer, 200, DateTime::now('UTC')->subDays(10));
+
+        $this->assertSame(400, $this->UserBuyer->spendablePotato());
+    }
+
+    /**
+     * Test spendablePotato method returns zero when multiple purchases exceed limit
+     *
+     * @return void
+     * @uses User::spendablePotato()
+     */
+    public function testSpendablePotatoReturnsZeroWhenMultiplePurchasesExceedLimit(): void
+    {
+        Chronos::setTestNow(new Chronos('2024-07-17 12:00:00', 'UTC'));
+
+        $this->addReceivedPotatoes($this->UserBuyer, 700);
+        $this->addPurchase($this->UserBuyer, 300, DateTime::now('UTC')->subDays(30));
+        $this->addPurchase($this->UserBuyer, 300, DateTime::now('UTC')->subDays(10));
+
+        $this->assertSame(0, $this->UserBuyer->spendablePotato());
+    }
+
+    /**
+     * Test spendablePotato method clamps to zero when spent exceeds received
+     *
+     * @return void
+     * @uses User::spendablePotato()
+     */
+    public function testSpendablePotatoClampsToZeroWhenSpentExceedsReceived(): void
+    {
+        Chronos::setTestNow(new Chronos('2024-07-17 12:00:00', 'UTC'));
+
+        $this->addReceivedPotatoes($this->UserBuyer, 50);
+        $this->addPurchase($this->UserBuyer, 200, DateTime::now('UTC')->subDays(30));
+
+        $this->assertSame(0, $this->UserBuyer->spendablePotato());
+    }
+
+    private function addReceivedPotatoes(User $user, int $amount): void
+    {
+        $messagesTable = $this->fetchTable('Messages');
+        $message = $messagesTable->newEntity([
+            'sender_user_id' => $user->id,
+            'receiver_user_id' => $user->id,
+            'type' => Message::TYPE_POTATO,
+            'amount' => $amount,
+        ], ['accessibleFields' => ['*' => true]]);
+        $messagesTable->saveOrFail($message);
+    }
+
+    private function addPurchase(User $user, int $price, DateTime $created): void
+    {
+        $purchasesTable = $this->fetchTable('Purchases');
+        $purchase = $purchasesTable->newEntity([
+            'user_id' => $user->id,
+            'name' => 'Test Product',
+            'description' => 'Test',
+            'image_link' => 'https://example.com/test.jpg',
+            'price' => $price,
+            'created' => $created,
+        ], ['accessibleFields' => ['*' => true]]);
+        $purchasesTable->saveOrFail($purchase);
     }
 }
