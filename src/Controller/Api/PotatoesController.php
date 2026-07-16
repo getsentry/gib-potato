@@ -13,8 +13,10 @@ class PotatoesController extends ApiController
     /**
      * @return \Cake\Http\Response
      */
-    public function list(): Response
+    public function list(?string $userId = null): Response
     {
+        $userId = $userId ?? $this->Authentication->getIdentity()->getIdentifier();
+
         $messagesTable = $this->fetchTable('Messages');
 
         $sent = $messagesTable->find()
@@ -23,7 +25,7 @@ class PotatoesController extends ApiController
                 'recipient' => 'Messages.receiver_user_id',
                 'created' => 'Messages.created',
             ])
-            ->where(['Messages.sender_user_id' => $this->Authentication->getIdentity()->getIdentifier()])
+            ->where(['Messages.sender_user_id' => $userId])
             ->orderBy(['Messages.created' => 'DESC'])
             ->disableHydration()
             ->all();
@@ -34,7 +36,7 @@ class PotatoesController extends ApiController
                 'sender' => 'Messages.sender_user_id',
                 'created' => 'Messages.created',
             ])
-            ->where(['Messages.receiver_user_id' => $this->Authentication->getIdentity()->getIdentifier()])
+            ->where(['Messages.receiver_user_id' => $userId])
             ->orderBy(['Messages.created' => 'DESC'])
             ->disableHydration()
             ->all();
