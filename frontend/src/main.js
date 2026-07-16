@@ -1,20 +1,20 @@
-import { createApp } from 'vue'
+import { createApp } from 'vue';
 
-import vSelect from 'vue-select'
+import vSelect from 'vue-select';
 
-import * as Sentry from '@sentry/vue'
+import * as Sentry from '@sentry/vue';
 
-import App from './App.vue'
-import router from './router'
-import store from './store'
-import api from './api'
+import App from './App.vue';
+import router from './router';
+import store from './store';
+import api from './api';
 
-import './assets/main.css'
+import './assets/main.css';
 
 (async () => {
-    const app = createApp(App)
+    const app = createApp(App);
 
-    let dataSet = document.querySelector('body').dataset
+    let dataSet = document.querySelector('body').dataset;
 
     Sentry.init({
         app,
@@ -46,19 +46,19 @@ import './assets/main.css'
                 buttonLabel: 'Gib Feedback',
                 submitButtonLabel: 'Send Feedback',
                 formTitle: 'Gib Feedback 🥔',
-                messagePlaceholder: 'What\'s not working? 😢',
+                messagePlaceholder: "What's not working? 😢",
                 showEmail: false,
                 showBranding: false,
                 themeLight: {
                     foreground: '#18181b', // zinc-900
-                    background: "#f4f4f5", //zinc-100
+                    background: '#f4f4f5', //zinc-100
                     accentForeground: '#18181b', // zinc-900
                     accentBackground: '#fde68a', // amber-200
                     boxShadow: 'none',
                 },
                 themeDark: {
                     foreground: '#fafafa', // zinc-50
-                    background: "#27272a", // zinc-800
+                    background: '#27272a', // zinc-800
                     accentForeground: '#18181b', // zinc-900
                     accentBackground: '#fde68a', // amber-200
                     boxShadow: 'none',
@@ -66,13 +66,13 @@ import './assets/main.css'
             }),
             Sentry.consoleLoggingIntegration({ levels: ['error'] }),
         ],
-    })
+    });
 
     Sentry.setUser({
         username: document.querySelector('body').dataset.username,
     });
 
-    api.init()
+    api.init();
 
     await Promise.all([
         store.dispatch('getLeaderboard'),
@@ -80,14 +80,11 @@ import './assets/main.css'
         store.dispatch('getUsers'),
         store.dispatch('getProducts'),
         store.dispatch('getCollection'),
-        store.dispatch('getQuickWins'),
-    ])
+    ]);
 
-    app
-        .use(router)
-        .use(store)
+    app.use(router).use(store);
 
-    app.component('v-select', vSelect)
+    app.component('v-select', vSelect);
 
-    app.mount('#app')
-})()
+    app.mount('#app');
+})();

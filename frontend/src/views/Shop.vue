@@ -8,32 +8,33 @@
         </small>
     </div>
 
-    <div class="mt-8 grid grid-cols-1 gap-y-12 sm:grid-cols-2 sm:gap-x-6 lg:grid-cols-4 xl:gap-x-8 mb-32">
-        <div
-            v-for="(product, index) in products"
-            class="h-full flex flex-col"
-        >
-            <div
-                :index="index"
-                class="relative"
-            >
+    <div
+        v-if="products.length"
+        class="mt-8 grid grid-cols-1 gap-y-12 sm:grid-cols-2 sm:gap-x-6 lg:grid-cols-4 xl:gap-x-8 mb-32"
+    >
+        <div v-for="(product, index) in products" class="h-full flex flex-col">
+            <div :index="index" class="relative">
                 <div class="relative h-72 w-full overflow-hidden rounded-lg">
-                    <img class="h-full w-full object-cover object-center" :src="product.image_link">
+                    <img
+                        class="h-full w-full object-cover object-center"
+                        :src="product.image_link"
+                    />
                 </div>
                 <div class="relative mt-4">
                     <h3 class="text-sm font-medium">{{ product.name }}</h3>
                     <p class="mt-1 text-sm text-zinc-500">{{ product.description }}</p>
                 </div>
-                <div class="absolute inset-x-0 top-0 flex h-72 items-end justify-end overflow-hidden rounded-lg p-4">
-                    <div class="absolute inset-x-0 bottom-0 h-36 bg-gradient-to-t from-black opacity-50"></div>
+                <div
+                    class="absolute inset-x-0 top-0 flex h-72 items-end justify-end overflow-hidden rounded-lg p-4"
+                >
+                    <div
+                        class="absolute inset-x-0 bottom-0 h-36 bg-linear-to-t from-black opacity-50"
+                    ></div>
                     <p class="relative text-lg font-semibold text-white">🥔 {{ product.price }}</p>
                 </div>
             </div>
             <div class="mt-auto">
-                <p
-                    v-if="product.stock >= 1"
-                    class="mt-6 text-xs text-zinc-500"
-                >
+                <p v-if="product.stock >= 1" class="mt-6 text-xs text-zinc-500">
                     {{ product.stock }} left in stock
                 </p>
                 <div class="mt-3">
@@ -57,23 +58,37 @@
             </div>
         </div>
     </div>
+    <div v-else class="absolute inset-0 flex items-center justify-center">
+        <h1 class="text-2xl font-extrabold">Nothing available in the shop right now...</h1>
+    </div>
     <div v-if="modalOpen === true" class="relative z-10">
-        <div class="fixed inset-0 bg-zinc-700 bg-opacity-75"></div>
+        <div class="fixed inset-0 bg-zinc-700/75"></div>
 
         <div class="fixed inset-0 z-10 overflow-y-auto">
-            <div class="flex min-h-full items-end justify-center p-4 text-center sm:items-center sm:p-0">
-                <div class="relative transform overflow-hidden rounded-lg bg-zinc-50 dark:bg-zinc-900 px-4 pt-5 pb-4 text-left shadow-xl transition-all sm:my-8 sm:w-full sm:max-w-sm sm:p-6">
+            <div
+                class="flex min-h-full items-end justify-center p-4 text-center sm:items-center sm:p-0"
+            >
+                <div
+                    class="relative transform overflow-hidden rounded-lg bg-zinc-50 dark:bg-zinc-900 px-4 pt-5 pb-4 text-left shadow-xl transition-all sm:my-8 sm:w-full sm:max-w-sm sm:p-6"
+                >
                     <div>
                         <div>
                             <div v-if="modalError" class="rounded-md bg-red-50 p-4 mb-4">
                                 <div class="flex">
-                                    <div class="flex-shrink-0">
+                                    <div class="shrink-0">
                                         <!-- Heroicon name: mini/x-circle -->
-                                        <svg class="h-5 w-5 text-red-400" xmlns="http://www.w3.org/2000/svg"
-                                            viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
-                                            <path fill-rule="evenodd"
+                                        <svg
+                                            class="h-5 w-5 text-red-400"
+                                            xmlns="http://www.w3.org/2000/svg"
+                                            viewBox="0 0 20 20"
+                                            fill="currentColor"
+                                            aria-hidden="true"
+                                        >
+                                            <path
+                                                fill-rule="evenodd"
                                                 d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.28 7.22a.75.75 0 00-1.06 1.06L8.94 10l-1.72 1.72a.75.75 0 101.06 1.06L10 11.06l1.72 1.72a.75.75 0 101.06-1.06L11.06 10l1.72-1.72a.75.75 0 00-1.06-1.06L10 8.94 8.28 7.22z"
-                                                clip-rule="evenodd" />
+                                                clip-rule="evenodd"
+                                            />
                                         </svg>
                                     </div>
                                     <div class="ml-3">
@@ -85,17 +100,23 @@
                             </div>
                             <div class="relative">
                                 <div class="relative h-72 w-full overflow-hidden rounded-lg">
-                                    <img class="h-full w-full object-cover object-center" :src="product.image_link">
+                                    <img
+                                        class="h-full w-full object-cover object-center"
+                                        :src="product.image_link"
+                                    />
                                 </div>
                                 <div class="relative mt-4">
                                     <h3 class="text-sm font-medium">{{ product.name }}</h3>
-                                    <p class="mt-1 text-sm text-zinc-500">{{ product.description }}</p>
+                                    <p class="mt-1 text-sm text-zinc-500">
+                                        {{ product.description }}
+                                    </p>
                                 </div>
                                 <div
-                                    class="absolute inset-x-0 top-0 flex h-72 items-end justify-end overflow-hidden rounded-lg p-4">
+                                    class="absolute inset-x-0 top-0 flex h-72 items-end justify-end overflow-hidden rounded-lg p-4"
+                                >
                                     <div
-                                        class="absolute inset-x-0 bottom-0 h-36 bg-gradient-to-t from-black opacity-50">
-                                    </div>
+                                        class="absolute inset-x-0 bottom-0 h-36 bg-linear-to-t from-black opacity-50"
+                                    ></div>
                                 </div>
                             </div>
                             <div v-if="purchaseSuccess === false">
@@ -109,8 +130,10 @@
                                                 type="radio"
                                                 class="h-4 w-4 border-gray-300 text-indigo-600"
                                                 :checked="purchaseMode === 'myself'"
+                                            />
+                                            <label
+                                                class="ml-3 block text-sm font-medium text-zinc-500"
                                             >
-                                            <label class="ml-3 block text-sm font-medium text-zinc-500">
                                                 For myself
                                             </label>
                                         </div>
@@ -122,17 +145,16 @@
                                                 type="radio"
                                                 class="h-4 w-4 border-gray-300 text-indigo-600"
                                                 :checked="purchaseMode === 'someone-else'"
+                                            />
+                                            <label
+                                                class="ml-3 block text-sm font-medium text-zinc-500"
                                             >
-                                            <label class="ml-3 block text-sm font-medium text-zinc-500">
                                                 For someone else
                                             </label>
                                         </div>
                                     </div>
                                 </fieldset>
-                                <div
-                                    v-if="purchaseMode === 'someone-else'"
-                                    class="mt-3 space-y-3"
-                                >
+                                <div v-if="purchaseMode === 'someone-else'" class="mt-3 space-y-3">
                                     <v-select
                                         v-model="presentee"
                                         :options="users"
@@ -159,7 +181,8 @@
                             class="inline-flex w-full justify-center rounded-md border border-transparent bg-amber-200 text-zinc-900 px-4 py-2 text-base font-medium sm:col-start-2 sm:text-sm"
                             @click="purchase(product, presentee)"
                         >
-                            Pay {{ product.price }} <span class="ml-2" :class="{ 'animate-spin': loading }">🥔</span>
+                            Pay {{ product.price }}
+                            <span class="ml-2" :class="{ 'animate-spin': loading }">🥔</span>
                         </button>
                         <button
                             v-else
@@ -176,11 +199,10 @@
                             Cancel
                         </button>
                     </div>
-                    <div
-                        v-if="purchaseSuccess"
-                        class="mt-5 sm:mt-6"
-                    >
-                        <div class="my-3 inline-flex w-full justify-center rounded-md border border-zinc-300 px-4 py-2 text-base font-medium sm:mt-0 sm:text-sm">
+                    <div v-if="purchaseSuccess" class="mt-5 sm:mt-6">
+                        <div
+                            class="my-3 inline-flex w-full justify-center rounded-md border border-zinc-300 px-4 py-2 text-base font-medium sm:mt-0 sm:text-sm"
+                        >
                             Your code: {{ code }}
                         </div>
                         <button
@@ -192,7 +214,8 @@
                         </button>
                     </div>
                     <div class="mt-5 text-xs text-center text-zinc-500">
-                        <a href="/terms" target="_blank" class="underline">Terms & Conditions</a> apply.
+                        <a href="/terms" target="_blank" class="underline">Terms & Conditions</a>
+                        apply.
                     </div>
                 </div>
             </div>
@@ -201,23 +224,25 @@
 </template>
 
 <script>
-import { computed } from 'vue'
-import { useStore } from 'vuex'
+import { computed } from 'vue';
+import { useStore } from 'vuex';
 
-import api from '@/api'
+import api from '@/api';
 
 import 'vue-select/dist/vue-select.css';
 
 export default {
     name: 'Shop',
     setup() {
-        const store = useStore()
+        const store = useStore();
 
         return {
             user: computed(() => store.getters.user),
-            users: computed(() => store.getters.users.filter((el) => el.id !== store.getters.user.id)),
+            users: computed(() =>
+                store.getters.users.filter((el) => el.id !== store.getters.user.id),
+            ),
             products: computed(() => store.getters.products),
-        }
+        };
     },
     data() {
         return {
@@ -230,38 +255,38 @@ export default {
             loading: false,
             purchaseSuccess: false,
             code: null,
-        }
+        };
     },
     beforeUnmount() {
-        document.removeEventListener('keydown', this.handleEscKey)
+        document.removeEventListener('keydown', this.handleEscKey);
     },
     methods: {
         openModal(product) {
-            this.product = product
-            this.modalOpen = true
+            this.product = product;
+            this.modalOpen = true;
             // Remove first to prevent duplicate event listeners
-            document.removeEventListener('keydown', this.handleEscKey)
-            document.addEventListener('keydown', this.handleEscKey)
+            document.removeEventListener('keydown', this.handleEscKey);
+            document.addEventListener('keydown', this.handleEscKey);
         },
         closeModal() {
-            this.product = null
-            this.presentee = null
-            this.message = null
-            this.modalError = null
-            this.modalOpen = false
-            this.purchaseSuccess = false
-            this.code = null
-            this.purchaseMode = 'myself'
-            document.removeEventListener('keydown', this.handleEscKey)
+            this.product = null;
+            this.presentee = null;
+            this.message = null;
+            this.modalError = null;
+            this.modalOpen = false;
+            this.purchaseSuccess = false;
+            this.code = null;
+            this.purchaseMode = 'myself';
+            document.removeEventListener('keydown', this.handleEscKey);
         },
         handleEscKey(event) {
             if (event.key === 'Escape' && this.modalOpen) {
-                this.closeModal()
+                this.closeModal();
             }
         },
         async purchase() {
-            this.loading = true
-            this.modalError = null
+            this.loading = true;
+            this.modalError = null;
 
             try {
                 const response = await api.post('shop/purchase', {
@@ -269,20 +294,20 @@ export default {
                     presentee_id: this.presentee?.id,
                     message: this.message,
                     purchase_mode: this.purchaseMode,
-                })
-                this.purchaseSuccess = true
-                this.code = response.data.code
+                });
+                this.purchaseSuccess = true;
+                this.code = response.data.code;
 
-                await this.$store.dispatch('getUser')
-                await this.$store.dispatch('getProducts')
-                await this.$store.dispatch('getCollection')
+                await this.$store.dispatch('getUser');
+                await this.$store.dispatch('getProducts');
+                await this.$store.dispatch('getCollection');
             } catch (error) {
-                console.log(error)
-                this.modalError = error.response.data.error
+                console.log(error);
+                this.modalError = error.response.data.error;
             } finally {
-                this.loading = false
+                this.loading = false;
             }
-        }
-    }
-}
+        },
+    },
+};
 </script>

@@ -1,41 +1,41 @@
-name: "Go CI"
+name: 'Go CI'
 
 on:
-  push:
-    branches:
-      - 'main'
-  pull_request:
-    branches:
-      - '*'
+    push:
+        branches:
+            - 'main'
+    pull_request:
+        branches:
+            - '*'
 
 permissions:
-  contents: read
+    contents: read
 
 jobs:
-  go-ci:
-    runs-on: ubuntu-latest
+    go-ci:
+        runs-on: ubuntu-latest
 
-    steps:
-    - uses: actions/checkout@v7
+        steps:
+            - uses: actions/checkout@v7
 
-    - name: Setup Go
-      uses: actions/setup-go@v6
-      with:
-        go-version: 'stable'
+            - name: Setup Go
+              uses: actions/setup-go@v6
+              with:
+                  go-version: 'stable'
 
-    - name: Run build
-      working-directory: ./potal
-      run: go build .
+            - name: Run build
+              working-directory: ./potal
+              run: go build .
 
-    - name: Run vet
-      working-directory: ./potal
-      run: go vet .
+            - name: Run vet
+              working-directory: ./potal
+              run: go vet .
 
-    - name: Run lint
-      uses: golangci/golangci-lint-action@v9
-      with:
-        working-directory: ./potal
+            - name: Run lint
+              uses: golangci/golangci-lint-action@v9
+              with:
+                  working-directory: ./potal
 
-    - name: Run tests
-      working-directory: ./potal
-      run: go test -v -count=1 -race ./...
+            - name: Run tests
+              working-directory: ./potal
+              run: go test -v -count=1 -race ./...

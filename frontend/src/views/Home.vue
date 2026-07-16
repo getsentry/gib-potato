@@ -11,7 +11,7 @@ export default {
     name: 'Home',
     components: {
         Filter,
-        Leaderboard
-    }
+        Leaderboard,
+    },
 };
 </script>

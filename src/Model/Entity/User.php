@@ -16,6 +16,7 @@ use Cake\ORM\Locator\LocatorAwareTrait;
  * @property string $role
  * @property string $slack_user_id
  * @property string $slack_name
+ * @property string|null $slack_email
  * @property string $slack_picture
  * @property string $slack_time_zone
  * @property bool $slack_is_bot
@@ -209,24 +210,24 @@ class User extends Entity
      */
     public function spendablePotato(): int
     {
-        $pruchasesTable = $this->fetchTable('Purchases');
+        $purchasesTable = $this->fetchTable('Purchases');
 
-        $query = $pruchasesTable->find();
+        $query = $purchasesTable->find();
         $result = $query
             ->select([
                 'spent' => $query->func()->sum('price'),
             ])
             ->where([
                 'user_id' => $this->id,
+                'created >=' => DateTime::now('UTC')->subDays(90),
             ])
             ->first();
 
-        // @FIXME make this based on 90 days
         if ((int)$result->spent >= 500) {
             return 0;
         }
 
-        return $this->potatoReceived() - (int)$result->spent;
+        return max(0, $this->potatoReceived() - (int)$result->spent);
     }
 
     /**

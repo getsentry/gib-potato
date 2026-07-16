@@ -2,16 +2,18 @@
     <table class="w-full table-auto divide-y divide-zinc-300 mb-32">
         <thead>
             <tr>
-                <th scope="col" class="py-3.5 pr-3 text-left text-sm font-semibold">
-                    Rank
-                </th>
-                <th scope="col" class="py-3.5 px-3 text-left text-sm font-semibold">
-                    Person
-                </th>
-                <th scope="col" class="hidden md:table-cell py-3.5 px-3 text-right text-sm font-semibold">
+                <th scope="col" class="py-3.5 pr-3 text-left text-sm font-semibold">Rank</th>
+                <th scope="col" class="py-3.5 px-3 text-left text-sm font-semibold">Person</th>
+                <th
+                    scope="col"
+                    class="hidden md:table-cell py-3.5 px-3 text-right text-sm font-semibold"
+                >
                     Received
                 </th>
-                <th scope="col" class="hidden md:table-cell relative py-3.5 pl-3 text-right text-sm font-semibold">
+                <th
+                    scope="col"
+                    class="hidden md:table-cell relative py-3.5 pl-3 text-right text-sm font-semibold"
+                >
                     Sent
                 </th>
             </tr>
@@ -32,7 +34,9 @@
                 <td class="hidden md:table-cell whitespace-nowrap py-4 px-3 text-right text-sm">
                     {{ user.received_count ?? 0 }}
                 </td>
-                <td class="hidden md:table-cell relative whitespace-nowrap py-4 pl-3 pr-4 text-right text-sm">
+                <td
+                    class="hidden md:table-cell relative whitespace-nowrap py-4 pl-3 pr-4 text-right text-sm"
+                >
                     {{ user.sent_count ?? 0 }}
                 </td>
             </tr>
@@ -47,10 +51,10 @@ import { useStore } from 'vuex';
 export default {
     name: 'Leaderboard',
     setup() {
-        const store = useStore()
+        const store = useStore();
         return {
             users: computed(() => store.getters.leaderboard),
-        }
+        };
     },
 };
 </script>

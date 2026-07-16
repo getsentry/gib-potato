@@ -54,6 +54,18 @@ class UsersFixture extends TestFixture
                 'created' => '2023-01-01 00:00:00',
                 'modified' => '2023-01-01 00:00:00',
             ],
+            [
+                'id' => '00000000-0000-0000-0000-000000000004',
+                'status' => 'active',
+                'role' => 'user',
+                'slack_user_id' => 'U4444',
+                'slack_name' => 'User U4444',
+                'slack_picture' => 'https://example.com/U4444.jpg',
+                'slack_is_bot' => 0,
+                'slack_time_zone' => 'UTC',
+                'created' => '2023-01-01 00:00:00',
+                'modified' => '2023-01-01 00:00:00',
+            ],
         ];
         parent::init();
     }

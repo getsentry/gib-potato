@@ -59,7 +59,6 @@ return static function (RouteBuilder $routes): void {
         $builder->connect('/', ['controller' => 'Home', 'action' => 'index']);
         $builder->connect('/shop', ['controller' => 'Home', 'action' => 'index']);
         $builder->connect('/collection', ['controller' => 'Home', 'action' => 'index']);
-        $builder->connect('/quick-wins', ['controller' => 'Home', 'action' => 'index']);
         $builder->connect('/profile', ['controller' => 'Home', 'action' => 'index']);
         $builder->connect('/settings', ['controller' => 'Home', 'action' => 'index']);
 
@@ -67,6 +66,10 @@ return static function (RouteBuilder $routes): void {
 
         $builder->scope('/api', function (RouteBuilder $builder): void {
             $builder->get('/leaderboard', ['prefix' => 'Api', 'controller' => 'LeaderBoard', 'action' => 'get']);
+
+            $builder->get('/potatoes', ['prefix' => 'Api', 'controller' => 'Potatoes', 'action' => 'list']);
+            $builder->get('/potatoes/{userId}', ['prefix' => 'Api', 'controller' => 'Potatoes', 'action' => 'list'])
+                ->setPass(['userId']);
 
             $builder->get('/users', ['prefix' => 'Api', 'controller' => 'Users', 'action' => 'list']);
             $builder->get('/user', ['prefix' => 'Api', 'controller' => 'Users', 'action' => 'get']);
@@ -78,7 +81,6 @@ return static function (RouteBuilder $routes): void {
             $builder->post('/shop/purchase', ['prefix' => 'Api', 'controller' => 'Shop', 'action' => 'purchase']);
 
             $builder->get('/collection', ['prefix' => 'Api', 'controller' => 'Collection', 'action' => 'get']);
-            $builder->get('/quick-wins', ['prefix' => 'Api', 'controller' => 'QuickWins', 'action' => 'get']);
         });
     });
 

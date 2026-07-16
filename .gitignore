@@ -59,3 +59,5 @@ nbproject/*
 yarn-error.log
 # mprocs
 mprocs.yaml
+# phpactor
+.phpactor.json

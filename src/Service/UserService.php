@@ -55,6 +55,7 @@ class UserService
             'role' => User::ROLE_USER,
             'slack_user_id' => $slackUser['id'],
             'slack_name' => $slackUser['real_name'],
+            'slack_email' => $slackUser['profile']['email'] ?? null,
             'slack_picture' => $slackUser['profile']['image_72'],
             'slack_is_bot' => $slackUser['is_bot'] ?? false,
         ], [
@@ -63,6 +64,7 @@ class UserService
                 'role' => true,
                 'slack_user_id' => true,
                 'slack_name' => true,
+                'slack_email' => true,
                 'slack_picture' => true,
                 'slack_is_bot' => true,
             ],
