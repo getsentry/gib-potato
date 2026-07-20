@@ -1,10 +1,10 @@
 <template>
     <div>
         <h2 class="text-lg font-medium leading-6">
-            You can spend up to {{ user.spendable_count ?? 0 }} 🥔
+            You have {{ user.spendable_count ?? 0 }} 🥔 available overall.
         </h2>
         <small class="text-sm text-zinc-500">
-            Max spend is limited to 500 🥔 every three months
+            {{ user.quarterly_spendable_count ?? 0 }} 🥔 left to spend this quarter
         </small>
     </div>
 
@@ -177,7 +177,7 @@
                         class="mt-5 sm:mt-6 sm:grid sm:grid-flow-row-dense sm:grid-cols-2 sm:gap-3"
                     >
                         <button
-                            v-if="user.spendable_count >= product.price"
+                            v-if="user.quarterly_spendable_count >= product.price"
                             class="inline-flex w-full justify-center rounded-md border border-transparent bg-amber-200 text-zinc-900 px-4 py-2 text-base font-medium sm:col-start-2 sm:text-sm"
                             @click="purchase(product, presentee)"
                         >

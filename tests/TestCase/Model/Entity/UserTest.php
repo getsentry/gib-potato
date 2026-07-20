@@ -247,6 +247,94 @@ class UserTest extends TestCase
         $this->assertSame(0, $this->UserBuyer->spendablePotato());
     }
 
+    /**
+     * @uses User::quarterlySpendable()
+     */
+    public function testQuarterlySpendableWithNoPurchases(): void
+    {
+        Chronos::setTestNow(new Chronos('2024-07-17 12:00:00', 'UTC'));
+
+        $this->addReceivedPotatoes($this->UserBuyer, 100);
+
+        $this->assertSame(100, $this->UserBuyer->quarterlySpendable());
+    }
+
+    /**
+     * @uses User::quarterlySpendable()
+     */
+    public function testQuarterlySpendableCapsAt500(): void
+    {
+        Chronos::setTestNow(new Chronos('2024-07-17 12:00:00', 'UTC'));
+
+        $this->addReceivedPotatoes($this->UserBuyer, 2000);
+
+        $this->assertSame(500, $this->UserBuyer->quarterlySpendable());
+    }
+
+    /**
+     * @uses User::quarterlySpendable()
+     */
+    public function testQuarterlySpendableSubtractsRecentPurchases(): void
+    {
+        Chronos::setTestNow(new Chronos('2024-07-17 12:00:00', 'UTC'));
+
+        $this->addReceivedPotatoes($this->UserBuyer, 2000);
+        $this->addPurchase($this->UserBuyer, 300, DateTime::now('UTC')->subDays(30));
+
+        $this->assertSame(200, $this->UserBuyer->quarterlySpendable());
+    }
+
+    /**
+     * @uses User::quarterlySpendable()
+     */
+    public function testQuarterlySpendableReturnsZeroWhenLimitReached(): void
+    {
+        Chronos::setTestNow(new Chronos('2024-07-17 12:00:00', 'UTC'));
+
+        $this->addReceivedPotatoes($this->UserBuyer, 2000);
+        $this->addPurchase($this->UserBuyer, 500, DateTime::now('UTC')->subDays(30));
+
+        $this->assertSame(0, $this->UserBuyer->quarterlySpendable());
+    }
+
+    /**
+     * @uses User::quarterlySpendable()
+     */
+    public function testQuarterlySpendableIgnoresPurchasesOlderThan90Days(): void
+    {
+        Chronos::setTestNow(new Chronos('2024-07-17 12:00:00', 'UTC'));
+
+        $this->addReceivedPotatoes($this->UserBuyer, 2000);
+        $this->addPurchase($this->UserBuyer, 500, DateTime::now('UTC')->subDays(91));
+
+        $this->assertSame(500, $this->UserBuyer->quarterlySpendable());
+    }
+
+    /**
+     * @uses User::quarterlySpendable()
+     */
+    public function testQuarterlySpendableLimitedByBalanceWhenBelowCap(): void
+    {
+        Chronos::setTestNow(new Chronos('2024-07-17 12:00:00', 'UTC'));
+
+        $this->addReceivedPotatoes($this->UserBuyer, 50);
+
+        $this->assertSame(50, $this->UserBuyer->quarterlySpendable());
+    }
+
+    /**
+     * @uses User::quarterlySpendable()
+     */
+    public function testQuarterlySpendableReturnsZeroWhenSpentExceedsReceived(): void
+    {
+        Chronos::setTestNow(new Chronos('2024-07-17 12:00:00', 'UTC'));
+
+        $this->addReceivedPotatoes($this->UserBuyer, 50);
+        $this->addPurchase($this->UserBuyer, 200, DateTime::now('UTC')->subDays(30));
+
+        $this->assertSame(0, $this->UserBuyer->quarterlySpendable());
+    }
+
     private function addReceivedPotatoes(User $user, int $amount): void
     {
         $messagesTable = $this->fetchTable('Messages');

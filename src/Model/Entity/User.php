@@ -210,6 +210,32 @@ class User extends Entity
      */
     public function spendablePotato(): int
     {
+        $spent = $this->spentInLast90Days();
+
+        if ($spent >= 500) {
+            return 0;
+        }
+
+        return max(0, $this->potatoReceived() - $spent);
+    }
+
+    /**
+     * @return int
+     */
+    public function quarterlySpendable(): int
+    {
+        $spent = $this->spentInLast90Days();
+        $quarterlyRemaining = max(0, 500 - $spent);
+        $balance = max(0, $this->potatoReceived() - $spent);
+
+        return min($quarterlyRemaining, $balance);
+    }
+
+    /**
+     * @return int
+     */
+    private function spentInLast90Days(): int
+    {
         $purchasesTable = $this->fetchTable('Purchases');
 
         $query = $purchasesTable->find();
@@ -223,11 +249,7 @@ class User extends Entity
             ])
             ->first();
 
-        if ((int)$result->spent >= 500) {
-            return 0;
-        }
-
-        return max(0, $this->potatoReceived() - (int)$result->spent);
+        return (int)$result->spent;
     }
 
     /**
