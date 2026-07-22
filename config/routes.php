@@ -67,6 +67,10 @@ return static function (RouteBuilder $routes): void {
         $builder->scope('/api', function (RouteBuilder $builder): void {
             $builder->get('/leaderboard', ['prefix' => 'Api', 'controller' => 'LeaderBoard', 'action' => 'get']);
 
+            $builder->get('/potatoes', ['prefix' => 'Api', 'controller' => 'Potatoes', 'action' => 'list']);
+            $builder->get('/potatoes/{userId}', ['prefix' => 'Api', 'controller' => 'Potatoes', 'action' => 'list'])
+                ->setPass(['userId']);
+
             $builder->get('/users', ['prefix' => 'Api', 'controller' => 'Users', 'action' => 'list']);
             $builder->get('/user', ['prefix' => 'Api', 'controller' => 'Users', 'action' => 'get']);
             $builder->patch('/user', ['prefix' => 'Api', 'controller' => 'Users', 'action' => 'edit']);
