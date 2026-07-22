@@ -12,17 +12,17 @@
     },
     "dependencies": {
         "@sentry/vite-plugin": "^5.4.0",
-        "@sentry/vue": "^10.65.0",
-        "@tailwindcss/vite": "^4.3.2",
+        "@sentry/vue": "^10.67.0",
+        "@tailwindcss/vite": "^4.3.3",
         "axios": "^1.18.1",
-        "vue": "^3.5.39",
-        "vue-router": "^5.1.0",
+        "vue": "^3.5.40",
+        "vue-router": "^5.2.0",
         "vue-select": "^4.0.0-beta.6",
         "vuex": "^4.1.0"
     },
     "devDependencies": {
-        "@vitejs/plugin-vue": "^6.0.7",
-        "vite-plus": "^0.2.4"
+        "@vitejs/plugin-vue": "^6.0.8",
+        "vite-plus": "^0.2.5"
     },
     "devEngines": {
         "packageManager": {
