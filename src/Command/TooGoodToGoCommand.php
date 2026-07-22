@@ -3,14 +3,12 @@ declare(strict_types=1);
 
 namespace App\Command;
 
-use App\Database\Log\SentryQueryLogger;
 use App\Http\SlackClient;
 use Cake\Chronos\Chronos;
 use Cake\Command\Command;
 use Cake\Console\Arguments;
 use Cake\Console\ConsoleIo;
 use Cake\Console\ConsoleOptionParser;
-use Cake\Datasource\ConnectionManager;
 use DateTimeZone;
 use Sentry\MonitorConfig;
 use Sentry\MonitorSchedule;
@@ -99,11 +97,6 @@ class TooGoodToGoCommand extends Command
         $io->out('Sending out Too Good To Go notifications');
 
         $slackClient = new SlackClient();
-
-        $logger = new SentryQueryLogger();
-
-        $connection = ConnectionManager::get('default');
-        $connection->getDriver()->setLogger($logger);
 
         $applicableTimeZones = $this->_getApplicableTimeZones();
         if (empty($applicableTimeZones)) {

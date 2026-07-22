@@ -3,14 +3,12 @@ declare(strict_types=1);
 
 namespace App\Command;
 
-use App\Database\Log\SentryQueryLogger;
 use App\Http\SlackClient;
 use App\Model\Entity\User;
 use Cake\Command\Command;
 use Cake\Console\Arguments;
 use Cake\Console\ConsoleIo;
 use Cake\Console\ConsoleOptionParser;
-use Cake\Datasource\ConnectionManager;
 use Sentry\MonitorConfig;
 use Sentry\MonitorSchedule;
 use Sentry\SentrySdk;
@@ -92,11 +90,6 @@ class UpdateUsersCommand extends Command
         $io->out('Updating all users from Slack');
 
         $slackClient = new SlackClient();
-
-        $logger = new SentryQueryLogger();
-
-        $connection = ConnectionManager::get('default');
-        $connection->getDriver()->setLogger($logger);
 
         $usersTable = $this->fetchTable('Users');
         $users = $usersTable->find()->all();
