@@ -212,10 +212,10 @@ class User extends Entity
     {
         $purchasesTable = $this->fetchTable('Purchases');
 
-        $query = $purchasesTable->find();
-        $result = $query
+        $recentQuery = $purchasesTable->find();
+        $recentResult = $recentQuery
             ->select([
-                'spent' => $query->func()->sum('price'),
+                'spent' => $recentQuery->func()->sum('price'),
             ])
             ->where([
                 'user_id' => $this->id,
@@ -223,11 +223,22 @@ class User extends Entity
             ])
             ->first();
 
-        if ((int)$result->spent >= 500) {
-            return 0;
-        }
+        $totalQuery = $purchasesTable->find();
+        $totalResult = $totalQuery
+            ->select([
+                'spent' => $totalQuery->func()->sum('price'),
+            ])
+            ->where([
+                'user_id' => $this->id,
+            ])
+            ->first();
 
-        return max(0, $this->potatoReceived() - (int)$result->spent);
+        $recentSpent = (int)$recentResult->spent;
+        $totalSpent = (int)$totalResult->spent;
+        $remainingQuota = 500 - $recentSpent;
+        $remainingBalance = $this->potatoReceived() - $totalSpent;
+
+        return max(0, min($remainingQuota, $remainingBalance));
     }
 
     /**

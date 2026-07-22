@@ -187,7 +187,7 @@ class UserTest extends TestCase
         $this->addReceivedPotatoes($this->UserBuyer, 600);
         $this->addPurchase($this->UserBuyer, 500, DateTime::now('UTC')->subDays(91));
 
-        $this->assertSame(600, $this->UserBuyer->spendablePotato());
+        $this->assertSame(100, $this->UserBuyer->spendablePotato());
     }
 
     /**
@@ -203,7 +203,7 @@ class UserTest extends TestCase
         $this->addPurchase($this->UserBuyer, 400, DateTime::now('UTC')->subDays(91));
         $this->addPurchase($this->UserBuyer, 200, DateTime::now('UTC')->subDays(10));
 
-        $this->assertSame(400, $this->UserBuyer->spendablePotato());
+        $this->assertSame(0, $this->UserBuyer->spendablePotato());
     }
 
     /**
