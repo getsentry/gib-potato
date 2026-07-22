@@ -26,22 +26,22 @@ class UserTest extends TestCase
     ];
 
     /**
-     * @var User
+     * @var \App\Model\Entity\User
      */
     protected $UserEurope;
 
     /**
-     * @var User
+     * @var \App\Model\Entity\User
      */
     protected $UserCanada;
 
     /**
-     * @var User
+     * @var \App\Model\Entity\User
      */
     protected $UserUS;
 
     /**
-     * @var User
+     * @var \App\Model\Entity\User
      */
     protected $UserBuyer;
 
@@ -83,7 +83,6 @@ class UserTest extends TestCase
      * Test getStartOfDay method
      *
      * @return void
-     * @uses User::getStartOfDay()
      */
     public function testGetStartOfDay(): void
     {
@@ -103,7 +102,6 @@ class UserTest extends TestCase
      * Test getEndOfDay method
      *
      * @return void
-     * @uses User::getEndOfDay()
      */
     public function testGetEndOfDay(): void
     {
@@ -123,7 +121,6 @@ class UserTest extends TestCase
      * Test potatoResetInHours method
      *
      * @return void
-     * @uses User::potatoResetInHours()
      */
     public function testPotatoResetInHours(): void
     {
@@ -138,7 +135,6 @@ class UserTest extends TestCase
      * Test spendablePotato method with no purchases
      *
      * @return void
-     * @uses User::spendablePotato()
      */
     public function testSpendablePotatoWithNoPurchases(): void
     {
@@ -153,7 +149,6 @@ class UserTest extends TestCase
      * Test spendablePotato method returns zero when spending limit reached
      *
      * @return void
-     * @uses User::spendablePotato()
      */
     public function testSpendablePotatoReturnsZeroWhenLimitReached(): void
     {
@@ -169,7 +164,6 @@ class UserTest extends TestCase
      * Test spendablePotato method counts purchase at exactly 90 days
      *
      * @return void
-     * @uses User::spendablePotato()
      */
     public function testSpendablePotatoCountsPurchaseAtExactly90Days(): void
     {
@@ -185,7 +179,6 @@ class UserTest extends TestCase
      * Test spendablePotato method ignores purchases older than 90 days
      *
      * @return void
-     * @uses User::spendablePotato()
      */
     public function testSpendablePotatoIgnoresPurchasesOlderThan90Days(): void
     {
@@ -201,7 +194,6 @@ class UserTest extends TestCase
      * Test spendablePotato method counts recent and ignores old purchases
      *
      * @return void
-     * @uses User::spendablePotato()
      */
     public function testSpendablePotatoCountsRecentAndIgnoresOldPurchases(): void
     {
@@ -218,7 +210,6 @@ class UserTest extends TestCase
      * Test spendablePotato method returns zero when multiple purchases exceed limit
      *
      * @return void
-     * @uses User::spendablePotato()
      */
     public function testSpendablePotatoReturnsZeroWhenMultiplePurchasesExceedLimit(): void
     {
@@ -235,7 +226,6 @@ class UserTest extends TestCase
      * Test spendablePotato method clamps to zero when spent exceeds received
      *
      * @return void
-     * @uses User::spendablePotato()
      */
     public function testSpendablePotatoClampsToZeroWhenSpentExceedsReceived(): void
     {

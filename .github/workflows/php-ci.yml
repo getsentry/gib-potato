@@ -49,3 +49,5 @@ jobs:
 
             - name: Run PHPUnit
               run: vendor/bin/phpunit --colors=always
+              env:
+                  DATABASE_TEST_URL: postgres://gib_potato:password@localhost/gib_potato_test
