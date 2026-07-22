@@ -47,9 +47,8 @@ func main() {
 			Level: slog.LevelInfo,
 		}),
 		sentryslog.Option{
-			EventLevel: []slog.Level{},
-			LogLevel:   logLevels,
-			AddSource:  true,
+			LogLevel:  logLevels,
+			AddSource: true,
 		}.NewSentryHandler(context.Background()),
 	)
 	slog.SetDefault(slog.New(slogHandler))

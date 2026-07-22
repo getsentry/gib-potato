@@ -364,7 +364,7 @@ DEPENDENCIES
   sentry-ruby
   shopify_api
   sqlite3 (>= 2.9)
-  standard (>= 1.55.0)
+  standard (>= 1.56.0)
   thruster
   vernier
   web-console
