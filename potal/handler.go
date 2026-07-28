@@ -107,8 +107,12 @@ func (h *Handler) EventsHandler(w http.ResponseWriter, r *http.Request, _ httpro
 			switch ev.ChannelType {
 			case "im":
 				// Handle direct messages to the bot separately
+				hub := sentry.GetHubFromContext(ctx)
+				if hub == nil {
+					hub = sentry.CurrentHub()
+				}
+				hub = hub.Clone()
 				go func() {
-					hub := sentry.CurrentHub().Clone()
 					ctx := sentry.SetHubOnContext(context.Background(), hub)
 
 					options := []sentry.SpanOption{
