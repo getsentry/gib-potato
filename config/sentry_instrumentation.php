@@ -9,7 +9,6 @@ use Cake\Database\StatementInterface;
 use Cake\Http\Client as CakeClient;
 use Cake\Http\Client\Response;
 use Psr\Http\Message\RequestInterface;
-use Sentry\SentrySdk;
 use function Sentry\instrument;
 
 const CAKEPHP_DB_ORIGIN = 'auto.db.cakephp';
@@ -106,17 +105,9 @@ if (function_exists('\Sentry\instrument')) {
             ];
         },
         postprocessing: static function (Response $response): array {
-            $data = [
+            return [
                 'http.response.status_code' => $response->getStatusCode(),
             ];
-            $span = SentrySdk::getCurrentHub()->getSpan();
-            if ($span !== null) {
-                $span
-                    ->setHttpStatus($response->getStatusCode())
-                    ->setData($data);
-            }
-
-            return $data;
         },
     );
 }
