@@ -3,9 +3,9 @@ declare(strict_types=1);
 
 namespace App\Service;
 
-use App\Http\Client;
 use App\Http\SlackClient;
 use App\Model\Entity\Poll;
+use Cake\Http\Client;
 use Cake\ORM\Locator\LocatorAwareTrait;
 use function Sentry\captureMessage;
 use function Sentry\withScope;
@@ -14,7 +14,6 @@ class PollService
 {
     use LocatorAwareTrait;
 
-    protected Client $client;
     protected SlackClient $slackClient;
 
     /**
@@ -22,7 +21,6 @@ class PollService
      */
     public function __construct()
     {
-        $this->client = new Client();
         $this->slackClient = new SlackClient();
     }
 
