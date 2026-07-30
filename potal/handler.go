@@ -36,6 +36,14 @@ func (h *Handler) emitEventMetric(ctx context.Context, name string, eventType st
 	)
 }
 
+func cloneHubFromContext(ctx context.Context) *sentry.Hub {
+	hub := sentry.GetHubFromContext(ctx)
+	if hub == nil {
+		hub = sentry.CurrentHub()
+	}
+	return hub.Clone()
+}
+
 func DefaultHandler(w http.ResponseWriter, r *http.Request, _ httprouter.Params) {
 	// Overwrite transaction source with something usefull
 	ctx := r.Context()
@@ -107,8 +115,8 @@ func (h *Handler) EventsHandler(w http.ResponseWriter, r *http.Request, _ httpro
 			switch ev.ChannelType {
 			case "im":
 				// Handle direct messages to the bot separately
+				hub := cloneHubFromContext(ctx)
 				go func() {
-					hub := sentry.CurrentHub().Clone()
 					ctx := sentry.SetHubOnContext(context.Background(), hub)
 
 					options := []sentry.SpanOption{
@@ -138,8 +146,8 @@ func (h *Handler) EventsHandler(w http.ResponseWriter, r *http.Request, _ httpro
 					txn.Status = sentry.SpanStatusOK
 				}()
 			default:
+				hub := cloneHubFromContext(ctx)
 				go func() {
-					hub := sentry.CurrentHub().Clone()
 					ctx := sentry.SetHubOnContext(context.Background(), hub)
 
 					options := []sentry.SpanOption{
@@ -171,8 +179,8 @@ func (h *Handler) EventsHandler(w http.ResponseWriter, r *http.Request, _ httpro
 			}
 		case *slackevents.ReactionAddedEvent:
 			go event.ProcessReactionEvent(r.Context(), ev, h.slackClient)
+			hub := cloneHubFromContext(ctx)
 			go func() {
-				hub := sentry.CurrentHub().Clone()
 				ctx := sentry.SetHubOnContext(context.Background(), hub)
 
 				options := []sentry.SpanOption{
@@ -204,8 +212,8 @@ func (h *Handler) EventsHandler(w http.ResponseWriter, r *http.Request, _ httpro
 			}()
 		case *slackevents.AppMentionEvent:
 			go event.ProcessAppMentionEvent(r.Context(), ev)
+			hub := cloneHubFromContext(ctx)
 			go func() {
-				hub := sentry.CurrentHub().Clone()
 				ctx := sentry.SetHubOnContext(context.Background(), hub)
 
 				options := []sentry.SpanOption{
@@ -237,8 +245,8 @@ func (h *Handler) EventsHandler(w http.ResponseWriter, r *http.Request, _ httpro
 			}()
 		case *slackevents.AppHomeOpenedEvent:
 			go event.ProcessAppHomeOpenedEvent(r.Context(), ev)
+			hub := cloneHubFromContext(ctx)
 			go func() {
-				hub := sentry.CurrentHub().Clone()
 				ctx := sentry.SetHubOnContext(context.Background(), hub)
 
 				options := []sentry.SpanOption{
@@ -270,8 +278,8 @@ func (h *Handler) EventsHandler(w http.ResponseWriter, r *http.Request, _ httpro
 			}()
 		case *slackevents.LinkSharedEvent:
 			go event.ProcessLinkSharedEvent(r.Context(), ev)
+			hub := cloneHubFromContext(ctx)
 			go func() {
-				hub := sentry.CurrentHub().Clone()
 				ctx := sentry.SetHubOnContext(context.Background(), hub)
 
 				options := []sentry.SpanOption{
@@ -325,8 +333,8 @@ func (h *Handler) SlashHandler(w http.ResponseWriter, r *http.Request, _ httprou
 
 	switch s.Command {
 	case "/gibopinion":
+		hub := cloneHubFromContext(ctx)
 		go func() {
-			hub := sentry.CurrentHub().Clone()
 			ctx := sentry.SetHubOnContext(context.Background(), hub)
 
 			options := []sentry.SpanOption{
@@ -384,8 +392,8 @@ func (h *Handler) InteractionsHandler(w http.ResponseWriter, r *http.Request, _ 
 
 	switch payload.Type {
 	case slack.InteractionTypeBlockActions:
+		hub := cloneHubFromContext(ctx)
 		go func() {
-			hub := sentry.CurrentHub().Clone()
 			ctx := sentry.SetHubOnContext(context.Background(), hub)
 
 			options := []sentry.SpanOption{
