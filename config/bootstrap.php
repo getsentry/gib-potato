@@ -111,6 +111,8 @@ init([
     'attach_stacktrace' => true,
 ]);
 
+require_once CONFIG . 'sentry_instrumentation.php';
+
 /*
  * When debug = true the metadata cache should only last
  * for a short time.

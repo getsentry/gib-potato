@@ -3,8 +3,6 @@ declare(strict_types=1);
 
 namespace App\Middleware;
 
-use App\Database\Log\SentryQueryLogger;
-use Cake\Datasource\ConnectionManager;
 use Cake\Event\Event;
 use Cake\Event\EventManager;
 use Psr\Http\Message\ResponseInterface;
@@ -60,8 +58,6 @@ class SentryMiddleware implements MiddlewareInterface
 
         SentrySdk::getCurrentHub()->setSpan($span);
 
-        $this->setupQueryLogging();
-
         $response = $handler->handle($request);
 
         $span->setHttpStatus($response->getStatusCode())
@@ -95,16 +91,5 @@ class SentryMiddleware implements MiddlewareInterface
         );
 
         return $response;
-    }
-
-    /**
-     * @return void
-     */
-    public function setupQueryLogging(): void
-    {
-        $logger = new SentryQueryLogger();
-
-        $connection = ConnectionManager::get('default');
-        $connection->getDriver()->setLogger($logger);
     }
 }
