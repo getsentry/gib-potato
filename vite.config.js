@@ -3,7 +3,7 @@ import { fileURLToPath, URL } from 'node:url';
 import { defineConfig, loadEnv } from 'vite-plus';
 import vue from '@vitejs/plugin-vue';
 import tailwindcss from '@tailwindcss/vite';
-import { sentryVitePlugin } from '@sentry/vite-plugin';
+import { sentryVitePlugin } from '@sentry/bundler-plugins/vite';
 
 // https://vitejs.dev/config/
 export default defineConfig(({ mode }) => {

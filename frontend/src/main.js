@@ -26,7 +26,6 @@ import './assets/main.css';
         profileLifecycle: 'trace',
         replaysSessionSampleRate: 1.0,
         replaysOnErrorSampleRate: 1.0,
-        enableLogs: true,
         integrations: [
             Sentry.browserTracingIntegration({
                 enableInp: true,
@@ -37,7 +36,6 @@ import './assets/main.css';
                 },
             }),
             Sentry.browserProfilingIntegration(),
-            Sentry.spanStreamingIntegration(),
             Sentry.replayIntegration({
                 maskAllText: false,
                 blockAllMedia: false,
