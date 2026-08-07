@@ -11,7 +11,7 @@
         "preview": "vp preview"
     },
     "dependencies": {
-        "@sentry/vite-plugin": "^5.4.0",
+        "@sentry/bundler-plugins": "^11.0.0-alpha.0",
         "@sentry/vue": "^11.0.0-alpha.0",
         "@tailwindcss/vite": "^4.3.3",
         "axios": "^1.19.0",
