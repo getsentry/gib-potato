@@ -32,6 +32,7 @@ class EventFactory
             AbstractEvent::TYPE_MESSAGE => new MessageEvent($data),
             AbstractEvent::TYPE_DIRECT_MESSAGE => new DirectMessageEvent($data),
             AbstractEvent::TYPE_REACTION_ADDED => new ReactionAddedEvent($data),
+            AbstractEvent::TYPE_REACTION_REMOVED => new ReactionRemovedEvent($data),
             AbstractEvent::TYPE_APP_MENTION => new AppMentionEvent($data),
             AbstractEvent::TYPE_APP_HOME_OPENED => new AppHomeOpenedEvent($data),
             AbstractEvent::TYPE_SLASH_COMMAND => new SlashCommandEvent($data),

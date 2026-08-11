@@ -72,4 +72,38 @@ class VoucherService
             );
         }
     }
+
+    /**
+     * @param \App\Model\Entity\User $fromUser User who removed the reaction.
+     * @param string $channel The channel.
+     * @param string $timestamp The message timestamp.
+     * @return void
+     */
+    public function cancel(
+        User $fromUser,
+        string $channel,
+        string $timestamp,
+    ): void {
+        $vouchersTable = $this->fetchTable('Vouchers');
+
+        $vouchers = $vouchersTable->find()
+            ->where([
+                'sender_user_id' => $fromUser->id,
+                'channel' => $channel,
+                'timestamp' => $timestamp,
+                'status' => Voucher::STATUS_PENDING,
+            ])
+            ->all();
+
+        foreach ($vouchers as $voucher) {
+            $vouchersTable->deleteOrFail($voucher);
+
+            logger()->info(
+                message: '"%s" cancelled a potato voucher 🎟️',
+                values: [
+                    $fromUser->slack_name,
+                ],
+            );
+        }
+    }
 }
