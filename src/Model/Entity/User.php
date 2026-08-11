@@ -55,15 +55,18 @@ class User extends Entity
      */
     protected function _getNotifications(?array $notifications = []): array
     {
+        $defaults = [
+            'sent' => true,
+            'received' => true,
+            'too_good_to_go' => false,
+            'vouchers' => true,
+        ];
+
         if (empty($notifications)) {
-            return [
-                'sent' => true,
-                'received' => true,
-                'too_good_to_go' => false,
-            ];
+            return $defaults;
         }
 
-        return $notifications;
+        return array_merge($defaults, $notifications);
     }
 
     /**
@@ -203,6 +206,35 @@ class User extends Entity
         $userEndOfDay = $userTime->endOfDay();
 
         return (string)$userTime->diff($userEndOfDay)->i;
+    }
+
+    /**
+     * @return int
+     */
+    public function vouchersSentToday(): int
+    {
+        $vouchersTable = $this->fetchTable('Vouchers');
+
+        $query = $vouchersTable->find();
+        $result = $query
+            ->select([
+                'sent' => $query->func()->count('id'),
+            ])
+            ->where([
+                'sender_user_id' => $this->id,
+                'created >=' => $this->getStartOfDay(),
+            ])
+            ->first();
+
+        return (int)$result->sent;
+    }
+
+    /**
+     * @return int
+     */
+    public function vouchersLeftToday(): int
+    {
+        return Voucher::MAX_AMOUNT - $this->vouchersSentToday();
     }
 
     /**

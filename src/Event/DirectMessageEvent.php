@@ -39,10 +39,14 @@ class DirectMessageEvent extends AbstractEvent
 
             $user = $userService->getOrCreateUser($this->sender);
 
-            $message = sprintf('You have *%s* left to gib today.', $user->potatoLeftToday());
+            $message = sprintf(
+                'You have *%s* :potato: and *%s* :admission_tickets: left to gib today.',
+                $user->potatoLeftToday(),
+                $user->vouchersLeftToday(),
+            );
             $message .= PHP_EOL;
             $message .= sprintf(
-                'Your potato do reset in *%s hours* and *%s minutes*.',
+                'They will reset in *%s hours* and *%s minutes*.',
                 $user->potatoResetInHours(),
                 $user->potatoResetInMinutes(),
             );

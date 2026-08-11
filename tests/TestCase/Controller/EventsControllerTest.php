@@ -23,6 +23,7 @@ class EventsControllerTest extends TestCase
     protected array $fixtures = [
         'app.Messages',
         'app.Users',
+        'app.Vouchers',
     ];
 
     public function setUp(): void
@@ -112,6 +113,137 @@ class EventsControllerTest extends TestCase
         $this->assertSame('00000000-0000-0000-0000-000000000001', $messages->first()->sender_user_id);
         $this->assertSame('00000000-0000-0000-0000-000000000002', $messages->first()->receiver_user_id);
         $this->assertSame(1, $messages->first()->amount);
+    }
+
+    public function testTypeReactionAddedVoucher(): void
+    {
+        $this->mockSlackClientPostMessage();
+
+        $this->post('/events', json_encode([
+            'type' => 'reaction_added',
+            'amount' => 1,
+            'sender' => 'U1111',
+            'receivers' => [
+                'U2222',
+            ],
+            'channel' => 'C1111',
+            'text' => '<@U2222> hello',
+            'reaction' => ':admission_tickets:',
+            'timestamp' => '1672531200',
+            'event_timestamp' => '1672531200',
+            'permalink' => 'https://example.com/permalink',
+        ]));
+
+        $this->assertResponseOk();
+        $this->assertHeader('Content-Type', 'application/json');
+
+        $vouchers = $this->fetchTable('Vouchers')
+            ->find()
+            ->all();
+
+        $this->assertSame(1, $vouchers->count());
+        $this->assertSame('00000000-0000-0000-0000-000000000001', $vouchers->first()->sender_user_id);
+        $this->assertSame('00000000-0000-0000-0000-000000000002', $vouchers->first()->receiver_user_id);
+        $this->assertSame('pending', $vouchers->first()->status);
+        $this->assertSame('C1111', $vouchers->first()->channel);
+        $this->assertSame('1672531200', $vouchers->first()->timestamp);
+        $this->assertSame('https://example.com/permalink', $vouchers->first()->permalink);
+
+        $messages = $this->fetchTable('Messages')
+            ->find()
+            ->all();
+
+        $this->assertSame(0, $messages->count());
+    }
+
+    public function testTypeReactionAddedVoucherDoesNotCreateMessageRecord(): void
+    {
+        $this->mockSlackClientPostMessage();
+
+        $this->post('/events', json_encode([
+            'type' => 'reaction_added',
+            'amount' => 1,
+            'sender' => 'U1111',
+            'receivers' => [
+                'U2222',
+            ],
+            'channel' => 'C1111',
+            'text' => '<@U2222> hello',
+            'reaction' => ':admission_tickets:',
+            'timestamp' => '1672531200',
+            'event_timestamp' => '1672531200',
+            'permalink' => 'https://example.com/permalink',
+        ]));
+
+        $this->assertResponseOk();
+
+        $messages = $this->fetchTable('Messages')->find()->all();
+        $this->assertSame(0, $messages->count());
+    }
+
+    public function testTypeReactionAddedVoucherToSelf(): void
+    {
+        $this->mockSlackClientPostMessage();
+        $this->mockSlackClientPostEphemeral();
+
+        $this->post('/events', json_encode([
+            'type' => 'reaction_added',
+            'amount' => 1,
+            'sender' => 'U1111',
+            'receivers' => [
+                'U1111',
+            ],
+            'channel' => 'C1111',
+            'text' => '<@U1111> hello',
+            'reaction' => ':admission_tickets:',
+            'timestamp' => '1672531200',
+            'event_timestamp' => '1672531200',
+            'permalink' => 'https://example.com/permalink',
+        ]));
+
+        $this->assertResponseOk();
+
+        $vouchers = $this->fetchTable('Vouchers')->find()->all();
+        $this->assertSame(0, $vouchers->count());
+    }
+
+    public function testTypeReactionAddedVoucherDailyLimit(): void
+    {
+        $this->mockSlackClientPostMessage();
+        $this->mockSlackClientPostEphemeral();
+
+        $vouchersTable = $this->fetchTable('Vouchers');
+        for ($i = 0; $i < 5; $i++) {
+            $voucher = $vouchersTable->newEntity([
+                'sender_user_id' => '00000000-0000-0000-0000-000000000001',
+                'receiver_user_id' => '00000000-0000-0000-0000-000000000002',
+                'channel' => 'C1111',
+                'timestamp' => '1672531200',
+                'permalink' => 'https://example.com/permalink',
+                'status' => 'pending',
+            ], ['accessibleFields' => ['*' => true]]);
+            $vouchersTable->saveOrFail($voucher);
+        }
+
+        $this->post('/events', json_encode([
+            'type' => 'reaction_added',
+            'amount' => 1,
+            'sender' => 'U1111',
+            'receivers' => [
+                'U2222',
+            ],
+            'channel' => 'C1111',
+            'text' => '<@U2222> hello',
+            'reaction' => ':admission_tickets:',
+            'timestamp' => '1672531200',
+            'event_timestamp' => '1672531200',
+            'permalink' => 'https://example.com/permalink',
+        ]));
+
+        $this->assertResponseOk();
+
+        $vouchers = $vouchersTable->find()->all();
+        $this->assertSame(5, $vouchers->count());
     }
 
     public function testTypeAppMentionEvent(): void

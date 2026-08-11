@@ -29,8 +29,7 @@ type ReactionAddedEvent struct {
 }
 
 func (e ReactionAddedEvent) isValid() bool {
-	// Only process potato reactions
-	return e.Reaction == "potato" &&
+	return (e.Reaction == constants.Potato || e.Reaction == constants.PotatoVoucher) &&
 		!e.IsBot
 }
 
@@ -124,7 +123,7 @@ func ProcessReactionEvent(ctx context.Context, e *slackevents.ReactionAddedEvent
 		Receivers:       utils.ReactionReceivers(text, e.User, e.ItemUser),
 		Channel:         e.Item.Channel,
 		Text:            text,
-		Reaction:        constants.Potato, // hardoced for now
+		Reaction:        ":" + e.Reaction + ":",
 		Permalink:       permalink,
 		Timestamp:       e.Item.Timestamp,
 		EventTimestamp:  e.EventTimestamp,

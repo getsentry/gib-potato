@@ -37,6 +37,7 @@ class AppHomeOpenedEvent extends AbstractEvent
         $sent = $user->potatoSent();
         $received = $user->potatoReceived();
         $leftToday = $user->potatoLeftToday();
+        $vouchersLeftToday = $user->vouchersLeftToday();
 
         $this->slackClient->publishView(
             user: $this->user,
@@ -71,9 +72,9 @@ class AppHomeOpenedEvent extends AbstractEvent
                         'type' => 'section',
                         'text' => [
                             'type' => 'mrkdwn',
-                            'text' => 'You have *' . $leftToday . '* :potato: left to gib today.' .
+                            'text' => 'You have *' . $leftToday . '* :potato: and *' . $vouchersLeftToday . '* :admission_tickets: left to gib today.' .
                                 sprintf(
-                                    ' Your potato do reset in *%s hours* and *%s minutes*.',
+                                    ' They will reset in *%s hours* and *%s minutes*.',
                                     $user->potatoResetInHours(),
                                     $user->potatoResetInMinutes(),
                                 ),

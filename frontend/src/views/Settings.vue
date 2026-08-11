@@ -77,6 +77,31 @@
                         </span>
                     </button>
                 </li>
+                <li class="flex items-center justify-between py-4">
+                    <div class="flex flex-col">
+                        <p class="text-sm font-medium">
+                            Voucher Notifications 🎟️
+                        </p>
+                        <p class="text-sm text-zinc-500">
+                            Receive a notification when you give a potato voucher and when
+                            your vouchers are redeemed.
+                        </p>
+                    </div>
+                    <button
+                        type="button"
+                        class="bg-zinc-200 dark:bg-zinc-600 relative ml-4 inline-flex h-6 w-11 shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors duration-200 ease-in-out"
+                        :class="{ 'bg-green-500!': user.notifications.vouchers === true }"
+                        @click="toggleVouchersNotifications"
+                    >
+                        <span
+                            class="translate-x-0 inline-block h-5 w-5 transform rounded-full bg-white shadow-sm ring-0 transition duration-200 ease-in-out"
+                            :class="{
+                                'translate-x-5!': user.notifications.vouchers === true,
+                            }"
+                        >
+                        </span>
+                    </button>
+                </li>
             </ul>
         </div>
     </div>
@@ -104,6 +129,9 @@ export default {
         },
         toggleTooGoodToGoNotifications() {
             this.$store.dispatch('toggleTooGoodToGoNotifications');
+        },
+        toggleVouchersNotifications() {
+            this.$store.dispatch('toggleVouchersNotifications');
         },
     },
 };

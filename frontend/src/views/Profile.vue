@@ -16,8 +16,9 @@
         <div class="py-4">
             <h2 class="text-lg font-medium leading-6">Your Potato Stats</h2>
             <p class="mt-1 text-sm text-zinc-500">
-                You have <strong>{{ user.potato_left_today }}</strong> 🥔 left to gib today. Your
-                potato do reset in <strong>{{ user.potato_reset_in_hours }}</strong> hours and
+                You have <strong>{{ user.potato_left_today }}</strong> 🥔 and
+                <strong>{{ user.vouchers_left_today }}</strong> 🎟️ left to gib today. They will
+                reset in <strong>{{ user.potato_reset_in_hours }}</strong> hours and
                 <strong>{{ user.potato_reset_in_minutes }}</strong> minutes.
             </p>
             <p class="mt-1 text-sm text-zinc-500">
