@@ -178,7 +178,6 @@ func (h *Handler) EventsHandler(w http.ResponseWriter, r *http.Request, _ httpro
 				}()
 			}
 		case *slackevents.ReactionAddedEvent:
-			go event.ProcessReactionEvent(r.Context(), ev, h.slackClient)
 			hub := cloneHubFromContext(ctx)
 			go func() {
 				ctx := sentry.SetHubOnContext(context.Background(), hub)
@@ -208,6 +207,38 @@ func (h *Handler) EventsHandler(w http.ResponseWriter, r *http.Request, _ httpro
 				}
 
 				h.emitEventMetric(txn.Context(), "potal.event.forwarded", "reaction_added")
+				txn.Status = sentry.SpanStatusOK
+			}()
+		case *slackevents.ReactionRemovedEvent:
+			hub := cloneHubFromContext(ctx)
+			go func() {
+				ctx := sentry.SetHubOnContext(context.Background(), hub)
+
+				options := []sentry.SpanOption{
+					sentry.WithOpName("event.handler"),
+					sentry.WithTransactionSource(sentry.SourceTask),
+					sentry.ContinueFromHeaders(transaction.ToSentryTrace(), transaction.ToBaggage()),
+				}
+				txn := sentry.StartTransaction(ctx, "EVENT reaction_removed", options...)
+				txn.SetData("event_type", "reaction_removed")
+				defer txn.Finish()
+
+				processedEvent := event.ProcessReactionRemovedEvent(txn.Context(), ev, h.slackClient)
+				if processedEvent == nil {
+					h.emitEventMetric(txn.Context(), "potal.event.skipped", "reaction_removed")
+					slog.DebugContext(txn.Context(), "event skipped", "event_type", "reaction_removed")
+					txn.Status = sentry.SpanStatusInternalError
+					return
+				}
+				err := h.potalClient.SendRequest(txn.Context(), processedEvent)
+				if err != nil {
+					h.emitEventMetric(txn.Context(), "potal.event.forward_error", "reaction_removed")
+					slog.ErrorContext(txn.Context(), "failed to forward event", "event_type", "reaction_removed", "error", err)
+					txn.Status = sentry.SpanStatusInternalError
+					return
+				}
+
+				h.emitEventMetric(txn.Context(), "potal.event.forwarded", "reaction_removed")
 				txn.Status = sentry.SpanStatusOK
 			}()
 		case *slackevents.AppMentionEvent:

@@ -246,6 +246,64 @@ class EventsControllerTest extends TestCase
         $this->assertSame(5, $vouchers->count());
     }
 
+    public function testTypeReactionRemovedVoucher(): void
+    {
+        $vouchersTable = $this->fetchTable('Vouchers');
+        $voucher = $vouchersTable->newEntity([
+            'sender_user_id' => '00000000-0000-0000-0000-000000000001',
+            'receiver_user_id' => '00000000-0000-0000-0000-000000000002',
+            'channel' => 'C1111',
+            'timestamp' => '1672531200',
+            'permalink' => 'https://example.com/permalink',
+            'status' => 'pending',
+        ], ['accessibleFields' => ['*' => true]]);
+        $vouchersTable->saveOrFail($voucher);
+
+        $this->post('/events', json_encode([
+            'type' => 'reaction_removed',
+            'sender' => 'U1111',
+            'channel' => 'C1111',
+            'reaction' => ':admission_tickets:',
+            'timestamp' => '1672531200',
+            'event_timestamp' => '1672531200',
+        ]));
+
+        $this->assertResponseOk();
+        $this->assertHeader('Content-Type', 'application/json');
+
+        $vouchers = $vouchersTable->find()->all();
+        $this->assertSame(0, $vouchers->count());
+    }
+
+    public function testTypeReactionRemovedVoucherDoesNotDeleteRedeemed(): void
+    {
+        $vouchersTable = $this->fetchTable('Vouchers');
+        $voucher = $vouchersTable->newEntity([
+            'sender_user_id' => '00000000-0000-0000-0000-000000000001',
+            'receiver_user_id' => '00000000-0000-0000-0000-000000000002',
+            'channel' => 'C1111',
+            'timestamp' => '1672531200',
+            'permalink' => 'https://example.com/permalink',
+            'status' => 'redeemed',
+        ], ['accessibleFields' => ['*' => true]]);
+        $vouchersTable->saveOrFail($voucher);
+
+        $this->post('/events', json_encode([
+            'type' => 'reaction_removed',
+            'sender' => 'U1111',
+            'channel' => 'C1111',
+            'reaction' => ':admission_tickets:',
+            'timestamp' => '1672531200',
+            'event_timestamp' => '1672531200',
+        ]));
+
+        $this->assertResponseOk();
+
+        $vouchers = $vouchersTable->find()->all();
+        $this->assertSame(1, $vouchers->count());
+        $this->assertSame('redeemed', $vouchers->first()->status);
+    }
+
     public function testTypeAppMentionEvent(): void
     {
         $this->post('/events', json_encode([
