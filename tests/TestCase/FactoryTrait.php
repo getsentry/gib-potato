@@ -57,6 +57,16 @@ trait FactoryTrait
         );
     }
 
+    public function mockSlackClientPostEphemeral(): void
+    {
+        $this->mockClientPost(
+            'https://slack.com/api/chat.postEphemeral',
+            $this->newClientResponse(200, [], json_encode([
+                'ok' => true,
+            ])),
+        );
+    }
+
     public function mockSlackClientPublishView(): void
     {
         $this->mockClientPost(

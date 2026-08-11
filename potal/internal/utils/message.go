@@ -7,7 +7,7 @@ import (
 )
 
 func MessageAmount(text string) int {
-	return strings.Count(text, constants.Potato)
+	return strings.Count(text, ":"+constants.Potato+":")
 }
 
 func MessageReceivers(text string) []string {

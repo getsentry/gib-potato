@@ -5,6 +5,7 @@ namespace App\Test\TestCase\Model\Entity;
 
 use App\Model\Entity\Message;
 use App\Model\Entity\User;
+use App\Model\Entity\Voucher;
 use Cake\Chronos\Chronos;
 use Cake\I18n\DateTime;
 use Cake\TestSuite\TestCase;
@@ -23,6 +24,7 @@ class UserTest extends TestCase
         'app.Users',
         'app.Messages',
         'app.Purchases',
+        'app.Vouchers',
     ];
 
     /**
@@ -235,6 +237,73 @@ class UserTest extends TestCase
         $this->addPurchase($this->UserBuyer, 200, DateTime::now('UTC')->subDays(30));
 
         $this->assertSame(0, $this->UserBuyer->spendablePotato());
+    }
+
+    public function testVouchersSentTodayWithNoVouchers(): void
+    {
+        Chronos::setTestNow(new Chronos('2024-07-17 12:00:00', 'UTC'));
+
+        $this->assertSame(0, $this->UserEurope->vouchersSentToday());
+    }
+
+    public function testVouchersSentTodayCountsVouchers(): void
+    {
+        Chronos::setTestNow(new Chronos('2024-07-17 12:00:00', 'UTC'));
+
+        $this->addVoucher($this->UserEurope, $this->UserCanada);
+        $this->addVoucher($this->UserEurope, $this->UserUS);
+
+        $this->assertSame(2, $this->UserEurope->vouchersSentToday());
+    }
+
+    public function testVouchersLeftToday(): void
+    {
+        Chronos::setTestNow(new Chronos('2024-07-17 12:00:00', 'UTC'));
+
+        $this->addVoucher($this->UserEurope, $this->UserCanada);
+        $this->addVoucher($this->UserEurope, $this->UserUS);
+
+        $this->assertSame(3, $this->UserEurope->vouchersLeftToday());
+    }
+
+    public function testVouchersLeftTodayAtLimit(): void
+    {
+        Chronos::setTestNow(new Chronos('2024-07-17 12:00:00', 'UTC'));
+
+        for ($i = 0; $i < 5; $i++) {
+            $this->addVoucher($this->UserEurope, $this->UserCanada);
+        }
+
+        $this->assertSame(0, $this->UserEurope->vouchersLeftToday());
+    }
+
+    public function testNotificationsDefaultIncludesVouchers(): void
+    {
+        $user = new User();
+
+        $this->assertTrue($user->notifications['vouchers']);
+    }
+
+    public function testNotificationsPreservesExistingValues(): void
+    {
+        $user = new User(['notifications' => ['sent' => false, 'received' => true, 'too_good_to_go' => false]]);
+
+        $this->assertFalse($user->notifications['sent']);
+        $this->assertTrue($user->notifications['vouchers']);
+    }
+
+    private function addVoucher(User $sender, User $receiver): void
+    {
+        $vouchersTable = $this->fetchTable('Vouchers');
+        $voucher = $vouchersTable->newEntity([
+            'sender_user_id' => $sender->id,
+            'receiver_user_id' => $receiver->id,
+            'channel' => 'C1111',
+            'timestamp' => '1672531200',
+            'permalink' => 'https://example.com/permalink',
+            'status' => Voucher::STATUS_PENDING,
+        ], ['accessibleFields' => ['*' => true]]);
+        $vouchersTable->saveOrFail($voucher);
     }
 
     private function addReceivedPotatoes(User $user, int $amount): void
