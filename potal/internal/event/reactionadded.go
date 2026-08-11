@@ -88,6 +88,16 @@ func ProcessReactionEvent(ctx context.Context, e *slackevents.ReactionAddedEvent
 		return nil
 	}
 	text := conversationReplies[0].Text
+	for _, block := range conversationReplies[0].Blocks.BlockSet {
+		if section, ok := block.(*slack.SectionBlock); ok {
+			if section.Text != nil {
+				text += " " + section.Text.Text
+			}
+			for _, field := range section.Fields {
+				text += " " + field.Text
+			}
+		}
+	}
 	threadTimestamp := conversationReplies[0].ThreadTimestamp
 
 	permaLinkSpan := span.StartChild("http.client")
