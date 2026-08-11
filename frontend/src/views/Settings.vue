@@ -79,12 +79,10 @@
                 </li>
                 <li class="flex items-center justify-between py-4">
                     <div class="flex flex-col">
-                        <p class="text-sm font-medium">
-                            Voucher Notifications 🎟️
-                        </p>
+                        <p class="text-sm font-medium">Voucher Notifications 🎟️</p>
                         <p class="text-sm text-zinc-500">
-                            Receive a notification when you give a potato voucher and when
-                            your vouchers are redeemed.
+                            Receive a notification when you give a potato voucher and when your
+                            vouchers are redeemed.
                         </p>
                     </div>
                     <button

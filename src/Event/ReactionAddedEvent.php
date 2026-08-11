@@ -46,6 +46,9 @@ class ReactionAddedEvent extends AbstractEvent
         $this->threadTimestamp = $event['thread_timestamp'] ?? null;
     }
 
+    /**
+     * @return bool
+     */
     public function isVoucher(): bool
     {
         return $this->reaction === ':admission_tickets:';
@@ -65,6 +68,9 @@ class ReactionAddedEvent extends AbstractEvent
         $this->processPotato();
     }
 
+    /**
+     * @return void
+     */
     protected function processPotato(): void
     {
         $userService = new UserService();
@@ -111,6 +117,9 @@ class ReactionAddedEvent extends AbstractEvent
         );
     }
 
+    /**
+     * @return void
+     */
     protected function processVoucher(): void
     {
         $userService = new UserService();

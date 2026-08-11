@@ -170,7 +170,8 @@ class RedeemVouchersCommand extends Command
                     $slackClient->postMessage(
                         channel: $voucher->sender_user->slack_user_id,
                         text: sprintf(
-                            'Your :admission_tickets: to <@%s> has been redeemed. They received *1* :potato:!' . PHP_EOL . '> %s',
+                            'Your :admission_tickets: to <@%s> has been redeemed.' .
+                            ' They received *1* :potato:!' . PHP_EOL . '> %s',
                             $voucher->receiver_user->slack_user_id,
                             $voucher->permalink,
                         ),

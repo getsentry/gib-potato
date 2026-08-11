@@ -72,7 +72,8 @@ class AppHomeOpenedEvent extends AbstractEvent
                         'type' => 'section',
                         'text' => [
                             'type' => 'mrkdwn',
-                            'text' => 'You have *' . $leftToday . '* :potato: and *' . $vouchersLeftToday . '* :admission_tickets: left to gib today.' .
+                            'text' => 'You have *' . $leftToday . '* :potato: and *' .
+                                $vouchersLeftToday . '* :admission_tickets: left to gib today.' .
                                 sprintf(
                                     ' They will reset in *%s hours* and *%s minutes*.',
                                     $user->potatoResetInHours(),
