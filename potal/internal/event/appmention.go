@@ -3,6 +3,7 @@ package event
 import (
 	"context"
 
+	"github.com/getsentry/gib-potato/internal/utils"
 	"github.com/getsentry/sentry-go"
 	"github.com/slack-go/slack/slackevents"
 )
@@ -33,7 +34,7 @@ func ProcessAppMentionEvent(ctx context.Context, e *slackevents.AppMentionEvent)
 		Type:           appMention,
 		Sender:         e.User,
 		Channel:        e.Channel,
-		Text:           e.Text,
+		Text:           utils.ScrubText(e.Text),
 		EventTimestamp: e.EventTimeStamp,
 		BotID:          e.BotID,
 	}

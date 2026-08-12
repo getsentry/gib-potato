@@ -79,6 +79,7 @@ func ProcessMessageEvent(ctx context.Context, e *slackevents.MessageEvent, sc *s
 	permalinkSpan.Finish()
 
 	messageEvent.Permalink = permalink
+	messageEvent.Text = utils.ScrubText(messageEvent.Text)
 
 	hub.Scope().SetContext("event", sentry.Context{"data": messageEvent})
 	hub.Scope().SetTag("event_type", message.String())

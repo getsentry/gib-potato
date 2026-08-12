@@ -122,7 +122,7 @@ func ProcessReactionEvent(ctx context.Context, e *slackevents.ReactionAddedEvent
 		Sender:          e.User,
 		Receivers:       utils.ReactionReceivers(text, e.User, e.ItemUser),
 		Channel:         e.Item.Channel,
-		Text:            text,
+		Text:            utils.ScrubText(text),
 		Reaction:        ":" + e.Reaction + ":",
 		Permalink:       permalink,
 		Timestamp:       e.Item.Timestamp,
