@@ -178,6 +178,17 @@ class RedeemVouchersCommand extends Command
                     );
                 }
 
+                if ($voucher->receiver_user->notifications['vouchers'] === true) {
+                    $slackClient->postMessage(
+                        channel: $voucher->receiver_user->slack_user_id,
+                        text: sprintf(
+                            'You received *1* :potato: from <@%s> via a :admission_tickets:!' . PHP_EOL . '> %s',
+                            $voucher->sender_user->slack_user_id,
+                            $voucher->permalink,
+                        ),
+                    );
+                }
+
                 trace_metrics()->count(
                     'gibpotato.vouchers.redeemed',
                     1.0,
