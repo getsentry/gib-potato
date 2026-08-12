@@ -25,6 +25,9 @@ func main() {
 		SendDefaultPII:   true,
 		EnableTracing:    true,
 		TracesSampleRate: 1.0,
+		DataCollection: &sentry.DataCollection{
+			HTTPBodies: []sentry.BodyType{},
+		},
 	})
 	if sentryErr != nil {
 		log.Fatalf("An Error Occured: %v", sentryErr)
