@@ -178,7 +178,7 @@ class RedeemVouchersCommand extends Command
                     );
                 }
 
-                if ($voucher->receiver_user->notifications['vouchers'] === true) {
+                if ($voucher->receiver_user->notifications['received'] === true) {
                     $slackClient->postMessage(
                         channel: $voucher->receiver_user->slack_user_id,
                         text: sprintf(
