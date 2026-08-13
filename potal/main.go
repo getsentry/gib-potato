@@ -22,7 +22,6 @@ func main() {
 		Release:          os.Getenv("RELEASE"),
 		Environment:      os.Getenv("ENVIRONMENT"),
 		AttachStacktrace: true,
-		SendDefaultPII:   true,
 		EnableTracing:    true,
 		TracesSampleRate: 1.0,
 		DataCollection: &sentry.DataCollection{
