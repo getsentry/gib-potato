@@ -3,45 +3,61 @@
 namespace App\Http\Controllers;
 
 use App\Ai\Agents\PotatoAgent;
+use App\Http\Requests\SlackEventRequest;
 use App\Models\SlackThread;
 use App\Models\User;
+use App\Services\SlackClient;
 use Illuminate\Http\JsonResponse;
-use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Http;
 
 class SlackController extends Controller
 {
-    public function event(Request $request): JsonResponse
+    public function event(SlackEventRequest $request, SlackClient $slack): JsonResponse
     {
-        $validated = $request->validate([
-            'type' => ['required', 'string'],
-            'sender' => ['required', 'string'],
-            'channel' => ['required', 'string'],
-            'text' => ['required', 'string'],
-            'timestamp' => ['nullable', 'string'],
-            'thread_timestamp' => ['nullable', 'string'],
-        ]);
-
-        $messageTs = $validated['timestamp'] ?? null;
-        $threadTs = $validated['thread_timestamp'] ?? null;
-
         $user = User::firstOrCreate(
-            ['slack_user_id' => $validated['sender']],
+            ['slack_user_id' => $request->validated('sender')],
         );
 
-        $assistantThreadTs = $threadTs ?? $messageTs;
+        $messageTs = $request->messageTs();
+        $threadTs = $request->threadTs();
+        $threadKey = $request->threadKey();
+        $channel = $request->validated('channel');
 
         if ($messageTs) {
-            $this->addReaction($validated['channel'], $messageTs, 'potato');
+            $slack->addReaction($channel, $messageTs, 'potato');
         }
 
-        if ($assistantThreadTs) {
-            $this->setAssistantStatus($validated['channel'], $assistantThreadTs);
+        if ($threadKey) {
+            $slack->setAssistantStatus($channel, $threadKey);
         }
 
+        $prompt = $this->buildPrompt($request, $slack);
+        $response = $this->promptAgent($user, $channel, $threadKey, $prompt);
+
+        if ($threadKey) {
+            $slack->clearAssistantStatus($channel, $threadKey);
+        }
+
+        if ($messageTs) {
+            $slack->removeReaction($channel, $messageTs, 'potato');
+            $slack->addReaction($channel, $messageTs, 'white_check_mark');
+        }
+
+        $text = trim((string) $response);
+
+        if ($text !== '') {
+            $slack->postMessage($channel, $text, $threadTs ?? $messageTs);
+        }
+
+        return response()->json(['ok' => true]);
+    }
+
+    private function buildPrompt(SlackEventRequest $request, SlackClient $slack): string
+    {
         $threadContext = '';
-        if ($threadTs) {
-            $parentText = $this->fetchMessage($validated['channel'], $threadTs);
+
+        if ($request->threadTs()) {
+            $parentText = $slack->fetchMessage($request->validated('channel'), $request->threadTs());
+
             if ($parentText) {
                 $threadContext = sprintf(
                     "\n\nThis message was posted in a thread. The parent message is: \"%s\"",
@@ -50,159 +66,37 @@ class SlackController extends Controller
             }
         }
 
-        $prompt = sprintf(
+        return sprintf(
             "The user's Slack ID is %s and the current channel ID is %s.%s\n\n%s",
-            $validated['sender'],
-            $validated['channel'],
+            $request->validated('sender'),
+            $request->validated('channel'),
             $threadContext,
-            $validated['text'],
+            $request->validated('text'),
         );
+    }
 
-        $threadKey = $assistantThreadTs;
+    private function promptAgent(User $user, string $channel, ?string $threadKey, string $prompt): mixed
+    {
         $slackThread = $threadKey
-            ? SlackThread::where('channel', $validated['channel'])->where('thread_ts', $threadKey)->first()
+            ? SlackThread::where('channel', $channel)->where('thread_ts', $threadKey)->first()
             : null;
 
         $agent = new PotatoAgent;
 
         if ($slackThread) {
-            $response = $agent->continue($slackThread->conversation_id, $user)->prompt($prompt);
-        } else {
-            $response = $agent->forUser($user)->prompt($prompt);
-
-            if ($threadKey && $agent->currentConversation()) {
-                SlackThread::create([
-                    'channel' => $validated['channel'],
-                    'thread_ts' => $threadKey,
-                    'conversation_id' => $agent->currentConversation(),
-                ]);
-            }
+            return $agent->continue($slackThread->conversation_id, $user)->prompt($prompt);
         }
 
-        if ($assistantThreadTs) {
-            $this->clearAssistantStatus($validated['channel'], $assistantThreadTs);
-        }
+        $response = $agent->forUser($user)->prompt($prompt);
 
-        if ($messageTs) {
-            $this->removeReaction($validated['channel'], $messageTs, 'potato');
-            $this->addReaction($validated['channel'], $messageTs, 'white_check_mark');
-        }
-
-        $text = trim((string) $response);
-
-        if ($text !== '') {
-            $this->postToSlack($validated['channel'], $text, $threadTs ?? $messageTs);
-        }
-
-        return response()->json(['ok' => true]);
-    }
-
-    private function slackToken(): ?string
-    {
-        return config('services.slack.notifications.bot_user_oauth_token');
-    }
-
-    private function addReaction(string $channel, string $timestamp, string $emoji): void
-    {
-        $token = $this->slackToken();
-
-        if (! $token) {
-            return;
-        }
-
-        Http::withToken($token)
-            ->post('https://slack.com/api/reactions.add', [
+        if ($threadKey && $agent->currentConversation()) {
+            SlackThread::create([
                 'channel' => $channel,
-                'timestamp' => $timestamp,
-                'name' => $emoji,
+                'thread_ts' => $threadKey,
+                'conversation_id' => $agent->currentConversation(),
             ]);
-    }
-
-    private function removeReaction(string $channel, string $timestamp, string $emoji): void
-    {
-        $token = $this->slackToken();
-
-        if (! $token) {
-            return;
         }
 
-        Http::withToken($token)
-            ->post('https://slack.com/api/reactions.remove', [
-                'channel' => $channel,
-                'timestamp' => $timestamp,
-                'name' => $emoji,
-            ]);
-    }
-
-    private function setAssistantStatus(string $channel, string $threadTs): void
-    {
-        $token = $this->slackToken();
-
-        if (! $token) {
-            return;
-        }
-
-        Http::withToken($token)
-            ->post('https://slack.com/api/assistant.threads.setStatus', [
-                'channel_id' => $channel,
-                'thread_ts' => $threadTs,
-                'status' => 'is thinking...',
-            ]);
-    }
-
-    private function clearAssistantStatus(string $channel, string $threadTs): void
-    {
-        $token = $this->slackToken();
-
-        if (! $token) {
-            return;
-        }
-
-        Http::withToken($token)
-            ->post('https://slack.com/api/assistant.threads.setStatus', [
-                'channel_id' => $channel,
-                'thread_ts' => $threadTs,
-                'status' => '',
-            ]);
-    }
-
-    private function fetchMessage(string $channel, string $timestamp): ?string
-    {
-        $token = $this->slackToken();
-
-        if (! $token) {
-            return null;
-        }
-
-        $response = Http::withToken($token)
-            ->get('https://slack.com/api/conversations.history', [
-                'channel' => $channel,
-                'latest' => $timestamp,
-                'inclusive' => true,
-                'limit' => 1,
-            ]);
-
-        return $response->json('messages.0.text');
-    }
-
-    private function postToSlack(string $channel, string $text, ?string $threadTs = null): void
-    {
-        $token = $this->slackToken();
-
-        if (! $token) {
-            return;
-        }
-
-        $payload = [
-            'channel' => $channel,
-            'text' => $text,
-        ];
-
-        if ($threadTs) {
-            $payload['thread_ts'] = $threadTs;
-        }
-
-        Http::withToken($token)
-            ->post('https://slack.com/api/chat.postMessage', $payload);
+        return $response;
     }
 }
