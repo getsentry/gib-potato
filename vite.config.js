@@ -18,6 +18,7 @@ export default defineConfig(({ mode }) => {
         fmt: {
             singleQuote: true,
             tabWidth: 4,
+            ignorePatterns: ['dieter/**'],
         },
         plugins: [
             vue(),
