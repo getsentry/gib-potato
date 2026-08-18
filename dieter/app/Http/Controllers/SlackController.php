@@ -81,7 +81,7 @@ class SlackController extends Controller
             ? SlackThread::where('channel', $channel)->where('thread_ts', $threadKey)->first()
             : null;
 
-        $agent = new PotatoAgent;
+        $agent = new PotatoAgent($channel, $user->slack_user_id);
 
         if ($slackThread) {
             return $agent->continue($slackThread->conversation_id, $user)->prompt($prompt);

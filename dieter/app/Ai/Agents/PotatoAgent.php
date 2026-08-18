@@ -17,6 +17,11 @@ class PotatoAgent implements Agent, Conversational, HasTools
 {
     use Promptable, RemembersConversations;
 
+    public function __construct(
+        public string $channel,
+        public string $slackUserId,
+    ) {}
+
     /**
      * Get the instructions that the agent should follow.
      */
@@ -33,7 +38,7 @@ class PotatoAgent implements Agent, Conversational, HasTools
     public function tools(): iterable
     {
         return [
-            new CreatePoll,
+            new CreatePoll($this->channel, $this->slackUserId),
         ];
     }
 }

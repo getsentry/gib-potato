@@ -10,6 +10,11 @@ use Stringable;
 
 class CreatePoll implements Tool
 {
+    public function __construct(
+        public string $channel,
+        public string $slackUserId,
+    ) {}
+
     /**
      * Get the description of the tool's purpose.
      */
@@ -36,8 +41,8 @@ class CreatePoll implements Tool
             ->post("{$backendUrl}/polls", [
                 'title' => $request['title'],
                 'options' => $request['options'],
-                'channel' => $request['channel'],
-                'user_slack_id' => $request['user_slack_id'],
+                'channel' => $this->channel,
+                'user_slack_id' => $this->slackUserId,
                 'anonymous' => $request['anonymous'] ?? false,
             ]);
 
@@ -67,8 +72,6 @@ class CreatePoll implements Tool
         return [
             'title' => $schema->string()->description('The poll question or title')->required(),
             'options' => $schema->array()->items($schema->string())->min(2)->max(9)->description('The poll answer options (between 2 and 9)')->required(),
-            'channel' => $schema->string()->description('The Slack channel ID to post the poll in')->required(),
-            'user_slack_id' => $schema->string()->description('The Slack user ID of the poll creator')->required(),
             'anonymous' => $schema->boolean()->description('Whether the poll should be anonymous'),
         ];
     }
