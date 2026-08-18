@@ -20,7 +20,7 @@ class CreatePoll implements Tool
      */
     public function description(): Stringable|string
     {
-        return 'Create a poll in a Slack channel. Only use this when the user explicitly asks to create a poll. You MUST have all of the following from the user before calling this tool: a title (the poll question), between 2 and 9 options, and whether the poll should be anonymous. Never invent or guess any of these — if the user has not provided them, ask for the missing details. When the user is in the middle of creating a poll and sends a follow-up message, treat it as providing the missing poll details rather than a new request. Do not call this tool until you have every detail confirmed.';
+        return 'Create a poll in a Slack channel with a title, answer options, and an anonymity setting. Only call when the user has explicitly provided all three — never invent or guess any of them. Ask for missing details first. When you have already asked for poll details, treat follow-up messages as providing those details, not as standalone requests.';
     }
 
     /**
