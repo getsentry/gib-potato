@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Ai\Agents\PotatoAgent;
+use App\Ai\PromptBuilder;
 use App\Http\Requests\SlackEventRequest;
 use App\Models\SlackThread;
 use App\Models\User;
@@ -58,26 +59,17 @@ class SlackController extends Controller
 
     private function buildPrompt(SlackEventRequest $request, SlackClient $slack): string
     {
-        $threadContext = '';
+        $builder = PromptBuilder::for($request->validated('text'));
 
         if ($request->threadTs()) {
             $parentText = $slack->fetchMessage($request->validated('channel'), $request->threadTs());
 
             if ($parentText) {
-                $threadContext = sprintf(
-                    "\n\nThis message was posted in a thread. The parent message is: \"%s\"",
-                    $parentText,
-                );
+                $builder->withThreadMessage('user', $parentText);
             }
         }
 
-        return sprintf(
-            "The user's Slack ID is %s and the current channel ID is %s.%s\n\n%s",
-            $request->validated('sender'),
-            $request->validated('channel'),
-            $threadContext,
-            $request->validated('text'),
-        );
+        return $builder->build();
     }
 
     private function promptAgent(User $user, string $channel, ?string $threadKey, string $prompt): mixed
@@ -89,16 +81,16 @@ class SlackController extends Controller
         $agent = new PotatoAgent($channel, $user->slack_user_id);
 
         if ($slackThread) {
-            return $agent->continue($slackThread->conversation_id, $user)->prompt($prompt);
+            return $agent->continue($slackThread->conversation_id, as: $user)->prompt($prompt);
         }
 
         $response = $agent->forUser($user)->prompt($prompt);
 
-        if ($threadKey && $agent->currentConversation()) {
+        if ($threadKey && $response->conversationId) {
             SlackThread::create([
                 'channel' => $channel,
                 'thread_ts' => $threadKey,
-                'conversation_id' => $agent->currentConversation(),
+                'conversation_id' => $response->conversationId,
             ]);
         }
 
