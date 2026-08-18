@@ -10,10 +10,11 @@ import (
 	"os"
 	"time"
 
+	sentryhttpclient "github.com/getsentry/sentry-go/httpclient"
+
 	"github.com/getsentry/gib-potato/internal/event"
 	"github.com/getsentry/sentry-go"
 	"github.com/getsentry/sentry-go/attribute"
-	sentryhttpclient "github.com/getsentry/sentry-go/httpclient"
 )
 
 type Client struct {
@@ -76,6 +77,9 @@ func (c *Client) SendRequest(ctx context.Context, e event.PotalEvent) error {
 	msg := fmt.Sprintf("Dieter API: Got %s response", res.Status)
 	slog.ErrorContext(ctx, "Dieter API error response", "status", res.Status, "status_code", res.StatusCode)
 
+	hub.ConfigureScope(func(scope *sentry.Scope) {
+		scope.SetLevel(sentry.LevelFatal)
+	})
 	hub.CaptureMessage(msg)
 
 	return fmt.Errorf("%s", msg)
