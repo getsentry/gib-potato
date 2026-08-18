@@ -1,9 +1,21 @@
 {
-    "agents": ["cursor", "claude_code", "codex", "opencode", "zed", "pi"],
+    "agents": [
+        "cursor",
+        "claude_code",
+        "codex",
+        "opencode",
+        "zed",
+        "pi"
+    ],
     "cloud": false,
     "guidelines": true,
     "mcp": true,
     "nightwatch": false,
     "sail": false,
-    "skills": ["infer-conventions", "ai-sdk-development", "laravel-best-practices", "pest-testing"]
+    "skills": [
+        "infer-conventions",
+        "ai-sdk-development",
+        "laravel-best-practices",
+        "pest-testing"
+    ]
 }
