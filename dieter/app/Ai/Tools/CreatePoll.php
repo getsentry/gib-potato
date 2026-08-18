@@ -56,12 +56,7 @@ class CreatePoll implements Tool
             return 'Failed to create the poll. The backend service might be unavailable.';
         }
 
-        $data = $response->json();
-
-        return sprintf(
-            'Poll "%s" has been created and posted to the Slack channel. Do not reply to the user — the poll is the response.',
-            $data['title'] ?? $request['title'],
-        );
+        return 'The poll has been created and posted to the Slack channel. Do not reply to the user — the poll is the response.';
     }
 
     /**

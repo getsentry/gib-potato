@@ -24,61 +24,6 @@ class PollsController extends Controller
     /**
      * @return \Cake\Http\Response
      */
-    public function list(): Response
-    {
-        $this->request->allowMethod('GET');
-
-        $pollsTable = $this->fetchTable('Polls');
-
-        $query = $pollsTable->find()
-            ->contain([
-                'PollOptions' => [
-                    'PollResponses',
-                ],
-                'Users',
-            ])
-            ->orderByDesc('Polls.created')
-            ->limit(5);
-
-        $title = $this->request->getQuery('title');
-        if ($title) {
-            $query->where(['Polls.title LIKE' => "%{$title}%"]);
-        }
-
-        $status = $this->request->getQuery('status');
-        if ($status) {
-            $query->where(['Polls.status' => $status]);
-        }
-
-        $polls = $query->all()->map(function ($poll) {
-            $options = [];
-            foreach ($poll->poll_options as $option) {
-                $options[] = [
-                    'title' => $option->title,
-                    'votes' => count($option->poll_responses),
-                ];
-            }
-
-            return [
-                'id' => $poll->id,
-                'title' => $poll->title,
-                'status' => $poll->status,
-                'anonymous' => $poll->anonymous,
-                'created_by' => $poll->user->slack_user_id ?? null,
-                'created' => $poll->created?->toIso8601String(),
-                'options' => $options,
-            ];
-        })->toArray();
-
-        return $this->response
-            ->withType('json')
-            ->withStatus(200)
-            ->withStringBody(json_encode(['polls' => array_values($polls)]));
-    }
-
-    /**
-     * @return \Cake\Http\Response
-     */
     public function create(): Response
     {
         $this->request->allowMethod('POST');
@@ -178,10 +123,6 @@ class PollsController extends Controller
 
         return $this->response
             ->withType('json')
-            ->withStatus(201)
-            ->withStringBody(json_encode([
-                'id' => $poll->id,
-                'title' => $poll->title,
-            ]));
+            ->withStatus(201);
     }
 }
