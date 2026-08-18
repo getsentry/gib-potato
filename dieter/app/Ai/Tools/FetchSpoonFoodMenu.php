@@ -33,14 +33,27 @@ class FetchSpoonFoodMenu implements Tool
 
         $html = $response->body();
 
-        $start = strpos($html, 'id="tageskarte"');
+        $pos = strpos($html, 'id="tageskarte"');
+
+        if ($pos === false) {
+            return 'Could not find the Tageskarte on the Spoon Food website.';
+        }
+
+        $start = strpos($html, '>', $pos);
 
         if ($start === false) {
             return 'Could not find the Tageskarte on the Spoon Food website.';
         }
 
+        $start++;
+
         $end = strpos($html, 'Alle Preise in EURO', $start);
-        $section = $end ? substr($html, $start, $end - $start) : substr($html, $start, 10000);
+
+        if ($end === false) {
+            return 'Could not parse the menu from the Spoon Food website.';
+        }
+
+        $section = substr($html, $start, $end - $start);
 
         $text = preg_replace('/<[^>]+>/', "\n", $section);
         $lines = array_filter(array_map('trim', explode("\n", $text)));
