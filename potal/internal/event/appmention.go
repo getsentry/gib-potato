@@ -8,14 +8,13 @@ import (
 )
 
 type AppMentionEvent struct {
-	Type           PotalEventType `json:"type"`
-	Sender         string         `json:"sender"`
-	Channel        string         `json:"channel"`
-	Text           string         `json:"text"`
-	Timestamp      string         `json:"timestamp"`
-	EventTimestamp string         `json:"event_timestamp"`
-
-	ThreadTimestamp string `json:"thread_timestamp,omitempty"`
+	Type            PotalEventType `json:"type"`
+	Sender          string         `json:"sender"`
+	Channel         string         `json:"channel"`
+	Text            string         `json:"text"`
+	Timestamp       string         `json:"timestamp"`
+	EventTimestamp  string         `json:"event_timestamp"`
+	ThreadTimestamp string         `json:"thread_timestamp,omitempty"`
 
 	BotID string `json:"-"`
 }
