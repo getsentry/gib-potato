@@ -30,22 +30,27 @@ class SlackController extends Controller
             $slack->setAssistantStatus($channel, $threadKey);
         }
 
-        $prompt = $this->buildPrompt($request, $slack);
-        $response = $this->promptAgent($user, $channel, $threadKey, $prompt);
+        try {
+            $prompt = $this->buildPrompt($request, $slack);
+            $response = $this->promptAgent($user, $channel, $threadKey, $prompt);
 
-        if ($threadKey) {
-            $slack->clearAssistantStatus($channel, $threadKey);
-        }
+            if ($messageTs) {
+                $slack->addReaction($channel, $messageTs, 'white_check_mark');
+            }
 
-        if ($messageTs) {
-            $slack->removeReaction($channel, $messageTs, 'potato');
-            $slack->addReaction($channel, $messageTs, 'white_check_mark');
-        }
+            $text = trim((string) $response);
 
-        $text = trim((string) $response);
+            if ($text !== '') {
+                $slack->postMessage($channel, $text, $threadTs ?? $messageTs);
+            }
+        } finally {
+            if ($threadKey) {
+                $slack->clearAssistantStatus($channel, $threadKey);
+            }
 
-        if ($text !== '') {
-            $slack->postMessage($channel, $text, $threadTs ?? $messageTs);
+            if ($messageTs) {
+                $slack->removeReaction($channel, $messageTs, 'potato');
+            }
         }
 
         return response()->json(['ok' => true]);
