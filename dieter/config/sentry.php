@@ -16,7 +16,7 @@ return [
     // 'spotlight' => env('SENTRY_SPOTLIGHT', false),
 
     // @see: https://docs.sentry.io/platforms/php/guides/laravel/configuration/options/#logger
-    'logger' => DebugFileLogger::class, // By default this will log to `storage_path('logs/sentry.log')`
+    // 'logger' => DebugFileLogger::class, // By default this will log to `storage_path('logs/sentry.log')`
 
     // The release version of your application
     // Example with dynamic git hash: trim(exec('git --git-dir ' . base_path('.git') . ' log --pretty="%h" -n1 HEAD'))
