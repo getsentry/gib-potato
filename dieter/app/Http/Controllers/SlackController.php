@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Ai\Agents\PotatoAgent;
+use App\Models\SlackThread;
 use App\Models\User;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
@@ -57,8 +58,26 @@ class SlackController extends Controller
             $validated['text'],
         );
 
+        $threadKey = $assistantThreadTs;
+        $slackThread = $threadKey
+            ? SlackThread::where('channel', $validated['channel'])->where('thread_ts', $threadKey)->first()
+            : null;
+
         $agent = new PotatoAgent;
-        $response = $agent->forUser($user)->prompt($prompt);
+
+        if ($slackThread) {
+            $response = $agent->continue($slackThread->conversation_id, $user)->prompt($prompt);
+        } else {
+            $response = $agent->forUser($user)->prompt($prompt);
+
+            if ($threadKey && $agent->currentConversation()) {
+                SlackThread::create([
+                    'channel' => $validated['channel'],
+                    'thread_ts' => $threadKey,
+                    'conversation_id' => $agent->currentConversation(),
+                ]);
+            }
+        }
 
         if ($assistantThreadTs) {
             $this->clearAssistantStatus($validated['channel'], $assistantThreadTs);
