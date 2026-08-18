@@ -31,6 +31,7 @@ services:
             - POTATO_SLACK_USER_ID
             - SHOPATO_URL
             - SHOPATO_TOKEN
+            - DIETER_TOKEN
         depends_on:
             - db
             - potal
