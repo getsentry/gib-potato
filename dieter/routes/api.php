@@ -10,5 +10,6 @@ Route::get('/', function () {
     ]);
 });
 
-Route::post('/events', [SlackController::class, 'event'])
-    ->middleware(VerifyServiceToken::class);
+Route::middleware(VerifyServiceToken::class)->group(function () {
+    Route::post('/events', [SlackController::class, 'event']);
+});
