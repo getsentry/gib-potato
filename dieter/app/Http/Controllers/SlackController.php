@@ -7,7 +7,6 @@ use App\Models\User;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Http;
-use Illuminate\Support\Str;
 
 class SlackController extends Controller
 {
@@ -27,11 +26,6 @@ class SlackController extends Controller
 
         $user = User::firstOrCreate(
             ['slack_user_id' => $validated['sender']],
-            [
-                'name' => $validated['sender'],
-                'email' => "{$validated['sender']}@slack.local",
-                'password' => Str::random(32),
-            ],
         );
 
         $assistantThreadTs = $threadTs ?? $messageTs;
