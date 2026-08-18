@@ -10,6 +10,11 @@ updates:
       schedule:
           interval: 'weekly'
 
+    - package-ecosystem: 'composer'
+      directory: '/dieter'
+      schedule:
+          interval: 'weekly'
+
     - package-ecosystem: 'gomod'
       directory: '/potal'
       schedule:

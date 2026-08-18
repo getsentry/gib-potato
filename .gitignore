@@ -5,8 +5,16 @@
 /logs/*
 /tmp/*
 /vendor/*
+/dieter/vendor/*
 /potal/tmp/*
+/dieter/storage/*.key
+/dieter/storage/pail
+/dieter/public/storage
+/dieter/auth.json
 .env
+.env.backup
+.env.production
+*.log
 
 # Assets #
 ##########
@@ -29,6 +37,7 @@ Thumbs.db
 #######################
 # PHPUnit
 .phpunit.cache
+.phpunit.result.cache
 tests.sqlite
 # vim
 *~
@@ -61,3 +70,8 @@ yarn-error.log
 mprocs.yaml
 # phpactor
 .phpactor.json
+# harnesses
+/dieter/.agents/*
+/dieter/.claude/*
+/dieter/.cursor/*
+/dieter/.pi/*

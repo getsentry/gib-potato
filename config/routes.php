@@ -85,8 +85,14 @@ return static function (RouteBuilder $routes): void {
     });
 
     $serviceAuthService = new AuthenticationService();
-    $serviceAuthService->loadAuthenticator('Authentication.Token', [
+    $serviceAuthService->loadAuthenticator('PotalToken', [
+        'className' => 'Authentication.Token',
         'identifier' => 'Potal',
+        'header' => 'Authorization',
+    ]);
+    $serviceAuthService->loadAuthenticator('DieterToken', [
+        'className' => 'Authentication.Token',
+        'identifier' => 'Dieter',
         'header' => 'Authorization',
     ]);
     $routes->registerMiddleware('service-auth', new AuthenticationMiddleware($serviceAuthService));
@@ -95,5 +101,6 @@ return static function (RouteBuilder $routes): void {
         $builder->applyMiddleware('service-auth');
 
         $builder->connect('/events', ['controller' => 'Events', 'action' => 'index']);
+        $builder->post('/polls', ['controller' => 'Polls', 'action' => 'create']);
     });
 };

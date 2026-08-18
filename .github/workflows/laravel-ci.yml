@@ -1,0 +1,70 @@
+name: 'Laravel CI'
+
+on:
+    push:
+        branches:
+            - 'main'
+    pull_request:
+        branches:
+            - '*'
+
+permissions:
+    contents: read
+
+defaults:
+    run:
+        working-directory: dieter
+
+jobs:
+    pint:
+        runs-on: ubuntu-latest
+        steps:
+            - uses: actions/checkout@v7
+
+            - name: Setup PHP
+              uses: shivammathur/setup-php@v2
+              with:
+                  php-version: '8.5'
+
+            - name: Install dependencies
+              run: composer install --no-progress --no-interaction
+
+            - name: Run Pint
+              run: vendor/bin/pint --test
+
+    pest:
+        runs-on: ubuntu-latest
+        steps:
+            - uses: actions/checkout@v7
+
+            - name: Setup PHP
+              uses: shivammathur/setup-php@v2
+              with:
+                  php-version: '8.5'
+
+            - name: Install dependencies
+              run: composer install --no-progress --no-interaction
+
+            - name: Prepare application
+              run: |
+                  cp .env.example .env
+                  php artisan key:generate
+
+            - name: Run Pest
+              run: vendor/bin/pest --compact
+
+    phpstan:
+        runs-on: ubuntu-latest
+        steps:
+            - uses: actions/checkout@v7
+
+            - name: Setup PHP
+              uses: shivammathur/setup-php@v2
+              with:
+                  php-version: '8.5'
+
+            - name: Install dependencies
+              run: composer install --no-progress --no-interaction
+
+            - name: Run PHPStan
+              run: vendor/bin/phpstan analyse

@@ -7,6 +7,7 @@ import (
 	"log/slog"
 	"net/http"
 
+	"github.com/getsentry/gib-potato/internal/dieterhttp"
 	"github.com/getsentry/gib-potato/internal/event"
 	"github.com/getsentry/gib-potato/internal/potalhttp"
 	"github.com/getsentry/sentry-go"
@@ -17,16 +18,18 @@ import (
 )
 
 type Handler struct {
-	slackClient *slack.Client
-	potalClient *potalhttp.Client
-	meter       sentry.Meter
+	slackClient  *slack.Client
+	potalClient  *potalhttp.Client
+	dieterClient *dieterhttp.Client
+	meter        sentry.Meter
 }
 
-func NewHandler(slackClient *slack.Client, potalClient *potalhttp.Client, meter sentry.Meter) *Handler {
+func NewHandler(slackClient *slack.Client, potalClient *potalhttp.Client, dieterClient *dieterhttp.Client, meter sentry.Meter) *Handler {
 	return &Handler{
-		slackClient: slackClient,
-		potalClient: potalClient,
-		meter:       meter,
+		slackClient:  slackClient,
+		potalClient:  potalClient,
+		dieterClient: dieterClient,
+		meter:        meter,
 	}
 }
 
@@ -242,7 +245,6 @@ func (h *Handler) EventsHandler(w http.ResponseWriter, r *http.Request, _ httpro
 				txn.Status = sentry.SpanStatusOK
 			}()
 		case *slackevents.AppMentionEvent:
-			go event.ProcessAppMentionEvent(r.Context(), ev)
 			hub := cloneHubFromContext(ctx)
 			go func() {
 				ctx := sentry.SetHubOnContext(context.Background(), hub)
@@ -263,7 +265,7 @@ func (h *Handler) EventsHandler(w http.ResponseWriter, r *http.Request, _ httpro
 					txn.Status = sentry.SpanStatusInternalError
 					return
 				}
-				err := h.potalClient.SendRequest(txn.Context(), processedEvent)
+				err := h.dieterClient.SendRequest(txn.Context(), processedEvent)
 				if err != nil {
 					h.emitEventMetric(txn.Context(), "potal.event.forward_error", "app_mention")
 					slog.ErrorContext(txn.Context(), "failed to forward event", "event_type", "app_mention", "error", err)

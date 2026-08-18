@@ -39,7 +39,7 @@ jobs:
                   extensions: mbstring, intl
 
             - name: Run composer install
-              run: composer update --no-progress
+              run: composer install --no-progress
 
             - name: Run PHP CodeSniffer
               run: vendor/bin/phpcs --colors -p  src/ tests/
