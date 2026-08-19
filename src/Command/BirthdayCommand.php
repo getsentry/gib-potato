@@ -158,7 +158,8 @@ class BirthdayCommand extends Command
                 $messagesTable->saveOrFail($message);
 
                 $channelMessage = 'Happy Birthday <@' . $user->slack_user_id . '>! :tada: :birthday:' . PHP_EOL;
-                $channelMessage .= 'We gib you *' . self::BIRTHDAY_POTATO_AMOUNT . '* :potato: as a little birthday treat! Have a wonderful day! :sparkles:';
+                $channelMessage .= 'We gib you *' . self::BIRTHDAY_POTATO_AMOUNT
+                    . '* :potato: as a little birthday treat! Have a wonderful day! :sparkles:';
 
                 $slackClient->postMessage(
                     channel: $hubChannel,
