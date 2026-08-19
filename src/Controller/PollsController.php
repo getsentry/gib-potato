@@ -35,6 +35,7 @@ class PollsController extends Controller
         $channel = $data['channel'] ?? '';
         $userSlackId = $data['user_slack_id'] ?? '';
         $anonymous = (bool)($data['anonymous'] ?? false);
+        $type = $data['type'] ?? Poll::TYPE_MULTIPLE;
 
         if ($title === '') {
             return $this->response
@@ -55,6 +56,13 @@ class PollsController extends Controller
                 ->withType('json')
                 ->withStatus(422)
                 ->withStringBody(json_encode(['error' => 'A maximum of 9 options is allowed.']));
+        }
+
+        if (!in_array($type, [Poll::TYPE_MULTIPLE, Poll::TYPE_SINGLE], true)) {
+            return $this->response
+                ->withType('json')
+                ->withStatus(422)
+                ->withStringBody(json_encode(['error' => 'Type must be "multiple" or "single".']));
         }
 
         if ($channel === '') {
@@ -80,7 +88,7 @@ class PollsController extends Controller
         $poll = $pollsTable->newEntity([
             'user_id' => $userService->getOrCreateUser($userSlackId)->id,
             'title' => $title,
-            'type' => Poll::TYPE_MULTIPLE,
+            'type' => $type,
             'status' => Poll::STATUS_ACTIVE,
             'anonymous' => $anonymous,
         ], [

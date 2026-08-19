@@ -93,16 +93,33 @@ class InteractionsCallbackEvent extends AbstractEvent
             ])
             ->firstOrFail();
 
+        $userId = $this->userService->getOrCreateUser($this->user)->id;
+
         $existingPollResponse = $this->pollResponsesTable->find()
             ->where([
-                'user_id' => $this->userService->getOrCreateUser($this->user)->id,
+                'user_id' => $userId,
                 'poll_option_id' => $pollOption->id,
             ])
             ->first();
 
         if (empty($existingPollResponse)) {
+            $poll = $this->pollsTable->get($pollOption->poll_id);
+
+            if ($poll->type === Poll::TYPE_SINGLE) {
+                $otherOptionIds = $this->pollOptionsTable->find()
+                    ->where(['poll_id' => $pollOption->poll_id])
+                    ->all()
+                    ->extract('id')
+                    ->toList();
+
+                $this->pollResponsesTable->deleteAll([
+                    'user_id' => $userId,
+                    'poll_option_id IN' => $otherOptionIds,
+                ]);
+            }
+
             $pollResponse = $this->pollResponsesTable->newEntity([
-                'user_id' => $this->userService->getOrCreateUser($this->user)->id,
+                'user_id' => $userId,
                 'poll_option_id' => $pollOption->id,
             ], [
                 'accessibleFields' => [

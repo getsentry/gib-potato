@@ -168,16 +168,6 @@ class PollService
             ];
         }
 
-        if ($poll->anonymous === true) {
-            $blocks[] = [
-                'type' => 'section',
-                'text' => [
-                    'type' => 'mrkdwn',
-                    'text' => '🥷 Anonymous',
-                ],
-            ];
-        }
-
         $blocks[] = [
             'type' => 'section',
             'block_id' => 'poll-actions',
@@ -242,6 +232,12 @@ class PollService
         }
 
         $context = "Created by <@{$poll->user->slack_user_id}> with /gibopinion";
+        if ($poll->anonymous === true) {
+            $context .= '   :ninja: Anonymous';
+        }
+        if ($poll->type === Poll::TYPE_SINGLE) {
+            $context .= '   :point_up: Single vote';
+        }
         if ($poll->status === Poll::STATUS_CLOSED) {
             $context .= '   🔒 This poll is now closed.';
         }
