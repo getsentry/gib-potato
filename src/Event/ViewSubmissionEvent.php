@@ -10,7 +10,9 @@ class ViewSubmissionEvent extends AbstractEvent
     protected string $user;
     protected string $callbackId;
     protected string $privateMetadata;
-    /** @var array<string, string> */
+    /**
+     * @var array<string, string>
+     */
     protected array $values;
 
     /**
@@ -39,6 +41,9 @@ class ViewSubmissionEvent extends AbstractEvent
         }
     }
 
+    /**
+     * @return void
+     */
     protected function saveBirthday(): void
     {
         $userService = new UserService();
