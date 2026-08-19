@@ -27,7 +27,7 @@ use function Sentry\withMonitor;
 
 class BirthdayCommand extends Command
 {
-    private const int TARGET_HOUR = 13;
+    private const int TARGET_HOUR = 10;
     private const int BIRTHDAY_POTATO_AMOUNT = 5;
 
     /**
