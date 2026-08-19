@@ -15,6 +15,11 @@ class UserService
 {
     use LocatorAwareTrait;
 
+    /**
+     * Slackbot is a bot, but the Slack API reports is_bot false for it.
+     */
+    public const SLACKBOT_USER_ID = 'USLACKBOT';
+
     protected SlackClient $slackClient;
     protected UsersTable $Users;
     protected ApiTokensTable $ApiTokens;
@@ -113,6 +118,13 @@ class UserService
      */
     protected function isBot(string $slackUserId): bool
     {
+        // Checked before anything else, because neither the stored flag nor
+        // the Slack API marks Slackbot as a bot. potal excludes it as a
+        // sender for the same reason (potal/internal/event/message.go).
+        if ($slackUserId === self::SLACKBOT_USER_ID) {
+            return true;
+        }
+
         $user = $this->Users->findBySlackUserId($slackUserId)->first();
         if ($user instanceof User) {
             // Nullable: users predating the slack_is_bot column keep null

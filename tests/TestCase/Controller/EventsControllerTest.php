@@ -136,6 +136,40 @@ class EventsControllerTest extends TestCase
         $this->assertSame('00000000-0000-0000-0000-000000000006', $messages->first()->receiver_user_id);
     }
 
+    public function testTypeMessageIgnoresSlackbot(): void
+    {
+        $this->mockSlackClientPostMessage();
+        $this->mockSlackClientPostEphemeral();
+        // Slackbot reports is_bot false, like the real Slack API does
+        $this->mockSlackClientGetUser('USLACKBOT');
+
+        $usersTable = $this->fetchTable('Users');
+        $usersBefore = $usersTable->find()->count();
+
+        $this->post('/events', json_encode([
+            'type' => 'message',
+            'amount' => 1,
+            'sender' => 'U1111',
+            'receivers' => [
+                'USLACKBOT',
+            ],
+            'channel' => 'C1111',
+            'text' => '<@USLACKBOT> :potato:',
+            'reaction' => 'potato',
+            'timestamp' => '1672531200',
+            'event_timestamp' => '1672531200',
+            'permalink' => 'https://example.com/permalink',
+        ]));
+
+        $this->assertResponseOk();
+
+        $this->assertSame(0, $this->fetchTable('Messages')->find()->count());
+        $this->assertSame($usersBefore, $usersTable->find()->count());
+
+        $sender = $usersTable->get('00000000-0000-0000-0000-000000000001');
+        $this->assertSame(5, $sender->potatoLeftToday());
+    }
+
     public function testTypeMessageToSelf(): void
     {
         $this->mockSlackClientPostMessage();
