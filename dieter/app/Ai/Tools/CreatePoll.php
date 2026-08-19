@@ -20,7 +20,7 @@ class CreatePoll implements Tool
      */
     public function description(): Stringable|string
     {
-        return 'Create a poll in a Slack channel with a title, answer options, and an anonymity setting. Only call when the user has explicitly provided all three — never invent or guess any of them. Ask for missing details first. When you have already asked for poll details, treat follow-up messages as providing those details, not as standalone requests.';
+        return 'Create a poll in a Slack channel with a title, answer options, an anonymity setting, and a voting mode (single or multiple). Only call when the user has explicitly provided all four — never invent or guess any of them. Ask for missing details first. When you have already asked for poll details, treat follow-up messages as providing those details, not as standalone requests.';
     }
 
     /**
@@ -44,7 +44,7 @@ class CreatePoll implements Tool
                 'channel' => $this->channel,
                 'user_slack_id' => $this->slackUserId,
                 'anonymous' => $request['anonymous'] ?? false,
-                'type' => $request['type'] ?? 'multiple',
+                'type' => $request['type'],
             ]);
 
         if ($response->status() === 422) {
