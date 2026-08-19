@@ -44,6 +44,7 @@ class CreatePoll implements Tool
                 'channel' => $this->channel,
                 'user_slack_id' => $this->slackUserId,
                 'anonymous' => $request['anonymous'] ?? false,
+                'type' => $request['type'] ?? 'multiple',
             ]);
 
         if ($response->status() === 422) {
@@ -68,6 +69,7 @@ class CreatePoll implements Tool
             'title' => $schema->string()->description('The poll question or title')->required(),
             'options' => $schema->array()->items($schema->string())->min(2)->max(9)->description('The poll answer options (between 2 and 9)')->required(),
             'anonymous' => $schema->boolean()->description('Whether the poll should be anonymous'),
+            'type' => $schema->string()->description('The poll type: "multiple" allows voting for multiple options, "single" allows only one vote per person')->required(),
         ];
     }
 }

@@ -86,7 +86,7 @@ class SlashCommandEvent extends AbstractEvent
         $poll = $pollsTable->newEntity([
             'user_id' => $userService->getOrCreateUser($this->user)->id,
             'title' => $title,
-            'type' => Poll::TYPE_MULTIPLE,
+            'type' => str_contains($this->text, '--single') ? Poll::TYPE_SINGLE : Poll::TYPE_MULTIPLE,
             'status' => Poll::STATUS_ACTIVE,
             'anonymous' => str_contains($this->text, '--anonymous') ? true : false,
         ], [
