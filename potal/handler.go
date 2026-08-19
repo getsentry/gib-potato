@@ -6,6 +6,7 @@ import (
 	"io"
 	"log/slog"
 	"net/http"
+	"strconv"
 
 	"github.com/getsentry/gib-potato/internal/dieterhttp"
 	"github.com/getsentry/gib-potato/internal/event"
@@ -365,6 +366,14 @@ func (h *Handler) SlashHandler(w http.ResponseWriter, r *http.Request, _ httprou
 	}
 
 	switch s.Command {
+	case "/birthday":
+		_, err := h.slackClient.OpenView(s.TriggerID, getBirthdayModalView())
+		if err != nil {
+			slog.ErrorContext(ctx, "failed to open birthday modal", "error", err)
+			transaction.Status = sentry.SpanStatusInternalError
+			w.WriteHeader(http.StatusInternalServerError)
+			return
+		}
 	case "/gibopinion":
 		hub := cloneHubFromContext(ctx)
 		go func() {
@@ -456,6 +465,38 @@ func (h *Handler) InteractionsHandler(w http.ResponseWriter, r *http.Request, _ 
 			h.emitEventMetric(txn.Context(), "potal.event.forwarded", "interaction_callback")
 			txn.Status = sentry.SpanStatusOK
 		}()
+	case slack.InteractionTypeViewSubmission:
+		hub := cloneHubFromContext(ctx)
+		go func() {
+			ctx := sentry.SetHubOnContext(context.Background(), hub)
+
+			options := []sentry.SpanOption{
+				sentry.WithOpName("interaction.handler"),
+				sentry.WithTransactionSource(sentry.SourceTask),
+				sentry.ContinueFromHeaders(transaction.ToSentryTrace(), transaction.ToBaggage()),
+			}
+			txn := sentry.StartTransaction(ctx, "INTERACTION view_submission", options...)
+			txn.SetData("event_type", "view_submission")
+			defer txn.Finish()
+
+			processedEvent := event.ProcessViewSubmissionEvent(txn.Context(), payload)
+			if processedEvent == nil {
+				h.emitEventMetric(txn.Context(), "potal.event.skipped", "view_submission")
+				slog.DebugContext(txn.Context(), "event skipped", "event_type", "view_submission")
+				txn.Status = sentry.SpanStatusInternalError
+				return
+			}
+			err := h.potalClient.SendRequest(txn.Context(), processedEvent)
+			if err != nil {
+				h.emitEventMetric(txn.Context(), "potal.event.forward_error", "view_submission")
+				slog.ErrorContext(txn.Context(), "failed to forward event", "event_type", "view_submission", "error", err)
+				txn.Status = sentry.SpanStatusInternalError
+				return
+			}
+
+			h.emitEventMetric(txn.Context(), "potal.event.forwarded", "view_submission")
+			txn.Status = sentry.SpanStatusOK
+		}()
 	default:
 		slog.WarnContext(ctx, "unknown interaction type", "type", payload.Type)
 		transaction.Status = sentry.SpanStatusInvalidArgument
@@ -465,4 +506,76 @@ func (h *Handler) InteractionsHandler(w http.ResponseWriter, r *http.Request, _ 
 
 	transaction.Status = sentry.SpanStatusOK
 	w.WriteHeader(http.StatusOK)
+}
+
+func getBirthdayModalView() slack.ModalViewRequest {
+	months := []string{
+		"January", "February", "March", "April", "May", "June",
+		"July", "August", "September", "October", "November", "December",
+	}
+
+	monthOptions := make([]*slack.OptionBlockObject, 12)
+	for i, name := range months {
+		monthOptions[i] = slack.NewOptionBlockObject(
+			strconv.Itoa(i+1),
+			slack.NewTextBlockObject("plain_text", name, false, false),
+			nil,
+		)
+	}
+
+	dayOptions := make([]*slack.OptionBlockObject, 31)
+	for i := range 31 {
+		d := strconv.Itoa(i + 1)
+		dayOptions[i] = slack.NewOptionBlockObject(
+			d,
+			slack.NewTextBlockObject("plain_text", d, false, false),
+			nil,
+		)
+	}
+
+	hubOptions := []*slack.OptionBlockObject{
+		slack.NewOptionBlockObject("sfo", slack.NewTextBlockObject("plain_text", "San Francisco", false, false), nil),
+		slack.NewOptionBlockObject("yyz", slack.NewTextBlockObject("plain_text", "Toronto", false, false), nil),
+		slack.NewOptionBlockObject("vie", slack.NewTextBlockObject("plain_text", "Vienna", false, false), nil),
+		slack.NewOptionBlockObject("ams", slack.NewTextBlockObject("plain_text", "Amsterdam", false, false), nil),
+	}
+
+	headerSection := slack.NewSectionBlock(
+		slack.NewTextBlockObject("mrkdwn", "Tell us your birthday and hub so we can celebrate you! :tada:", false, false),
+		nil, nil,
+	)
+
+	monthSelect := slack.NewOptionsSelectBlockElement(
+		slack.OptTypeStatic,
+		slack.NewTextBlockObject("plain_text", "Select month", false, false),
+		"month",
+		monthOptions...,
+	)
+	monthInput := slack.NewInputBlock("birthday_month", slack.NewTextBlockObject("plain_text", "Birth Month", false, false), nil, monthSelect)
+
+	daySelect := slack.NewOptionsSelectBlockElement(
+		slack.OptTypeStatic,
+		slack.NewTextBlockObject("plain_text", "Select day", false, false),
+		"day",
+		dayOptions...,
+	)
+	dayInput := slack.NewInputBlock("birthday_day", slack.NewTextBlockObject("plain_text", "Birth Day", false, false), nil, daySelect)
+
+	hubSelect := slack.NewOptionsSelectBlockElement(
+		slack.OptTypeStatic,
+		slack.NewTextBlockObject("plain_text", "Select your hub", false, false),
+		"hub",
+		hubOptions...,
+	)
+	hubInput := slack.NewInputBlock("hub", slack.NewTextBlockObject("plain_text", "Hub", false, false), nil, hubSelect)
+
+	return slack.ModalViewRequest{
+		Type:       "modal",
+		CallbackID: "birthday_setup",
+		Title:      slack.NewTextBlockObject("plain_text", "Birthday Setup", false, false),
+		Submit:     slack.NewTextBlockObject("plain_text", "Save", false, false),
+		Blocks: slack.Blocks{
+			BlockSet: []slack.Block{headerSection, monthInput, dayInput, hubInput},
+		},
+	}
 }

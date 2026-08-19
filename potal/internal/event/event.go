@@ -15,6 +15,7 @@ const (
 	appHomeOpened       PotalEventType = "app_home_opened"
 	slashCommand        PotalEventType = "slash_command"
 	interactionCallback PotalEventType = "interaction_callback"
+	viewSubmission      PotalEventType = "view_submission"
 	linkShared          PotalEventType = "link_shared"
 )
 

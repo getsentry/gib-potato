@@ -125,6 +125,22 @@ class UsersTable extends Table
         $validator
             ->allowEmptyString('notifications');
 
+        $validator
+            ->integer('birthday_day')
+            ->range('birthday_day', [1, 31])
+            ->allowEmptyString('birthday_day');
+
+        $validator
+            ->integer('birthday_month')
+            ->range('birthday_month', [1, 12])
+            ->allowEmptyString('birthday_month');
+
+        $validator
+            ->scalar('hub')
+            ->maxLength('hub', 255)
+            ->inList('hub', ['sfo', 'yyz', 'vie', 'ams'])
+            ->allowEmptyString('hub');
+
         return $validator;
     }
 
