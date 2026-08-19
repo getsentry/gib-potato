@@ -367,7 +367,7 @@ func (h *Handler) SlashHandler(w http.ResponseWriter, r *http.Request, _ httprou
 
 	switch s.Command {
 	case "/birthday":
-		_, err := h.slackClient.OpenView(s.TriggerID, getBirthdayModalView())
+		_, err := h.slackClient.OpenView(s.TriggerID, getBirthdayModalView(s.ChannelID))
 		if err != nil {
 			slog.ErrorContext(ctx, "failed to open birthday modal", "error", err)
 			transaction.Status = sentry.SpanStatusInternalError
@@ -508,7 +508,7 @@ func (h *Handler) InteractionsHandler(w http.ResponseWriter, r *http.Request, _ 
 	w.WriteHeader(http.StatusOK)
 }
 
-func getBirthdayModalView() slack.ModalViewRequest {
+func getBirthdayModalView(channelID string) slack.ModalViewRequest {
 	months := []string{
 		"January", "February", "March", "April", "May", "June",
 		"July", "August", "September", "October", "November", "December",
@@ -570,10 +570,11 @@ func getBirthdayModalView() slack.ModalViewRequest {
 	hubInput := slack.NewInputBlock("hub", slack.NewTextBlockObject("plain_text", "Hub", false, false), nil, hubSelect)
 
 	return slack.ModalViewRequest{
-		Type:       "modal",
-		CallbackID: "birthday_setup",
-		Title:      slack.NewTextBlockObject("plain_text", "Birthday Setup", false, false),
-		Submit:     slack.NewTextBlockObject("plain_text", "Save", false, false),
+		Type:            "modal",
+		CallbackID:      "birthday_setup",
+		PrivateMetadata: channelID,
+		Title:           slack.NewTextBlockObject("plain_text", "Birthday Setup", false, false),
+		Submit:          slack.NewTextBlockObject("plain_text", "Save", false, false),
 		Blocks: slack.Blocks{
 			BlockSet: []slack.Block{headerSection, monthInput, dayInput, hubInput},
 		},

@@ -8,10 +8,11 @@ import (
 )
 
 type ViewSubmissionEvent struct {
-	Type       PotalEventType    `json:"type"`
-	User       string            `json:"user"`
-	CallbackID string            `json:"callback_id"`
-	Values     map[string]string `json:"values"`
+	Type            PotalEventType    `json:"type"`
+	User            string            `json:"user"`
+	CallbackID      string            `json:"callback_id"`
+	PrivateMetadata string            `json:"private_metadata,omitempty"`
+	Values          map[string]string `json:"values"`
 }
 
 func (e ViewSubmissionEvent) isValid() bool {
@@ -40,10 +41,11 @@ func ProcessViewSubmissionEvent(ctx context.Context, e slack.InteractionCallback
 	}
 
 	viewSubmissionEvent := ViewSubmissionEvent{
-		Type:       viewSubmission,
-		User:       e.User.ID,
-		CallbackID: e.View.CallbackID,
-		Values:     values,
+		Type:            viewSubmission,
+		User:            e.User.ID,
+		CallbackID:      e.View.CallbackID,
+		PrivateMetadata: e.View.PrivateMetadata,
+		Values:          values,
 	}
 
 	if !viewSubmissionEvent.isValid() {

@@ -9,6 +9,7 @@ class ViewSubmissionEvent extends AbstractEvent
 {
     protected string $user;
     protected string $callbackId;
+    protected string $privateMetadata;
     /** @var array<string, string> */
     protected array $values;
 
@@ -24,6 +25,7 @@ class ViewSubmissionEvent extends AbstractEvent
         $this->type = self::TYPE_VIEW_SUBMISSION;
         $this->user = $event['user'];
         $this->callbackId = $event['callback_id'];
+        $this->privateMetadata = $event['private_metadata'] ?? '';
         $this->values = $event['values'] ?? [];
     }
 
@@ -41,6 +43,16 @@ class ViewSubmissionEvent extends AbstractEvent
     {
         $userService = new UserService();
         $user = $userService->getOrCreateUser($this->user);
+
+        if ($user->birthday_day !== null && $user->birthday_month !== null && $user->hub !== null) {
+            $this->slackClient->postEphemeral(
+                channel: $this->privateMetadata,
+                user: $this->user,
+                text: 'Your birthday and hub have already been set and cannot be changed :lock:',
+            );
+
+            return;
+        }
 
         $usersTable = $this->fetchTable('Users');
 

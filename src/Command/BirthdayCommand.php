@@ -27,7 +27,7 @@ use function Sentry\withMonitor;
 
 class BirthdayCommand extends Command
 {
-    private const int TARGET_HOUR = 10;
+    private const int TARGET_HOUR = 13;
     private const int BIRTHDAY_POTATO_AMOUNT = 5;
 
     /**
@@ -106,7 +106,7 @@ class BirthdayCommand extends Command
                 'Users.slack_is_bot' => false,
                 'Users.status' => User::STATUS_ACTIVE,
                 'Users.role !=' => User::ROLE_SERVICE,
-                //'Users.slack_time_zone IN' => $noonTimeZones,
+                'Users.slack_time_zone IN' => $noonTimeZones,
                 'Users.birthday_day' => $localDate->day,
                 'Users.birthday_month' => $localDate->month,
                 'Users.hub IS NOT' => null,
