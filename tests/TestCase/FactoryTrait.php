@@ -28,7 +28,7 @@ trait FactoryTrait
         ]);
     }
 
-    public function mockSlackClientGetUser(string $userId): void
+    public function mockSlackClientGetUser(string $userId, bool $isBot = false): void
     {
         $this->mockClientGet(
             'https://slack.com/api/users.info?user=' . $userId,
@@ -41,7 +41,7 @@ trait FactoryTrait
                     'profile' => [
                         'image_72' => 'https://example.com/' . $userId . '.jpg',
                     ],
-                    'is_bot' => false,
+                    'is_bot' => $isBot,
                 ],
             ])),
         );

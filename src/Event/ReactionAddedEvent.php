@@ -78,9 +78,13 @@ class ReactionAddedEvent extends AbstractEvent
         $notificationService = new NotificationService();
 
         $fromUser = $userService->getOrCreateUser($this->sender);
+
+        $receivers = $userService->getHumanReceivers($this->receivers);
+
         $validator = new Validation(
-            event: $this,
+            amount: $this->amount,
             sender: $fromUser,
+            receivers: $receivers,
         );
 
         try {
@@ -100,9 +104,8 @@ class ReactionAddedEvent extends AbstractEvent
         }
 
         $toUsers = [];
-        foreach ($this->receivers as $receiver) {
-            $toUser = $userService->getOrCreateUser($receiver);
-            $toUsers[] = $toUser;
+        foreach ($receivers as $receiver) {
+            $toUsers[] = $userService->getOrCreateUser($receiver);
         }
 
         $awardService->gib(
@@ -126,9 +129,13 @@ class ReactionAddedEvent extends AbstractEvent
         $voucherService = new VoucherService();
 
         $fromUser = $userService->getOrCreateUser($this->sender);
+
+        $receivers = $userService->getHumanReceivers($this->receivers);
+
         $validator = new Validation(
-            event: $this,
+            amount: $this->amount,
             sender: $fromUser,
+            receivers: $receivers,
         );
 
         try {
@@ -148,9 +155,8 @@ class ReactionAddedEvent extends AbstractEvent
         }
 
         $toUsers = [];
-        foreach ($this->receivers as $receiver) {
-            $toUser = $userService->getOrCreateUser($receiver);
-            $toUsers[] = $toUser;
+        foreach ($receivers as $receiver) {
+            $toUsers[] = $userService->getOrCreateUser($receiver);
         }
 
         $voucherService->gib(

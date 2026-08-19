@@ -80,6 +80,52 @@ class UserService
     }
 
     /**
+     * Drops bots from the Slack users mentioned in a message.
+     *
+     * potal filters out bot *senders* before forwarding an event; bot
+     * *receivers* are filtered here, where the slack_is_bot column already
+     * answers for everyone we've seen before.
+     *
+     * Only filters, never creates: a bot must not reach getOrCreateUser(),
+     * which would give it a user record, an API token and a welcome message.
+     *
+     * @param array<string> $slackUserIds Slack user IDs mentioned in the message.
+     * @return array<string> The Slack user IDs that belong to people.
+     * @throws \Exception
+     */
+    public function getHumanReceivers(array $slackUserIds): array
+    {
+        $receivers = [];
+        foreach ($slackUserIds as $slackUserId) {
+            if ($this->isBot($slackUserId)) {
+                continue;
+            }
+
+            $receivers[] = $slackUserId;
+        }
+
+        return $receivers;
+    }
+
+    /**
+     * @param string $slackUserId Slack user ID.
+     * @return bool
+     */
+    protected function isBot(string $slackUserId): bool
+    {
+        $user = $this->Users->findBySlackUserId($slackUserId)->first();
+        if ($user instanceof User) {
+            // Nullable: users predating the slack_is_bot column keep null
+            // until UpdateUsersCommand backfills them. Unknown means human,
+            // so we never silently stop gibbing to a long-standing user.
+            return $user->slack_is_bot === true;
+        }
+
+        // Someone we've never seen before, so ask Slack.
+        return $this->slackClient->getUser($slackUserId)['is_bot'] ?? false;
+    }
+
+    /**
      * @param \App\Model\Entity\User $user The user.
      * @return void
      */
