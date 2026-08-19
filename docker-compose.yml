@@ -32,6 +32,10 @@ services:
             - SHOPATO_URL
             - SHOPATO_TOKEN
             - DIETER_TOKEN
+            - HUB_CHANNEL_SFO
+            - HUB_CHANNEL_YYZ
+            - HUB_CHANNEL_VIE
+            - HUB_CHANNEL_AMS
         depends_on:
             - db
             - potal

@@ -19,6 +19,7 @@ abstract class AbstractEvent
     public const TYPE_APP_MENTION = 'app_mention';
     public const TYPE_SLASH_COMMAND = 'slash_command';
     public const TYPE_INTERACTIONS_CALLBACK = 'interaction_callback';
+    public const TYPE_VIEW_SUBMISSION = 'view_submission';
     public const TYPE_LINK_SHARED = 'link_shared';
 
     protected SlackClient $slackClient;

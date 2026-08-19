@@ -37,6 +37,7 @@ class EventFactory
             AbstractEvent::TYPE_APP_HOME_OPENED => new AppHomeOpenedEvent($data),
             AbstractEvent::TYPE_SLASH_COMMAND => new SlashCommandEvent($data),
             AbstractEvent::TYPE_INTERACTIONS_CALLBACK => new InteractionsCallbackEvent($data),
+            AbstractEvent::TYPE_VIEW_SUBMISSION => new ViewSubmissionEvent($data),
             AbstractEvent::TYPE_LINK_SHARED => new LinkSharedEvent($data),
             default => throw new Exception('Unknown event type'),
         };

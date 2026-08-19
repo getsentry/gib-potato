@@ -20,6 +20,9 @@ use Cake\ORM\Locator\LocatorAwareTrait;
  * @property string $slack_picture
  * @property string $slack_time_zone
  * @property bool $slack_is_bot
+ * @property int|null $birthday_day
+ * @property int|null $birthday_month
+ * @property string|null $hub
  * @property array|null $notifications
  * @property \Cake\I18n\DateTime|null $created
  * @property \Cake\I18n\DateTime|null $modified
