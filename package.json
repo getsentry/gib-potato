@@ -11,6 +11,7 @@
         "preview": "vp preview"
     },
     "dependencies": {
+        "@laravel/multiplex": "^0.4.3",
         "@sentry/bundler-plugins": "^11.0.0-alpha.1",
         "@sentry/vue": "^11.0.0-alpha.1",
         "@tailwindcss/vite": "^4.3.3",
@@ -22,7 +23,7 @@
     },
     "devDependencies": {
         "@vitejs/plugin-vue": "^6.0.8",
-        "vite-plus": "^0.2.8"
+        "vite-plus": "^0.2.9"
     },
     "devEngines": {
         "packageManager": {
