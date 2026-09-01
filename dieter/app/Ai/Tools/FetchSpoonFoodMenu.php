@@ -100,14 +100,9 @@ class FetchSpoonFoodMenu implements Tool
             return $html;
         }
 
-        $toRemove = [];
-
-        foreach ($nodes as $node) {
-            $toRemove[] = $node;
-        }
-
-        foreach (array_reverse($toRemove) as $node) {
-            $node->parentNode?->removeChild($node);
+        for ($i = $nodes->length - 1; $i >= 0; $i--) {
+            $node = $nodes->item($i);
+            $node?->parentNode?->removeChild($node);
         }
 
         $root = $document->getElementById('spoon-food-root');
