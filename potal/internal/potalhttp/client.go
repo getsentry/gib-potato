@@ -28,18 +28,16 @@ func NewClient(meter sentry.Meter) *Client {
 func (c *Client) SendRequest(ctx context.Context, e event.PotalEvent) error {
 	url := os.Getenv("POTAL_URL")
 
-	hub := sentry.GetHubFromContext(ctx)
-
 	body, jsonErr := json.Marshal(e)
 	if jsonErr != nil {
-		hub.CaptureException(jsonErr)
+		sentry.CaptureException(ctx, jsonErr)
 		slog.ErrorContext(ctx, "failed to marshal event", "error", jsonErr)
 		return jsonErr
 	}
 
 	r, newReqErr := http.NewRequestWithContext(ctx, "POST", url, bytes.NewBuffer(body))
 	if newReqErr != nil {
-		hub.CaptureException(newReqErr)
+		sentry.CaptureException(ctx, newReqErr)
 		slog.ErrorContext(ctx, "failed to create API request", "error", newReqErr)
 		return newReqErr
 	}
@@ -55,7 +53,7 @@ func (c *Client) SendRequest(ctx context.Context, e event.PotalEvent) error {
 
 	res, reqErr := client.Do(r)
 	if reqErr != nil {
-		hub.CaptureException(reqErr)
+		sentry.CaptureException(ctx, reqErr)
 		slog.ErrorContext(ctx, "API request failed", "error", reqErr)
 		return reqErr
 	}
@@ -77,10 +75,10 @@ func (c *Client) SendRequest(ctx context.Context, e event.PotalEvent) error {
 	msg := fmt.Sprintf("GibPotato API: Got %s response", res.Status)
 	slog.ErrorContext(ctx, "API error response", "status", res.Status, "status_code", res.StatusCode)
 
-	hub.ConfigureScope(func(scope *sentry.Scope) {
+	sentry.WithScopeContext(ctx, func(ctx context.Context, scope *sentry.Scope) {
 		scope.SetLevel(sentry.LevelFatal)
+		sentry.CaptureMessage(ctx, msg)
 	})
-	hub.CaptureMessage(msg)
 
 	return fmt.Errorf("%s", msg)
 }
