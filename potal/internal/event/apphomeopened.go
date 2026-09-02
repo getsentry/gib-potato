@@ -20,7 +20,7 @@ func (e AppHomeOpenedEvent) isValid() bool {
 }
 
 func ProcessAppHomeOpenedEvent(ctx context.Context, e *slackevents.AppHomeOpenedEvent) *AppHomeOpenedEvent {
-	hub := sentry.GetHubFromContext(ctx)
+	scope := sentry.ScopeFromContext(ctx)
 	txn := sentry.TransactionFromContext(ctx)
 
 	span := txn.StartChild("event.process", sentry.WithDescription("Process AppHomeOpened Event"))
@@ -39,8 +39,8 @@ func ProcessAppHomeOpenedEvent(ctx context.Context, e *slackevents.AppHomeOpened
 	}
 	span.Status = sentry.SpanStatusOK
 
-	hub.Scope().SetContext("event", sentry.Context{"data": appHomeOpenedEvent})
-	hub.Scope().SetTag("event_type", appHomeOpened.String())
+	scope.SetContext("event", sentry.Context{"data": appHomeOpenedEvent})
+	scope.SetTag("event_type", appHomeOpened.String())
 
 	return &appHomeOpenedEvent
 }

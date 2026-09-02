@@ -20,7 +20,7 @@ func (e ViewSubmissionEvent) isValid() bool {
 }
 
 func ProcessViewSubmissionEvent(ctx context.Context, e slack.InteractionCallback) *ViewSubmissionEvent {
-	hub := sentry.GetHubFromContext(ctx)
+	scope := sentry.ScopeFromContext(ctx)
 	txn := sentry.TransactionFromContext(ctx)
 
 	span := txn.StartChild("event.process", sentry.WithDescription("Process ViewSubmission Event"))
@@ -54,8 +54,8 @@ func ProcessViewSubmissionEvent(ctx context.Context, e slack.InteractionCallback
 	}
 	span.Status = sentry.SpanStatusOK
 
-	hub.Scope().SetContext("event", sentry.Context{"data": viewSubmissionEvent})
-	hub.Scope().SetTag("event_type", viewSubmission.String())
+	scope.SetContext("event", sentry.Context{"data": viewSubmissionEvent})
+	scope.SetTag("event_type", viewSubmission.String())
 
 	return &viewSubmissionEvent
 }

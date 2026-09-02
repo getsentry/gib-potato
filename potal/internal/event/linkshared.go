@@ -30,7 +30,7 @@ func (e LinkSharedEvent) isValid() bool {
 }
 
 func ProcessLinkSharedEvent(ctx context.Context, e *slackevents.LinkSharedEvent) *LinkSharedEvent {
-	hub := sentry.GetHubFromContext(ctx)
+	scope := sentry.ScopeFromContext(ctx)
 	txn := sentry.TransactionFromContext(ctx)
 
 	span := txn.StartChild("event.process", sentry.WithDescription("Process LinkShared Event"))
@@ -61,8 +61,8 @@ func ProcessLinkSharedEvent(ctx context.Context, e *slackevents.LinkSharedEvent)
 	}
 	span.Status = sentry.SpanStatusOK
 
-	hub.Scope().SetContext("event", sentry.Context{"data": linkSharedEvent})
-	hub.Scope().SetTag("event_type", linkShared.String())
+	scope.SetContext("event", sentry.Context{"data": linkSharedEvent})
+	scope.SetTag("event_type", linkShared.String())
 
 	return &linkSharedEvent
 }
