@@ -12,8 +12,8 @@
     },
     "dependencies": {
         "@laravel/multiplex": "^0.4.3",
-        "@sentry/bundler-plugins": "^11.0.0-alpha.2",
-        "@sentry/vue": "^11.0.0-alpha.2",
+        "@sentry/bundler-plugins": "^11.0.0-beta.0",
+        "@sentry/vue": "^11.0.0-beta.0",
         "@tailwindcss/vite": "^4.3.3",
         "axios": "^1.20.0",
         "vue": "^3.5.42",
