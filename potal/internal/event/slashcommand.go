@@ -21,7 +21,7 @@ func (e SlashCommandEvent) isValid() bool {
 }
 
 func ProcessSlashCommand(ctx context.Context, e slack.SlashCommand) *SlashCommandEvent {
-	hub := sentry.GetHubFromContext(ctx)
+	scope := sentry.ScopeFromContext(ctx)
 	txn := sentry.TransactionFromContext(ctx)
 
 	span := txn.StartChild("event.process", sentry.WithDescription("Process SlashCommand Event"))
@@ -42,8 +42,8 @@ func ProcessSlashCommand(ctx context.Context, e slack.SlashCommand) *SlashComman
 	}
 	span.Status = sentry.SpanStatusOK
 
-	hub.Scope().SetContext("event", sentry.Context{"data": slashCommandEvent})
-	hub.Scope().SetTag("event_type", slashCommand.String())
+	scope.SetContext("event", sentry.Context{"data": slashCommandEvent})
+	scope.SetTag("event_type", slashCommand.String())
 
 	return &slashCommandEvent
 }
