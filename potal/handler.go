@@ -124,7 +124,7 @@ func (h *Handler) EventsHandler(w http.ResponseWriter, r *http.Request, _ httpro
 					options := []sentry.SpanOption{
 						sentry.WithOpName("event.handler"),
 						sentry.WithTransactionSource(sentry.SourceTask),
-						sentry.ContinueFromHeaders(transaction.ToSentryTrace(), transaction.ToBaggage()),
+						sentry.ContinueTrace(transaction.ToSentryTrace(), transaction.ToBaggage()),
 					}
 					txn := sentry.StartTransaction(ctx, "EVENT direct_message", options...)
 					txn.SetData("event_type", "direct_message")
@@ -154,7 +154,7 @@ func (h *Handler) EventsHandler(w http.ResponseWriter, r *http.Request, _ httpro
 					options := []sentry.SpanOption{
 						sentry.WithOpName("event.handler"),
 						sentry.WithTransactionSource(sentry.SourceTask),
-						sentry.ContinueFromHeaders(transaction.ToSentryTrace(), transaction.ToBaggage()),
+						sentry.ContinueTrace(transaction.ToSentryTrace(), transaction.ToBaggage()),
 					}
 					txn := sentry.StartTransaction(ctx, "EVENT message", options...)
 					txn.SetData("event_type", "message")
@@ -185,7 +185,7 @@ func (h *Handler) EventsHandler(w http.ResponseWriter, r *http.Request, _ httpro
 				options := []sentry.SpanOption{
 					sentry.WithOpName("event.handler"),
 					sentry.WithTransactionSource(sentry.SourceTask),
-					sentry.ContinueFromHeaders(transaction.ToSentryTrace(), transaction.ToBaggage()),
+					sentry.ContinueTrace(transaction.ToSentryTrace(), transaction.ToBaggage()),
 				}
 				txn := sentry.StartTransaction(ctx, "EVENT reaction_added", options...)
 				txn.SetData("event_type", "reaction_added")
@@ -216,7 +216,7 @@ func (h *Handler) EventsHandler(w http.ResponseWriter, r *http.Request, _ httpro
 				options := []sentry.SpanOption{
 					sentry.WithOpName("event.handler"),
 					sentry.WithTransactionSource(sentry.SourceTask),
-					sentry.ContinueFromHeaders(transaction.ToSentryTrace(), transaction.ToBaggage()),
+					sentry.ContinueTrace(transaction.ToSentryTrace(), transaction.ToBaggage()),
 				}
 				txn := sentry.StartTransaction(ctx, "EVENT reaction_removed", options...)
 				txn.SetData("event_type", "reaction_removed")
@@ -247,7 +247,7 @@ func (h *Handler) EventsHandler(w http.ResponseWriter, r *http.Request, _ httpro
 				options := []sentry.SpanOption{
 					sentry.WithOpName("event.handler"),
 					sentry.WithTransactionSource(sentry.SourceTask),
-					sentry.ContinueFromHeaders(transaction.ToSentryTrace(), transaction.ToBaggage()),
+					sentry.ContinueTrace(transaction.ToSentryTrace(), transaction.ToBaggage()),
 				}
 				txn := sentry.StartTransaction(ctx, "EVENT app_mention", options...)
 				txn.SetData("event_type", "app_mention")
@@ -278,7 +278,7 @@ func (h *Handler) EventsHandler(w http.ResponseWriter, r *http.Request, _ httpro
 				options := []sentry.SpanOption{
 					sentry.WithOpName("event.handler"),
 					sentry.WithTransactionSource(sentry.SourceTask),
-					sentry.ContinueFromHeaders(transaction.ToSentryTrace(), transaction.ToBaggage()),
+					sentry.ContinueTrace(transaction.ToSentryTrace(), transaction.ToBaggage()),
 				}
 				txn := sentry.StartTransaction(ctx, "EVENT app_home_opened", options...)
 				txn.SetData("event_type", "app_home_opened")
@@ -309,7 +309,7 @@ func (h *Handler) EventsHandler(w http.ResponseWriter, r *http.Request, _ httpro
 				options := []sentry.SpanOption{
 					sentry.WithOpName("event.handler"),
 					sentry.WithTransactionSource(sentry.SourceTask),
-					sentry.ContinueFromHeaders(transaction.ToSentryTrace(), transaction.ToBaggage()),
+					sentry.ContinueTrace(transaction.ToSentryTrace(), transaction.ToBaggage()),
 				}
 				txn := sentry.StartTransaction(ctx, "EVENT link_shared", options...)
 				txn.SetData("event_type", "link_shared")
@@ -371,7 +371,7 @@ func (h *Handler) SlashHandler(w http.ResponseWriter, r *http.Request, _ httprou
 			options := []sentry.SpanOption{
 				sentry.WithOpName("command.handler"),
 				sentry.WithTransactionSource(sentry.SourceTask),
-				sentry.ContinueFromHeaders(transaction.ToSentryTrace(), transaction.ToBaggage()),
+				sentry.ContinueTrace(transaction.ToSentryTrace(), transaction.ToBaggage()),
 			}
 			txn := sentry.StartTransaction(ctx, "COMMAND /gibopinion", options...)
 			txn.SetData("event_type", "gibopinion")
@@ -429,7 +429,7 @@ func (h *Handler) InteractionsHandler(w http.ResponseWriter, r *http.Request, _ 
 			options := []sentry.SpanOption{
 				sentry.WithOpName("interaction.handler"),
 				sentry.WithTransactionSource(sentry.SourceTask),
-				sentry.ContinueFromHeaders(transaction.ToSentryTrace(), transaction.ToBaggage()),
+				sentry.ContinueTrace(transaction.ToSentryTrace(), transaction.ToBaggage()),
 			}
 			txn := sentry.StartTransaction(ctx, "INTERACTION block", options...)
 			txn.SetData("event_type", "block")
@@ -460,7 +460,7 @@ func (h *Handler) InteractionsHandler(w http.ResponseWriter, r *http.Request, _ 
 			options := []sentry.SpanOption{
 				sentry.WithOpName("interaction.handler"),
 				sentry.WithTransactionSource(sentry.SourceTask),
-				sentry.ContinueFromHeaders(transaction.ToSentryTrace(), transaction.ToBaggage()),
+				sentry.ContinueTrace(transaction.ToSentryTrace(), transaction.ToBaggage()),
 			}
 			txn := sentry.StartTransaction(ctx, "INTERACTION view_submission", options...)
 			txn.SetData("event_type", "view_submission")

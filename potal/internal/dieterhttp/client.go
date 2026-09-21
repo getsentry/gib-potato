@@ -75,10 +75,7 @@ func (c *Client) SendRequest(ctx context.Context, e event.PotalEvent) error {
 	msg := fmt.Sprintf("Dieter API: Got %s response", res.Status)
 	slog.ErrorContext(ctx, "Dieter API error response", "status", res.Status, "status_code", res.StatusCode)
 
-	sentry.WithScopeContext(ctx, func(ctx context.Context, scope *sentry.Scope) {
-		scope.SetLevel(sentry.LevelFatal)
-		sentry.CaptureMessage(ctx, msg)
-	})
+	sentry.CaptureMessage(ctx, msg, sentry.WithLevel(sentry.LevelFatal))
 
 	return fmt.Errorf("%s", msg)
 }
