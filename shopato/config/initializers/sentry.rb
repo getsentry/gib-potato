@@ -12,7 +12,5 @@ Sentry.init do |config|
   config.traces_sample_rate = 1.0
   config.profiles_sample_rate = 1.0
   config.send_default_pii = true
-
-  config.enable_logs = true
   config.profiler_class = Sentry::Vernier::Profiler
 end
