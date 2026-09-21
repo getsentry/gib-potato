@@ -710,20 +710,20 @@
         },
         {
             "name": "laminas/laminas-httphandlerrunner",
-            "version": "2.13.0",
+            "version": "2.14.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/laminas/laminas-httphandlerrunner.git",
-                "reference": "181eaeeb838ad3d80fbbcfb0657a46bc212bbd4e"
+                "reference": "14d5182a4ba180c998dfbba9d19f9a70337c02b4"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/laminas/laminas-httphandlerrunner/zipball/181eaeeb838ad3d80fbbcfb0657a46bc212bbd4e",
-                "reference": "181eaeeb838ad3d80fbbcfb0657a46bc212bbd4e",
+                "url": "https://api.github.com/repos/laminas/laminas-httphandlerrunner/zipball/14d5182a4ba180c998dfbba9d19f9a70337c02b4",
+                "reference": "14d5182a4ba180c998dfbba9d19f9a70337c02b4",
                 "shasum": ""
             },
             "require": {
-                "php": "~8.1.0 || ~8.2.0 || ~8.3.0 || ~8.4.0 || ~8.5.0",
+                "php": "~8.2.0 || ~8.3.0 || ~8.4.0 || ~8.5.0",
                 "psr/http-message": "^1.0 || ^2.0",
                 "psr/http-message-implementation": "^1.0 || ^2.0",
                 "psr/http-server-handler": "^1.0"
@@ -769,11 +769,11 @@
             },
             "funding": [
                 {
-                    "url": "https://funding.communitybridge.org/projects/laminas-project",
-                    "type": "community_bridge"
+                    "url": "https://crowdfunding.linuxfoundation.org/initiatives/laminas-project",
+                    "type": "custom"
                 }
             ],
-            "time": "2025-10-12T20:58:29+00:00"
+            "time": "2026-09-21T10:14:52+00:00"
         },
         {
             "name": "lcobucci/jwt",
@@ -2303,29 +2303,29 @@
         },
         {
             "name": "cakephp/bake",
-            "version": "3.7.1",
+            "version": "3.8.1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/cakephp/bake.git",
-                "reference": "a56cd814cbf99589444bd87217ed9de5bca56239"
+                "reference": "f584b015cb40413666bf36d248bae902be2d3ddc"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/cakephp/bake/zipball/a56cd814cbf99589444bd87217ed9de5bca56239",
-                "reference": "a56cd814cbf99589444bd87217ed9de5bca56239",
+                "url": "https://api.github.com/repos/cakephp/bake/zipball/f584b015cb40413666bf36d248bae902be2d3ddc",
+                "reference": "f584b015cb40413666bf36d248bae902be2d3ddc",
                 "shasum": ""
             },
             "require": {
-                "brick/varexporter": "^0.6.0 || ^0.7.0",
-                "cakephp/cakephp": "^5.1",
-                "cakephp/twig-view": "^2.0.2",
+                "brick/varexporter": "^0.7.0",
+                "cakephp/cakephp": "^5.4",
+                "cakephp/twig-view": "^2.1",
                 "nikic/php-parser": "^5.0.0",
-                "php": ">=8.1"
+                "php": ">=8.2"
             },
             "require-dev": {
                 "cakephp/cakephp-codesniffer": "^5.0.0",
                 "cakephp/debug_kit": "^5.0.0",
-                "phpunit/phpunit": "^10.5.40 || ^11.5.20 || ^12.2.4 || ^13.0"
+                "phpunit/phpunit": "^11.5.20 || ^12.2.4 || ^13.0"
             },
             "type": "cakephp-plugin",
             "autoload": {
@@ -2356,7 +2356,7 @@
                 "issues": "https://github.com/cakephp/bake/issues",
                 "source": "https://github.com/cakephp/bake"
             },
-            "time": "2026-06-15T14:25:04+00:00"
+            "time": "2026-07-29T15:35:12+00:00"
         },
         {
             "name": "cakephp/cakephp-codesniffer",
@@ -4984,16 +4984,16 @@
         },
         {
             "name": "twig/markdown-extra",
-            "version": "v3.28.0",
+            "version": "v3.29.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/twigphp/markdown-extra.git",
-                "reference": "5f7b27e41a382fc988fffa6e588d8f9d55b9d896"
+                "reference": "8a8e3c28ed17b03ed4965b2e265a018d61f00ba5"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/twigphp/markdown-extra/zipball/5f7b27e41a382fc988fffa6e588d8f9d55b9d896",
-                "reference": "5f7b27e41a382fc988fffa6e588d8f9d55b9d896",
+                "url": "https://api.github.com/repos/twigphp/markdown-extra/zipball/8a8e3c28ed17b03ed4965b2e265a018d61f00ba5",
+                "reference": "8a8e3c28ed17b03ed4965b2e265a018d61f00ba5",
                 "shasum": ""
             },
             "require": {
@@ -5006,7 +5006,8 @@
                 "league/commonmark": "^2.7",
                 "league/html-to-markdown": "^4.8|^5.0",
                 "michelf/php-markdown": "^1.8|^2.0",
-                "symfony/phpunit-bridge": "^6.4|^7.0"
+                "symfony/phpunit-bridge": "^6.4|^7.0",
+                "tempest/markdown": "^1.2"
             },
             "type": "library",
             "autoload": {
@@ -5040,7 +5041,7 @@
                 "twig"
             ],
             "support": {
-                "source": "https://github.com/twigphp/markdown-extra/tree/v3.28.0"
+                "source": "https://github.com/twigphp/markdown-extra/tree/v3.29.0"
             },
             "funding": [
                 {
@@ -5052,20 +5053,20 @@
                     "type": "tidelift"
                 }
             ],
-            "time": "2026-06-05T19:47:22+00:00"
+            "time": "2026-09-06T20:35:36+00:00"
         },
         {
             "name": "twig/twig",
-            "version": "v3.28.0",
+            "version": "v3.29.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/twigphp/Twig.git",
-                "reference": "597c12ed286fb9d1701a36684ce6e0cbe28ebc8b"
+                "reference": "45a3c6e9224c3377a39c7b150bb29d5d97d2c75d"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/twigphp/Twig/zipball/597c12ed286fb9d1701a36684ce6e0cbe28ebc8b",
-                "reference": "597c12ed286fb9d1701a36684ce6e0cbe28ebc8b",
+                "url": "https://api.github.com/repos/twigphp/Twig/zipball/45a3c6e9224c3377a39c7b150bb29d5d97d2c75d",
+                "reference": "45a3c6e9224c3377a39c7b150bb29d5d97d2c75d",
                 "shasum": ""
             },
             "require": {
@@ -5120,7 +5121,7 @@
             ],
             "support": {
                 "issues": "https://github.com/twigphp/Twig/issues",
-                "source": "https://github.com/twigphp/Twig/tree/v3.28.0"
+                "source": "https://github.com/twigphp/Twig/tree/v3.29.0"
             },
             "funding": [
                 {
@@ -5132,7 +5133,7 @@
                     "type": "tidelift"
                 }
             ],
-            "time": "2026-07-03T20:44:34+00:00"
+            "time": "2026-09-18T09:10:14+00:00"
         }
     ],
     "aliases": [],
