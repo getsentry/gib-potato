@@ -22,10 +22,10 @@
         "sentry/sentry-agent": "^1.0"
     },
     "require-dev": {
-        "cakephp/bake": "^3.7.1",
-        "cakephp/cakephp-codesniffer": "^5.3.1",
-        "phpstan/phpstan": "^2.2.8",
-        "phpunit/phpunit": "^13.3.1"
+        "cakephp/bake": "^3.8.1",
+        "cakephp/cakephp-codesniffer": "^5.3.2",
+        "phpstan/phpstan": "^2.2.14",
+        "phpunit/phpunit": "^13.3.4"
     },
     "autoload": {
         "psr-4": {
