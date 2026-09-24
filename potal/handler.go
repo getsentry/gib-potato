@@ -40,12 +40,11 @@ func (h *Handler) emitEventMetric(ctx context.Context, name string, eventType st
 	)
 }
 
-func cloneHubFromContext(ctx context.Context) *sentry.Hub {
-	hub := sentry.GetHubFromContext(ctx)
-	if hub == nil {
-		hub = sentry.CurrentHub()
-	}
-	return hub.Clone()
+// cloneCtx creates a new background context for async work, with a cloned
+// sentry scope attached on it.
+func cloneCtx(ctx context.Context) context.Context {
+	_, scope := sentry.WithIsolationScope(ctx)
+	return sentry.ContextWithScope(context.Background(), scope)
 }
 
 func DefaultHandler(w http.ResponseWriter, r *http.Request, _ httprouter.Params) {
@@ -119,14 +118,13 @@ func (h *Handler) EventsHandler(w http.ResponseWriter, r *http.Request, _ httpro
 			switch ev.ChannelType {
 			case "im":
 				// Handle direct messages to the bot separately
-				hub := cloneHubFromContext(ctx)
-				go func() {
-					ctx := sentry.SetHubOnContext(context.Background(), hub)
+				ctx = cloneCtx(ctx)
+				go func(ctx context.Context) {
 
 					options := []sentry.SpanOption{
 						sentry.WithOpName("event.handler"),
 						sentry.WithTransactionSource(sentry.SourceTask),
-						sentry.ContinueFromHeaders(transaction.ToSentryTrace(), transaction.ToBaggage()),
+						sentry.ContinueTrace(transaction.ToSentryTrace(), transaction.ToBaggage()),
 					}
 					txn := sentry.StartTransaction(ctx, "EVENT direct_message", options...)
 					txn.SetData("event_type", "direct_message")
@@ -148,16 +146,15 @@ func (h *Handler) EventsHandler(w http.ResponseWriter, r *http.Request, _ httpro
 
 					h.emitEventMetric(txn.Context(), "potal.event.forwarded", "direct_message")
 					txn.Status = sentry.SpanStatusOK
-				}()
+				}(ctx)
 			default:
-				hub := cloneHubFromContext(ctx)
-				go func() {
-					ctx := sentry.SetHubOnContext(context.Background(), hub)
+				ctx = cloneCtx(ctx)
+				go func(ctx context.Context) {
 
 					options := []sentry.SpanOption{
 						sentry.WithOpName("event.handler"),
 						sentry.WithTransactionSource(sentry.SourceTask),
-						sentry.ContinueFromHeaders(transaction.ToSentryTrace(), transaction.ToBaggage()),
+						sentry.ContinueTrace(transaction.ToSentryTrace(), transaction.ToBaggage()),
 					}
 					txn := sentry.StartTransaction(ctx, "EVENT message", options...)
 					txn.SetData("event_type", "message")
@@ -179,17 +176,16 @@ func (h *Handler) EventsHandler(w http.ResponseWriter, r *http.Request, _ httpro
 
 					h.emitEventMetric(txn.Context(), "potal.event.forwarded", "message")
 					txn.Status = sentry.SpanStatusOK
-				}()
+				}(ctx)
 			}
 		case *slackevents.ReactionAddedEvent:
-			hub := cloneHubFromContext(ctx)
-			go func() {
-				ctx := sentry.SetHubOnContext(context.Background(), hub)
+			ctx = cloneCtx(ctx)
+			go func(ctx context.Context) {
 
 				options := []sentry.SpanOption{
 					sentry.WithOpName("event.handler"),
 					sentry.WithTransactionSource(sentry.SourceTask),
-					sentry.ContinueFromHeaders(transaction.ToSentryTrace(), transaction.ToBaggage()),
+					sentry.ContinueTrace(transaction.ToSentryTrace(), transaction.ToBaggage()),
 				}
 				txn := sentry.StartTransaction(ctx, "EVENT reaction_added", options...)
 				txn.SetData("event_type", "reaction_added")
@@ -212,16 +208,15 @@ func (h *Handler) EventsHandler(w http.ResponseWriter, r *http.Request, _ httpro
 
 				h.emitEventMetric(txn.Context(), "potal.event.forwarded", "reaction_added")
 				txn.Status = sentry.SpanStatusOK
-			}()
+			}(ctx)
 		case *slackevents.ReactionRemovedEvent:
-			hub := cloneHubFromContext(ctx)
-			go func() {
-				ctx := sentry.SetHubOnContext(context.Background(), hub)
+			ctx = cloneCtx(ctx)
+			go func(ctx context.Context) {
 
 				options := []sentry.SpanOption{
 					sentry.WithOpName("event.handler"),
 					sentry.WithTransactionSource(sentry.SourceTask),
-					sentry.ContinueFromHeaders(transaction.ToSentryTrace(), transaction.ToBaggage()),
+					sentry.ContinueTrace(transaction.ToSentryTrace(), transaction.ToBaggage()),
 				}
 				txn := sentry.StartTransaction(ctx, "EVENT reaction_removed", options...)
 				txn.SetData("event_type", "reaction_removed")
@@ -244,16 +239,15 @@ func (h *Handler) EventsHandler(w http.ResponseWriter, r *http.Request, _ httpro
 
 				h.emitEventMetric(txn.Context(), "potal.event.forwarded", "reaction_removed")
 				txn.Status = sentry.SpanStatusOK
-			}()
+			}(ctx)
 		case *slackevents.AppMentionEvent:
-			hub := cloneHubFromContext(ctx)
-			go func() {
-				ctx := sentry.SetHubOnContext(context.Background(), hub)
+			ctx = cloneCtx(ctx)
+			go func(ctx context.Context) {
 
 				options := []sentry.SpanOption{
 					sentry.WithOpName("event.handler"),
 					sentry.WithTransactionSource(sentry.SourceTask),
-					sentry.ContinueFromHeaders(transaction.ToSentryTrace(), transaction.ToBaggage()),
+					sentry.ContinueTrace(transaction.ToSentryTrace(), transaction.ToBaggage()),
 				}
 				txn := sentry.StartTransaction(ctx, "EVENT app_mention", options...)
 				txn.SetData("event_type", "app_mention")
@@ -276,17 +270,15 @@ func (h *Handler) EventsHandler(w http.ResponseWriter, r *http.Request, _ httpro
 
 				h.emitEventMetric(txn.Context(), "potal.event.forwarded", "app_mention")
 				txn.Status = sentry.SpanStatusOK
-			}()
+			}(ctx)
 		case *slackevents.AppHomeOpenedEvent:
-			go event.ProcessAppHomeOpenedEvent(r.Context(), ev)
-			hub := cloneHubFromContext(ctx)
-			go func() {
-				ctx := sentry.SetHubOnContext(context.Background(), hub)
+			ctx = cloneCtx(ctx)
+			go func(ctx context.Context) {
 
 				options := []sentry.SpanOption{
 					sentry.WithOpName("event.handler"),
 					sentry.WithTransactionSource(sentry.SourceTask),
-					sentry.ContinueFromHeaders(transaction.ToSentryTrace(), transaction.ToBaggage()),
+					sentry.ContinueTrace(transaction.ToSentryTrace(), transaction.ToBaggage()),
 				}
 				txn := sentry.StartTransaction(ctx, "EVENT app_home_opened", options...)
 				txn.SetData("event_type", "app_home_opened")
@@ -309,17 +301,15 @@ func (h *Handler) EventsHandler(w http.ResponseWriter, r *http.Request, _ httpro
 
 				h.emitEventMetric(txn.Context(), "potal.event.forwarded", "app_home_opened")
 				txn.Status = sentry.SpanStatusOK
-			}()
+			}(ctx)
 		case *slackevents.LinkSharedEvent:
-			go event.ProcessLinkSharedEvent(r.Context(), ev)
-			hub := cloneHubFromContext(ctx)
-			go func() {
-				ctx := sentry.SetHubOnContext(context.Background(), hub)
+			ctx = cloneCtx(ctx)
+			go func(ctx context.Context) {
 
 				options := []sentry.SpanOption{
 					sentry.WithOpName("event.handler"),
 					sentry.WithTransactionSource(sentry.SourceTask),
-					sentry.ContinueFromHeaders(transaction.ToSentryTrace(), transaction.ToBaggage()),
+					sentry.ContinueTrace(transaction.ToSentryTrace(), transaction.ToBaggage()),
 				}
 				txn := sentry.StartTransaction(ctx, "EVENT link_shared", options...)
 				txn.SetData("event_type", "link_shared")
@@ -341,7 +331,7 @@ func (h *Handler) EventsHandler(w http.ResponseWriter, r *http.Request, _ httpro
 
 				h.emitEventMetric(txn.Context(), "potal.event.forwarded", "link_shared")
 				txn.Status = sentry.SpanStatusOK
-			}()
+			}(ctx)
 		default:
 			slog.WarnContext(ctx, "unhandled callback event type", "type", innerEvent.Type)
 		}
@@ -375,14 +365,13 @@ func (h *Handler) SlashHandler(w http.ResponseWriter, r *http.Request, _ httprou
 			return
 		}
 	case "/gibopinion":
-		hub := cloneHubFromContext(ctx)
-		go func() {
-			ctx := sentry.SetHubOnContext(context.Background(), hub)
+		ctx = cloneCtx(ctx)
+		go func(ctx context.Context) {
 
 			options := []sentry.SpanOption{
 				sentry.WithOpName("command.handler"),
 				sentry.WithTransactionSource(sentry.SourceTask),
-				sentry.ContinueFromHeaders(transaction.ToSentryTrace(), transaction.ToBaggage()),
+				sentry.ContinueTrace(transaction.ToSentryTrace(), transaction.ToBaggage()),
 			}
 			txn := sentry.StartTransaction(ctx, "COMMAND /gibopinion", options...)
 			txn.SetData("event_type", "gibopinion")
@@ -405,7 +394,7 @@ func (h *Handler) SlashHandler(w http.ResponseWriter, r *http.Request, _ httprou
 
 			h.emitEventMetric(txn.Context(), "potal.event.forwarded", "slash_command")
 			txn.Status = sentry.SpanStatusOK
-		}()
+		}(ctx)
 	default:
 		slog.WarnContext(ctx, "unknown slash command", "command", s.Command)
 		transaction.Status = sentry.SpanStatusInvalidArgument
@@ -434,14 +423,13 @@ func (h *Handler) InteractionsHandler(w http.ResponseWriter, r *http.Request, _ 
 
 	switch payload.Type {
 	case slack.InteractionTypeBlockActions:
-		hub := cloneHubFromContext(ctx)
-		go func() {
-			ctx := sentry.SetHubOnContext(context.Background(), hub)
+		ctx = cloneCtx(ctx)
+		go func(ctx context.Context) {
 
 			options := []sentry.SpanOption{
 				sentry.WithOpName("interaction.handler"),
 				sentry.WithTransactionSource(sentry.SourceTask),
-				sentry.ContinueFromHeaders(transaction.ToSentryTrace(), transaction.ToBaggage()),
+				sentry.ContinueTrace(transaction.ToSentryTrace(), transaction.ToBaggage()),
 			}
 			txn := sentry.StartTransaction(ctx, "INTERACTION block", options...)
 			txn.SetData("event_type", "block")
@@ -464,16 +452,15 @@ func (h *Handler) InteractionsHandler(w http.ResponseWriter, r *http.Request, _ 
 
 			h.emitEventMetric(txn.Context(), "potal.event.forwarded", "interaction_callback")
 			txn.Status = sentry.SpanStatusOK
-		}()
+		}(ctx)
 	case slack.InteractionTypeViewSubmission:
-		hub := cloneHubFromContext(ctx)
-		go func() {
-			ctx := sentry.SetHubOnContext(context.Background(), hub)
+		ctx = cloneCtx(ctx)
+		go func(ctx context.Context) {
 
 			options := []sentry.SpanOption{
 				sentry.WithOpName("interaction.handler"),
 				sentry.WithTransactionSource(sentry.SourceTask),
-				sentry.ContinueFromHeaders(transaction.ToSentryTrace(), transaction.ToBaggage()),
+				sentry.ContinueTrace(transaction.ToSentryTrace(), transaction.ToBaggage()),
 			}
 			txn := sentry.StartTransaction(ctx, "INTERACTION view_submission", options...)
 			txn.SetData("event_type", "view_submission")
@@ -496,7 +483,7 @@ func (h *Handler) InteractionsHandler(w http.ResponseWriter, r *http.Request, _ 
 
 			h.emitEventMetric(txn.Context(), "potal.event.forwarded", "view_submission")
 			txn.Status = sentry.SpanStatusOK
-		}()
+		}(ctx)
 	default:
 		slog.WarnContext(ctx, "unknown interaction type", "type", payload.Type)
 		transaction.Status = sentry.SpanStatusInvalidArgument
