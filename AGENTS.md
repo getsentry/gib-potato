@@ -4,14 +4,14 @@ Format: `type(scope): description`
 
 Types: `feat`, `ref`, `chore`, `fix`
 
-Scope is the part of the project that was updated: `frontend`, `backend`, `potal`, `shopato`, `docker`, `ci`, `deps`, etc. If multiple scopes are touched, join them with `|`.
+Scope is the part of the project that was updated: `frontend`, `backend`, `potal`, `shopato`, `dieter`, `docker`, `ci`, etc. If multiple scopes are touched, join them with `|`. Dependency updates are scoped by the parts they touch, not `deps`.
 
 Examples:
 
 ```
 feat(frontend): Add dark mode toggle
 fix(backend|potal): Handle empty response from events API
-chore(deps): Update project dependencies
+chore(frontend|backend|potal|shopato|dieter): Update project dependencies
 ref(frontend|backend): Migrate from Vite to Vite+
 ```
 
@@ -19,7 +19,7 @@ Keep commit messages concise. The body is required and should be objective state
 
 # Updating Dependencies
 
-This repo has four dependency ecosystems. Update all of them together.
+This repo has five dependency ecosystems. Update all of them together.
 
 ## PHP (root)
 
@@ -29,6 +29,14 @@ composer bump
 ```
 
 `composer bump` raises the minimum version constraints in `composer.json` to match what's currently installed in the lockfile.
+
+## PHP (dieter/)
+
+```sh
+cd dieter
+composer update
+composer bump
+```
 
 ## JavaScript (root)
 
