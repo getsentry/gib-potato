@@ -25,7 +25,7 @@ func (e ReactionRemovedEvent) isValid() bool {
 }
 
 func ProcessReactionRemovedEvent(ctx context.Context, e *slackevents.ReactionRemovedEvent, sc *slack.Client) *ReactionRemovedEvent {
-	hub := sentry.GetHubFromContext(ctx)
+	scope := sentry.ScopeFromContext(ctx)
 	txn := sentry.TransactionFromContext(ctx)
 
 	span := txn.StartChild("event.process", sentry.WithDescription("Process ReactionRemoved Event"))
@@ -37,7 +37,7 @@ func ProcessReactionRemovedEvent(ctx context.Context, e *slackevents.ReactionRem
 	user, err := sc.GetUserInfo(e.User)
 	if err != nil {
 		userSpan.Status = sentry.SpanStatusInternalError
-		hub.CaptureException(err)
+		sentry.CaptureException(ctx, err)
 		slog.ErrorContext(ctx, "failed to get user", "error", err, "user", e.User)
 		return nil
 	} else {
@@ -65,8 +65,8 @@ func ProcessReactionRemovedEvent(ctx context.Context, e *slackevents.ReactionRem
 
 	span.Status = sentry.SpanStatusOK
 
-	hub.Scope().SetContext("event", sentry.Context{"data": removedEvent})
-	hub.Scope().SetTag("event_type", reactionRemoved.String())
+	scope.SetContext("event", sentry.Context{"data": removedEvent})
+	scope.SetTag("event_type", reactionRemoved.String())
 
 	return &removedEvent
 }

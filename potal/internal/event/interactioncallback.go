@@ -23,7 +23,7 @@ func (e InteractionCallbackEvent) isValid() bool {
 }
 
 func ProcessInteractionCallbackEvent(ctx context.Context, e slack.InteractionCallback) *InteractionCallbackEvent {
-	hub := sentry.GetHubFromContext(ctx)
+	scope := sentry.ScopeFromContext(ctx)
 	txn := sentry.TransactionFromContext(ctx)
 
 	span := txn.StartChild("event.process", sentry.WithDescription("Process InteractionCallback Event"))
@@ -54,8 +54,8 @@ func ProcessInteractionCallbackEvent(ctx context.Context, e slack.InteractionCal
 	}
 	span.Status = sentry.SpanStatusOK
 
-	hub.Scope().SetContext("event", sentry.Context{"data": interactionEvent})
-	hub.Scope().SetTag("event_type", interactionCallback.String())
+	scope.SetContext("event", sentry.Context{"data": interactionEvent})
+	scope.SetTag("event_type", interactionCallback.String())
 
 	return &interactionEvent
 }
