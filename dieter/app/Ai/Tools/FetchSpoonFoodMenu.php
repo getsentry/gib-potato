@@ -41,9 +41,9 @@ class FetchSpoonFoodMenu implements Tool
         }
 
         return match ($this->classifyMenu($menu)->choice) {
-            'current' => $menu,
             'outdated' => "The menu is not dated today, tell the user it is outdated.\n\n{$menu}",
             'closed' => "Spoon Food is not serving today, tell the user.\n\n{$menu}",
+            default => $menu,
         };
     }
 
@@ -79,6 +79,8 @@ class FetchSpoonFoodMenu implements Tool
                 'closed' => 'A notice that Spoon Food is closed or not serving today',
             ],
         ))->classify()->answer('status');
+
+        assert($answer instanceof ChoiceAnswer);
 
         return $answer;
     }

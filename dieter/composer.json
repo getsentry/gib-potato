@@ -13,7 +13,7 @@
         "laravel/ai": "^1.0.1",
         "laravel/framework": "^13.34.0",
         "laravel/tinker": "^3.0.2",
-        "sentry/sentry-laravel": "dev-gen-ai-classification-00-staging"
+        "sentry/sentry-laravel": "gen-ai-classification-06-conversation-id"
     },
     "require-dev": {
         "fakerphp/faker": "^1.24.1",
