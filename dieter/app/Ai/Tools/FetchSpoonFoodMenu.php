@@ -2,12 +2,12 @@
 
 namespace App\Ai\Tools;
 
-use DOMDocument;
-use DOMElement;
-use DOMXPath;
 use Illuminate\Contracts\JsonSchema\JsonSchema;
 use Illuminate\Support\Facades\Http;
+use Laravel\Ai\Classification;
+use Laravel\Ai\Classification\Choice;
 use Laravel\Ai\Contracts\Tool;
+use Laravel\Ai\Responses\Data\ChoiceAnswer;
 use Laravel\Ai\Tools\Request;
 use Stringable;
 
@@ -18,7 +18,7 @@ class FetchSpoonFoodMenu implements Tool
      */
     public function description(): Stringable|string
     {
-        return 'Fetch today\'s Spoon Food menu (Tageskarte) from spoonfood.at. Call when the user asks about the Spoon Food menu, lunch options, or what\'s available at Spoon Food today. Format the result nicely for Slack using mrkdwn. If the date on the menu is not today, tell the user it is outdated.';
+        return 'Fetch today\'s Spoon Food menu (Tageskarte) from spoonfood.at as HTML. Call when the user asks about the Spoon Food menu, lunch options, or what\'s available at Spoon Food today. Dishes inside elements with the `w-condition-invisible` class are hidden on the website, never mention them. Format the result nicely for Slack using mrkdwn.';
     }
 
     /**
@@ -34,90 +34,55 @@ class FetchSpoonFoodMenu implements Tool
             return 'Could not fetch the Spoon Food menu. The website might be unavailable.';
         }
 
-        return $this->parseMenuHtml($response->body());
+        $menu = $this->extractMenu($response->body());
+
+        if ($menu === null) {
+            return 'Could not find the Tageskarte on the Spoon Food website.';
+        }
+
+        return match ($this->classifyMenu($menu)->choice) {
+            'outdated' => "The menu is not dated today, tell the user it is outdated.\n\n{$menu}",
+            'closed' => "Spoon Food is not serving today, tell the user.\n\n{$menu}",
+            default => $menu,
+        };
     }
 
     /**
-     * Parse the Tageskarte section from a Spoon Food HTML page body.
-     *
-     * Webflow keeps sold-out / unavailable dishes in the DOM and hides them with
-     * `w-condition-invisible`. Those nodes must be removed before text extraction.
+     * Extract the Tageskarte section HTML from a Spoon Food page body.
      */
-    public function parseMenuHtml(string $html): string
+    private function extractMenu(string $html): ?string
     {
-        $pos = strpos($html, 'id="tageskarte"');
-
-        if ($pos === false) {
-            return 'Could not find the Tageskarte on the Spoon Food website.';
-        }
-
-        $start = strpos($html, '>', $pos);
-
-        if ($start === false) {
-            return 'Could not find the Tageskarte on the Spoon Food website.';
-        }
-
-        $start++;
-
-        $end = strpos($html, 'Alle Preise in EURO', $start);
+        $section = strpos($html, 'id="tageskarte"');
+        $start = $section === false ? false : strpos($html, '>', $section);
+        $end = $start === false ? false : strpos($html, 'Alle Preise in EURO', $start);
 
         if ($end === false) {
-            return 'Could not parse the menu from the Spoon Food website.';
+            return null;
         }
 
-        $section = substr($html, $start, $end - $start);
-        $section = $this->stripInvisibleConditionNodes($section);
-
-        $text = preg_replace('/<[^>]+>/', "\n", $section);
-        $lines = array_filter(array_map('trim', explode("\n", $text ?? '')));
-
-        return html_entity_decode(implode("\n", $lines), ENT_QUOTES, 'UTF-8');
+        return substr($html, $start + 1, $end - $start - 1);
     }
 
     /**
-     * Remove Webflow nodes that are present in HTML but hidden from visitors.
+     * Classify whether the menu is for today using Jev.
      */
-    private function stripInvisibleConditionNodes(string $html): string
+    private function classifyMenu(string $menu): ChoiceAnswer
     {
-        $document = new DOMDocument;
-        $previous = libxml_use_internal_errors(true);
+        $answer = Classification::of([
+            'today' => now('Europe/Vienna')->format('j/n/Y'),
+            'menu' => $menu,
+        ])->question('status', new Choice(
+            'Compare the Spoon Food menu HTML with today\'s date.',
+            [
+                'current' => 'A lunch menu dated today',
+                'outdated' => 'A lunch menu dated a day other than today',
+                'closed' => 'A notice that Spoon Food is closed or not serving today',
+            ],
+        ))->classify()->answer('status');
 
-        try {
-            $document->loadHTML(
-                '<?xml encoding="UTF-8"><div id="spoon-food-root">'.$html.'</div>',
-            );
-        } finally {
-            libxml_clear_errors();
-            libxml_use_internal_errors($previous);
-        }
+        assert($answer instanceof ChoiceAnswer);
 
-        $xpath = new DOMXPath($document);
-        $nodes = $xpath->query(
-            '//*[contains(concat(" ", normalize-space(@class), " "), " w-condition-invisible ")]'
-        );
-
-        if ($nodes === false) {
-            return $html;
-        }
-
-        for ($i = $nodes->length - 1; $i >= 0; $i--) {
-            $node = $nodes->item($i);
-            $node?->parentNode?->removeChild($node);
-        }
-
-        $root = $document->getElementById('spoon-food-root');
-
-        if (! $root instanceof DOMElement) {
-            return $html;
-        }
-
-        $inner = '';
-
-        foreach ($root->childNodes as $child) {
-            $inner .= $document->saveHTML($child);
-        }
-
-        return $inner;
+        return $answer;
     }
 
     /**
