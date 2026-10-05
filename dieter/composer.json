@@ -10,15 +10,15 @@
     "license": "MIT",
     "require": {
         "php": "^8.5",
-        "laravel/ai": "^1.0.1",
+        "laravel/ai": "^1.1.0",
         "laravel/framework": "^13.34.0",
         "laravel/tinker": "^3.0.2",
-        "sentry/sentry-laravel": "gen-ai-classification-06-conversation-id"
+        "sentry/sentry-laravel": "dev-gen-ai-classification-07-set-conversation-id"
     },
     "require-dev": {
         "fakerphp/faker": "^1.24.1",
-        "larastan/larastan": "^3.12.2",
-        "laravel/boost": "^2.10.1",
+        "larastan/larastan": "^3.12.3",
+        "laravel/boost": "^2.10.2",
         "laravel/pail": "^1.2.7",
         "laravel/pao": "^1.1.5",
         "laravel/pint": "^1.32.1",
