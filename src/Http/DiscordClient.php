@@ -3,6 +3,7 @@ declare(strict_types=1);
 
 namespace App\Http;
 
+use Cake\Http\Client;
 use function Cake\Core\env;
 use function Sentry\logger;
 
