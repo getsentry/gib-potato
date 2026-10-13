@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "67c122517ac189bf0f45992509135a92",
+    "content-hash": "586bf0d0713d6d0aa302c891bb53960b",
     "packages": [
         {
             "name": "cakephp/authentication",
@@ -77,16 +77,16 @@
         },
         {
             "name": "cakephp/cakephp",
-            "version": "5.4.2",
+            "version": "5.4.3",
             "source": {
                 "type": "git",
                 "url": "https://github.com/cakephp/cakephp.git",
-                "reference": "887b641de9f7aba06071f98f17edcbc573cbcf63"
+                "reference": "6f3dd91371ac0698b64024ddb21d57def9fbba91"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/cakephp/cakephp/zipball/887b641de9f7aba06071f98f17edcbc573cbcf63",
-                "reference": "887b641de9f7aba06071f98f17edcbc573cbcf63",
+                "url": "https://api.github.com/repos/cakephp/cakephp/zipball/6f3dd91371ac0698b64024ddb21d57def9fbba91",
+                "reference": "6f3dd91371ac0698b64024ddb21d57def9fbba91",
                 "shasum": ""
             },
             "require": {
@@ -198,7 +198,7 @@
                 "issues": "https://github.com/cakephp/cakephp/issues",
                 "source": "https://github.com/cakephp/cakephp"
             },
-            "time": "2026-09-06T01:09:54+00:00"
+            "time": "2026-10-03T03:40:34+00:00"
         },
         {
             "name": "cakephp/chronos",
@@ -5148,5 +5148,5 @@
         "php": ">=8.5"
     },
     "platform-dev": {},
-    "plugin-api-version": "2.6.0"
+    "plugin-api-version": "2.9.0"
 }
