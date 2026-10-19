@@ -21,7 +21,7 @@ jobs:
             - name: Setup Go
               uses: actions/setup-go@v7
               with:
-                  go-version: 'stable'
+                  go-version-file: 'potal/go.mod'
 
             - name: Run build
               working-directory: ./potal
