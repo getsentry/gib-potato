@@ -5,9 +5,18 @@ import (
 	"strings"
 )
 
+var (
+	mentionPattern    = regexp.MustCompile(`<@.*?>`)
+	codeBlockPattern  = regexp.MustCompile("(?s)```.*?```")
+	inlineCodePattern = regexp.MustCompile("`[^`\n]*`")
+)
+
 func getRecievers(text string) []string {
-	re := regexp.MustCompile(`<@.*?>`)
-	users := re.FindAllString(text, -1)
+	// Slack keeps mentions inside code as <@...>, but they are not receivers
+	text = codeBlockPattern.ReplaceAllString(text, "")
+	text = inlineCodePattern.ReplaceAllString(text, "")
+
+	users := mentionPattern.FindAllString(text, -1)
 
 	receivers := []string{}
 	unique := map[string]bool{}

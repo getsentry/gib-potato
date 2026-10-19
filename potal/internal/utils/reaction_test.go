@@ -61,6 +61,15 @@ func TestReactionReceivers(t *testing.T) {
 			},
 			want: []string{"U3333"},
 		},
+		{
+			// Only a mention inside a code block, award the message creator
+			input: args{
+				text:     "```\nnpm install <@U2222>/pi\n```",
+				user:     "U3333",
+				itemUser: "U1111",
+			},
+			want: []string{"U1111"},
+		},
 	}
 	for _, test := range tests {
 		got := ReactionReceivers(test.input.text, test.input.user, test.input.itemUser)
