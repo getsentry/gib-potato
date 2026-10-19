@@ -21,7 +21,7 @@ jobs:
             - name: Setup Go
               uses: actions/setup-go@v7
               with:
-                  go-version-file: 'potal/go.mod'
+                  go-version: 'stable'
 
             - name: Run build
               working-directory: ./potal
@@ -34,7 +34,7 @@ jobs:
             - name: Run lint
               uses: golangci/golangci-lint-action@v9
               with:
-                  version: v2.13.1
+                  version: v2.15.0
                   working-directory: ./potal
 
             - name: Run tests
