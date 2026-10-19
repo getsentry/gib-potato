@@ -9,16 +9,14 @@
 
 # Make sure RUBY_VERSION matches the Ruby version in .ruby-version
 ARG RUBY_VERSION=3.4.5
-FROM docker.io/library/ruby:$RUBY_VERSION-slim AS base
+FROM docker.io/library/ruby:$RUBY_VERSION-slim AS build
 
 # Rails app lives here
 WORKDIR /src
 
-COPY ./shopato .
-
-# Install base packages
+# Install packages needed to build gems, and jemalloc for the runtime image
 RUN apt-get update -qq && \
-    apt-get install --no-install-recommends -y curl libjemalloc2 libssl-dev sqlite3 && \
+    apt-get install --no-install-recommends -y build-essential git libjemalloc2 libssl-dev libyaml-dev pkg-config && \
     rm -rf /var/lib/apt/lists /var/cache/apt/archives
 
 # Set production environment
@@ -26,14 +24,6 @@ ENV RAILS_ENV="production" \
     BUNDLE_DEPLOYMENT="1" \
     BUNDLE_PATH="/usr/local/bundle" \
     BUNDLE_WITHOUT="development test"
-
-# Throw-away build stage to reduce size of final image
-FROM base AS build
-
-# Install packages needed to build gems
-RUN apt-get update -qq && \
-    apt-get install --no-install-recommends -y build-essential git libyaml-dev pkg-config && \
-    rm -rf /var/lib/apt/lists /var/cache/apt/archives
 
 # Install application gems
 COPY ./shopato/Gemfile ./shopato/Gemfile.lock ./
@@ -47,22 +37,48 @@ COPY ./shopato .
 # Precompile bootsnap code for faster boot times
 RUN bundle exec bootsnap precompile app/ lib/
 
-# Final stage for app image
-FROM base
+# Own only the runtime files as the distroless nonroot user, ownership is kept when copied
+RUN chown -R 65532:65532 db log storage tmp
 
-# Copy built artifacts: gems, application
+# Collect the shared libraries Ruby, its extensions, native gems and jemalloc link against.
+# glibc and the C++ runtime are skipped, the distroless cc image already ships them.
+# Paths are normalized to /usr/lib, as /lib is a symlink in the distroless image.
+RUN mkdir /runtime-libs && \
+    { find /usr/local/bin/ruby /usr/local/lib "${BUNDLE_PATH}" -type f \( -name ruby -o -name '*.so*' \); \
+      find /usr/lib -name 'libjemalloc.so.2'; } | \
+    xargs ldd 2>/dev/null | awk '$2 == "=>" && $3 ~ /^\// { sub(/^\/lib\//, "/usr/lib/", $3); print $3 }' | sort -u | \
+    grep -vE '/(ld-linux[^/]*|libc|libm|libdl|libpthread|librt|libresolv|libgcc_s|libstdc\+\+)\.so' | \
+    xargs -I{} cp --parents -L {} /runtime-libs && \
+    cp --parents -L "$(find /usr/lib -name 'libjemalloc.so.2')" /runtime-libs
+
+# Final stage for app image
+FROM gcr.io/distroless/cc-debian13:nonroot
+
+# Mirror the environment of the official Ruby image
+ENV LANG="C.UTF-8" \
+    GEM_HOME="/usr/local/bundle" \
+    BUNDLE_APP_CONFIG="/usr/local/bundle" \
+    PATH="/usr/local/bundle/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin"
+
+ENV RAILS_ENV="production" \
+    BUNDLE_DEPLOYMENT="1" \
+    BUNDLE_PATH="/usr/local/bundle" \
+    BUNDLE_WITHOUT="development test"
+
+# Copy built artifacts: Ruby, shared libraries, gems, application
+COPY --from=build /usr/local/bin /usr/local/bin
+COPY --from=build /usr/local/lib /usr/local/lib
+COPY --from=build /usr/local/etc /usr/local/etc
+COPY --from=build /runtime-libs /
 COPY --from=build "${BUNDLE_PATH}" "${BUNDLE_PATH}"
 COPY --from=build /src /src
 
-# Run and own only the runtime files as a non-root user for security
-RUN groupadd --system --gid 1000 rails && \
-    useradd rails --uid 1000 --gid 1000 --create-home --shell /bin/bash && \
-    chown -R rails:rails db log storage tmp
-USER 1000:1000
+WORKDIR /src
 
 # Entrypoint prepares the database.
-ENTRYPOINT ["/src/bin/docker-entrypoint"]
+# There is no /usr/bin/env in the image, so Ruby scripts are run through ruby explicitly.
+ENTRYPOINT ["ruby", "/src/bin/docker-entrypoint"]
 
 # Start server via Thruster by default, this can be overwritten at runtime
 EXPOSE 80
-CMD ["./bin/thrust", "./bin/rails", "server"]
+CMD ["ruby", "./bin/thrust", "ruby", "./bin/rails", "server"]

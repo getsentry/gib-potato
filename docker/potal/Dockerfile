@@ -6,11 +6,10 @@ COPY ./potal .
 
 RUN GOOS=linux GOARCH=amd64 CGO_ENABLED=0 go build -o potal -ldflags="-s -w" .
 
-FROM alpine
+# Includes ca-certificates and tzdata
+FROM gcr.io/distroless/static-debian13:nonroot
 
 EXPOSE 8080
-
-RUN apk add --no-cache ca-certificates tzdata
 
 COPY --from=builder /src/potal /bin/potal
 
