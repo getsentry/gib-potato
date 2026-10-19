@@ -90,7 +90,6 @@ services:
 
     db:
         image: postgres:14
-        restart: always
         environment:
             POSTGRES_USER: gib_potato
             POSTGRES_PASSWORD: password
