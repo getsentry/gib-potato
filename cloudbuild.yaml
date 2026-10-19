@@ -1,7 +1,16 @@
 steps:
     - name: 'gcr.io/cloud-builders/docker'
       id: setup-buildx
-      args: ['buildx', 'create', '--name', 'cloudbuild', '--driver', 'docker-container', '--bootstrap']
+      args:
+          [
+              'buildx',
+              'create',
+              '--name',
+              'cloudbuild',
+              '--driver',
+              'docker-container',
+              '--bootstrap',
+          ]
       waitFor: ['-']
     - name: 'gcr.io/cloud-builders/docker'
       id: build-shopato
