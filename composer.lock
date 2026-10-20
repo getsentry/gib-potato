@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "67c122517ac189bf0f45992509135a92",
+    "content-hash": "e627be2298e72d29e0f7437ec413e171",
     "packages": [
         {
             "name": "cakephp/authentication",
@@ -77,16 +77,16 @@
         },
         {
             "name": "cakephp/cakephp",
-            "version": "5.4.2",
+            "version": "5.4.3",
             "source": {
                 "type": "git",
                 "url": "https://github.com/cakephp/cakephp.git",
-                "reference": "887b641de9f7aba06071f98f17edcbc573cbcf63"
+                "reference": "6f3dd91371ac0698b64024ddb21d57def9fbba91"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/cakephp/cakephp/zipball/887b641de9f7aba06071f98f17edcbc573cbcf63",
-                "reference": "887b641de9f7aba06071f98f17edcbc573cbcf63",
+                "url": "https://api.github.com/repos/cakephp/cakephp/zipball/6f3dd91371ac0698b64024ddb21d57def9fbba91",
+                "reference": "6f3dd91371ac0698b64024ddb21d57def9fbba91",
                 "shasum": ""
             },
             "require": {
@@ -198,7 +198,7 @@
                 "issues": "https://github.com/cakephp/cakephp/issues",
                 "source": "https://github.com/cakephp/cakephp"
             },
-            "time": "2026-09-06T01:09:54+00:00"
+            "time": "2026-10-03T03:40:34+00:00"
         },
         {
             "name": "cakephp/chronos",
@@ -322,16 +322,16 @@
         },
         {
             "name": "cakephp/plugin-installer",
-            "version": "2.0.2",
+            "version": "2.0.3",
             "source": {
                 "type": "git",
                 "url": "https://github.com/cakephp/plugin-installer.git",
-                "reference": "40bfecb4565ab29cd8c34b0d02d0007d2d5ebd2b"
+                "reference": "b50925d28e3301d9108562a899e3f68cc4cc18bd"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/cakephp/plugin-installer/zipball/40bfecb4565ab29cd8c34b0d02d0007d2d5ebd2b",
-                "reference": "40bfecb4565ab29cd8c34b0d02d0007d2d5ebd2b",
+                "url": "https://api.github.com/repos/cakephp/plugin-installer/zipball/b50925d28e3301d9108562a899e3f68cc4cc18bd",
+                "reference": "b50925d28e3301d9108562a899e3f68cc4cc18bd",
                 "shasum": ""
             },
             "require": {
@@ -363,11 +363,17 @@
                 }
             ],
             "description": "A composer installer for CakePHP plugins.",
+            "keywords": [
+                "cakephp",
+                "composer-plugin",
+                "installer",
+                "plugin"
+            ],
             "support": {
                 "issues": "https://github.com/cakephp/plugin-installer/issues",
-                "source": "https://github.com/cakephp/plugin-installer/tree/2.0.2"
+                "source": "https://github.com/cakephp/plugin-installer"
             },
-            "time": "2026-04-10T02:55:04+00:00"
+            "time": "2026-10-10T14:35:32+00:00"
         },
         {
             "name": "composer/ca-bundle",
@@ -443,16 +449,16 @@
         },
         {
             "name": "guzzlehttp/psr7",
-            "version": "2.13.1",
+            "version": "2.13.2",
             "source": {
                 "type": "git",
                 "url": "https://github.com/guzzle/psr7.git",
-                "reference": "95e7828100de18b4e269fb1703be530082d5166d"
+                "reference": "adee536f95101929f262b8c59e8a61472f347d58"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/guzzle/psr7/zipball/95e7828100de18b4e269fb1703be530082d5166d",
-                "reference": "95e7828100de18b4e269fb1703be530082d5166d",
+                "url": "https://api.github.com/repos/guzzle/psr7/zipball/adee536f95101929f262b8c59e8a61472f347d58",
+                "reference": "adee536f95101929f262b8c59e8a61472f347d58",
                 "shasum": ""
             },
             "require": {
@@ -542,7 +548,7 @@
             ],
             "support": {
                 "issues": "https://github.com/guzzle/psr7/issues",
-                "source": "https://github.com/guzzle/psr7/tree/2.13.1"
+                "source": "https://github.com/guzzle/psr7/tree/2.13.2"
             },
             "funding": [
                 {
@@ -558,7 +564,7 @@
                     "type": "tidelift"
                 }
             ],
-            "time": "2026-08-24T09:13:11+00:00"
+            "time": "2026-10-17T23:49:46+00:00"
         },
         {
             "name": "jean85/pretty-package-versions",
@@ -778,16 +784,16 @@
         },
         {
             "name": "lcobucci/jwt",
-            "version": "5.6.0",
+            "version": "5.6.1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/lcobucci/jwt.git",
-                "reference": "bb3e9f21e4196e8afc41def81ef649c164bca25e"
+                "reference": "482760068e5a55a9045feddb3e2fc3f878cbd577"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/lcobucci/jwt/zipball/bb3e9f21e4196e8afc41def81ef649c164bca25e",
-                "reference": "bb3e9f21e4196e8afc41def81ef649c164bca25e",
+                "url": "https://api.github.com/repos/lcobucci/jwt/zipball/482760068e5a55a9045feddb3e2fc3f878cbd577",
+                "reference": "482760068e5a55a9045feddb3e2fc3f878cbd577",
                 "shasum": ""
             },
             "require": {
@@ -835,7 +841,7 @@
             ],
             "support": {
                 "issues": "https://github.com/lcobucci/jwt/issues",
-                "source": "https://github.com/lcobucci/jwt/tree/5.6.0"
+                "source": "https://github.com/lcobucci/jwt/tree/5.6.1"
             },
             "funding": [
                 {
@@ -847,7 +853,7 @@
                     "type": "patreon"
                 }
             ],
-            "time": "2025-10-17T11:30:53+00:00"
+            "time": "2026-10-10T09:42:14+00:00"
         },
         {
             "name": "league/container",
@@ -2921,11 +2927,11 @@
         },
         {
             "name": "phpstan/phpstan",
-            "version": "2.3.0",
+            "version": "2.3.1",
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/phpstan/phpstan/zipball/b1f9890d9af53a25c58129e78f0aadd31f90d7f4",
-                "reference": "b1f9890d9af53a25c58129e78f0aadd31f90d7f4",
+                "url": "https://api.github.com/repos/phpstan/phpstan/zipball/6155239b488e95d26d1ebd95c6b4bb294d7f09db",
+                "reference": "6155239b488e95d26d1ebd95c6b4bb294d7f09db",
                 "shasum": ""
             },
             "require": {
@@ -2981,7 +2987,7 @@
                     "type": "github"
                 }
             ],
-            "time": "2026-10-06T06:15:36+00:00"
+            "time": "2026-10-08T21:09:11+00:00"
         },
         {
             "name": "phpunit/php-code-coverage",
@@ -3368,16 +3374,16 @@
         },
         {
             "name": "phpunit/phpunit",
-            "version": "13.4.1",
+            "version": "13.4.3",
             "source": {
                 "type": "git",
                 "url": "https://github.com/sebastianbergmann/phpunit.git",
-                "reference": "ccde40327c501eebff192614b0dcf11806418901"
+                "reference": "2180c47c4229e5da117ff248753370443c074f10"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/sebastianbergmann/phpunit/zipball/ccde40327c501eebff192614b0dcf11806418901",
-                "reference": "ccde40327c501eebff192614b0dcf11806418901",
+                "url": "https://api.github.com/repos/sebastianbergmann/phpunit/zipball/2180c47c4229e5da117ff248753370443c074f10",
+                "reference": "2180c47c4229e5da117ff248753370443c074f10",
                 "shasum": ""
             },
             "require": {
@@ -3448,7 +3454,7 @@
             "support": {
                 "issues": "https://github.com/sebastianbergmann/phpunit/issues",
                 "security": "https://github.com/sebastianbergmann/phpunit/security/policy",
-                "source": "https://github.com/sebastianbergmann/phpunit/tree/13.4.1"
+                "source": "https://github.com/sebastianbergmann/phpunit/tree/13.4.3"
             },
             "funding": [
                 {
@@ -3456,7 +3462,7 @@
                     "type": "other"
                 }
             ],
-            "time": "2026-10-05T05:51:21+00:00"
+            "time": "2026-10-16T05:56:47+00:00"
         },
         {
             "name": "sebastian/cli-parser",
