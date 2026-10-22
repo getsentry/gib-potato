@@ -1,3 +1,4 @@
+# syntax=docker/dockerfile:1
 FROM ubuntu:24.04 AS php-local
 
 ENV DEBIAN_FRONTEND=noninteractive
@@ -29,6 +30,9 @@ RUN \
     php8.5-zip \
     php8.5-excimer
 
+# Pinned, so cached builds are reproducible
+ARG SENTRY_PHP_TRACER_REF=cb70be57333eb924df621c9f3f5aa475fd29253d
+
 RUN \
     apt-get install -y --no-install-recommends \
     php8.5-dev \
@@ -37,8 +41,10 @@ RUN \
     make \
     gcc \
     g++ && \
-    git clone --branch main --single-branch https://github.com/getsentry/sentry-php-tracer.git /tmp/sentry-php-tracer && \
+    git init /tmp/sentry-php-tracer && \
     cd /tmp/sentry-php-tracer && \
+    git fetch --depth 1 https://github.com/getsentry/sentry-php-tracer.git "$SENTRY_PHP_TRACER_REF" && \
+    git checkout FETCH_HEAD && \
     phpize && \
     ./configure --enable-sentry && \
     make -j"$(nproc)" && \
@@ -88,9 +94,16 @@ COPY ./package.json package.json
 COPY ./package-lock.json package-lock.json
 COPY ./vite.config.js vite.config.js
 
-RUN \
+# Uploads source maps to Sentry when the SENTRY_AUTH_TOKEN secret is provided
+RUN --mount=type=secret,id=SENTRY_AUTH_TOKEN,env=SENTRY_AUTH_TOKEN \
     npm ci && \
     npm run build
+
+# Used by Cloud Build to export the built assets
+FROM scratch AS assets
+
+COPY --from=js-build /app/webroot/assets assets
+COPY --from=js-build /app/webroot/.vite/manifest.json manifest.json
 
 FROM php-local AS php-build
 
