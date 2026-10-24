@@ -3,9 +3,9 @@ declare(strict_types=1);
 
 namespace App\Controller\Api;
 
-use App\Http\Client;
 use App\Http\SlackClient;
 use App\Model\Entity\Product;
+use Cake\Http\Client;
 use Cake\Http\Response;
 use Cake\Routing\Router;
 use function Cake\Core\env;
