@@ -278,7 +278,7 @@ GEM
       bigdecimal
       concurrent-ruby (~> 1.0, >= 1.0.2)
       logger
-    shopify_api (16.3.0)
+    shopify_api (16.3.1)
       activesupport
       addressable (~> 2.7)
       concurrent-ruby
@@ -291,7 +291,7 @@ GEM
       securerandom
       sorbet-runtime
       zeitwerk (~> 2.5)
-    sorbet-runtime (0.6.13580)
+    sorbet-runtime (0.6.13594)
     sqlite3 (2.10.1-aarch64-linux-gnu)
     sqlite3 (2.10.1-aarch64-linux-musl)
     sqlite3 (2.10.1-arm-linux-gnu)
