@@ -43,9 +43,10 @@ composer bump
 ```sh
 vpx npm-check-updates -u --target minor
 vp install
+vp update
 ```
 
-Use `--target minor` to avoid unplanned major version upgrades.
+Use `--target minor` to avoid unplanned major version upgrades. `npm-check-updates` only touches direct dependencies in `package.json`; `vp update` raises transitive dependencies in `package-lock.json` within their semver ranges.
 
 ## Go (potal/)
 
