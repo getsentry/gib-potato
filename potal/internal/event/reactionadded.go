@@ -34,7 +34,7 @@ func (e ReactionAddedEvent) isValid() bool {
 }
 
 func ProcessReactionEvent(ctx context.Context, e *slackevents.ReactionAddedEvent, sc *slack.Client) *ReactionAddedEvent {
-	hub := sentry.GetHubFromContext(ctx)
+	scope := sentry.ScopeFromContext(ctx)
 	txn := sentry.TransactionFromContext(ctx)
 
 	span := txn.StartChild("event.process", sentry.WithDescription("Process ReactionAdded Event"))
@@ -47,7 +47,7 @@ func ProcessReactionEvent(ctx context.Context, e *slackevents.ReactionAddedEvent
 	user, err := sc.GetUserInfo(e.User)
 	if err != nil {
 		userSpan.Status = sentry.SpanStatusInternalError
-		hub.CaptureException(err)
+		sentry.CaptureException(ctx, err)
 		slog.ErrorContext(ctx, "failed to get user", "error", err, "user", e.User)
 		return nil
 	} else {
@@ -76,7 +76,7 @@ func ProcessReactionEvent(ctx context.Context, e *slackevents.ReactionAddedEvent
 	if err != nil {
 		conversationsSpan.Status = sentry.SpanStatusInternalError
 		span.Status = sentry.SpanStatusInternalError
-		hub.CaptureException(err)
+		sentry.CaptureException(ctx, err)
 		slog.ErrorContext(ctx, "failed to get conversation replies", "error", err, "channel", e.Item.Channel)
 		return nil
 	}
@@ -109,7 +109,7 @@ func ProcessReactionEvent(ctx context.Context, e *slackevents.ReactionAddedEvent
 	})
 	if err != nil {
 		permaLinkSpan.Status = sentry.SpanStatusInternalError
-		hub.CaptureException(err)
+		sentry.CaptureException(ctx, err)
 		slog.ErrorContext(ctx, "failed to get permalink", "error", err, "channel", e.Item.Channel)
 	} else {
 		permaLinkSpan.Status = sentry.SpanStatusOK
@@ -132,8 +132,8 @@ func ProcessReactionEvent(ctx context.Context, e *slackevents.ReactionAddedEvent
 
 	span.Status = sentry.SpanStatusOK
 
-	hub.Scope().SetContext("event", sentry.Context{"data": reactionEvent})
-	hub.Scope().SetTag("event_type", reactionAdded.String())
+	scope.SetContext("event", sentry.Context{"data": reactionEvent})
+	scope.SetTag("event_type", reactionAdded.String())
 
 	return &reactionEvent
 }

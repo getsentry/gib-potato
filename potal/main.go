@@ -71,7 +71,7 @@ func main() {
 	slog.Info("server starting", "port", 3000)
 	httpErr := http.ListenAndServe(":3000", sentryHandler.Handle(router))
 	if httpErr != nil {
-		sentry.CaptureException(httpErr)
+		sentry.CaptureException(context.Background(), httpErr)
 		slog.Error("server failed", "error", httpErr)
 		os.Exit(1)
 	}

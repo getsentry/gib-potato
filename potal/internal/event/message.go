@@ -36,7 +36,7 @@ func (e MessageEvent) isValid() bool {
 }
 
 func ProcessMessageEvent(ctx context.Context, e *slackevents.MessageEvent, sc *slack.Client) *MessageEvent {
-	hub := sentry.GetHubFromContext(ctx)
+	scope := sentry.ScopeFromContext(ctx)
 	txn := sentry.TransactionFromContext(ctx)
 
 	span := txn.StartChild("event.process", sentry.WithDescription("Process Message Event"))
@@ -71,7 +71,7 @@ func ProcessMessageEvent(ctx context.Context, e *slackevents.MessageEvent, sc *s
 	})
 	if err != nil {
 		permalinkSpan.Status = sentry.SpanStatusInternalError
-		hub.CaptureException(err)
+		sentry.CaptureException(ctx, err)
 		slog.ErrorContext(ctx, "failed to get permalink", "error", err, "channel", e.Channel)
 	} else {
 		permalinkSpan.Status = sentry.SpanStatusOK
@@ -81,8 +81,8 @@ func ProcessMessageEvent(ctx context.Context, e *slackevents.MessageEvent, sc *s
 	messageEvent.Permalink = permalink
 	messageEvent.Text = utils.ScrubText(messageEvent.Text)
 
-	hub.Scope().SetContext("event", sentry.Context{"data": messageEvent})
-	hub.Scope().SetTag("event_type", message.String())
+	scope.SetContext("event", sentry.Context{"data": messageEvent})
+	scope.SetTag("event_type", message.String())
 
 	return &messageEvent
 }
