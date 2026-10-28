@@ -1,115 +1,61 @@
 steps:
     - name: 'gcr.io/cloud-builders/docker'
-      id: build-shopato
+      id: setup-buildx
       args:
           [
-              'build',
-              '-f',
-              './docker/shopato/Dockerfile',
-              '-t',
-              'us-central1-docker.pkg.dev/$PROJECT_ID/shopato/shopato:$COMMIT_SHA',
-              '-t',
-              'us-central1-docker.pkg.dev/$PROJECT_ID/shopato/shopato:latest',
-              '.',
+              'buildx',
+              'create',
+              '--name',
+              'cloudbuild',
+              '--driver',
+              'docker-container',
+              '--bootstrap',
           ]
       waitFor: ['-']
     - name: 'gcr.io/cloud-builders/docker'
-      id: push-shopato
-      args: ['push', 'us-central1-docker.pkg.dev/$PROJECT_ID/shopato/shopato:$COMMIT_SHA']
-      waitFor: ['build-shopato']
+      id: build-shopato
+      entrypoint: bash
+      args: ['docker/cloudbuild/build.sh', 'shopato']
+      env: ['PROJECT_ID=$PROJECT_ID', 'COMMIT_SHA=$COMMIT_SHA', 'FORCE_BUILD=$_FORCE_BUILD']
+      waitFor: ['setup-buildx']
     - name: 'gcr.io/cloud-builders/docker'
       id: build-potal
-      args:
-          [
-              'build',
-              '-f',
-              './docker/potal/Dockerfile',
-              '-t',
-              'us-central1-docker.pkg.dev/$PROJECT_ID/potal/potal:$COMMIT_SHA',
-              '-t',
-              'us-central1-docker.pkg.dev/$PROJECT_ID/potal/potal:latest',
-              '.',
-          ]
-      waitFor: ['-']
-    - name: 'gcr.io/cloud-builders/docker'
-      id: push-potal
-      args: ['push', 'us-central1-docker.pkg.dev/$PROJECT_ID/potal/potal:$COMMIT_SHA']
-      waitFor: ['build-potal']
+      entrypoint: bash
+      args: ['docker/cloudbuild/build.sh', 'potal']
+      env: ['PROJECT_ID=$PROJECT_ID', 'COMMIT_SHA=$COMMIT_SHA', 'FORCE_BUILD=$_FORCE_BUILD']
+      waitFor: ['setup-buildx']
     - name: 'gcr.io/cloud-builders/docker'
       id: build-backend
-      args:
-          [
-              'build',
-              '-f',
-              './docker/backend/Dockerfile',
-              '-t',
-              'us-central1-docker.pkg.dev/$PROJECT_ID/backend/backend:$COMMIT_SHA',
-              '-t',
-              'us-central1-docker.pkg.dev/$PROJECT_ID/backend/backend:latest',
-              '.',
-          ]
-      waitFor: ['-']
-    - name: 'gcr.io/cloud-builders/docker'
-      id: push-backend
-      args: ['push', 'us-central1-docker.pkg.dev/$PROJECT_ID/backend/backend:$COMMIT_SHA']
-      waitFor: ['build-backend']
-    - name: 'gcr.io/google.com/cloudsdktool/cloud-sdk'
-      id: deploy-shopato
-      entrypoint: gcloud
-      args:
-          - 'run'
-          - 'deploy'
-          - 'shopato'
-          - '--image'
-          - 'us-central1-docker.pkg.dev/$PROJECT_ID/shopato/shopato:$COMMIT_SHA'
-          - '--region'
-          - 'us-central1'
-      waitFor: ['push-shopato']
-    - name: 'gcr.io/google.com/cloudsdktool/cloud-sdk'
-      id: deploy-potal
-      entrypoint: gcloud
-      args:
-          - 'run'
-          - 'deploy'
-          - 'potal'
-          - '--image'
-          - 'us-central1-docker.pkg.dev/$PROJECT_ID/potal/potal:$COMMIT_SHA'
-          - '--region'
-          - 'us-central1'
-      waitFor: ['push-potal']
-    - name: 'gcr.io/google.com/cloudsdktool/cloud-sdk'
-      id: deploy-backend
-      entrypoint: gcloud
-      args:
-          - 'run'
-          - 'deploy'
-          - 'backend'
-          - '--image'
-          - 'us-central1-docker.pkg.dev/$PROJECT_ID/backend/backend:$COMMIT_SHA'
-          - '--region'
-          - 'us-central1'
-      waitFor: ['push-backend']
-    - name: 'node:26'
-      id: 'npm-install'
-      entrypoint: npm
-      args: ['ci']
-      waitFor: ['-']
-    - name: 'node:26'
-      id: 'build-assets'
-      entrypoint: npm
-      args: ['run', 'build']
-      waitFor: ['npm-install']
+      entrypoint: bash
+      args: ['docker/cloudbuild/build.sh', 'backend']
+      env: ['PROJECT_ID=$PROJECT_ID', 'COMMIT_SHA=$COMMIT_SHA', 'FORCE_BUILD=$_FORCE_BUILD']
       secretEnv: ['SENTRY_AUTH_TOKEN']
-images:
-    - 'us-central1-docker.pkg.dev/$PROJECT_ID/backend/backend:latest'
-    - 'us-central1-docker.pkg.dev/$PROJECT_ID/potal/potal:latest'
-    - 'us-central1-docker.pkg.dev/$PROJECT_ID/shopato/shopato:latest'
-artifacts:
-    objects:
-        location: gs://gib-potato-assets/
-        paths:
-            - 'webroot/assets/*'
-            - 'webroot/.vite/manifest.json'
+      waitFor: ['setup-buildx']
+    - name: 'gcr.io/google.com/cloudsdktool/cloud-sdk:slim'
+      id: deploy-shopato
+      entrypoint: bash
+      args: ['docker/cloudbuild/deploy.sh', 'shopato']
+      waitFor: ['build-shopato']
+    - name: 'gcr.io/google.com/cloudsdktool/cloud-sdk:slim'
+      id: deploy-potal
+      entrypoint: bash
+      args: ['docker/cloudbuild/deploy.sh', 'potal']
+      waitFor: ['build-potal']
+    - name: 'gcr.io/google.com/cloudsdktool/cloud-sdk:slim'
+      id: deploy-backend
+      entrypoint: bash
+      args: ['docker/cloudbuild/deploy.sh', 'backend']
+      waitFor: ['build-backend']
+    - name: 'gcr.io/google.com/cloudsdktool/cloud-sdk:slim'
+      id: upload-assets
+      entrypoint: bash
+      args: ['docker/cloudbuild/upload-assets.sh']
+      waitFor: ['build-backend']
+substitutions:
+    # Set to true on a manual run to rebuild all images, e.g. to pick up new base images
+    _FORCE_BUILD: 'false'
+options:
+    machineType: 'E2_HIGHCPU_8'
 availableSecrets:
     secretManager:
         - versionName: projects/841923001753/secrets/sentry_auth_token/versions/1
