@@ -3,8 +3,8 @@ module github.com/getsentry/gib-potato
 go 1.27.0
 
 require (
-	github.com/getsentry/sentry-go v0.50.0
-	github.com/getsentry/sentry-go/slog v0.50.0
+	github.com/getsentry/sentry-go v1.0.0-alpha.1
+	github.com/getsentry/sentry-go/slog v1.0.0-alpha.1
 	github.com/google/go-cmp v0.7.0
 	github.com/julienschmidt/httprouter v1.3.0
 	github.com/slack-go/slack v0.31.0
