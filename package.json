@@ -23,7 +23,10 @@
     },
     "devDependencies": {
         "@vitejs/plugin-vue": "^6.0.10",
-        "vite-plus": "^0.3.3"
+        "vite-plus": "^1.4.0"
+    },
+    "overrides": {
+        "glob": "^14.0.3"
     },
     "devEngines": {
         "packageManager": {
