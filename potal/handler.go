@@ -40,12 +40,11 @@ func (h *Handler) emitEventMetric(ctx context.Context, name string, eventType st
 	)
 }
 
-func cloneHubFromContext(ctx context.Context) *sentry.Hub {
-	hub := sentry.GetHubFromContext(ctx)
-	if hub == nil {
-		hub = sentry.CurrentHub()
-	}
-	return hub.Clone()
+// detachedContext forks the request scope onto a background context, so work in a
+// goroutine outlives the request and starts its own transaction.
+func detachedContext(ctx context.Context) context.Context {
+	ctx, _ = sentry.WithScope(sentry.ContextWithScope(context.Background(), sentry.ScopeFromContext(ctx)))
+	return ctx
 }
 
 func DefaultHandler(w http.ResponseWriter, r *http.Request, _ httprouter.Params) {
@@ -119,10 +118,8 @@ func (h *Handler) EventsHandler(w http.ResponseWriter, r *http.Request, _ httpro
 			switch ev.ChannelType {
 			case "im":
 				// Handle direct messages to the bot separately
-				hub := cloneHubFromContext(ctx)
+				ctx := detachedContext(ctx)
 				go func() {
-					ctx := sentry.SetHubOnContext(context.Background(), hub)
-
 					options := []sentry.SpanOption{
 						sentry.WithOpName("event.handler"),
 						sentry.WithTransactionSource(sentry.SourceTask),
@@ -150,10 +147,8 @@ func (h *Handler) EventsHandler(w http.ResponseWriter, r *http.Request, _ httpro
 					txn.Status = sentry.SpanStatusOK
 				}()
 			default:
-				hub := cloneHubFromContext(ctx)
+				ctx := detachedContext(ctx)
 				go func() {
-					ctx := sentry.SetHubOnContext(context.Background(), hub)
-
 					options := []sentry.SpanOption{
 						sentry.WithOpName("event.handler"),
 						sentry.WithTransactionSource(sentry.SourceTask),
@@ -182,10 +177,8 @@ func (h *Handler) EventsHandler(w http.ResponseWriter, r *http.Request, _ httpro
 				}()
 			}
 		case *slackevents.ReactionAddedEvent:
-			hub := cloneHubFromContext(ctx)
+			ctx := detachedContext(ctx)
 			go func() {
-				ctx := sentry.SetHubOnContext(context.Background(), hub)
-
 				options := []sentry.SpanOption{
 					sentry.WithOpName("event.handler"),
 					sentry.WithTransactionSource(sentry.SourceTask),
@@ -214,10 +207,8 @@ func (h *Handler) EventsHandler(w http.ResponseWriter, r *http.Request, _ httpro
 				txn.Status = sentry.SpanStatusOK
 			}()
 		case *slackevents.ReactionRemovedEvent:
-			hub := cloneHubFromContext(ctx)
+			ctx := detachedContext(ctx)
 			go func() {
-				ctx := sentry.SetHubOnContext(context.Background(), hub)
-
 				options := []sentry.SpanOption{
 					sentry.WithOpName("event.handler"),
 					sentry.WithTransactionSource(sentry.SourceTask),
@@ -246,10 +237,8 @@ func (h *Handler) EventsHandler(w http.ResponseWriter, r *http.Request, _ httpro
 				txn.Status = sentry.SpanStatusOK
 			}()
 		case *slackevents.AppMentionEvent:
-			hub := cloneHubFromContext(ctx)
+			ctx := detachedContext(ctx)
 			go func() {
-				ctx := sentry.SetHubOnContext(context.Background(), hub)
-
 				options := []sentry.SpanOption{
 					sentry.WithOpName("event.handler"),
 					sentry.WithTransactionSource(sentry.SourceTask),
@@ -279,10 +268,8 @@ func (h *Handler) EventsHandler(w http.ResponseWriter, r *http.Request, _ httpro
 			}()
 		case *slackevents.AppHomeOpenedEvent:
 			go event.ProcessAppHomeOpenedEvent(r.Context(), ev)
-			hub := cloneHubFromContext(ctx)
+			ctx := detachedContext(ctx)
 			go func() {
-				ctx := sentry.SetHubOnContext(context.Background(), hub)
-
 				options := []sentry.SpanOption{
 					sentry.WithOpName("event.handler"),
 					sentry.WithTransactionSource(sentry.SourceTask),
@@ -312,10 +299,8 @@ func (h *Handler) EventsHandler(w http.ResponseWriter, r *http.Request, _ httpro
 			}()
 		case *slackevents.LinkSharedEvent:
 			go event.ProcessLinkSharedEvent(r.Context(), ev)
-			hub := cloneHubFromContext(ctx)
+			ctx := detachedContext(ctx)
 			go func() {
-				ctx := sentry.SetHubOnContext(context.Background(), hub)
-
 				options := []sentry.SpanOption{
 					sentry.WithOpName("event.handler"),
 					sentry.WithTransactionSource(sentry.SourceTask),
@@ -375,10 +360,8 @@ func (h *Handler) SlashHandler(w http.ResponseWriter, r *http.Request, _ httprou
 			return
 		}
 	case "/gibopinion":
-		hub := cloneHubFromContext(ctx)
+		ctx := detachedContext(ctx)
 		go func() {
-			ctx := sentry.SetHubOnContext(context.Background(), hub)
-
 			options := []sentry.SpanOption{
 				sentry.WithOpName("command.handler"),
 				sentry.WithTransactionSource(sentry.SourceTask),
@@ -434,10 +417,8 @@ func (h *Handler) InteractionsHandler(w http.ResponseWriter, r *http.Request, _ 
 
 	switch payload.Type {
 	case slack.InteractionTypeBlockActions:
-		hub := cloneHubFromContext(ctx)
+		ctx := detachedContext(ctx)
 		go func() {
-			ctx := sentry.SetHubOnContext(context.Background(), hub)
-
 			options := []sentry.SpanOption{
 				sentry.WithOpName("interaction.handler"),
 				sentry.WithTransactionSource(sentry.SourceTask),
@@ -466,10 +447,8 @@ func (h *Handler) InteractionsHandler(w http.ResponseWriter, r *http.Request, _ 
 			txn.Status = sentry.SpanStatusOK
 		}()
 	case slack.InteractionTypeViewSubmission:
-		hub := cloneHubFromContext(ctx)
+		ctx := detachedContext(ctx)
 		go func() {
-			ctx := sentry.SetHubOnContext(context.Background(), hub)
-
 			options := []sentry.SpanOption{
 				sentry.WithOpName("interaction.handler"),
 				sentry.WithTransactionSource(sentry.SourceTask),

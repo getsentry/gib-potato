@@ -24,7 +24,7 @@ func (e DirectEvent) isValid() bool {
 }
 
 func ProcessDirectMessageEvent(ctx context.Context, e *slackevents.MessageEvent) *DirectEvent {
-	hub := sentry.GetHubFromContext(ctx)
+	scope := sentry.ScopeFromContext(ctx)
 	txn := sentry.TransactionFromContext(ctx)
 
 	span := txn.StartChild("event.process", sentry.WithDescription("Process Direct Message Event"))
@@ -46,8 +46,8 @@ func ProcessDirectMessageEvent(ctx context.Context, e *slackevents.MessageEvent)
 	}
 	span.Status = sentry.SpanStatusOK
 
-	hub.Scope().SetContext("event", sentry.Context{"data": directMessageEvent})
-	hub.Scope().SetTag("event_type", directMessage.String())
+	scope.SetContext("event", sentry.Context{"data": directMessageEvent})
+	scope.SetTag("event_type", directMessage.String())
 
 	return &directMessageEvent
 }

@@ -25,7 +25,7 @@ func (e AppMentionEvent) isValid() bool {
 }
 
 func ProcessAppMentionEvent(ctx context.Context, e *slackevents.AppMentionEvent) *AppMentionEvent {
-	hub := sentry.GetHubFromContext(ctx)
+	scope := sentry.ScopeFromContext(ctx)
 	txn := sentry.TransactionFromContext(ctx)
 
 	span := txn.StartChild("event.process", sentry.WithDescription("Process AppMention Event"))
@@ -48,8 +48,8 @@ func ProcessAppMentionEvent(ctx context.Context, e *slackevents.AppMentionEvent)
 	}
 	span.Status = sentry.SpanStatusOK
 
-	hub.Scope().SetContext("event", sentry.Context{"data": appMentionEvent})
-	hub.Scope().SetTag("event_type", appMention.String())
+	scope.SetContext("event", sentry.Context{"data": appMentionEvent})
+	scope.SetTag("event_type", appMention.String())
 
 	return &appMentionEvent
 }
