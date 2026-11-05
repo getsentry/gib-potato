@@ -10,7 +10,6 @@ const (
 	message             PotalEventType = "message"
 	directMessage       PotalEventType = "direct_message"
 	reactionAdded       PotalEventType = "reaction_added"
-	reactionRemoved     PotalEventType = "reaction_removed"
 	appMention          PotalEventType = "app_mention"
 	appHomeOpened       PotalEventType = "app_home_opened"
 	slashCommand        PotalEventType = "slash_command"

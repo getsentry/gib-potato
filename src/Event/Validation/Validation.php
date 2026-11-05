@@ -8,7 +8,6 @@ use App\Event\ReactionAddedEvent;
 use App\Event\Validation\Exception\PotatoException;
 use App\Model\Entity\Message;
 use App\Model\Entity\User;
-use App\Model\Entity\Voucher;
 
 class Validation
 {
@@ -88,43 +87,6 @@ class Validation
         $left = $this->sender->potatoLeftToday();
         if ($this->event->amount * $receiversCount > $left) {
             throw new PotatoException(sprintf('You only have *%s* :potato: left to gib today 😢', $left));
-        }
-
-        return $this;
-    }
-
-    /**
-     * @return $this
-     * @throws \App\Event\Validation\Exception\PotatoException
-     */
-    public function voucherAmount()
-    {
-        $receiversCount = count($this->event->receivers);
-        if ($receiversCount > Voucher::MAX_AMOUNT) {
-            throw new PotatoException(
-                'You can only gib :admission_tickets: to *5* people at once 😢',
-            );
-        }
-
-        return $this;
-    }
-
-    /**
-     * @return $this
-     * @throws \App\Event\Validation\Exception\PotatoException
-     */
-    public function voucherSender()
-    {
-        $sent = $this->sender->vouchersSentToday();
-        if ($sent >= Voucher::MAX_AMOUNT) {
-            throw new PotatoException('You already gib out all your :admission_tickets: today 😢');
-        }
-
-        $receiversCount = count($this->event->receivers);
-
-        $left = $this->sender->vouchersLeftToday();
-        if ($receiversCount > $left) {
-            throw new PotatoException(sprintf('You only have *%s* :admission_tickets: left to gib today 😢', $left));
         }
 
         return $this;
