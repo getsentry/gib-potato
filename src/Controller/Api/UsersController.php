@@ -72,6 +72,8 @@ class UsersController extends ApiController
         $user->spendable_count = $user->spendablePotato();
         $user->potato_sent_today = $user->potatoSentToday();
         $user->potato_left_today = $user->potatoLeftToday();
+        $user->super_potato_left = $user->superPotatoLeft();
+        $user->super_potato_progress = $user->superPotatoProgress();
         $user->potato_reset_in_hours = $user->potatoResetInHours();
         $user->potato_reset_in_minutes = $user->potatoResetInMinutes();
 

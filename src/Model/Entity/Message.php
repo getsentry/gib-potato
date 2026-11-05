@@ -33,5 +33,30 @@ class Message extends Entity
     ];
 
     public const TYPE_POTATO = 'potato';
+    public const TYPE_SUPER_POTATO = 'superpotato';
     public const MAX_AMOUNT = 5;
+
+    /**
+     * Unspent daily potatoes needed to unlock one super potato.
+     */
+    public const SUPER_POTATO_COST = 20;
+
+    /**
+     * How many potatoes one super potato is worth to its receiver.
+     */
+    public const SUPER_POTATO_VALUE = 5;
+
+    /**
+     * Only days after this date add unspent potatoes to the super potato bank.
+     */
+    public const SUPER_POTATO_START = '2026-11-06 00:00:00';
+
+    /**
+     * @param string $reaction Reaction name, with or without surrounding colons.
+     * @return bool
+     */
+    public static function isSuperPotato(string $reaction): bool
+    {
+        return trim($reaction, ':') === self::TYPE_SUPER_POTATO;
+    }
 }

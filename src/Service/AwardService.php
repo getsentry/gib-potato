@@ -5,6 +5,7 @@ namespace App\Service;
 
 use App\Event\MessageEvent;
 use App\Event\ReactionAddedEvent;
+use App\Model\Entity\Message;
 use App\Model\Entity\User;
 use Cake\ORM\Locator\LocatorAwareTrait;
 use Sentry\SentrySdk;
@@ -48,10 +49,14 @@ class AwardService
     ): void {
         $messagesTable = $this->fetchTable('Messages');
 
+        $isSuperPotato = Message::isSuperPotato($event->reaction);
+        // Super potatoes are stored with their potato value, so totals, the leaderboard and the shop count them
+        $amount = $isSuperPotato ? $event->amount * Message::SUPER_POTATO_VALUE : $event->amount;
+
         $message = $messagesTable->newEntity([
             'sender_user_id' => $fromUser->id,
             'receiver_user_id' => $toUser->id,
-            'amount' => $event->amount,
+            'amount' => $amount,
             'type' => str_replace(':', '', $event->reaction),
         ], [
             'accessibleFields' => [
@@ -63,15 +68,17 @@ class AwardService
         ]);
         $messagesTable->saveOrFail($message);
 
+        $metric = $isSuperPotato ? 'gibpotato.super_potatoes.given_out' : 'gibpotato.potatoes.given_out';
+
         $span = SentrySdk::getCurrentHub()->getSpan();
         if ($span !== null) {
             $span->setData([
-                'gibpotato.potatoes.given_out' => $event->amount,
+                $metric => $event->amount,
                 'gibpotato.event_type' => $event->type,
             ]);
         }
         trace_metrics()->count(
-            'gibpotato.potatoes.given_out',
+            $metric,
             (float)$event->amount,
             [
                 'gibpotato.event_type' => $event->type,
@@ -79,11 +86,12 @@ class AwardService
         );
 
         logger()->info(
-            message: '"%s" gave "%s" %s 🥔',
+            message: '"%s" gave "%s" %s %s',
             values: [
                 $fromUser->slack_name,
                 $toUser->slack_name,
                 $event->amount,
+                $isSuperPotato ? 'super 🥔' : '🥔',
             ],
         );
     }

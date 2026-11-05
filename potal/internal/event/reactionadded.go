@@ -29,7 +29,7 @@ type ReactionAddedEvent struct {
 }
 
 func (e ReactionAddedEvent) isValid() bool {
-	return e.Reaction == constants.Potato &&
+	return (e.Reaction == constants.Potato || e.Reaction == constants.SuperPotato) &&
 		!e.IsBot
 }
 

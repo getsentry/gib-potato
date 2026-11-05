@@ -29,34 +29,50 @@ type MessageEvent struct {
 }
 
 func (e MessageEvent) isValid() bool {
-	// Only process messages with potato, not from a bot and not sent by slackbot
+	// Only process messages with potato or super potato, not from a bot and not sent by slackbot
 	return e.Amount > 0 &&
 		e.BotID == "" &&
 		e.Sender != "USLACKBOT"
 }
 
-func ProcessMessageEvent(ctx context.Context, e *slackevents.MessageEvent, sc *slack.Client) *MessageEvent {
+// ProcessMessageEvent returns one event per kind of potato in the message,
+// so potatoes and super potatoes in the same message are both awarded.
+func ProcessMessageEvent(ctx context.Context, e *slackevents.MessageEvent, sc *slack.Client) []*MessageEvent {
 	hub := sentry.GetHubFromContext(ctx)
 	txn := sentry.TransactionFromContext(ctx)
 
 	span := txn.StartChild("event.process", sentry.WithDescription("Process Message Event"))
 	defer span.Finish()
 
-	messageEvent := MessageEvent{
-		Type:            message,
-		Amount:          utils.MessageAmount(e.Text),
-		Sender:          e.User,
-		Receivers:       utils.MessageReceivers(e.Text),
-		Channel:         e.Channel,
-		Text:            e.Text,
-		Reaction:        constants.Potato, // hardoced for now
-		Timestamp:       e.TimeStamp,
-		EventTimestamp:  e.EventTimeStamp,
-		ThreadTimestamp: e.ThreadTimeStamp,
-		BotID:           e.BotID,
+	amounts := []struct {
+		reaction string
+		amount   int
+	}{
+		{constants.Potato, utils.MessageAmount(e.Text)},
+		{constants.SuperPotato, utils.MessageSuperPotatoAmount(e.Text)},
 	}
 
-	if !messageEvent.isValid() {
+	var messageEvents []*MessageEvent
+	for _, a := range amounts {
+		messageEvent := MessageEvent{
+			Type:            message,
+			Amount:          a.amount,
+			Sender:          e.User,
+			Receivers:       utils.MessageReceivers(e.Text),
+			Channel:         e.Channel,
+			Text:            e.Text,
+			Reaction:        a.reaction,
+			Timestamp:       e.TimeStamp,
+			EventTimestamp:  e.EventTimeStamp,
+			ThreadTimestamp: e.ThreadTimeStamp,
+			BotID:           e.BotID,
+		}
+		if messageEvent.isValid() {
+			messageEvents = append(messageEvents, &messageEvent)
+		}
+	}
+
+	if len(messageEvents) == 0 {
 		span.Status = sentry.SpanStatusInvalidArgument
 		return nil
 	}
@@ -78,11 +94,13 @@ func ProcessMessageEvent(ctx context.Context, e *slackevents.MessageEvent, sc *s
 	}
 	permalinkSpan.Finish()
 
-	messageEvent.Permalink = permalink
-	messageEvent.Text = utils.ScrubText(messageEvent.Text)
+	for _, messageEvent := range messageEvents {
+		messageEvent.Permalink = permalink
+		messageEvent.Text = utils.ScrubText(messageEvent.Text)
+	}
 
-	hub.Scope().SetContext("event", sentry.Context{"data": messageEvent})
+	hub.Scope().SetContext("event", sentry.Context{"data": messageEvents})
 	hub.Scope().SetTag("event_type", message.String())
 
-	return &messageEvent
+	return messageEvents
 }

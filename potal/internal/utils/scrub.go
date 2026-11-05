@@ -7,7 +7,7 @@ import (
 	"github.com/getsentry/gib-potato/internal/constants"
 )
 
-var scrubPattern = regexp.MustCompile(`<@[^>]+>|:` + constants.Potato + `:`)
+var scrubPattern = regexp.MustCompile(`<@[^>]+>|:(?:` + constants.Potato + `|` + constants.SuperPotato + `):`)
 
 func ScrubText(text string) string {
 	matches := scrubPattern.FindAllString(text, -1)

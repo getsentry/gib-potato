@@ -3,6 +3,7 @@ declare(strict_types=1);
 
 namespace App\Event;
 
+use App\Model\Entity\Message;
 use App\Service\UserService;
 
 class DirectMessageEvent extends AbstractEvent
@@ -45,6 +46,14 @@ class DirectMessageEvent extends AbstractEvent
                 'Your potato do reset in *%s hours* and *%s minutes*.',
                 $user->potatoResetInHours(),
                 $user->potatoResetInMinutes(),
+            );
+            $message .= PHP_EOL;
+            $message .= sprintf(
+                'You have *%s* :%s: to gib and are *%s/%s* :potato: of the way to your next one.',
+                $user->superPotatoLeft(),
+                Message::TYPE_SUPER_POTATO,
+                $user->superPotatoProgress(),
+                Message::SUPER_POTATO_COST,
             );
 
             $this->slackClient->postMessage(

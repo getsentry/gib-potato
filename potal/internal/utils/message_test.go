@@ -19,10 +19,32 @@ func TestMessageAmount(t *testing.T) {
 		{":potato::potato::potato::potato::potato:", 5},
 		{":banana:", 0},
 		{"potato", 0},
+		{":superpotato:", 0},
 	}
 
 	for _, test := range tests {
 		got := MessageAmount(test.input)
+		if diff := cmp.Diff(test.want, got); diff != "" {
+			t.Errorf("(-want +got):\n%s", diff)
+		}
+	}
+}
+
+func TestMessageSuperPotatoAmount(t *testing.T) {
+	tests := []struct {
+		input string
+		want  int
+	}{
+		{"", 0},
+		{":superpotato:", 1},
+		{":superpotato::superpotato:", 2},
+		{":potato:", 0},
+		{":potato::superpotato::potato:", 1},
+		{"superpotato", 0},
+	}
+
+	for _, test := range tests {
+		got := MessageSuperPotatoAmount(test.input)
 		if diff := cmp.Diff(test.want, got); diff != "" {
 			t.Errorf("(-want +got):\n%s", diff)
 		}

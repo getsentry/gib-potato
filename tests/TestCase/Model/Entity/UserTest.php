@@ -237,6 +237,90 @@ class UserTest extends TestCase
         $this->assertSame(0, $this->UserBuyer->spendablePotato());
     }
 
+    /**
+     * Test superPotatoUnspent only counts past days on which potato was given
+     *
+     * @return void
+     */
+    public function testSuperPotatoUnspentCountsOnlyActivePastDays(): void
+    {
+        Chronos::setTestNow(new Chronos('2026-11-10 12:00:00', 'UTC'));
+
+        // Before super potatoes started, ignored
+        $this->addSentPotatoes($this->UserBuyer, 1, new DateTime('2026-11-01 12:00:00', 'UTC'));
+        // 4 unspent
+        $this->addSentPotatoes($this->UserBuyer, 1, new DateTime('2026-11-07 12:00:00', 'UTC'));
+        // 2 unspent
+        $this->addSentPotatoes($this->UserBuyer, 2, new DateTime('2026-11-08 09:00:00', 'UTC'));
+        $this->addSentPotatoes($this->UserBuyer, 1, new DateTime('2026-11-08 18:00:00', 'UTC'));
+        // 2026-11-09 nothing sent, ignored
+        // Today is still running, ignored
+        $this->addSentPotatoes($this->UserBuyer, 1, new DateTime('2026-11-10 08:00:00', 'UTC'));
+
+        $this->assertSame(6, $this->UserBuyer->superPotatoUnspent());
+    }
+
+    /**
+     * Test superPotatoUnspent uses the user's local days
+     *
+     * @return void
+     */
+    public function testSuperPotatoUnspentUsesUserTimeZone(): void
+    {
+        Chronos::setTestNow(new Chronos('2026-11-10 12:00:00', 'UTC'));
+
+        // Same UTC day, but Nov 7 and Nov 8 in Los Angeles
+        $this->addSentPotatoes($this->UserUS, 1, new DateTime('2026-11-08 03:00:00', 'UTC'));
+        $this->addSentPotatoes($this->UserUS, 1, new DateTime('2026-11-08 20:00:00', 'UTC'));
+
+        $this->assertSame(8, $this->UserUS->superPotatoUnspent());
+    }
+
+    /**
+     * Test superPotatoLeft and superPotatoProgress
+     *
+     * @return void
+     */
+    public function testSuperPotatoLeft(): void
+    {
+        Chronos::setTestNow(new Chronos('2026-11-20 12:00:00', 'UTC'));
+
+        // 6 days with 4 unspent each = 24 unspent = 1 super potato + 4 progress
+        for ($day = 10; $day <= 15; $day++) {
+            $this->addSentPotatoes($this->UserBuyer, 1, new DateTime('2026-11-' . $day . ' 12:00:00', 'UTC'));
+        }
+
+        $this->assertSame(1, $this->UserBuyer->superPotatoLeft());
+        $this->assertSame(4, $this->UserBuyer->superPotatoProgress());
+
+        $messagesTable = $this->fetchTable('Messages');
+        $messagesTable->saveOrFail($messagesTable->newEntity([
+            'sender_user_id' => $this->UserBuyer->id,
+            'receiver_user_id' => $this->UserEurope->id,
+            'type' => Message::TYPE_SUPER_POTATO,
+            'amount' => Message::SUPER_POTATO_VALUE,
+        ], ['accessibleFields' => ['*' => true]]));
+
+        $this->assertSame(1, $this->UserBuyer->superPotatoSent());
+        $this->assertSame(0, $this->UserBuyer->superPotatoLeft());
+        // Super potatoes count towards received potato, but not towards the daily limit
+        $this->assertSame(6 + Message::SUPER_POTATO_VALUE, $this->UserEurope->potatoReceived());
+        $this->assertSame(Message::MAX_AMOUNT, $this->UserBuyer->potatoLeftToday());
+    }
+
+    private function addSentPotatoes(User $user, int $amount, DateTime $created): void
+    {
+        $messagesTable = $this->fetchTable('Messages');
+        $message = $messagesTable->newEntity([
+            'sender_user_id' => $user->id,
+            'receiver_user_id' => $this->UserEurope->id,
+            'type' => Message::TYPE_POTATO,
+            'amount' => $amount,
+            'created' => $created,
+        ], ['accessibleFields' => ['*' => true]]);
+        $messagesTable->saveOrFail($message);
+    }
+
     private function addReceivedPotatoes(User $user, int $amount): void
     {
         $messagesTable = $this->fetchTable('Messages');

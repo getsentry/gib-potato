@@ -10,6 +10,10 @@ func MessageAmount(text string) int {
 	return strings.Count(text, ":"+constants.Potato+":")
 }
 
+func MessageSuperPotatoAmount(text string) int {
+	return strings.Count(text, ":"+constants.SuperPotato+":")
+}
+
 func MessageReceivers(text string) []string {
 	return getRecievers(text)
 }

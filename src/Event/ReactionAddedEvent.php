@@ -5,6 +5,7 @@ namespace App\Event;
 
 use App\Event\Validation\Exception\PotatoException;
 use App\Event\Validation\Validation;
+use App\Model\Entity\Message;
 use App\Service\AwardService;
 use App\Service\NotificationService;
 use App\Service\UserService;
@@ -61,10 +62,16 @@ class ReactionAddedEvent extends AbstractEvent
         );
 
         try {
-            $validator
-                ->amount()
-                ->receivers()
-                ->sender();
+            if (Message::isSuperPotato($this->reaction)) {
+                $validator
+                    ->receivers()
+                    ->superPotatoSender();
+            } else {
+                $validator
+                    ->amount()
+                    ->receivers()
+                    ->sender();
+            }
         } catch (PotatoException $e) {
             $this->slackClient->postEphemeral(
                 channel: $this->channel,

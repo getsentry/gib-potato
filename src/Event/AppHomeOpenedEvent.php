@@ -3,6 +3,7 @@ declare(strict_types=1);
 
 namespace App\Event;
 
+use App\Model\Entity\Message;
 use App\Service\UserService;
 
 class AppHomeOpenedEvent extends AbstractEvent
@@ -77,6 +78,23 @@ class AppHomeOpenedEvent extends AbstractEvent
                                     $user->potatoResetInHours(),
                                     $user->potatoResetInMinutes(),
                                 ),
+                        ],
+                    ],
+                    [
+                        'type' => 'section',
+                        'text' => [
+                            'type' => 'mrkdwn',
+                            'text' => sprintf(
+                                'You have *%s* :%s: to gib. Every *%s* :potato: you don\'t gib out by the end of ' .
+                                'the day do add up to one super potato (worth *%s* :potato:). ' .
+                                'You\'re *%s/%s* of the way to your next one.',
+                                $user->superPotatoLeft(),
+                                Message::TYPE_SUPER_POTATO,
+                                Message::SUPER_POTATO_COST,
+                                Message::SUPER_POTATO_VALUE,
+                                $user->superPotatoProgress(),
+                                Message::SUPER_POTATO_COST,
+                            ),
                         ],
                     ],
                     [

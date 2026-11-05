@@ -163,22 +163,24 @@ func (h *Handler) EventsHandler(w http.ResponseWriter, r *http.Request, _ httpro
 					txn.SetData("event_type", "message")
 					defer txn.Finish()
 
-					processedEvent := event.ProcessMessageEvent(txn.Context(), ev, h.slackClient)
-					if processedEvent == nil {
+					processedEvents := event.ProcessMessageEvent(txn.Context(), ev, h.slackClient)
+					if len(processedEvents) == 0 {
 						h.emitEventMetric(txn.Context(), "potal.event.skipped", "message")
 						slog.DebugContext(txn.Context(), "event skipped", "event_type", "message")
 						return
 					}
-					err := h.potalClient.SendRequest(txn.Context(), processedEvent)
-					if err != nil {
-						h.emitEventMetric(txn.Context(), "potal.event.forward_error", "message")
-						slog.ErrorContext(txn.Context(), "failed to forward event", "event_type", "message", "error", err)
-						txn.Status = sentry.SpanStatusInternalError
-						return
-					}
-
-					h.emitEventMetric(txn.Context(), "potal.event.forwarded", "message")
 					txn.Status = sentry.SpanStatusOK
+					for _, processedEvent := range processedEvents {
+						err := h.potalClient.SendRequest(txn.Context(), processedEvent)
+						if err != nil {
+							h.emitEventMetric(txn.Context(), "potal.event.forward_error", "message")
+							slog.ErrorContext(txn.Context(), "failed to forward event", "event_type", "message", "error", err)
+							txn.Status = sentry.SpanStatusInternalError
+							continue
+						}
+
+						h.emitEventMetric(txn.Context(), "potal.event.forwarded", "message")
+					}
 				}()
 			}
 		case *slackevents.ReactionAddedEvent:

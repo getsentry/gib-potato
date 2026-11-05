@@ -3,7 +3,10 @@ declare(strict_types=1);
 
 namespace App\Test\TestCase\Controller;
 
+use App\Model\Entity\Message;
 use App\Test\TestCase\FactoryTrait;
+use Cake\Chronos\Chronos;
+use Cake\I18n\DateTime;
 use Cake\TestSuite\IntegrationTestTrait;
 use Cake\TestSuite\TestCase;
 
@@ -31,6 +34,13 @@ class EventsControllerTest extends TestCase
         $this->usePotalToken();
 
         parent::setUp();
+    }
+
+    public function tearDown(): void
+    {
+        Chronos::setTestNow();
+
+        parent::tearDown();
     }
 
     public function testTypeMessage(): void
@@ -114,6 +124,46 @@ class EventsControllerTest extends TestCase
         $this->assertSame(1, $messages->first()->amount);
     }
 
+    public function testTypeReactionAddedSuperPotatoWithoutBalance(): void
+    {
+        $this->mockSlackClientPostEphemeral();
+
+        $this->post('/events', json_encode($this->superPotatoReactionEvent()));
+
+        $this->assertResponseOk();
+        $this->assertSame(0, $this->fetchTable('Messages')->find()->count());
+    }
+
+    public function testTypeReactionAddedSuperPotato(): void
+    {
+        $this->mockSlackClientPostMessage();
+
+        // 5 past days with 1 potato given each = 20 unspent potato = 1 super potato
+        $messagesTable = $this->fetchTable('Messages');
+        for ($day = 1; $day <= 5; $day++) {
+            $messagesTable->saveOrFail($messagesTable->newEntity([
+                'sender_user_id' => '00000000-0000-0000-0000-000000000001',
+                'receiver_user_id' => '00000000-0000-0000-0000-000000000003',
+                'type' => Message::TYPE_POTATO,
+                'amount' => 1,
+                'created' => (new DateTime(Message::SUPER_POTATO_START, 'UTC'))->addDays($day)->addHours(12),
+            ], ['accessibleFields' => ['*' => true]]));
+        }
+        Chronos::setTestNow((new Chronos(Message::SUPER_POTATO_START, 'UTC'))->addDays(10));
+
+        $this->post('/events', json_encode($this->superPotatoReactionEvent()));
+
+        $this->assertResponseOk();
+
+        $message = $messagesTable->find()
+            ->where(['type' => Message::TYPE_SUPER_POTATO])
+            ->firstOrFail();
+
+        $this->assertSame('00000000-0000-0000-0000-000000000001', $message->sender_user_id);
+        $this->assertSame('00000000-0000-0000-0000-000000000002', $message->receiver_user_id);
+        $this->assertSame(Message::SUPER_POTATO_VALUE, $message->amount);
+    }
+
     public function testTypeAppMentionEvent(): void
     {
         $this->post('/events', json_encode([
@@ -142,5 +192,23 @@ class EventsControllerTest extends TestCase
 
         $this->assertResponseOk();
         $this->assertHeader('Content-Type', 'application/json');
+    }
+
+    private function superPotatoReactionEvent(): array
+    {
+        return [
+            'type' => 'reaction_added',
+            'amount' => 1,
+            'sender' => 'U1111',
+            'receivers' => [
+                'U2222',
+            ],
+            'channel' => 'C1111',
+            'text' => '<@U2222> :superpotato:',
+            'reaction' => ':superpotato:',
+            'timestamp' => '1672531200',
+            'event_timestamp' => '1672531200',
+            'permalink' => 'https://example.com/permalink',
+        ];
     }
 }

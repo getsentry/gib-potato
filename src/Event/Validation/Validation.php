@@ -75,6 +75,37 @@ class Validation
      * @return $this
      * @throws \App\Event\Validation\Exception\PotatoException
      */
+    public function superPotatoSender()
+    {
+        $left = $this->sender->superPotatoLeft();
+        $needed = $this->event->amount * count($this->event->receivers);
+
+        if ($left === 0) {
+            throw new PotatoException(sprintf(
+                'You don\'t have any :%s: left 😢 Every *%s* :potato: you don\'t gib out by the end ' .
+                'of the day do add up to one. You\'re *%s/%s* of the way to your next one.',
+                Message::TYPE_SUPER_POTATO,
+                Message::SUPER_POTATO_COST,
+                $this->sender->superPotatoProgress(),
+                Message::SUPER_POTATO_COST,
+            ));
+        }
+
+        if ($needed > $left) {
+            throw new PotatoException(sprintf(
+                'You only have *%s* :%s: to gib 😢',
+                $left,
+                Message::TYPE_SUPER_POTATO,
+            ));
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return $this
+     * @throws \App\Event\Validation\Exception\PotatoException
+     */
     public function sender()
     {
         $sent = $this->sender->potatoSentToday();

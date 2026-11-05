@@ -19,6 +19,7 @@ func TestScrubText(t *testing.T) {
 		{"hey <@U123ABC> <@U456DEF> :potato::potato: you rock", "<@U123ABC> <@U456DEF> :potato: :potato:"},
 		{"just some random text", ""},
 		{":potato: :admission_tickets: <@U123ABC>", ":potato: <@U123ABC>"},
+		{"<@U123ABC> :superpotato: legend", "<@U123ABC> :superpotato:"},
 	}
 
 	for _, test := range tests {

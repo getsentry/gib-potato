@@ -94,7 +94,7 @@ class User extends Entity
             ])
             ->where([
                 'sender_user_id' => $this->id,
-                'type' => Message::TYPE_POTATO,
+                'type IN' => [Message::TYPE_POTATO, Message::TYPE_SUPER_POTATO],
             ])
             ->first();
 
@@ -115,7 +115,7 @@ class User extends Entity
             ])
             ->where([
                 'receiver_user_id' => $this->id,
-                'type' => Message::TYPE_POTATO,
+                'type IN' => [Message::TYPE_POTATO, Message::TYPE_SUPER_POTATO],
             ])
             ->first();
 
@@ -186,6 +186,79 @@ class User extends Entity
             ->first();
 
         return Message::MAX_AMOUNT - (int)$result->sent;
+    }
+
+    /**
+     * Unspent potatoes from past days that count towards super potatoes.
+     *
+     * Only days on which the user did gib at least one potato count, so the
+     * bank doesn't fill up for people who never use GibPotato.
+     *
+     * @return int
+     */
+    public function superPotatoUnspent(): int
+    {
+        $messagesTable = $this->fetchTable('Messages');
+
+        $query = $messagesTable->find();
+        $result = $query
+            ->select([
+                'active_days' => $query->expr(
+                    'COUNT(DISTINCT DATE((Messages.created AT TIME ZONE \'UTC\') AT TIME ZONE :time_zone))',
+                ),
+                'sent' => $query->func()->sum('amount'),
+            ])
+            ->where([
+                'sender_user_id' => $this->id,
+                'type' => Message::TYPE_POTATO,
+                'created >=' => new DateTime(Message::SUPER_POTATO_START, 'UTC'),
+                'created <' => $this->getStartOfDay(),
+            ])
+            ->bind(':time_zone', $this->slack_time_zone, 'string')
+            ->first();
+
+        return max(0, (int)$result->active_days * Message::MAX_AMOUNT - (int)$result->sent);
+    }
+
+    /**
+     * @return int
+     */
+    public function superPotatoSent(): int
+    {
+        $messagesTable = $this->fetchTable('Messages');
+
+        $query = $messagesTable->find();
+        $result = $query
+            ->select([
+                'sent' => $query->func()->sum('amount'),
+            ])
+            ->where([
+                'sender_user_id' => $this->id,
+                'type' => Message::TYPE_SUPER_POTATO,
+            ])
+            ->first();
+
+        return intdiv((int)$result->sent, Message::SUPER_POTATO_VALUE);
+    }
+
+    /**
+     * @return int
+     */
+    public function superPotatoLeft(): int
+    {
+        $unlocked = intdiv($this->superPotatoUnspent(), Message::SUPER_POTATO_COST);
+
+        return max(0, $unlocked - $this->superPotatoSent());
+    }
+
+    /**
+     * Unspent potatoes collected towards the next super potato.
+     *
+     * @return int
+     */
+    public function superPotatoProgress(): int
+    {
+        return $this->superPotatoUnspent() % Message::SUPER_POTATO_COST;
     }
 
     /**

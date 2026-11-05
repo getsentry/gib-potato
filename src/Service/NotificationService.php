@@ -6,6 +6,7 @@ namespace App\Service;
 use App\Event\MessageEvent;
 use App\Event\ReactionAddedEvent;
 use App\Http\SlackClient;
+use App\Model\Entity\Message;
 use App\Model\Entity\User;
 use Cake\ORM\Locator\LocatorAwareTrait;
 
@@ -34,6 +35,8 @@ class NotificationService
         array $toUsers,
         MessageEvent|ReactionAddedEvent $event,
     ): void {
+        $isSuperPotato = Message::isSuperPotato($event->reaction);
+
         $toUserNames = [];
         foreach ($toUsers as $toUser) {
             $toUserNames[] = sprintf('<@%s>', $toUser->slack_user_id);
@@ -45,6 +48,12 @@ class NotificationService
                     $event->amount,
                     $event->reaction,
                 );
+                if ($isSuperPotato) {
+                    $receivedMessage .= sprintf(
+                        ' That\'s worth *%s* :potato:!',
+                        $event->amount * Message::SUPER_POTATO_VALUE,
+                    );
+                }
                 $receivedMessage .= PHP_EOL;
                 $receivedMessage .= sprintf('> %s', $event->permalink);
 
@@ -56,8 +65,6 @@ class NotificationService
         }
 
         if ($fromUser->notifications['sent'] === true) {
-            $potatoLeftToday = $fromUser->potatoLeftToday();
-
             $gibMessage = sprintf(
                 'You did gib *%s* %s to %s.',
                 $event->amount * count($toUserNames),
@@ -65,12 +72,20 @@ class NotificationService
                 implode(', ', $toUserNames),
             );
             $gibMessage .= PHP_EOL;
-            $gibMessage .= sprintf(
-                'You have *%s* :potato: left. Your potato do reset in *%s hours* and *%s minutes*.',
-                $potatoLeftToday,
-                $fromUser->potatoResetInHours(),
-                $fromUser->potatoResetInMinutes(),
-            );
+            if ($isSuperPotato) {
+                $gibMessage .= sprintf(
+                    'You have *%s* :%s: left.',
+                    $fromUser->superPotatoLeft(),
+                    Message::TYPE_SUPER_POTATO,
+                );
+            } else {
+                $gibMessage .= sprintf(
+                    'You have *%s* :potato: left. Your potato do reset in *%s hours* and *%s minutes*.',
+                    $fromUser->potatoLeftToday(),
+                    $fromUser->potatoResetInHours(),
+                    $fromUser->potatoResetInMinutes(),
+                );
+            }
             $gibMessage .= PHP_EOL;
             $gibMessage .= sprintf('> %s', $event->permalink);
 

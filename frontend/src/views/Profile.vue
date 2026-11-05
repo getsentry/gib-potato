@@ -21,6 +21,11 @@
                 <strong>{{ user.potato_reset_in_minutes }}</strong> minutes.
             </p>
             <p class="mt-1 text-sm text-zinc-500">
+                You have <strong>{{ user.super_potato_left ?? 0 }}</strong> super 🥔 to gib.
+                <strong>{{ user.super_potato_progress ?? 0 }}</strong> unspent 🥔 did add up towards
+                your next one.
+            </p>
+            <p class="mt-1 text-sm text-zinc-500">
                 You did gib <strong>{{ user.sent_count ?? 0 }}</strong> 🥔 and did receive
                 <strong>{{ user.received_count ?? 0 }}</strong> 🥔 since you started potatoing
                 <strong

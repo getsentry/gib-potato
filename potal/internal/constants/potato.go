@@ -1,3 +1,6 @@
 package constants
 
-const Potato string = "potato"
+const (
+	Potato      string = "potato"
+	SuperPotato string = "superpotato"
+)
