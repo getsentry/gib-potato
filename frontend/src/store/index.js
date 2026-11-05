@@ -95,14 +95,6 @@ const store = createStore({
                 console.error(error);
             }
         },
-        async toggleVouchersNotifications({ commit, getters }) {
-            commit('TOGGLE_VOUCHERS_NOTIFICATIONS');
-            try {
-                await api.patch('user', getters.user);
-            } catch (error) {
-                console.error(error);
-            }
-        },
         setRangeFilter({ commit }, range) {
             commit('SET_RANGE_FILTER', range);
         },
@@ -134,9 +126,6 @@ const store = createStore({
         },
         TOGGLE_TOO_GOOD_TO_GO_NOTIFICATIONS(state) {
             state.user.notifications.too_good_to_go = !state.user.notifications.too_good_to_go;
-        },
-        TOGGLE_VOUCHERS_NOTIFICATIONS(state) {
-            state.user.notifications.vouchers = !state.user.notifications.vouchers;
         },
         SET_RANGE_FILTER(state, range) {
             state.filter.range = range;
