@@ -12,18 +12,18 @@
     },
     "dependencies": {
         "@laravel/multiplex": "^0.4.5",
-        "@sentry/bundler-plugins": "^11.10.0",
-        "@sentry/vue": "^11.10.0",
-        "@tailwindcss/vite": "^4.3.3",
+        "@sentry/bundler-plugins": "^11.11.0",
+        "@sentry/vue": "^11.11.0",
+        "@tailwindcss/vite": "^4.3.5",
         "axios": "^1.21.0",
-        "vue": "^3.5.44",
+        "vue": "^3.5.45",
         "vue-router": "^5.4.0",
         "vue-select": "^4.0.0-beta.6",
         "vuex": "^4.1.0"
     },
     "devDependencies": {
         "@vitejs/plugin-vue": "^6.0.10",
-        "vite-plus": "^1.4.0"
+        "vite-plus": "^1.5.0"
     },
     "overrides": {
         "glob": "^14.0.3"
@@ -35,7 +35,7 @@
             "onFail": "download"
         }
     },
-    "packageManager": "npm@12.2.1",
+    "packageManager": "npm@12.2.2",
     "allowScripts": {
         "fsevents@2.3.3": true
     }
