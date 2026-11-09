@@ -6,36 +6,13 @@ use Illuminate\Support\Facades\Http;
 
 class SlackClient
 {
-    public function addReaction(string $channel, string $timestamp, string $emoji): void
+    public function setAgentSessionStatus(string $channel, string $threadTs, string $status): void
     {
-        $this->post('reactions.add', [
-            'channel' => $channel,
-            'timestamp' => $timestamp,
-            'name' => $emoji,
-        ]);
-    }
-
-    public function removeReaction(string $channel, string $timestamp, string $emoji): void
-    {
-        $this->post('reactions.remove', [
-            'channel' => $channel,
-            'timestamp' => $timestamp,
-            'name' => $emoji,
-        ]);
-    }
-
-    public function setAssistantStatus(string $channel, string $threadTs, string $status = 'is thinking...'): void
-    {
-        $this->post('assistant.threads.setStatus', [
+        $this->post('agents.sessions.setStatus', [
             'channel_id' => $channel,
             'thread_ts' => $threadTs,
             'status' => $status,
         ]);
-    }
-
-    public function clearAssistantStatus(string $channel, string $threadTs): void
-    {
-        $this->setAssistantStatus($channel, $threadTs, '');
     }
 
     public function fetchMessage(string $channel, string $timestamp): ?string
