@@ -1,3 +1,4 @@
+# syntax=docker/dockerfile:1
 FROM ubuntu:24.04 AS php-local
 
 ENV DEBIAN_FRONTEND=noninteractive
@@ -29,6 +30,10 @@ RUN \
     php8.5-zip \
     php8.5-excimer
 
+# Matches the release on Packagist (sentry/sentry-php-tracer). Built from source, as PIE
+# runs ./configure without --enable-sentry, which the extension needs to be compiled.
+ARG SENTRY_PHP_TRACER_VERSION=0.1.0
+
 RUN \
     apt-get install -y --no-install-recommends \
     php8.5-dev \
@@ -37,7 +42,7 @@ RUN \
     make \
     gcc \
     g++ && \
-    git clone --branch main --single-branch https://github.com/getsentry/sentry-php-tracer.git /tmp/sentry-php-tracer && \
+    git clone --depth 1 --branch "$SENTRY_PHP_TRACER_VERSION" https://github.com/getsentry/sentry-php-tracer.git /tmp/sentry-php-tracer && \
     cd /tmp/sentry-php-tracer && \
     phpize && \
     ./configure --enable-sentry && \
@@ -88,7 +93,8 @@ COPY ./package.json package.json
 COPY ./package-lock.json package-lock.json
 COPY ./vite.config.js vite.config.js
 
-RUN \
+# Uploads source maps to Sentry when the SENTRY_AUTH_TOKEN secret is provided
+RUN --mount=type=secret,id=SENTRY_AUTH_TOKEN,env=SENTRY_AUTH_TOKEN \
     npm ci && \
     npm run build
 
