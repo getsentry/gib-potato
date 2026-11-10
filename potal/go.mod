@@ -1,6 +1,6 @@
 module github.com/getsentry/gib-potato
 
-go 1.27.0
+go 1.27.4
 
 require (
 	github.com/getsentry/sentry-go v0.50.0
@@ -13,5 +13,5 @@ require (
 require (
 	github.com/gorilla/websocket v1.5.3 // indirect
 	golang.org/x/sys v0.50.0 // indirect
-	golang.org/x/text v0.43.0 // indirect
+	golang.org/x/text v0.44.0 // indirect
 )
