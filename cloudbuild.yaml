@@ -52,7 +52,7 @@ steps:
       args: ['docker/cloudbuild/upload-assets.sh']
       waitFor: ['build-backend']
 substitutions:
-    # Set to true on a manual run to rebuild all images, e.g. to pick up new base images
+    # Images already rebuild from scratch weekly, set to true on a manual run to rebuild all images now
     _FORCE_BUILD: 'false'
 options:
     machineType: 'E2_HIGHCPU_8'

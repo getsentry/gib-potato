@@ -30,8 +30,9 @@ RUN \
     php8.5-zip \
     php8.5-excimer
 
-# Pinned, so cached builds are reproducible
-ARG SENTRY_PHP_TRACER_REF=cb70be57333eb924df621c9f3f5aa475fd29253d
+# Matches the release on Packagist (sentry/sentry-php-tracer). Built from source, as PIE
+# runs ./configure without --enable-sentry, which the extension needs to be compiled.
+ARG SENTRY_PHP_TRACER_VERSION=0.1.0
 
 RUN \
     apt-get install -y --no-install-recommends \
@@ -41,10 +42,8 @@ RUN \
     make \
     gcc \
     g++ && \
-    git init /tmp/sentry-php-tracer && \
+    git clone --depth 1 --branch "$SENTRY_PHP_TRACER_VERSION" https://github.com/getsentry/sentry-php-tracer.git /tmp/sentry-php-tracer && \
     cd /tmp/sentry-php-tracer && \
-    git fetch --depth 1 https://github.com/getsentry/sentry-php-tracer.git "$SENTRY_PHP_TRACER_REF" && \
-    git checkout FETCH_HEAD && \
     phpize && \
     ./configure --enable-sentry && \
     make -j"$(nproc)" && \
