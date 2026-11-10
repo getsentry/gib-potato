@@ -98,12 +98,6 @@ RUN --mount=type=secret,id=SENTRY_AUTH_TOKEN,env=SENTRY_AUTH_TOKEN \
     npm ci && \
     npm run build
 
-# Used by Cloud Build to export the built assets
-FROM scratch AS assets
-
-COPY --from=js-build /app/webroot/assets assets
-COPY --from=js-build /app/webroot/.vite/manifest.json manifest.json
-
 FROM php-local AS php-build
 
 COPY --from=composer:latest /usr/bin/composer /usr/local/bin/composer

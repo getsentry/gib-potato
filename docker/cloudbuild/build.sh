@@ -8,19 +8,20 @@ image="us-central1-docker.pkg.dev/${PROJECT_ID}/${service}/${service}"
 state=/workspace/.cloudbuild
 mkdir -p "$state"
 
+# Each service's inputs include this script, so changes to the build options rebuild the images
 case "$service" in
     potal)
-        inputs=(potal docker/potal)
+        inputs=(potal docker/potal docker/cloudbuild/build.sh)
         ;;
     shopato)
-        inputs=(shopato docker/shopato)
+        inputs=(shopato docker/shopato docker/cloudbuild/build.sh)
         ;;
     backend)
         # Keep in sync with the COPY instructions in docker/backend/Dockerfile
         inputs=(
             bin config resources src templates webroot frontend index.php
             composer.json composer.lock package.json package-lock.json vite.config.js
-            docker/backend
+            docker/backend docker/cloudbuild/build.sh
         )
         ;;
     *)
@@ -69,13 +70,4 @@ else
         --push \
         .
     touch "${state}/${service}.built"
-fi
-
-if [[ "$service" == "backend" ]]; then
-    # Export the frontend assets for upload, also when the build was skipped, so a failed
-    # export or upload is retried on the next run. Stages come from the cache.
-    docker buildx build "${args[@]}" \
-        --target assets \
-        --output "type=local,dest=${state}/assets" \
-        .
 fi

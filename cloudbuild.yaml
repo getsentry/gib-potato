@@ -46,11 +46,6 @@ steps:
       entrypoint: bash
       args: ['docker/cloudbuild/deploy.sh', 'backend']
       waitFor: ['build-backend']
-    - name: 'gcr.io/google.com/cloudsdktool/cloud-sdk:slim'
-      id: upload-assets
-      entrypoint: bash
-      args: ['docker/cloudbuild/upload-assets.sh']
-      waitFor: ['build-backend']
 substitutions:
     # Images already rebuild from scratch weekly, set to true on a manual run to rebuild all images now
     _FORCE_BUILD: 'false'
