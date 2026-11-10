@@ -23,21 +23,13 @@ class SlackController extends Controller
         $threadKey = $request->threadKey();
         $channel = $request->validated('channel');
 
-        if ($messageTs) {
-            $slack->addReaction($channel, $messageTs, 'potato');
-        }
-
         if ($threadKey) {
-            $slack->setAssistantStatus($channel, $threadKey);
+            $slack->setAgentSessionStatus($channel, $threadKey, 'processing');
         }
 
         try {
             $prompt = $this->buildPrompt($request, $slack);
             $response = $this->promptAgent($user, $channel, $threadKey, $prompt);
-
-            if ($messageTs) {
-                $slack->addReaction($channel, $messageTs, 'white_check_mark');
-            }
 
             $text = trim((string) $response);
 
@@ -46,11 +38,7 @@ class SlackController extends Controller
             }
         } finally {
             if ($threadKey) {
-                $slack->clearAssistantStatus($channel, $threadKey);
-            }
-
-            if ($messageTs) {
-                $slack->removeReaction($channel, $messageTs, 'potato');
+                $slack->setAgentSessionStatus($channel, $threadKey, 'active');
             }
         }
 
