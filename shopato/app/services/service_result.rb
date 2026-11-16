@@ -21,10 +21,10 @@ class ServiceResult
   end
 
   def self.success(data: nil)
-    new(success: true, data: data)
+    new(success: true, data:)
   end
 
   def self.failure(errors: [], message: nil)
-    new(success: false, errors: errors, message: message)
+    new(success: false, errors:, message:)
   end
 end

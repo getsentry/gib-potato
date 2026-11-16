@@ -5,7 +5,7 @@ require "webmock/minitest"
 require "mocha/minitest"
 
 # Load test support files
-Dir[Rails.root.join("test/support/**/*.rb")].each { |f| require f }
+Dir[Rails.root.join("test/support/**/*.rb")].each { require it }
 
 module ActiveSupport
   class TestCase

@@ -91,9 +91,8 @@ module GiftCardTestHelper
 
   def assert_unprocessable_response_with_errors(expected_errors)
     assert_response :unprocessable_content
-    response_body = JSON.parse(response.body)
     Array(expected_errors).each do |error|
-      assert_includes response_body["errors"], error
+      assert_includes response.parsed_body["errors"], error
     end
   end
 end
