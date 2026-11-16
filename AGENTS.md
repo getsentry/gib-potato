@@ -66,3 +66,7 @@ bundle update
 ```
 
 To also bump Gemfile version constraints (not just the lockfile), manually update the version strings in `Gemfile` to match the resolved versions in `Gemfile.lock` after running `bundle update`.
+
+## Postgres (docker-compose.yml, CI)
+
+Keep the `postgres` image major version in `docker-compose.yml` and `.github/workflows/php-ci.yml` the same as production's Cloud SQL `database_version` in getsentry/ops `terraform/gib-potato/sql.tf`. When prod is on a newer major, bump both as part of the update. Local and CI major bumps are fine; developers recreate their local `db` volume.
