@@ -8,19 +8,19 @@ const api = {
     },
 
     get(resource, config) {
-        return axios.get(`${resource}`, config);
+        return axios.get(resource, config);
     },
 
     post(resource, data, config) {
-        return axios.post(`${resource}`, data, config);
+        return axios.post(resource, data, config);
     },
 
     put(resource, data, config) {
-        return axios.put(`${resource}`, data, config);
+        return axios.put(resource, data, config);
     },
 
     patch(resource, data, config) {
-        return axios.patch(`${resource}`, data, config);
+        return axios.patch(resource, data, config);
     },
 
     delete(resource, config) {
