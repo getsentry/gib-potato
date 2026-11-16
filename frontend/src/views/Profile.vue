@@ -9,8 +9,7 @@
         <div class="py-4">
             <h2 class="text-lg font-medium leading-6">Your Account Info</h2>
             <p class="mt-1 text-sm text-zinc-500">
-                Time zone is set to <strong>{{ user.slack_time_zone }}</strong
-                >.
+                Time zone is set to <strong>{{ user.slack_time_zone }}</strong>.
             </p>
         </div>
         <div class="py-4">
