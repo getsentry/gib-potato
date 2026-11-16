@@ -8,7 +8,7 @@ class PromptBuilder
     private array $threadMessages = [];
 
     public function __construct(
-        private string $instruction,
+        private readonly string $instruction,
     ) {}
 
     public static function for(string $instruction): self

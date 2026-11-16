@@ -2,10 +2,16 @@
 
 namespace App\Services;
 
+use Illuminate\Container\Attributes\Config;
 use Illuminate\Support\Facades\Http;
 
-class SlackClient
+readonly class SlackClient
 {
+    public function __construct(
+        #[Config('services.slack.notifications.bot_user_oauth_token')]
+        private ?string $token,
+    ) {}
+
     public function setAgentSessionStatus(string $channel, string $threadTs, string $status): void
     {
         $this->post('agents.sessions.setStatus', [
@@ -17,13 +23,11 @@ class SlackClient
 
     public function fetchMessage(string $channel, string $timestamp): ?string
     {
-        $token = $this->token();
-
-        if (! $token) {
+        if (! $this->token) {
             return null;
         }
 
-        $response = Http::withToken($token)
+        $response = Http::withToken($this->token)
             ->get('https://slack.com/api/conversations.history', [
                 'channel' => $channel,
                 'latest' => $timestamp,
@@ -48,20 +52,16 @@ class SlackClient
         $this->post('chat.postMessage', $payload);
     }
 
+    /**
+     * @param  array<string, mixed>  $payload
+     */
     private function post(string $endpoint, array $payload): void
     {
-        $token = $this->token();
-
-        if (! $token) {
+        if (! $this->token) {
             return;
         }
 
-        Http::withToken($token)
+        Http::withToken($this->token)
             ->post("https://slack.com/api/{$endpoint}", $payload);
-    }
-
-    private function token(): ?string
-    {
-        return config('services.slack.notifications.bot_user_oauth_token');
     }
 }
