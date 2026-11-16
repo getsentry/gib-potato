@@ -9,7 +9,6 @@ use Cake\ORM\RulesChecker;
 use Cake\ORM\Table;
 use Cake\Utility\Security;
 use Cake\Validation\Validator;
-use Override;
 
 /**
  * ApiTokens Model
@@ -38,7 +37,6 @@ class ApiTokensTable extends Table
      * @param array $config The configuration for the Table.
      * @return void
      */
-    #[Override]
     public function initialize(array $config): void
     {
         parent::initialize($config);
@@ -61,7 +59,6 @@ class ApiTokensTable extends Table
      * @param \Cake\Validation\Validator $validator Validator instance.
      * @return \Cake\Validation\Validator
      */
-    #[Override]
     public function validationDefault(Validator $validator): Validator
     {
         $validator
@@ -88,7 +85,6 @@ class ApiTokensTable extends Table
      * @param \Cake\ORM\RulesChecker $rules The rules object to be modified.
      * @return \Cake\ORM\RulesChecker
      */
-    #[Override]
     public function buildRules(RulesChecker $rules): RulesChecker
     {
         $rules->add($rules->existsIn('user_id', 'Users'), ['errorField' => 'user_id']);

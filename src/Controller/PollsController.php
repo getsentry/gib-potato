@@ -8,14 +8,12 @@ use App\Service\PollService;
 use App\Service\UserService;
 use Cake\Controller\Controller;
 use Cake\Http\Response;
-use Override;
 
 class PollsController extends Controller
 {
     /**
      * @inheritDoc
      */
-    #[Override]
     public function initialize(): void
     {
         parent::initialize();

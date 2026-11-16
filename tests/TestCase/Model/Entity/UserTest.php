@@ -8,7 +8,6 @@ use App\Model\Entity\User;
 use Cake\Chronos\Chronos;
 use Cake\I18n\DateTime;
 use Cake\TestSuite\TestCase;
-use Override;
 
 /**
  * App\Model\Entity\User Test Case
@@ -39,7 +38,6 @@ class UserTest extends TestCase
      *
      * @return void
      */
-    #[Override]
     protected function setUp(): void
     {
         parent::setUp();
@@ -57,7 +55,6 @@ class UserTest extends TestCase
      *
      * @return void
      */
-    #[Override]
     protected function tearDown(): void
     {
         unset($this->UserEurope);

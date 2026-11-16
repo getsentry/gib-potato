@@ -6,7 +6,6 @@ namespace App\Identifier;
 use ArrayAccess;
 use Authentication\Identifier\AbstractIdentifier;
 use Cake\ORM\Locator\LocatorAwareTrait;
-use Override;
 use function Cake\Core\env;
 
 class DieterIdentifier extends AbstractIdentifier
@@ -16,7 +15,6 @@ class DieterIdentifier extends AbstractIdentifier
     /**
      * @inheritDoc
      */
-    #[Override]
     public function identify(array $credentials): ArrayAccess|array|null
     {
         if (!isset($credentials['token'])) {

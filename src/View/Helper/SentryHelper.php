@@ -4,7 +4,6 @@ declare(strict_types=1);
 namespace App\View\Helper;
 
 use Cake\View\Helper;
-use Override;
 use Sentry\SentrySdk;
 use Sentry\Tracing\Span;
 
@@ -33,7 +32,6 @@ class SentryHelper extends Helper
     /**
      * @inheritDoc
      */
-    #[Override]
     public function initialize(array $config): void
     {
         $this->span = SentrySdk::getCurrentHub()->getSpan();

@@ -17,7 +17,6 @@ declare(strict_types=1);
 namespace App\Controller;
 
 use Cake\Controller\Controller;
-use Override;
 
 /**
  * Application Controller
@@ -38,7 +37,6 @@ class AppController extends Controller
      *
      * @return void
      */
-    #[Override]
     public function initialize(): void
     {
         parent::initialize();

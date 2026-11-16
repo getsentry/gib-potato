@@ -4,7 +4,6 @@ declare(strict_types=1);
 namespace App\Event;
 
 use App\Service\UserService;
-use Override;
 
 class DirectMessageEvent extends AbstractEvent
 {
@@ -33,7 +32,6 @@ class DirectMessageEvent extends AbstractEvent
     /**
      * @inheritDoc
      */
-    #[Override]
     public function process(): void
     {
         if ($this->text === 'potato') {

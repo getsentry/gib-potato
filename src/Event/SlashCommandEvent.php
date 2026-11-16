@@ -6,7 +6,6 @@ namespace App\Event;
 use App\Model\Entity\Poll;
 use App\Service\PollService;
 use App\Service\UserService;
-use Override;
 
 class SlashCommandEvent extends AbstractEvent
 {
@@ -34,7 +33,6 @@ class SlashCommandEvent extends AbstractEvent
     /**
      * @inheritDoc
      */
-    #[Override]
     public function process(): void
     {
         $userService = new UserService();

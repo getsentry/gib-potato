@@ -4,7 +4,6 @@ declare(strict_types=1);
 namespace App\Event;
 
 use App\Service\UserService;
-use Override;
 
 class AppHomeOpenedEvent extends AbstractEvent
 {
@@ -29,7 +28,6 @@ class AppHomeOpenedEvent extends AbstractEvent
     /**
      * @inheritDoc
      */
-    #[Override]
     public function process(): void
     {
         $userService = new UserService();

@@ -8,7 +8,6 @@ use App\Service\ProgressionService;
 use Cake\Command\Command;
 use Cake\Console\Arguments;
 use Cake\Console\ConsoleIo;
-use Override;
 use Sentry\MonitorConfig;
 use Sentry\MonitorSchedule;
 use function Sentry\withMonitor;
@@ -23,7 +22,6 @@ class ProgressionCommand extends Command
      * @param \Cake\Console\ConsoleIo $io The console io
      * @return void
      */
-    #[Override]
     public function execute(Arguments $args, ConsoleIo $io): void
     {
         withMonitor(

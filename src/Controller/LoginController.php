@@ -9,7 +9,6 @@ use Cake\Http\Client;
 use Cake\Http\Response;
 use Lcobucci\JWT\Encoding\JoseEncoder;
 use Lcobucci\JWT\Token\Parser;
-use Override;
 use Throwable;
 use function Cake\Core\env;
 
@@ -21,7 +20,6 @@ class LoginController extends AppController
     /**
      * @inheritDoc
      */
-    #[Override]
     public function beforeFilter(EventInterface $event): void
     {
         parent::beforeFilter($event);

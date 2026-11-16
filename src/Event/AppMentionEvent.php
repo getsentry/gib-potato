@@ -3,8 +3,6 @@ declare(strict_types=1);
 
 namespace App\Event;
 
-use Override;
-
 class AppMentionEvent extends AbstractEvent
 {
     protected readonly string $sender;
@@ -30,7 +28,6 @@ class AppMentionEvent extends AbstractEvent
     /**
      * @inheritDoc
      */
-    #[Override]
     public function process(): void
     {
     }

@@ -17,7 +17,6 @@ declare(strict_types=1);
 namespace App\Controller;
 
 use Cake\Event\EventInterface;
-use Override;
 
 /**
  * Error Handling Controller
@@ -32,7 +31,6 @@ class ErrorController extends AppController
      * @param \Cake\Event\EventInterface $event Event.
      * @return void
      */
-    #[Override]
     public function beforeRender(EventInterface $event): void
     {
         parent::beforeRender($event);

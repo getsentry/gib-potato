@@ -16,7 +16,6 @@ class FetchSpoonFoodMenu implements Tool
     /**
      * Get the description of the tool's purpose.
      */
-    #[\Override]
     public function description(): Stringable|string
     {
         return 'Fetch today\'s Spoon Food menu (Tageskarte) from spoonfood.at as HTML. Call when the user asks about the Spoon Food menu, lunch options, or what\'s available at Spoon Food today. Dishes inside elements with the `w-condition-invisible` class are hidden on the website, never mention them. Format the result nicely for Slack using mrkdwn.';
@@ -25,7 +24,6 @@ class FetchSpoonFoodMenu implements Tool
     /**
      * Execute the tool.
      */
-    #[\Override]
     public function handle(Request $request): Stringable|string
     {
         $response = Http::timeout(10)
@@ -90,7 +88,6 @@ class FetchSpoonFoodMenu implements Tool
     /**
      * Get the tool's schema definition.
      */
-    #[\Override]
     public function schema(JsonSchema $schema): array
     {
         return [];

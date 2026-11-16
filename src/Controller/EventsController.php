@@ -6,7 +6,6 @@ namespace App\Controller;
 use App\Event\EventFactory;
 use Cake\Controller\Controller;
 use Cake\Http\Response;
-use Override;
 use Sentry\SentrySdk;
 use Sentry\Trace;
 use function Sentry\trace_metrics;
@@ -16,7 +15,6 @@ class EventsController extends Controller
     /**
      * @inheritDoc
      */
-    #[Override]
     public function initialize(): void
     {
         parent::initialize();

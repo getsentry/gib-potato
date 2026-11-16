@@ -4,7 +4,6 @@ declare(strict_types=1);
 namespace App\View\Helper;
 
 use Cake\View\Helper;
-use Override;
 use RuntimeException;
 
 /**
@@ -34,7 +33,6 @@ class ViteHelper extends Helper
     /**
      * @inheritDoc
      */
-    #[Override]
     public function initialize(array $config): void
     {
         parent::initialize($config);

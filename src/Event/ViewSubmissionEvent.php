@@ -4,7 +4,6 @@ declare(strict_types=1);
 namespace App\Event;
 
 use App\Service\UserService;
-use Override;
 
 class ViewSubmissionEvent extends AbstractEvent
 {
@@ -35,7 +34,6 @@ class ViewSubmissionEvent extends AbstractEvent
     /**
      * @inheritDoc
      */
-    #[Override]
     public function process(): void
     {
         if ($this->callbackId === 'birthday_setup') {

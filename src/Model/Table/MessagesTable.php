@@ -6,7 +6,6 @@ namespace App\Model\Table;
 use Cake\ORM\RulesChecker;
 use Cake\ORM\Table;
 use Cake\Validation\Validator;
-use Override;
 
 /**
  * Messages Model
@@ -36,7 +35,6 @@ class MessagesTable extends Table
      * @param array $config The configuration for the Table.
      * @return void
      */
-    #[Override]
     public function initialize(array $config): void
     {
         parent::initialize($config);
@@ -65,7 +63,6 @@ class MessagesTable extends Table
      * @param \Cake\Validation\Validator $validator Validator instance.
      * @return \Cake\Validation\Validator
      */
-    #[Override]
     public function validationDefault(Validator $validator): Validator
     {
         $validator
@@ -97,7 +94,6 @@ class MessagesTable extends Table
      * @param \Cake\ORM\RulesChecker $rules The rules object to be modified.
      * @return \Cake\ORM\RulesChecker
      */
-    #[Override]
     public function buildRules(RulesChecker $rules): RulesChecker
     {
         $rules->add($rules->existsIn('sender_user_id', 'SentUsers'), ['errorField' => 'sender_user_id']);

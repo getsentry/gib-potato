@@ -3,7 +3,6 @@ declare(strict_types=1);
 
 namespace App\Middleware;
 
-use Override;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Server\MiddlewareInterface;
@@ -23,7 +22,6 @@ class SentryUserMiddleware implements MiddlewareInterface
      * @param \Psr\Http\Server\RequestHandlerInterface $handler The request handler.
      * @return \Psr\Http\Message\ResponseInterface A response.
      */
-    #[Override]
     public function process(ServerRequestInterface $request, RequestHandlerInterface $handler): ResponseInterface
     {
         $user = $request->getAttribute('identity');

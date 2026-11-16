@@ -8,7 +8,6 @@ use App\Event\Validation\Validation;
 use App\Service\AwardService;
 use App\Service\NotificationService;
 use App\Service\UserService;
-use Override;
 
 class MessageEvent extends AbstractEvent
 {
@@ -49,7 +48,6 @@ class MessageEvent extends AbstractEvent
     /**
      * @inheritDoc
      */
-    #[Override]
     public function process(): void
     {
         $userService = new UserService();

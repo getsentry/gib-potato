@@ -16,7 +16,6 @@ declare(strict_types=1);
 namespace App\View;
 
 use Cake\View\View;
-use Override;
 
 /**
  * Application View
@@ -36,7 +35,6 @@ class AppView extends View
      *
      * @return void
      */
-    #[Override]
     public function initialize(): void
     {
         $this->loadHelper('Authentication.Identity');

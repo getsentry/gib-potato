@@ -3,8 +3,6 @@ declare(strict_types=1);
 
 namespace App\Event;
 
-use Override;
-
 class LinkSharedEvent extends AbstractEvent
 {
     public readonly string $user;
@@ -36,7 +34,6 @@ class LinkSharedEvent extends AbstractEvent
     /**
      * @inheritDoc
      */
-    #[Override]
     public function process(): void
     {
         foreach ($this->links as $link) {

@@ -29,7 +29,6 @@ use Cake\Http\MiddlewareQueue;
 use Cake\ORM\Locator\TableLocator;
 use Cake\Routing\Middleware\AssetMiddleware;
 use Cake\Routing\Middleware\RoutingMiddleware;
-use Override;
 use ParagonIE\CSPBuilder\CSPBuilder;
 use Sentry\SentrySdk;
 
@@ -46,7 +45,6 @@ class Application extends BaseApplication
      *
      * @return void
      */
-    #[Override]
     public function bootstrap(): void
     {
         // Call parent to load bootstrap from files.
@@ -66,7 +64,6 @@ class Application extends BaseApplication
      * @param \Cake\Http\MiddlewareQueue $middlewareQueue The middleware queue to setup.
      * @return \Cake\Http\MiddlewareQueue The updated middleware queue.
      */
-    #[Override]
     public function middleware(MiddlewareQueue $middlewareQueue): MiddlewareQueue
     {
         $middlewareQueue
@@ -108,7 +105,6 @@ class Application extends BaseApplication
      * @return void
      * @link https://book.cakephp.org/4/en/development/dependency-injection.html#dependency-injection
      */
-    #[Override]
     public function services(ContainerInterface $container): void
     {
     }

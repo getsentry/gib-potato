@@ -5,7 +5,6 @@ namespace App\Model\Table;
 
 use Cake\ORM\Table;
 use Cake\Validation\Validator;
-use Override;
 
 /**
  * Products Model
@@ -33,7 +32,6 @@ class ProductsTable extends Table
      * @param array $config The configuration for the Table.
      * @return void
      */
-    #[Override]
     public function initialize(array $config): void
     {
         parent::initialize($config);
@@ -51,7 +49,6 @@ class ProductsTable extends Table
      * @param \Cake\Validation\Validator $validator Validator instance.
      * @return \Cake\Validation\Validator
      */
-    #[Override]
     public function validationDefault(Validator $validator): Validator
     {
         $validator

@@ -28,7 +28,6 @@ class PotatoAgent implements Agent, Conversational, HasTools
     /**
      * Get the instructions that the agent should follow.
      */
-    #[\Override]
     public function instructions(): Stringable|string
     {
         return file_get_contents(__DIR__.'/potato-agent.md');
@@ -39,7 +38,6 @@ class PotatoAgent implements Agent, Conversational, HasTools
      *
      * @return Tool[]
      */
-    #[\Override]
     public function tools(): iterable
     {
         return [

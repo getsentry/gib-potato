@@ -10,7 +10,6 @@ use Cake\Console\Arguments;
 use Cake\Console\ConsoleIo;
 use Cake\Console\ConsoleOptionParser;
 use Cake\I18n\DateTime;
-use Override;
 use Sentry\MonitorConfig;
 use Sentry\MonitorSchedule;
 use function Cake\Core\env;
@@ -28,7 +27,6 @@ class WeeklyReportCommand extends Command
      * @param \Cake\Console\ConsoleOptionParser $parser The parser to be defined
      * @return \Cake\Console\ConsoleOptionParser The built parser.
      */
-    #[Override]
     public function buildOptionParser(ConsoleOptionParser $parser): ConsoleOptionParser
     {
         $parser = parent::buildOptionParser($parser);
@@ -45,7 +43,6 @@ class WeeklyReportCommand extends Command
      * @param \Cake\Console\ConsoleIo $io The console io
      * @return void
      */
-    #[Override]
     public function execute(Arguments $args, ConsoleIo $io): void
     {
         withMonitor(

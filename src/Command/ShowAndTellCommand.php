@@ -10,7 +10,6 @@ use Cake\Command\Command;
 use Cake\Console\Arguments;
 use Cake\Console\ConsoleIo;
 use Cake\Console\ConsoleOptionParser;
-use Override;
 use function Cake\Core\env;
 
 /**
@@ -25,7 +24,6 @@ class ShowAndTellCommand extends Command
      * @param \Cake\Console\ConsoleOptionParser $parser The parser to be defined
      * @return \Cake\Console\ConsoleOptionParser The built parser.
      */
-    #[Override]
     public function buildOptionParser(ConsoleOptionParser $parser): ConsoleOptionParser
     {
         $parser = parent::buildOptionParser($parser);
@@ -43,7 +41,6 @@ class ShowAndTellCommand extends Command
      * @param \Cake\Console\ConsoleIo $io The console io
      * @return void
      */
-    #[Override]
     public function execute(Arguments $args, ConsoleIo $io): void
     {
         $channel = $args->getArgument('channel') ?? env('POTATO_CHANNEL');

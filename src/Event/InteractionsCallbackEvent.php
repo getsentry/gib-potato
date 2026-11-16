@@ -9,7 +9,6 @@ use App\Model\Table\PollResponsesTable;
 use App\Model\Table\PollsTable;
 use App\Service\PollService;
 use App\Service\UserService;
-use Override;
 
 class InteractionsCallbackEvent extends AbstractEvent
 {
@@ -56,7 +55,6 @@ class InteractionsCallbackEvent extends AbstractEvent
     /**
      * @inheritDoc
      */
-    #[Override]
     public function process(): void
     {
         if ($this->value === 'poll-vote') {

@@ -11,7 +11,6 @@ use Cake\Command\Command;
 use Cake\Console\Arguments;
 use Cake\Console\ConsoleIo;
 use DateTimeZone;
-use Override;
 use Sentry\MonitorConfig;
 use Sentry\MonitorSchedule;
 use Sentry\SentrySdk;
@@ -35,7 +34,6 @@ class BirthdayCommand extends Command
      * @param \Cake\Console\ConsoleIo $io The console io
      * @return void
      */
-    #[Override]
     public function execute(Arguments $args, ConsoleIo $io): void
     {
         $transactionContext = TransactionContext::make()

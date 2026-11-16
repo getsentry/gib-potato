@@ -8,7 +8,6 @@ use ArrayAccess;
 use Authentication\Identifier\AbstractIdentifier;
 use Cake\I18n\DateTime;
 use Cake\ORM\Locator\LocatorAwareTrait;
-use Override;
 
 class ApiTokenIdentifier extends AbstractIdentifier
 {
@@ -17,7 +16,6 @@ class ApiTokenIdentifier extends AbstractIdentifier
     /**
      * @inheritDoc
      */
-    #[Override]
     public function identify(array $credentials): ArrayAccess|array|null
     {
         if (!isset($credentials['token'])) {
