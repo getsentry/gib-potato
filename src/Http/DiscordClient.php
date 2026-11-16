@@ -8,9 +8,9 @@ use function Sentry\logger;
 
 class DiscordClient
 {
-    protected const DISCORD_API_URL = 'discord.com/api/v10';
+    protected const string DISCORD_API_URL = 'discord.com/api/v10';
 
-    protected Client $client;
+    protected readonly Client $client;
 
     /**
      * Constructor.

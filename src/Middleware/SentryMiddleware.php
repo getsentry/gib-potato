@@ -5,6 +5,7 @@ namespace App\Middleware;
 
 use Cake\Event\Event;
 use Cake\Event\EventManager;
+use Override;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Server\MiddlewareInterface;
@@ -30,6 +31,7 @@ class SentryMiddleware implements MiddlewareInterface
      * @param \Psr\Http\Server\RequestHandlerInterface $handler The request handler.
      * @return \Psr\Http\Message\ResponseInterface A response.
      */
+    #[Override]
     public function process(ServerRequestInterface $request, RequestHandlerInterface $handler): ResponseInterface
     {
         // We don't want to trace OPTIONS and HEAD requests as they are not relevant for performance monitoring.

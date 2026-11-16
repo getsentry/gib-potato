@@ -5,6 +5,7 @@ namespace App\Http;
 
 use Cake\Http\Client as CakeClient;
 use Cake\Http\Client\Response;
+use Override;
 use Psr\Http\Message\RequestInterface;
 use Sentry\SentrySdk;
 use Sentry\Tracing\SpanContext;
@@ -14,6 +15,7 @@ class Client extends CakeClient
     /**
      * @inheritDoc
      */
+    #[Override]
     protected function _sendRequest(RequestInterface $request, array $options): Response
     {
         $parentSpan = SentrySdk::getCurrentHub()->getSpan();

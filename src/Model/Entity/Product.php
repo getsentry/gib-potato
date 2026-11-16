@@ -33,5 +33,5 @@ class Product extends Entity
         '*' => false,
     ];
 
-    public const TYPE_GIFT_CARD = 'gift_card';
+    public const string TYPE_GIFT_CARD = 'gift_card';
 }

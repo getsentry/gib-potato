@@ -31,6 +31,6 @@ class Progression extends Entity
         '*' => false,
     ];
 
-    public const OPERATOR_AND = 'AND';
-    public const OPERATOR_OR = 'OR';
+    public const string OPERATOR_AND = 'AND';
+    public const string OPERATOR_OR = 'OR';
 }

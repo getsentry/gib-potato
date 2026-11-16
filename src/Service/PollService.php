@@ -14,8 +14,8 @@ class PollService
 {
     use LocatorAwareTrait;
 
-    protected Client $client;
-    protected SlackClient $slackClient;
+    protected readonly Client $client;
+    protected readonly SlackClient $slackClient;
 
     /**
      * Constructor

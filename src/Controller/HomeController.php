@@ -6,9 +6,9 @@ namespace App\Controller;
 class HomeController extends AppController
 {
     /**
-     * @return \Cake\Http\Response|null|void
+     * @return void
      */
-    public function index()
+    public function index(): void
     {
         $this->response = $this->response
             ->withHeader('Document-Policy', 'js-profiling');

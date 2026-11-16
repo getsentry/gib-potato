@@ -6,6 +6,7 @@ namespace App\Test\TestCase\Controller;
 use App\Test\TestCase\FactoryTrait;
 use Cake\TestSuite\IntegrationTestTrait;
 use Cake\TestSuite\TestCase;
+use Override;
 
 /**
  * App\Controller\EventsController Test Case
@@ -25,6 +26,7 @@ class EventsControllerTest extends TestCase
         'app.Users',
     ];
 
+    #[Override]
     public function setUp(): void
     {
         $this->requestAsJson();

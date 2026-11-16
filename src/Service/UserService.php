@@ -15,9 +15,9 @@ class UserService
 {
     use LocatorAwareTrait;
 
-    protected SlackClient $slackClient;
-    protected UsersTable $Users;
-    protected ApiTokensTable $ApiTokens;
+    protected readonly SlackClient $slackClient;
+    protected readonly UsersTable $Users;
+    protected readonly ApiTokensTable $ApiTokens;
 
     /**
      * Constructor
@@ -31,10 +31,10 @@ class UserService
 
     /**
      * @param string $slackUserId Slack user ID.
-     * @return \App\Model\Entity\User|null
+     * @return \App\Model\Entity\User
      * @throws \Exception
      */
-    public function getOrCreateUser(string $slackUserId): ?User
+    public function getOrCreateUser(string $slackUserId): User
     {
         $user = $this->Users
             ->findBySlackUserId($slackUserId)

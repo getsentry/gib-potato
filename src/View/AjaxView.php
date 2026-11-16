@@ -16,6 +16,8 @@ declare(strict_types=1);
  */
 namespace App\View;
 
+use Override;
+
 /**
  * A view class that is used for AJAX responses.
  * Currently only switches the default layout and sets the response type -
@@ -37,6 +39,7 @@ class AjaxView extends AppView
      *
      * @return void
      */
+    #[Override]
     public function initialize(): void
     {
         parent::initialize();

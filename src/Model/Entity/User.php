@@ -44,13 +44,13 @@ class User extends Entity
         '*' => false,
     ];
 
-    public const STATUS_ACTIVE = 'active';
-    public const STATUS_DELETED = 'deleted';
+    public const string STATUS_ACTIVE = 'active';
+    public const string STATUS_DELETED = 'deleted';
 
-    public const ROLE_ROOT = 'root';
-    public const ROLE_ADMIN = 'admin';
-    public const ROLE_USER = 'user';
-    public const ROLE_SERVICE = 'service';
+    public const string ROLE_ROOT = 'root';
+    public const string ROLE_ADMIN = 'admin';
+    public const string ROLE_USER = 'user';
+    public const string ROLE_SERVICE = 'service';
 
     /**
      * @param array<string, bool>|null $notifications The user's notification settings.

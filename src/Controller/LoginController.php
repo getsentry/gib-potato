@@ -9,6 +9,7 @@ use Cake\Http\Client;
 use Cake\Http\Response;
 use Lcobucci\JWT\Encoding\JoseEncoder;
 use Lcobucci\JWT\Token\Parser;
+use Override;
 use Throwable;
 use function Cake\Core\env;
 
@@ -20,7 +21,8 @@ class LoginController extends AppController
     /**
      * @inheritDoc
      */
-    public function beforeFilter(EventInterface $event)
+    #[Override]
+    public function beforeFilter(EventInterface $event): void
     {
         parent::beforeFilter($event);
 
@@ -78,13 +80,12 @@ class LoginController extends AppController
                     $parser = new Parser(new JoseEncoder());
                     /** @var \Lcobucci\JWT\Token\Plain $jwt */
                     $jwt = $parser->parse($json['id_token']);
-                } catch (Throwable $e) {
+                } catch (Throwable) {
                     $this->Flash->error('Slack sign in failed');
 
                     return $this->redirect(['action' => 'login']);
                 }
 
-                $this->fetchTable('Users');
                 $user = $this->fetchTable('Users')
                     ->findBySlackUserId(
                         $jwt->claims()->get('https://slack.com/user_id'),

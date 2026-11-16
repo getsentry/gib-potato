@@ -4,12 +4,12 @@ declare(strict_types=1);
 namespace App\Event;
 
 use App\Service\UserService;
+use Override;
 
 class AppHomeOpenedEvent extends AbstractEvent
 {
-    protected string $user;
-    protected string $tab;
-    protected string $timestamp;
+    protected readonly string $user;
+    protected readonly string $tab;
 
     /**
      * Constructor
@@ -29,6 +29,7 @@ class AppHomeOpenedEvent extends AbstractEvent
     /**
      * @inheritDoc
      */
+    #[Override]
     public function process(): void
     {
         $userService = new UserService();

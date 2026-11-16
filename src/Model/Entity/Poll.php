@@ -34,9 +34,9 @@ class Poll extends Entity
         '*' => false,
     ];
 
-    public const STATUS_ACTIVE = 'active';
-    public const STATUS_CLOSED = 'closed';
+    public const string STATUS_ACTIVE = 'active';
+    public const string STATUS_CLOSED = 'closed';
 
-    public const TYPE_MULTIPLE = 'multiple';
-    public const TYPE_SINGLE = 'single';
+    public const string TYPE_MULTIPLE = 'multiple';
+    public const string TYPE_SINGLE = 'single';
 }

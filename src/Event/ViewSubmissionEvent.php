@@ -4,16 +4,17 @@ declare(strict_types=1);
 namespace App\Event;
 
 use App\Service\UserService;
+use Override;
 
 class ViewSubmissionEvent extends AbstractEvent
 {
-    protected string $user;
-    protected string $callbackId;
-    protected string $privateMetadata;
+    protected readonly string $user;
+    protected readonly string $callbackId;
+    protected readonly string $privateMetadata;
     /**
      * @var array<string, string>
      */
-    protected array $values;
+    protected readonly array $values;
 
     /**
      * Constructor
@@ -34,6 +35,7 @@ class ViewSubmissionEvent extends AbstractEvent
     /**
      * @inheritDoc
      */
+    #[Override]
     public function process(): void
     {
         if ($this->callbackId === 'birthday_setup') {

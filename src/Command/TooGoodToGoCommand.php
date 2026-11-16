@@ -8,8 +8,8 @@ use Cake\Chronos\Chronos;
 use Cake\Command\Command;
 use Cake\Console\Arguments;
 use Cake\Console\ConsoleIo;
-use Cake\Console\ConsoleOptionParser;
 use DateTimeZone;
+use Override;
 use Sentry\MonitorConfig;
 use Sentry\MonitorSchedule;
 use Sentry\SentrySdk;
@@ -34,25 +34,12 @@ class TooGoodToGoCommand extends Command
     ];
 
     /**
-     * Hook method for defining this command's option parser.
-     *
-     * @see https://book.cakephp.org/4/en/console-commands/commands.html#defining-arguments-and-options
-     * @param \Cake\Console\ConsoleOptionParser $parser The parser to be defined
-     * @return \Cake\Console\ConsoleOptionParser The built parser.
-     */
-    public function buildOptionParser(ConsoleOptionParser $parser): ConsoleOptionParser
-    {
-        $parser = parent::buildOptionParser($parser);
-
-        return $parser;
-    }
-
-    /**
      * @param \Cake\Console\Arguments $args The command arguments.
      * @param \Cake\Console\ConsoleIo $io The console io
-     * @return int|null|void The exit code or null for success
+     * @return void
      */
-    public function execute(Arguments $args, ConsoleIo $io)
+    #[Override]
+    public function execute(Arguments $args, ConsoleIo $io): void
     {
         $transactionContext = TransactionContext::make()
             ->setOp('command')
@@ -90,9 +77,9 @@ class TooGoodToGoCommand extends Command
     /**
      * @param \Cake\Console\Arguments $args The command arguments.
      * @param \Cake\Console\ConsoleIo $io The console io
-     * @return int|null|void The exit code or null for success
+     * @return void
      */
-    protected function _execute(Arguments $args, ConsoleIo $io)
+    protected function _execute(Arguments $args, ConsoleIo $io): void
     {
         $io->out('Sending out Too Good To Go notifications');
 

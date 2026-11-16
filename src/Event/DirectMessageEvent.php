@@ -4,13 +4,14 @@ declare(strict_types=1);
 namespace App\Event;
 
 use App\Service\UserService;
+use Override;
 
 class DirectMessageEvent extends AbstractEvent
 {
-    public string $sender;
-    public string $channel;
-    public string $text;
-    public string $timestamp;
+    public readonly string $sender;
+    public readonly string $channel;
+    public readonly string $text;
+    public readonly string $timestamp;
 
     /**
      * Constructor
@@ -32,6 +33,7 @@ class DirectMessageEvent extends AbstractEvent
     /**
      * @inheritDoc
      */
+    #[Override]
     public function process(): void
     {
         if ($this->text === 'potato') {
