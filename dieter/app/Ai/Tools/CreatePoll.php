@@ -8,7 +8,7 @@ use Laravel\Ai\Contracts\Tool;
 use Laravel\Ai\Tools\Request;
 use Stringable;
 
-class CreatePoll implements Tool
+readonly class CreatePoll implements Tool
 {
     public function __construct(
         public string $channel,
@@ -18,6 +18,7 @@ class CreatePoll implements Tool
     /**
      * Get the description of the tool's purpose.
      */
+    #[\Override]
     public function description(): Stringable|string
     {
         return 'Create a poll in a Slack channel with a title, answer options, an anonymity setting, and a voting mode (single or multiple). Only call when the user has explicitly provided all four — never invent or guess any of them. Ask for missing details first. When you have already asked for poll details, treat follow-up messages as providing those details, not as standalone requests.';
@@ -26,6 +27,7 @@ class CreatePoll implements Tool
     /**
      * Execute the tool.
      */
+    #[\Override]
     public function handle(Request $request): Stringable|string
     {
         $backendUrl = config('services.backend.url');
@@ -63,6 +65,7 @@ class CreatePoll implements Tool
     /**
      * Get the tool's schema definition.
      */
+    #[\Override]
     public function schema(JsonSchema $schema): array
     {
         return [

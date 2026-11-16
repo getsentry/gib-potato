@@ -21,13 +21,14 @@ class PotatoAgent implements Agent, Conversational, HasTools
     use Promptable, RemembersConversations;
 
     public function __construct(
-        public string $channel,
-        public string $slackUserId,
+        public readonly string $channel,
+        public readonly string $slackUserId,
     ) {}
 
     /**
      * Get the instructions that the agent should follow.
      */
+    #[\Override]
     public function instructions(): Stringable|string
     {
         return file_get_contents(__DIR__.'/potato-agent.md');
@@ -38,6 +39,7 @@ class PotatoAgent implements Agent, Conversational, HasTools
      *
      * @return Tool[]
      */
+    #[\Override]
     public function tools(): iterable
     {
         return [
