@@ -30,27 +30,19 @@ RUN \
     php8.5-zip \
     php8.5-excimer
 
-# Matches the release on Packagist (sentry/sentry-php-tracer). Built from source, as PIE
-# runs ./configure without --enable-sentry, which the extension needs to be compiled.
-ARG SENTRY_PHP_TRACER_VERSION=0.1.0
+# Matches the release on Packagist (sentry/sentry-php-tracer)
+ARG SENTRY_PHP_TRACER_VERSION=0.1.1
 
-RUN \
+# The extension is enabled below with phpenmod, for both the CLI and FPM
+RUN --mount=type=bind,from=ghcr.io/php/pie:1-bin,source=/pie,target=/usr/local/bin/pie \
     apt-get install -y --no-install-recommends \
     php8.5-dev \
-    git \
     autoconf \
     make \
-    gcc \
-    g++ && \
-    git clone --depth 1 --branch "$SENTRY_PHP_TRACER_VERSION" https://github.com/getsentry/sentry-php-tracer.git /tmp/sentry-php-tracer && \
-    cd /tmp/sentry-php-tracer && \
-    phpize && \
-    ./configure --enable-sentry && \
-    make -j"$(nproc)" && \
-    make install && \
+    gcc && \
+    pie install --no-cache --skip-enable-extension "sentry/sentry-php-tracer:${SENTRY_PHP_TRACER_VERSION}" && \
     echo "extension=sentry.so" > /etc/php/8.5/mods-available/sentry.ini && \
-    cd / && rm -rf /tmp/sentry-php-tracer && \
-    apt-get purge -y php8.5-dev autoconf make gcc g++ && \
+    apt-get purge -y php8.5-dev autoconf make gcc && \
     apt-get autoremove -y && \
     rm -rf /var/lib/apt/lists/*
 
