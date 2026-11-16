@@ -89,12 +89,12 @@ services:
                     - shopato.gib-potato.test
 
     db:
-        image: postgres:14
+        image: postgres:18
         environment:
             POSTGRES_USER: gib_potato
             POSTGRES_PASSWORD: password
         volumes:
-            - db:/var/lib/postgresql/data
+            - db:/var/lib/postgresql
         ports:
             - 8432:5432
         networks:

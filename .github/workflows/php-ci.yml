@@ -16,7 +16,7 @@ jobs:
         runs-on: ubuntu-latest
         services:
             postgres:
-                image: postgres:14
+                image: postgres:18
                 env:
                     POSTGRES_DB: gib_potato_test
                     POSTGRES_USER: gib_potato
