@@ -91,15 +91,15 @@ func (h *Handler) EventsHandler(w http.ResponseWriter, r *http.Request, _ httpro
 	}
 
 	if eventsAPIEvent.Type == slackevents.URLVerification {
-		var r *slackevents.ChallengeResponse
-		err := json.Unmarshal([]byte(body), &r)
+		var challenge slackevents.ChallengeResponse
+		err := json.Unmarshal(body, &challenge)
 		if err != nil {
 			transaction.Status = sentry.SpanStatusInternalError
 			w.WriteHeader(http.StatusInternalServerError)
 			return
 		}
 		w.Header().Set("Content-Type", "text")
-		if _, err := w.Write([]byte(r.Challenge)); err != nil {
+		if _, err := w.Write([]byte(challenge.Challenge)); err != nil {
 			transaction.Status = sentry.SpanStatusInternalError
 			w.WriteHeader(http.StatusInternalServerError)
 			return
@@ -482,7 +482,7 @@ func getBirthdayModalView(channelID string) slack.ModalViewRequest {
 		"July", "August", "September", "October", "November", "December",
 	}
 
-	monthOptions := make([]*slack.OptionBlockObject, 12)
+	monthOptions := make([]*slack.OptionBlockObject, len(months))
 	for i, name := range months {
 		monthOptions[i] = slack.NewOptionBlockObject(
 			strconv.Itoa(i+1),

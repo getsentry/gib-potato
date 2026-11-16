@@ -29,23 +29,20 @@ func ProcessInteractionCallbackEvent(ctx context.Context, e slack.InteractionCal
 	span := txn.StartChild("event.process", sentry.WithDescription("Process InteractionCallback Event"))
 	defer span.Finish()
 
-	if ok := e.ActionCallback.BlockActions[0].ActionID; ok == "" {
+	action := e.ActionCallback.BlockActions[0]
+	if action.ActionID == "" {
 		span.Status = sentry.SpanStatusInvalidArgument
 		return nil
 	}
 
 	interactionEvent := InteractionCallbackEvent{
-		Type:        interactionCallback,
-		User:        e.User.ID,
-		ActionID:    e.ActionCallback.BlockActions[0].ActionID,
-		ResponseURL: e.ResponseURL,
-		TriggerID:   e.TriggerID,
-	}
-	if ok := e.ActionCallback.BlockActions[0].Value; ok != "" {
-		interactionEvent.Value = e.ActionCallback.BlockActions[0].Value
-	}
-	if ok := e.ActionCallback.BlockActions[0].SelectedOption.Value; ok != "" {
-		interactionEvent.SelectOptionValue = e.ActionCallback.BlockActions[0].SelectedOption.Value
+		Type:              interactionCallback,
+		User:              e.User.ID,
+		ActionID:          action.ActionID,
+		ResponseURL:       e.ResponseURL,
+		TriggerID:         e.TriggerID,
+		Value:             action.Value,
+		SelectOptionValue: action.SelectedOption.Value,
 	}
 
 	if !interactionEvent.isValid() {
