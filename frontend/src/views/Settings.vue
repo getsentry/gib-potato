@@ -82,29 +82,23 @@
     </div>
 </template>
 
-<script>
+<script setup>
 import { computed } from 'vue';
 import { useStore } from 'vuex';
 
-export default {
-    name: 'Settings',
-    setup() {
-        const store = useStore();
+const store = useStore();
 
-        return {
-            user: computed(() => store.getters.user),
-        };
-    },
-    methods: {
-        toggleSentNotifications() {
-            this.$store.dispatch('toggleSentNotifications');
-        },
-        toggleReceivedNotifications() {
-            this.$store.dispatch('toggleReceivedNotifications');
-        },
-        toggleTooGoodToGoNotifications() {
-            this.$store.dispatch('toggleTooGoodToGoNotifications');
-        },
-    },
-};
+const user = computed(() => store.getters.user);
+
+function toggleSentNotifications() {
+    store.dispatch('toggleSentNotifications');
+}
+
+function toggleReceivedNotifications() {
+    store.dispatch('toggleReceivedNotifications');
+}
+
+function toggleTooGoodToGoNotifications() {
+    store.dispatch('toggleTooGoodToGoNotifications');
+}
 </script>

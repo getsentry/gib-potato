@@ -5,11 +5,6 @@
     </div>
 </template>
 
-<script>
+<script setup>
 import MainMenu from '@/components/MainMenu.vue';
-
-export default {
-    name: 'App',
-    components: { MainMenu },
-};
 </script>

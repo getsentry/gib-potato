@@ -169,29 +169,22 @@
     </nav>
 </template>
 
-<script>
+<script setup>
 import { computed, ref, watch } from 'vue';
 import { useStore } from 'vuex';
-import { useRoute } from 'vue-router';
-import { RouterLink } from 'vue-router';
+import { RouterLink, useRoute } from 'vue-router';
 
-export default {
-    name: 'Menu',
-    components: { RouterLink },
-    setup() {
-        const store = useStore();
-        const route = useRoute();
-        const menuOpen = ref(false);
+const store = useStore();
+const route = useRoute();
 
-        // Watch for route changes to close the menu
-        watch(route, () => {
-            menuOpen.value = false;
-        });
+const user = computed(() => store.getters.user);
+const menuOpen = ref(false);
 
-        return {
-            user: computed(() => store.getters.user),
-            menuOpen,
-        };
+// Close the menu on route changes
+watch(
+    () => route.fullPath,
+    () => {
+        menuOpen.value = false;
     },
-};
+);
 </script>
