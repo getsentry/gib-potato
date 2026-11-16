@@ -7,8 +7,7 @@ class GiftCardControllerTest < ActionDispatch::IntegrationTest
     post "/gift-card", params: valid_gift_card_params, headers: authenticated_headers
 
     assert_response :success
-    response_body = JSON.parse(response.body)
-    assert_gift_card_created_successfully(response_body)
+    assert_gift_card_created_successfully(response.parsed_body)
   end
 
   def test_create_gift_card_requires_authentication
