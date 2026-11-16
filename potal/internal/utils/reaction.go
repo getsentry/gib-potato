@@ -1,5 +1,7 @@
 package utils
 
+import "slices"
+
 func ReactionReceivers(text string, user string, itemUser string) []string {
 	receivers := getRecievers(text)
 
@@ -15,14 +17,6 @@ func ReactionReceivers(text string, user string, itemUser string) []string {
 		}
 	}
 
-	// If more than one person is mentioned and the person reacting is one of them, remove them
-	if len(receivers) > 1 {
-		for i, v := range receivers {
-			if v == user {
-				receivers = append(receivers[:i], receivers[i+1:]...)
-			}
-		}
-	}
-
-	return receivers
+	// Otherwise, remove the person reacting from the receivers
+	return slices.DeleteFunc(receivers, func(v string) bool { return v == user })
 }

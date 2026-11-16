@@ -29,7 +29,7 @@ func slackVerification(meter sentry.Meter, h httprouter.Handle) httprouter.Handl
 			slog.ErrorContext(ctx, "failed to read request body", "error", err)
 			return
 		}
-		r.Body = io.NopCloser(bytes.NewBuffer(body))
+		r.Body = io.NopCloser(bytes.NewReader(body))
 
 		sv, err := slack.NewSecretsVerifier(r.Header, os.Getenv("SLACK_SIGNING_SECRET"))
 		if err != nil {

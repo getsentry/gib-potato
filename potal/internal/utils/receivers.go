@@ -21,15 +21,13 @@ func getRecievers(text string) []string {
 	receivers := []string{}
 	unique := map[string]bool{}
 
-	if len(users) > 0 {
-		for _, user := range users {
-			// Remove <@...> from the user
-			user = strings.Trim(user, "<@>")
-			// Onyl store unqiue users
-			if _, ok := unique[user]; !ok {
-				unique[user] = true
-				receivers = append(receivers, user)
-			}
+	for _, user := range users {
+		// Remove <@...> from the user
+		user = strings.Trim(user, "<@>")
+		// Only store unique users
+		if !unique[user] {
+			unique[user] = true
+			receivers = append(receivers, user)
 		}
 	}
 

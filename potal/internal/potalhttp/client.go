@@ -4,6 +4,7 @@ import (
 	"bytes"
 	"context"
 	"encoding/json"
+	"errors"
 	"fmt"
 	"log/slog"
 	"net/http"
@@ -37,7 +38,7 @@ func (c *Client) SendRequest(ctx context.Context, e event.PotalEvent) error {
 		return jsonErr
 	}
 
-	r, newReqErr := http.NewRequestWithContext(ctx, "POST", url, bytes.NewBuffer(body))
+	r, newReqErr := http.NewRequestWithContext(ctx, http.MethodPost, url, bytes.NewReader(body))
 	if newReqErr != nil {
 		hub.CaptureException(newReqErr)
 		slog.ErrorContext(ctx, "failed to create API request", "error", newReqErr)
@@ -82,5 +83,5 @@ func (c *Client) SendRequest(ctx context.Context, e event.PotalEvent) error {
 	})
 	hub.CaptureMessage(msg)
 
-	return fmt.Errorf("%s", msg)
+	return errors.New(msg)
 }
