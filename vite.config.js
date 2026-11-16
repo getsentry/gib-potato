@@ -1,11 +1,9 @@
-import { fileURLToPath, URL } from 'node:url';
-
 import { defineConfig, loadEnv } from 'vite-plus';
 import vue from '@vitejs/plugin-vue';
 import tailwindcss from '@tailwindcss/vite';
 import { sentryVitePlugin } from '@sentry/bundler-plugins/vite';
 
-// https://vitejs.dev/config/
+// https://vite.dev/config/
 export default defineConfig(({ mode }) => {
     // Load env file based on `mode` in the current working directory.
     // Set the third parameter to '' to load all env regardless of the `VITE_` prefix.
@@ -52,7 +50,7 @@ export default defineConfig(({ mode }) => {
         envDir: './frontend/config',
         resolve: {
             alias: {
-                '@': fileURLToPath(new URL('./frontend/src', import.meta.url)),
+                '@': `${import.meta.dirname}/frontend/src`,
             },
         },
     };

@@ -14,7 +14,7 @@ import './assets/main.css';
 (async () => {
     const app = createApp(App);
 
-    let dataSet = document.querySelector('body').dataset;
+    const dataSet = document.body.dataset;
 
     Sentry.init({
         app,
@@ -28,12 +28,8 @@ import './assets/main.css';
         replaysOnErrorSampleRate: 1.0,
         integrations: [
             Sentry.browserTracingIntegration({
-                enableInp: true,
-                router: router,
+                router,
                 routeLabel: 'path',
-                _experiments: {
-                    enableInteractions: true,
-                },
             }),
             Sentry.browserProfilingIntegration(),
             Sentry.replayIntegration({
@@ -67,7 +63,7 @@ import './assets/main.css';
     });
 
     Sentry.setUser({
-        username: document.querySelector('body').dataset.username,
+        username: dataSet.username,
     });
 
     api.init();
