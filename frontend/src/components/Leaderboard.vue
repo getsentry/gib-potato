@@ -44,17 +44,11 @@
     </table>
 </template>
 
-<script>
+<script setup>
 import { computed } from 'vue';
 import { useStore } from 'vuex';
 
-export default {
-    name: 'Leaderboard',
-    setup() {
-        const store = useStore();
-        return {
-            users: computed(() => store.getters.leaderboard),
-        };
-    },
-};
+const store = useStore();
+
+const users = computed(() => store.getters.leaderboard);
 </script>

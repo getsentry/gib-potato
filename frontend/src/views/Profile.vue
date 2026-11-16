@@ -119,38 +119,25 @@
     </div>
 </template>
 
-<script>
-import { computed } from 'vue';
+<script setup>
+import { computed, onMounted, ref } from 'vue';
 import { useStore } from 'vuex';
 
 import api from '@/api';
 
-export default {
-    name: 'Profile',
-    setup() {
-        const store = useStore();
+const store = useStore();
 
-        return {
-            user: computed(() => store.getters.user),
-        };
-    },
-    data() {
-        return {
-            messages: [],
-        };
-    },
-    mounted() {
-        this.fetchMessages();
-    },
-    methods: {
-        async fetchMessages() {
-            try {
-                const response = await api.get('user/profile');
-                this.messages = response.data;
-            } catch (error) {
-                console.log(error);
-            }
-        },
-    },
-};
+const user = computed(() => store.getters.user);
+const messages = ref([]);
+
+async function fetchMessages() {
+    try {
+        const response = await api.get('user/profile');
+        messages.value = response.data;
+    } catch (error) {
+        console.log(error);
+    }
+}
+
+onMounted(fetchMessages);
 </script>
