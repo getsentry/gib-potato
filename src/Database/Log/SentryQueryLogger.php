@@ -3,6 +3,7 @@ declare(strict_types=1);
 
 namespace App\Database\Log;
 
+use Override;
 use Psr\Log\AbstractLogger;
 use Sentry\SentrySdk;
 use Sentry\Tracing\Span;
@@ -18,6 +19,7 @@ class SentryQueryLogger extends AbstractLogger
     /**
      * @inheritDoc
      */
+    #[Override]
     public function log($level, string|Stringable $message, array $context = []): void
     {
         $parentSpan = SentrySdk::getCurrentHub()->getSpan();

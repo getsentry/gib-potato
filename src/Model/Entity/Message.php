@@ -32,6 +32,6 @@ class Message extends Entity
         '*' => false,
     ];
 
-    public const TYPE_POTATO = 'potato';
-    public const MAX_AMOUNT = 5;
+    public const string TYPE_POTATO = 'potato';
+    public const int MAX_AMOUNT = 5;
 }

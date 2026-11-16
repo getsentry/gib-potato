@@ -5,17 +5,15 @@ namespace App\Controller;
 
 /**
  * Terms Controller
- *
- * @method \App\Model\Entity\Term[]|\Cake\Datasource\ResultSetInterface paginate($object = null, array $settings = [])
  */
 class TermsController extends AppController
 {
     /**
      * Index method
      *
-     * @return \Cake\Http\Response|null|void Renders view
+     * @return void Renders view
      */
-    public function index()
+    public function index(): void
     {
     }
 }

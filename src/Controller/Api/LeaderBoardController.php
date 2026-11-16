@@ -18,24 +18,13 @@ class LeaderBoardController extends ApiController
      */
     public function get(): Response
     {
-        $rangeTimeObject = null;
-        $range = $this->request->getQuery('range');
-        switch ($range) {
-            case 'week':
-                $rangeTimeObject = new DateTime('1 week ago');
-                break;
-            case 'month':
-                $rangeTimeObject = new DateTime('1 month ago');
-                break;
-            case 'quarter':
-                $rangeTimeObject = SentryTime::getStartOfCurrentQuarter();
-                break;
-            case 'year':
-                $rangeTimeObject = new DateTime('1 year ago');
-                break;
-            default:
-                $rangeTimeObject = new DateTime('2022-08-24 00:00:00');
-        }
+        $rangeTimeObject = match ($this->request->getQuery('range')) {
+            'week' => new DateTime('1 week ago'),
+            'month' => new DateTime('1 month ago'),
+            'quarter' => SentryTime::getStartOfCurrentQuarter(),
+            'year' => new DateTime('1 year ago'),
+            default => new DateTime('2022-08-24 00:00:00'),
+        };
 
         $usersTable = $this->fetchTable('Users');
         $messagesTable = $this->fetchTable('Messages');
@@ -79,14 +68,13 @@ class LeaderBoardController extends ApiController
             ])
             ->enableAutoFields(true);
 
-        $order = $this->request->getQuery('order');
-        switch ($order) {
-            case 'sent':
-                $query->orderBy(['sent_count' => $query->expr('DESC NULLS LAST')]);
-                break;
-            case 'received':
-                $query->orderBy(['received_count' => $query->expr('DESC NULLS LAST')]);
-                break;
+        $orderField = match ($this->request->getQuery('order')) {
+            'sent' => 'sent_count',
+            'received' => 'received_count',
+            default => null,
+        };
+        if ($orderField !== null) {
+            $query->orderBy([$orderField => $query->expr('DESC NULLS LAST')]);
         }
 
         $users = $query->all();

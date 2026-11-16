@@ -9,22 +9,23 @@ use App\Model\Table\PollResponsesTable;
 use App\Model\Table\PollsTable;
 use App\Service\PollService;
 use App\Service\UserService;
+use Override;
 
 class InteractionsCallbackEvent extends AbstractEvent
 {
-    protected string $user;
-    protected string $actionId;
-    protected string $responseUrl;
-    protected string $triggerId;
-    protected ?string $value;
-    protected ?string $selectOptionValue;
+    protected readonly string $user;
+    protected readonly string $actionId;
+    protected readonly string $responseUrl;
+    protected readonly string $triggerId;
+    protected readonly ?string $value;
+    protected readonly ?string $selectOptionValue;
 
-    protected UserService $userService;
-    protected PollService $pollService;
+    protected readonly UserService $userService;
+    protected readonly PollService $pollService;
 
-    protected PollsTable $pollsTable;
-    protected PollOptionsTable $pollOptionsTable;
-    protected PollResponsesTable $pollResponsesTable;
+    protected readonly PollsTable $pollsTable;
+    protected readonly PollOptionsTable $pollOptionsTable;
+    protected readonly PollResponsesTable $pollResponsesTable;
 
     /**
      * Constructor
@@ -55,6 +56,7 @@ class InteractionsCallbackEvent extends AbstractEvent
     /**
      * @inheritDoc
      */
+    #[Override]
     public function process(): void
     {
         if ($this->value === 'poll-vote') {

@@ -3,11 +3,13 @@ declare(strict_types=1);
 
 namespace App\Event;
 
+use Override;
+
 class AppMentionEvent extends AbstractEvent
 {
-    protected string $sender;
-    protected string $channel;
-    protected string $text;
+    protected readonly string $sender;
+    protected readonly string $channel;
+    protected readonly string $text;
 
     /**
      * Constructor
@@ -28,6 +30,7 @@ class AppMentionEvent extends AbstractEvent
     /**
      * @inheritDoc
      */
+    #[Override]
     public function process(): void
     {
     }

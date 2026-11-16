@@ -8,19 +8,20 @@ use App\Event\Validation\Validation;
 use App\Service\AwardService;
 use App\Service\NotificationService;
 use App\Service\UserService;
+use Override;
 
 class MessageEvent extends AbstractEvent
 {
-    public int $amount;
-    public string $sender;
-    public array $receivers;
-    public string $channel;
-    public string $text;
-    public string $reaction;
-    public string $timestamp;
-    public string $permalink;
+    public readonly int $amount;
+    public readonly string $sender;
+    public readonly array $receivers;
+    public readonly string $channel;
+    public readonly string $text;
+    public readonly string $reaction;
+    public readonly string $timestamp;
+    public readonly string $permalink;
 
-    public ?string $threadTimestamp;
+    public readonly ?string $threadTimestamp;
 
     /**
      * Constructor
@@ -48,6 +49,7 @@ class MessageEvent extends AbstractEvent
     /**
      * @inheritDoc
      */
+    #[Override]
     public function process(): void
     {
         $userService = new UserService();

@@ -11,9 +11,6 @@ use App\Model\Entity\User;
 
 class Validation
 {
-    protected MessageEvent|ReactionAddedEvent $event;
-    protected User $sender;
-
     /**
      * Constructor
      *
@@ -21,10 +18,10 @@ class Validation
      * @param \App\Model\Entity\User $sender User you did potato.
      * @return void
      */
-    public function __construct(MessageEvent|ReactionAddedEvent $event, User $sender)
-    {
-        $this->event = $event;
-        $this->sender = $sender;
+    public function __construct(
+        protected readonly MessageEvent|ReactionAddedEvent $event,
+        protected readonly User $sender,
+    ) {
     }
 
     /**
