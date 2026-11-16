@@ -1,41 +1,28 @@
 require_relative "boot"
 
-# require "rails/all"
-
 require "rails"
-
-# action_mailer/railtie
-# active_job/railtie
-# action_cable/engine
-# action_mailbox/engine
-# action_text/engine
-# active_storage/engine
-
-%w[
-  active_record/railtie
-  action_controller/railtie
-  action_view/railtie
-  rails/test_unit/railtie
-].each do |railtie|
-  begin # rubocop:disable Style/RedundantBegin
-    require railtie
-  rescue LoadError
-  end
-end
+# Pick the frameworks you want:
+require "active_model/railtie"
+# require "active_job/railtie"
+require "active_record/railtie"
+# require "active_storage/engine"
+require "action_controller/railtie"
+# require "action_mailer/railtie"
+# require "action_mailbox/engine"
+# require "action_text/engine"
+require "action_view/railtie"
+# require "action_cable/engine"
+require "rails/test_unit/railtie"
 
 # Require the gems listed in Gemfile, including any gems
 # you've limited to :test, :development, or :production.
+# In development and test this loads dotenv, whose railtie reads the .env files.
 Bundler.require(*Rails.groups)
-
-# Load environment variables from .env file in development and test environments
-if Rails.env.development? || Rails.env.test?
-  require "dotenv/load"
-end
 
 module Shopato
   class Application < Rails::Application
     # Initialize configuration defaults for originally generated Rails version.
-    config.load_defaults 8.0
+    config.load_defaults 8.1
 
     # Please, add to the `ignore` list any other `lib` subdirectories that do
     # not contain `.rb` files, or that should not be reloaded or eager loaded.
