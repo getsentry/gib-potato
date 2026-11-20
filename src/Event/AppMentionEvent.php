@@ -5,9 +5,9 @@ namespace App\Event;
 
 class AppMentionEvent extends AbstractEvent
 {
-    protected string $sender;
-    protected string $channel;
-    protected string $text;
+    protected readonly string $sender;
+    protected readonly string $channel;
+    protected readonly string $text;
 
     /**
      * Constructor

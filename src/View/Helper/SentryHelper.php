@@ -42,7 +42,7 @@ class SentryHelper extends Helper
      */
     public function sentryTracingMeta(): ?string
     {
-        if (empty($this->span)) {
+        if ($this->span === null) {
             return null;
         }
 
@@ -57,7 +57,7 @@ class SentryHelper extends Helper
      */
     public function sentryBaggageMeta(): ?string
     {
-        if (empty($this->span)) {
+        if ($this->span === null) {
             return null;
         }
 

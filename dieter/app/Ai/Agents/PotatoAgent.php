@@ -21,8 +21,8 @@ class PotatoAgent implements Agent, Conversational, HasTools
     use Promptable, RemembersConversations;
 
     public function __construct(
-        public string $channel,
-        public string $slackUserId,
+        public readonly string $channel,
+        public readonly string $slackUserId,
     ) {}
 
     /**

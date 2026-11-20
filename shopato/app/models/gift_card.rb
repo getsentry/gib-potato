@@ -24,8 +24,4 @@ class GiftCard
     # For now, we'll just return true if validation passes
     true
   end
-
-  def persisted?
-    false
-  end
 end

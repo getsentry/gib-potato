@@ -3,6 +3,7 @@ package event
 import (
 	"context"
 	"log/slog"
+	"strings"
 
 	"github.com/getsentry/gib-potato/internal/constants"
 	"github.com/getsentry/gib-potato/internal/utils"
@@ -50,9 +51,8 @@ func ProcessReactionEvent(ctx context.Context, e *slackevents.ReactionAddedEvent
 		hub.CaptureException(err)
 		slog.ErrorContext(ctx, "failed to get user", "error", err, "user", e.User)
 		return nil
-	} else {
-		userSpan.Status = sentry.SpanStatusOK
 	}
+	userSpan.Status = sentry.SpanStatusOK
 	userSpan.Finish()
 
 	reactionEvent := ReactionAddedEvent{
@@ -86,14 +86,15 @@ func ProcessReactionEvent(ctx context.Context, e *slackevents.ReactionAddedEvent
 	if len(conversationReplies) == 0 {
 		return nil
 	}
-	text := conversationReplies[0].Text
+	var text strings.Builder
+	text.WriteString(conversationReplies[0].Text)
 	for _, block := range conversationReplies[0].Blocks.BlockSet {
 		if section, ok := block.(*slack.SectionBlock); ok {
 			if section.Text != nil {
-				text += " " + section.Text.Text
+				text.WriteString(" " + section.Text.Text)
 			}
 			for _, field := range section.Fields {
-				text += " " + field.Text
+				text.WriteString(" " + field.Text)
 			}
 		}
 	}
@@ -120,9 +121,9 @@ func ProcessReactionEvent(ctx context.Context, e *slackevents.ReactionAddedEvent
 		Type:            reactionAdded,
 		Amount:          1, // Amount is always 1 for reactions
 		Sender:          e.User,
-		Receivers:       utils.ReactionReceivers(text, e.User, e.ItemUser),
+		Receivers:       utils.ReactionReceivers(text.String(), e.User, e.ItemUser),
 		Channel:         e.Item.Channel,
-		Text:            utils.ScrubText(text),
+		Text:            utils.ScrubText(text.String()),
 		Reaction:        ":" + e.Reaction + ":",
 		Permalink:       permalink,
 		Timestamp:       e.Item.Timestamp,

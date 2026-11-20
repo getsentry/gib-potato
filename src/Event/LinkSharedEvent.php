@@ -5,13 +5,12 @@ namespace App\Event;
 
 class LinkSharedEvent extends AbstractEvent
 {
-    public string $user;
-    public string $timestamp;
-    public string $channel;
-    public string $messageTimeStamp;
-    public string $threadTimeStamp;
-    public array $links;
-    public string $eventTimestamp;
+    public readonly string $user;
+    public readonly string $timestamp;
+    public readonly string $channel;
+    public readonly string $messageTimeStamp;
+    public readonly string $threadTimeStamp;
+    public readonly array $links;
 
     /**
      * Constructor

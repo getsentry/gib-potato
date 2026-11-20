@@ -11,16 +11,16 @@ use App\Service\UserService;
 
 class ReactionAddedEvent extends AbstractEvent
 {
-    public int $amount;
-    public string $sender;
-    public array $receivers;
-    public string $channel;
-    public string $text;
-    public string $reaction;
-    public string $timestamp;
-    public string $permalink;
+    public readonly int $amount;
+    public readonly string $sender;
+    public readonly array $receivers;
+    public readonly string $channel;
+    public readonly string $text;
+    public readonly string $reaction;
+    public readonly string $timestamp;
+    public readonly string $permalink;
 
-    public ?string $threadTimestamp;
+    public readonly ?string $threadTimestamp;
 
     /**
      * Constructor

@@ -223,91 +223,82 @@
     </div>
 </template>
 
-<script>
-import { computed } from 'vue';
+<script setup>
+import { computed, onBeforeUnmount, ref } from 'vue';
 import { useStore } from 'vuex';
 
 import api from '@/api';
 
 import 'vue-select/dist/vue-select.css';
 
-export default {
-    name: 'Shop',
-    setup() {
-        const store = useStore();
+const store = useStore();
 
-        return {
-            user: computed(() => store.getters.user),
-            users: computed(() =>
-                store.getters.users.filter((el) => el.id !== store.getters.user.id),
-            ),
-            products: computed(() => store.getters.products),
-        };
-    },
-    data() {
-        return {
-            product: null,
-            presentee: null,
-            message: null,
-            modalOpen: false,
-            modalError: null,
-            purchaseMode: 'myself',
-            loading: false,
-            purchaseSuccess: false,
-            code: null,
-        };
-    },
-    beforeUnmount() {
-        document.removeEventListener('keydown', this.handleEscKey);
-    },
-    methods: {
-        openModal(product) {
-            this.product = product;
-            this.modalOpen = true;
-            // Remove first to prevent duplicate event listeners
-            document.removeEventListener('keydown', this.handleEscKey);
-            document.addEventListener('keydown', this.handleEscKey);
-        },
-        closeModal() {
-            this.product = null;
-            this.presentee = null;
-            this.message = null;
-            this.modalError = null;
-            this.modalOpen = false;
-            this.purchaseSuccess = false;
-            this.code = null;
-            this.purchaseMode = 'myself';
-            document.removeEventListener('keydown', this.handleEscKey);
-        },
-        handleEscKey(event) {
-            if (event.key === 'Escape' && this.modalOpen) {
-                this.closeModal();
-            }
-        },
-        async purchase() {
-            this.loading = true;
-            this.modalError = null;
+const user = computed(() => store.getters.user);
+const users = computed(() => store.getters.users.filter((el) => el.id !== store.getters.user.id));
+const products = computed(() => store.getters.products);
 
-            try {
-                const response = await api.post('shop/purchase', {
-                    product_id: this.product.id,
-                    presentee_id: this.presentee?.id,
-                    message: this.message,
-                    purchase_mode: this.purchaseMode,
-                });
-                this.purchaseSuccess = true;
-                this.code = response.data.code;
+const product = ref(null);
+const presentee = ref(null);
+const message = ref(null);
+const modalOpen = ref(false);
+const modalError = ref(null);
+const purchaseMode = ref('myself');
+const loading = ref(false);
+const purchaseSuccess = ref(false);
+const code = ref(null);
 
-                await this.$store.dispatch('getUser');
-                await this.$store.dispatch('getProducts');
-                await this.$store.dispatch('getCollection');
-            } catch (error) {
-                console.log(error);
-                this.modalError = error.response.data.error;
-            } finally {
-                this.loading = false;
-            }
-        },
-    },
-};
+function openModal(selectedProduct) {
+    product.value = selectedProduct;
+    modalOpen.value = true;
+    // Remove first to prevent duplicate event listeners
+    document.removeEventListener('keydown', handleEscKey);
+    document.addEventListener('keydown', handleEscKey);
+}
+
+function closeModal() {
+    product.value = null;
+    presentee.value = null;
+    message.value = null;
+    modalError.value = null;
+    modalOpen.value = false;
+    purchaseSuccess.value = false;
+    code.value = null;
+    purchaseMode.value = 'myself';
+    document.removeEventListener('keydown', handleEscKey);
+}
+
+function handleEscKey(event) {
+    if (event.key === 'Escape' && modalOpen.value) {
+        closeModal();
+    }
+}
+
+async function purchase() {
+    loading.value = true;
+    modalError.value = null;
+
+    try {
+        const response = await api.post('shop/purchase', {
+            product_id: product.value.id,
+            presentee_id: presentee.value?.id,
+            message: message.value,
+            purchase_mode: purchaseMode.value,
+        });
+        purchaseSuccess.value = true;
+        code.value = response.data.code;
+
+        await store.dispatch('getUser');
+        await store.dispatch('getProducts');
+        await store.dispatch('getCollection');
+    } catch (error) {
+        console.log(error);
+        modalError.value = error.response.data.error;
+    } finally {
+        loading.value = false;
+    }
+}
+
+onBeforeUnmount(() => {
+    document.removeEventListener('keydown', handleEscKey);
+});
 </script>

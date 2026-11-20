@@ -7,13 +7,13 @@ use App\Service\UserService;
 
 class ViewSubmissionEvent extends AbstractEvent
 {
-    protected string $user;
-    protected string $callbackId;
-    protected string $privateMetadata;
+    protected readonly string $user;
+    protected readonly string $callbackId;
+    protected readonly string $privateMetadata;
     /**
      * @var array<string, string>
      */
-    protected array $values;
+    protected readonly array $values;
 
     /**
      * Constructor

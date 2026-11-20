@@ -12,7 +12,7 @@ class ProgressionService
 {
     use LocatorAwareTrait;
 
-    protected SlackClient $slackClient;
+    protected readonly SlackClient $slackClient;
 
     /**
      * Constructor

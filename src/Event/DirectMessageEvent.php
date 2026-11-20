@@ -7,10 +7,10 @@ use App\Service\UserService;
 
 class DirectMessageEvent extends AbstractEvent
 {
-    public string $sender;
-    public string $channel;
-    public string $text;
-    public string $timestamp;
+    public readonly string $sender;
+    public readonly string $channel;
+    public readonly string $text;
+    public readonly string $timestamp;
 
     /**
      * Constructor

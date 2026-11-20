@@ -7,9 +7,8 @@ use App\Service\UserService;
 
 class AppHomeOpenedEvent extends AbstractEvent
 {
-    protected string $user;
-    protected string $tab;
-    protected string $timestamp;
+    protected readonly string $user;
+    protected readonly string $tab;
 
     /**
      * Constructor

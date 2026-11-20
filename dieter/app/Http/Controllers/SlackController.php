@@ -9,6 +9,7 @@ use App\Models\SlackThread;
 use App\Models\User;
 use App\Services\SlackClient;
 use Illuminate\Http\JsonResponse;
+use Laravel\Ai\Responses\AgentResponse;
 
 class SlackController extends Controller
 {
@@ -60,21 +61,17 @@ class SlackController extends Controller
         return $builder->build();
     }
 
-    private function promptAgent(User $user, string $channel, ?string $threadKey, string $prompt): mixed
+    private function promptAgent(User $user, string $channel, ?string $threadKey, string $prompt): AgentResponse
     {
         $slackThread = $threadKey
             ? SlackThread::where('channel', $channel)->where('thread_ts', $threadKey)->first()
             : null;
 
-        $agent = new PotatoAgent($channel, $user->slack_user_id);
+        $response = new PotatoAgent($channel, $user->slack_user_id)
+            ->continueOrStart($slackThread?->conversation_id, as: $user)
+            ->prompt($prompt);
 
-        if ($slackThread) {
-            return $agent->continue($slackThread->conversation_id, as: $user)->prompt($prompt);
-        }
-
-        $response = $agent->forUser($user)->prompt($prompt);
-
-        if ($threadKey && $response->conversationId) {
+        if (! $slackThread && $threadKey && $response->conversationId) {
             SlackThread::create([
                 'channel' => $channel,
                 'thread_ts' => $threadKey,

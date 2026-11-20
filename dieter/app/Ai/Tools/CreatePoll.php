@@ -8,7 +8,7 @@ use Laravel\Ai\Contracts\Tool;
 use Laravel\Ai\Tools\Request;
 use Stringable;
 
-class CreatePoll implements Tool
+readonly class CreatePoll implements Tool
 {
     public function __construct(
         public string $channel,

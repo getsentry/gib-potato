@@ -54,27 +54,21 @@
     </div>
 </template>
 
-<script>
+<script setup>
 import { computed } from 'vue';
 import { useStore } from 'vuex';
 
-export default {
-    name: 'Filter',
-    setup() {
-        const store = useStore();
-        return {
-            filter: computed(() => store.getters.filter),
-        };
-    },
-    methods: {
-        updateRangeFilter(range) {
-            this.$store.dispatch('setRangeFilter', range);
-            this.$store.dispatch('getLeaderboard');
-        },
-        updateOrderFilter(order) {
-            this.$store.dispatch('setOrderFilter', order);
-            this.$store.dispatch('getLeaderboard');
-        },
-    },
-};
+const store = useStore();
+
+const filter = computed(() => store.getters.filter);
+
+function updateRangeFilter(range) {
+    store.dispatch('setRangeFilter', range);
+    store.dispatch('getLeaderboard');
+}
+
+function updateOrderFilter(order) {
+    store.dispatch('setOrderFilter', order);
+    store.dispatch('getLeaderboard');
+}
 </script>

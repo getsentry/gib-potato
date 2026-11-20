@@ -19,7 +19,7 @@ class PotatoesController extends ApiController
 
         $messagesTable = $this->fetchTable('Messages');
 
-        $sent = $messagesTable->find()
+        $sent = $messagesTable->unhydratedFind()
             ->select([
                 'amount' => 'Messages.amount',
                 'recipient' => 'Messages.receiver_user_id',
@@ -27,10 +27,9 @@ class PotatoesController extends ApiController
             ])
             ->where(['Messages.sender_user_id' => $userId])
             ->orderBy(['Messages.created' => 'DESC'])
-            ->disableHydration()
             ->all();
 
-        $received = $messagesTable->find()
+        $received = $messagesTable->unhydratedFind()
             ->select([
                 'amount' => 'Messages.amount',
                 'sender' => 'Messages.sender_user_id',
@@ -38,7 +37,6 @@ class PotatoesController extends ApiController
             ])
             ->where(['Messages.receiver_user_id' => $userId])
             ->orderBy(['Messages.created' => 'DESC'])
-            ->disableHydration()
             ->all();
 
         return $this->response

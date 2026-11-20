@@ -9,10 +9,10 @@ use App\Service\UserService;
 
 class SlashCommandEvent extends AbstractEvent
 {
-    protected string $user;
-    protected string $command;
-    protected string $channel;
-    protected string $text;
+    protected readonly string $user;
+    protected readonly string $command;
+    protected readonly string $channel;
+    protected readonly string $text;
 
     /**
      * Constructor
@@ -88,7 +88,7 @@ class SlashCommandEvent extends AbstractEvent
             'title' => $title,
             'type' => str_contains($this->text, '--single') ? Poll::TYPE_SINGLE : Poll::TYPE_MULTIPLE,
             'status' => Poll::STATUS_ACTIVE,
-            'anonymous' => str_contains($this->text, '--anonymous') ? true : false,
+            'anonymous' => str_contains($this->text, '--anonymous'),
         ], [
             'accessibleFields' => [
                 'user_id' => true,

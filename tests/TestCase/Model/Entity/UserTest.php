@@ -25,25 +25,13 @@ class UserTest extends TestCase
         'app.Purchases',
     ];
 
-    /**
-     * @var \App\Model\Entity\User
-     */
-    protected $UserEurope;
+    protected User $UserEurope;
 
-    /**
-     * @var \App\Model\Entity\User
-     */
-    protected $UserCanada;
+    protected User $UserCanada;
 
-    /**
-     * @var \App\Model\Entity\User
-     */
-    protected $UserUS;
+    protected User $UserUS;
 
-    /**
-     * @var \App\Model\Entity\User
-     */
-    protected $UserBuyer;
+    protected User $UserBuyer;
 
     /**
      * setUp method

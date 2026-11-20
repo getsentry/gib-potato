@@ -11,21 +11,21 @@ abstract class AbstractEvent
 {
     use LocatorAwareTrait;
 
-    public const TYPE_MESSAGE = 'message';
-    public const TYPE_DIRECT_MESSAGE = 'direct_message';
-    public const TYPE_REACTION_ADDED = 'reaction_added';
-    public const TYPE_APP_HOME_OPENED = 'app_home_opened';
-    public const TYPE_APP_MENTION = 'app_mention';
-    public const TYPE_SLASH_COMMAND = 'slash_command';
-    public const TYPE_INTERACTIONS_CALLBACK = 'interaction_callback';
-    public const TYPE_VIEW_SUBMISSION = 'view_submission';
-    public const TYPE_LINK_SHARED = 'link_shared';
+    public const string TYPE_MESSAGE = 'message';
+    public const string TYPE_DIRECT_MESSAGE = 'direct_message';
+    public const string TYPE_REACTION_ADDED = 'reaction_added';
+    public const string TYPE_APP_HOME_OPENED = 'app_home_opened';
+    public const string TYPE_APP_MENTION = 'app_mention';
+    public const string TYPE_SLASH_COMMAND = 'slash_command';
+    public const string TYPE_INTERACTIONS_CALLBACK = 'interaction_callback';
+    public const string TYPE_VIEW_SUBMISSION = 'view_submission';
+    public const string TYPE_LINK_SHARED = 'link_shared';
 
-    protected SlackClient $slackClient;
-    protected DiscordClient $discordClient;
+    protected readonly SlackClient $slackClient;
+    protected readonly DiscordClient $discordClient;
 
-    public string $type;
-    public string $eventTimestamp;
+    public protected(set) string $type;
+    public protected(set) string $eventTimestamp;
 
     /**
      * @return void

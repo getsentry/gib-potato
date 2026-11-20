@@ -8,9 +8,9 @@ use function Sentry\logger;
 
 class SlackClient
 {
-    protected const SLACK_API_URL = 'slack.com/api';
+    protected const string SLACK_API_URL = 'slack.com/api';
 
-    protected Client $client;
+    protected readonly Client $client;
 
     /**
      * Constructor.

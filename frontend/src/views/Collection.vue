@@ -50,19 +50,12 @@
     </div>
 </template>
 
-<script>
+<script setup>
 import { computed } from 'vue';
 import { useStore } from 'vuex';
 
-export default {
-    name: 'Collection',
-    setup() {
-        const store = useStore();
+const store = useStore();
 
-        return {
-            user: computed(() => store.getters.user),
-            collection: computed(() => store.getters.collection),
-        };
-    },
-};
+const user = computed(() => store.getters.user);
+const collection = computed(() => store.getters.collection);
 </script>
