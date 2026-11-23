@@ -1,3 +1,4 @@
+# syntax=docker/dockerfile:1
 FROM ubuntu:24.04 AS php-local
 
 ENV DEBIAN_FRONTEND=noninteractive
@@ -29,23 +30,19 @@ RUN \
     php8.5-zip \
     php8.5-excimer
 
-RUN \
+# Matches the release on Packagist (sentry/sentry-php-tracer)
+ARG SENTRY_PHP_TRACER_VERSION=0.1.1
+
+# The extension is enabled below with phpenmod, for both the CLI and FPM
+RUN --mount=type=bind,from=ghcr.io/php/pie:1-bin,source=/pie,target=/usr/local/bin/pie \
     apt-get install -y --no-install-recommends \
     php8.5-dev \
-    git \
     autoconf \
     make \
-    gcc \
-    g++ && \
-    git clone --branch main --single-branch https://github.com/getsentry/sentry-php-tracer.git /tmp/sentry-php-tracer && \
-    cd /tmp/sentry-php-tracer && \
-    phpize && \
-    ./configure --enable-sentry && \
-    make -j"$(nproc)" && \
-    make install && \
+    gcc && \
+    pie install --no-cache --skip-enable-extension "sentry/sentry-php-tracer:${SENTRY_PHP_TRACER_VERSION}" && \
     echo "extension=sentry.so" > /etc/php/8.5/mods-available/sentry.ini && \
-    cd / && rm -rf /tmp/sentry-php-tracer && \
-    apt-get purge -y php8.5-dev autoconf make gcc g++ && \
+    apt-get purge -y php8.5-dev autoconf make gcc && \
     apt-get autoremove -y && \
     rm -rf /var/lib/apt/lists/*
 
@@ -88,7 +85,8 @@ COPY ./package.json package.json
 COPY ./package-lock.json package-lock.json
 COPY ./vite.config.js vite.config.js
 
-RUN \
+# Uploads source maps to Sentry when the SENTRY_AUTH_TOKEN secret is provided
+RUN --mount=type=secret,id=SENTRY_AUTH_TOKEN,env=SENTRY_AUTH_TOKEN \
     npm ci && \
     npm run build
 

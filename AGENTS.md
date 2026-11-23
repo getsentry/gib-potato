@@ -67,6 +67,14 @@ bundle update
 
 To also bump Gemfile version constraints (not just the lockfile), manually update the version strings in `Gemfile` to match the resolved versions in `Gemfile.lock` after running `bundle update`.
 
+## PHP extensions (docker/backend/)
+
+The `sentry/sentry-php-tracer` extension is pinned by `SENTRY_PHP_TRACER_VERSION` in `docker/backend/Dockerfile`. Set it to the latest release on Packagist:
+
+```sh
+curl -s https://repo.packagist.org/p2/sentry/sentry-php-tracer.json | jq -r '.packages["sentry/sentry-php-tracer"][0].version'
+```
+
 ## Postgres (docker-compose.yml, CI)
 
 Keep the `postgres` image major version in `docker-compose.yml` and `.github/workflows/php-ci.yml` the same as production's Cloud SQL `database_version` in getsentry/ops `terraform/gib-potato/sql.tf`. When prod is on a newer major, bump both as part of the update. Local and CI major bumps are fine; developers recreate their local `db` volume.
