@@ -169,6 +169,7 @@ GEM
     oj (3.17.8)
       bigdecimal (>= 3.0)
     openssl (4.0.2)
+    ostruct (0.6.1)
     parallel (2.3.0)
     parser (3.3.13.0)
       ast (~> 2.4.1)
@@ -362,6 +363,7 @@ DEPENDENCIES
   debug
   dotenv
   mocha
+  ostruct
   propshaft
   puma (>= 8.1.1)
   rails (~> 8.1.4)
