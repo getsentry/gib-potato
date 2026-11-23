@@ -38,6 +38,14 @@ class GiftCardTest < ActiveSupport::TestCase
     end
   end
 
+  test "should add the bonus to each amount" do
+    gift_card = valid_gift_card
+    {10 => 10.5, 25 => 25.5, 50 => 50.5}.each do |amount, value|
+      gift_card.amount = amount
+      assert_equal value, gift_card.value
+    end
+  end
+
   test "should not be persisted" do
     gift_card = valid_gift_card
     assert_not gift_card.persisted?
