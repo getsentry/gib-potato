@@ -3,6 +3,7 @@ class GiftCard
   include ActiveModel::Attributes
 
   VALID_AMOUNTS = [10, 25, 50].freeze
+  BONUS_AMOUNT = 0.5
 
   attribute :name, :string
   attribute :amount, :integer
@@ -16,6 +17,10 @@ class GiftCard
   end
 
   attr_reader :id
+
+  def value
+    amount + BONUS_AMOUNT
+  end
 
   def save
     return false unless valid?

@@ -31,7 +31,7 @@ class GiftCardController < ActionController::Base
   def handle_valid_gift_card(gift_card)
     log_debug("Gift card validation passed", gift_card_id: gift_card.id, amount: gift_card.amount)
 
-    service_result = gift_card_service.create_gift_card(gift_card.amount, gift_card.name)
+    service_result = gift_card_service.create_gift_card(gift_card.value, gift_card.name)
 
     if service_result[:success]
       handle_service_success(service_result, gift_card)

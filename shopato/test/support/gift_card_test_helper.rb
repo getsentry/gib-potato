@@ -1,6 +1,7 @@
 module GiftCardTestHelper
   VALID_NAME = "Mr. Potato Head"
   VALID_AMOUNT = 25
+  VALID_VALUE = 25.5
 
   def valid_gift_card_params
     {name: VALID_NAME, amount: VALID_AMOUNT}
@@ -10,7 +11,7 @@ module GiftCardTestHelper
     {"Authorization" => Rails.application.config.gib_potato_token}
   end
 
-  def mock_successful_gift_card_service(expected_amount = VALID_AMOUNT, expected_name = VALID_NAME)
+  def mock_successful_gift_card_service(expected_amount = VALID_VALUE, expected_name = VALID_NAME)
     mock_service = mock
     mock_service.expects(:create_gift_card)
       .with(expected_amount, expected_name)
@@ -19,7 +20,7 @@ module GiftCardTestHelper
         gift_card: {
           "id" => "gid://shopify/GiftCard/123",
           "code" => "POTATO-1234",
-          "amount" => "#{expected_amount}.00"
+          "amount" => format("%.2f", expected_amount)
         }
       })
 
@@ -27,7 +28,7 @@ module GiftCardTestHelper
     mock_service
   end
 
-  def mock_failed_gift_card_service(error_message, expected_amount = VALID_AMOUNT, expected_name = VALID_NAME)
+  def mock_failed_gift_card_service(error_message, expected_amount = VALID_VALUE, expected_name = VALID_NAME)
     mock_service = mock
     mock_service.expects(:create_gift_card)
       .with(expected_amount, expected_name)
@@ -46,7 +47,7 @@ module GiftCardTestHelper
   end
 
   def stub_shopify_api_success(amount = VALID_AMOUNT, name = VALID_NAME)
-    stub_request(:post, "https://#{Rails.application.config.shopify_shop_domain}/admin/api/2025-07/graphql.json")
+    stub_request(:post, "https://#{Rails.application.config.shopify_shop_domain}/admin/api/#{ShopifyGiftCardService::API_VERSION}/graphql.json")
       .with(
         headers: {
           "X-Shopify-Access-Token" => Rails.application.config.shopify_admin_access_token,
@@ -82,7 +83,7 @@ module GiftCardTestHelper
 
   def assert_gift_card_created_successfully(response_body)
     assert_equal "POTATO-1234", response_body["code"]
-    assert_includes response_body["amount"], "25.00"
+    assert_includes response_body["amount"], "25.50"
   end
 
   def assert_unauthorized_response

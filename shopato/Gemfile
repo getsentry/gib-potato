@@ -18,6 +18,8 @@ gem "puma", ">= 8.1.1"
 # gem "jbuilder"
 
 gem "shopify_api"
+# shopify_api references OpenStruct without declaring or requiring it
+gem "ostruct"
 
 gem "vernier"
 gem "sentry-ruby"

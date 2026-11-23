@@ -1,6 +1,8 @@
 class ShopifyGiftCardService
   include Loggable
 
+  API_VERSION = "2026-10"
+
   CREATE_MUTATION = <<~GRAPHQL
     mutation giftCardCreate($input: GiftCardCreateInput!) {
       giftCardCreate(input: $input) {
@@ -17,7 +19,7 @@ class ShopifyGiftCardService
 
   def initialize(shop: Rails.application.config.shopify_shop_domain, token: Rails.application.config.shopify_admin_access_token)
     @session = ShopifyAPI::Auth::Session.new(shop: shop, access_token: token)
-    @client = ShopifyAPI::Clients::Graphql::Admin.new(session: @session)
+    @client = ShopifyAPI::Clients::Graphql::Admin.new(session: @session, api_version: API_VERSION)
     log_debug("ShopifyGiftCardService initialized", shop: shop)
   end
 
