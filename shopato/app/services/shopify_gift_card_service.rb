@@ -1,7 +1,7 @@
 class ShopifyGiftCardService
   include Loggable
 
-  API_VERSION = "2025-07"
+  API_VERSION = "2026-10"
 
   CREATE_MUTATION = <<~GRAPHQL
     mutation giftCardCreate($input: GiftCardCreateInput!) {

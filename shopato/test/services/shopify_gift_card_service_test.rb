@@ -24,7 +24,7 @@ class ShopifyGiftCardServiceTest < ActiveSupport::TestCase
   end
 
   def test_handles_shopify_api_user_errors
-    stub_request(:post, "https://#{Rails.application.config.shopify_shop_domain}/admin/api/2025-07/graphql.json")
+    stub_request(:post, "https://#{Rails.application.config.shopify_shop_domain}/admin/api/#{ShopifyGiftCardService::API_VERSION}/graphql.json")
       .to_return(
         status: 200,
         headers: {"Content-Type" => "application/json"},
@@ -47,7 +47,7 @@ class ShopifyGiftCardServiceTest < ActiveSupport::TestCase
   end
 
   def test_handles_network_errors
-    stub_request(:post, "https://#{Rails.application.config.shopify_shop_domain}/admin/api/2025-07/graphql.json")
+    stub_request(:post, "https://#{Rails.application.config.shopify_shop_domain}/admin/api/#{ShopifyGiftCardService::API_VERSION}/graphql.json")
       .to_raise(StandardError.new("Network error"))
 
     service = ShopifyGiftCardService.new

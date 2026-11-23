@@ -47,7 +47,7 @@ module GiftCardTestHelper
   end
 
   def stub_shopify_api_success(amount = VALID_AMOUNT, name = VALID_NAME)
-    stub_request(:post, "https://#{Rails.application.config.shopify_shop_domain}/admin/api/2025-07/graphql.json")
+    stub_request(:post, "https://#{Rails.application.config.shopify_shop_domain}/admin/api/#{ShopifyGiftCardService::API_VERSION}/graphql.json")
       .with(
         headers: {
           "X-Shopify-Access-Token" => Rails.application.config.shopify_admin_access_token,
