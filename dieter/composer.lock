@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "e7f5d3ebf474c2e5ab921f0dff78b4ce",
+    "content-hash": "7ab8a685708a468a64320d63dd63983d",
     "packages": [
         {
             "name": "brick/math",
@@ -1221,16 +1221,16 @@
         },
         {
             "name": "laravel/framework",
-            "version": "v13.43.0",
+            "version": "v13.44.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/laravel/framework.git",
-                "reference": "72aa7e151062e218704d8660f407e6070040d8bc"
+                "reference": "9d3d8e77e2f91be5dfecdc64ede49337049e8abd"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/laravel/framework/zipball/72aa7e151062e218704d8660f407e6070040d8bc",
-                "reference": "72aa7e151062e218704d8660f407e6070040d8bc",
+                "url": "https://api.github.com/repos/laravel/framework/zipball/9d3d8e77e2f91be5dfecdc64ede49337049e8abd",
+                "reference": "9d3d8e77e2f91be5dfecdc64ede49337049e8abd",
                 "shasum": ""
             },
             "require": {
@@ -1339,7 +1339,7 @@
                 "ext-gmp": "*",
                 "fakerphp/faker": "^1.24",
                 "intervention/image": "^4.2",
-                "jasonmccreary/double": "^1.1",
+                "jasonmccreary/double": "^1.2.1",
                 "laravel/pint": "^1.18",
                 "league/flysystem-aws-s3-v3": "^3.25.1",
                 "league/flysystem-ftp": "^3.25.1",
@@ -1450,8 +1450,8 @@
                 "issues": "https://github.com/laravel/framework/issues",
                 "source": "https://github.com/laravel/framework"
             },
-            "time": "2026-11-17T14:58:33+00:00",
-            "published-time": "2026-11-17T14:58:44+00:00"
+            "time": "2026-11-24T15:48:17+00:00",
+            "published-time": "2026-11-24T15:48:29+00:00"
         },
         {
             "name": "laravel/prompts",
@@ -1645,16 +1645,16 @@
         },
         {
             "name": "league/commonmark",
-            "version": "2.10.7",
+            "version": "2.10.8",
             "source": {
                 "type": "git",
                 "url": "https://github.com/thephpleague/commonmark.git",
-                "reference": "8eb53e906fd60c67038d22f1f1cab420ed58b8be"
+                "reference": "681e662a40c805c567f52d603b64d55282ea356c"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/thephpleague/commonmark/zipball/8eb53e906fd60c67038d22f1f1cab420ed58b8be",
-                "reference": "8eb53e906fd60c67038d22f1f1cab420ed58b8be",
+                "url": "https://api.github.com/repos/thephpleague/commonmark/zipball/681e662a40c805c567f52d603b64d55282ea356c",
+                "reference": "681e662a40c805c567f52d603b64d55282ea356c",
                 "shasum": ""
             },
             "require": {
@@ -1748,8 +1748,8 @@
                     "type": "tidelift"
                 }
             ],
-            "time": "2026-10-31T13:35:37+00:00",
-            "published-time": "2026-10-31T13:35:57+00:00"
+            "time": "2026-11-24T15:44:47+00:00",
+            "published-time": "2026-11-24T15:45:01+00:00"
         },
         {
             "name": "league/config",
