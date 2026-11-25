@@ -90,70 +90,82 @@ class ShopController extends ApiController
         }
 
         $purchasesTable = $this->fetchTable('Purchases');
-        $purchase = $purchasesTable->newEntity([
-            'user_id' => $user->id,
-            'presentee_id' => $presentee->id ?? null,
-            'name' => $product->name,
-            'description' => $product->description,
-            'image_link' => $product->image_link,
-            'price' => $product->price,
-            'message' => $this->request->getData('message'),
-        ], [
-            'accessibleFields' => [
-                'user_id' => true,
-                'presentee_id' => true,
-                'name' => true,
-                'description' => true,
-                'image_link' => true,
-                'price' => true,
-                'message' => true,
-            ],
-        ]);
-        $purchase = $purchasesTable->saveOrFail($purchase);
-
-        $productsTable->patchEntity($product, [
-            'stock' => $product->stock - 1,
-        ], [
-            'accessibleFields' => [
-                'stock' => true,
-            ],
-        ]);
-        $productsTable->saveOrFail($product);
-
         $code = null;
-        if ($product->type === Product::TYPE_GIFT_CARD) {
-            $client = new Client();
-            $response = $client->post(env('SHOPATO_URL'), [
-                /** @var \App\Model\Entity\User $presentee */
-                'name' => $presentee->slack_name ?? $user->slack_name,
-                'amount' => $product->price / 10, // 1 🥔 = $0.10
-            ], [
-                'headers' => [
-                    'Authorization' => env('SHOPATO_TOKEN'),
-                    'Baggage' => getBaggage(),
-                    'Sentry-Trace' => getTraceparent(),
-                ],
-            ]);
-            if ($response->isSuccess()) {
-                $json = $response->getJson();
-                $code = $json['code'];
+        // Roll back the purchase and stock change if the gift card can't be issued,
+        // so the user doesn't lose potatoes without getting a code.
+        $success = $purchasesTable->getConnection()->transactional(
+            function () use ($purchasesTable, $productsTable, $product, $user, $presentee, &$code): bool {
+                $purchase = $purchasesTable->newEntity([
+                    'user_id' => $user->id,
+                    'presentee_id' => $presentee->id ?? null,
+                    'name' => $product->name,
+                    'description' => $product->description,
+                    'image_link' => $product->image_link,
+                    'price' => $product->price,
+                    'message' => $this->request->getData('message'),
+                ], [
+                    'accessibleFields' => [
+                        'user_id' => true,
+                        'presentee_id' => true,
+                        'name' => true,
+                        'description' => true,
+                        'image_link' => true,
+                        'price' => true,
+                        'message' => true,
+                    ],
+                ]);
+                $purchase = $purchasesTable->saveOrFail($purchase);
 
-                $purchase = $purchasesTable->patchEntity($purchase, [
+                $productsTable->patchEntity($product, [
+                    'stock' => $product->stock - 1,
+                ], [
+                    'accessibleFields' => [
+                        'stock' => true,
+                    ],
+                ]);
+                $productsTable->saveOrFail($product);
+
+                if ($product->type !== Product::TYPE_GIFT_CARD) {
+                    return true;
+                }
+
+                $client = new Client();
+                $response = $client->post(env('SHOPATO_URL'), [
+                    /** @var \App\Model\Entity\User $presentee */
+                    'name' => $presentee->slack_name ?? $user->slack_name,
+                    'amount' => $product->price / 10, // 1 🥔 = $0.10
+                ], [
+                    'headers' => [
+                        'Authorization' => env('SHOPATO_TOKEN'),
+                        'Baggage' => getBaggage(),
+                        'Sentry-Trace' => getTraceparent(),
+                    ],
+                ]);
+                if (!$response->isSuccess()) {
+                    return false;
+                }
+
+                $code = $response->getJson()['code'];
+                $purchasesTable->patchEntity($purchase, [
                     'code' => $code,
                 ], [
                     'accessibleFields' => [
                         'code' => true,
                     ],
                 ]);
-                $purchase = $purchasesTable->saveOrFail($purchase);
-            } else {
-                return $this->response
-                    ->withStatus(500)
-                    ->withType('json')
-                    ->withStringBody(json_encode([
-                        'error' => 'Something went wrong 🫠',
-                    ]));
-            }
+                $purchasesTable->saveOrFail($purchase);
+
+                return true;
+            },
+        );
+
+        if (!$success) {
+            return $this->response
+                ->withStatus(500)
+                ->withType('json')
+                ->withStringBody(json_encode([
+                    'error' => 'Something went wrong 🫠',
+                ]));
         }
 
         if ($presentee !== null) {
