@@ -74,6 +74,7 @@ class ShopifyGiftCardService
       errors: errors,
       amount: amount,
       name: name)
+    Sentry.capture_message("Shopify API returned user errors", extra: {errors: errors, amount: amount})
     error!(errors.join(", "))
   end
 
@@ -97,6 +98,7 @@ class ShopifyGiftCardService
       error_class: error.class.name,
       amount: amount,
       name: name)
+    Sentry.capture_exception(error)
     error!("Shopify error: #{error.message}")
   end
 

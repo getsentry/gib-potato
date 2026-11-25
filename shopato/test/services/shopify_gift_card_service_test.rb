@@ -39,6 +39,8 @@ class ShopifyGiftCardServiceTest < ActiveSupport::TestCase
         }.to_json
       )
 
+    Sentry.expects(:capture_message).with("Shopify API returned user errors", extra: {errors: ["Invalid amount"], amount: VALID_AMOUNT})
+
     service = ShopifyGiftCardService.new
     result = service.create_gift_card(VALID_AMOUNT, VALID_NAME)
 
@@ -49,6 +51,7 @@ class ShopifyGiftCardServiceTest < ActiveSupport::TestCase
   def test_handles_network_errors
     stub_request(:post, "https://#{Rails.application.config.shopify_shop_domain}/admin/api/#{ShopifyGiftCardService::API_VERSION}/graphql.json")
       .to_raise(StandardError.new("Network error"))
+    Sentry.expects(:capture_exception).with { |e| e.message == "Network error" }
 
     service = ShopifyGiftCardService.new
     result = service.create_gift_card(VALID_AMOUNT, VALID_NAME)
